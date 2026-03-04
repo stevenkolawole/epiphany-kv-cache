@@ -6,10 +6,28 @@ Goals: Identify patterns in "rambling" vs "insights" for semantic importance sco
 """
 
 import json
+import re
 import requests
 from pathlib import Path
 from typing import List, Dict, Any
 import numpy as np
+
+
+# ---------------------------------------------------------------------------
+# Segment classification helpers
+# ---------------------------------------------------------------------------
+
+# Compiled patterns with word boundaries to avoid substring false positives.
+# E.g. "how" should not match "however"; "so" should not match "also".
+_RAMBLING = re.compile(
+    r'\b(i think|let me|hmm|wait|actually|i\'m|i was)\b', re.IGNORECASE
+)
+_EXPLORATION = re.compile(
+    r'\?|\b(what if|why|how|could)\b', re.IGNORECASE
+)
+_INSIGHT = re.compile(
+    r'\b(thus|therefore|conclusion|answer|result)\b', re.IGNORECASE
+)
 
 
 class DeepSeekTraceCollector:
@@ -119,14 +137,14 @@ class TraceAnalyzer:
         segments = []
         
         for i, line in enumerate(lines):
-            line_lower = line.lower()
-            
-            # Simple heuristics
-            if any(phrase in line_lower for phrase in ['i think', 'let me', 'hmm', 'wait', 'actually']):
+            # Priority order: rambling > exploration > insight > neutral.
+            # Uses module-level compiled patterns with word boundaries to avoid
+            # false positives (e.g. "how" inside "however", "so" inside "also").
+            if _RAMBLING.search(line):
                 seg_type = 'rambling'
-            elif any(phrase in line_lower for phrase in ['?', 'what if', 'why', 'how']):
+            elif _EXPLORATION.search(line):
                 seg_type = 'exploration'
-            elif any(phrase in line_lower for phrase in ['thus', 'therefore', 'conclusion', 'answer is', 'result']):
+            elif _INSIGHT.search(line):
                 seg_type = 'insight'
             else:
                 seg_type = 'neutral'

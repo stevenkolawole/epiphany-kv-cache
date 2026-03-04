@@ -1,8 +1,25 @@
 """Simple analysis of reasoning traces - minimal dependencies."""
 
 import json
+import re
 from pathlib import Path
 from typing import List, Dict, Any
+
+# ---------------------------------------------------------------------------
+# Segment classification helpers
+# ---------------------------------------------------------------------------
+
+# Compiled patterns with word boundaries — avoids false positives like
+# "how" matching "however" or "so" matching "also".
+_RAMBLING = re.compile(
+    r'\b(i think|let me|hmm|wait|actually|i\'m|i was)\b', re.IGNORECASE
+)
+_EXPLORATION = re.compile(
+    r'\?|\b(what if|why|how|could)\b', re.IGNORECASE
+)
+_INSIGHT = re.compile(
+    r'\b(thus|therefore|conclusion|answer|result)\b', re.IGNORECASE
+)
 
 
 def analyze_trace(reasoning: str) -> Dict[str, Any]:
@@ -27,14 +44,12 @@ def identify_segments(reasoning: str) -> List[Dict[str, Any]]:
         if not line.strip():
             continue
             
-        line_lower = line.lower()
-        
-        # Simple heuristics for segment classification
-        if any(phrase in line_lower for phrase in ['hmm', "i think", "let me", "wait", "actually", "i'm", "i was"]):
+        # Priority: rambling > exploration > insight > neutral
+        if _RAMBLING.search(line):
             seg_type = 'rambling'
-        elif any(phrase in line_lower for phrase in ['?', 'what if', 'why', 'how', 'could']):
+        elif _EXPLORATION.search(line):
             seg_type = 'exploration'
-        elif any(phrase in line_lower for phrase in ['thus', 'therefore', 'conclusion', 'answer', 'result', 'so', '=']):
+        elif _INSIGHT.search(line):
             seg_type = 'insight'
         else:
             seg_type = 'neutral'

@@ -44,24 +44,52 @@ This document tracks the design, execution, and results of experiments for epiph
 - Tested and verified on dummy data (batch_size=2, seq_len=1000)
 - Next: Create POC harness to test on actual LLaMA/Qwen models with math reasoning tasks.
 
-### [Date: March 4, 2026] - POC Harness ✓
-- Created `scripts/poc_harness.py` for evaluating models on reasoning tasks
-- Supports loading any HuggingFace model (LLaMA, Qwen, DeepSeek, etc.)
-- Measures: accuracy, tokens generated, peak memory, time/example
-- Ready to test on small models; will scale to larger models
-- Next: Run POC on GPT2 (quick test) then LLaMA-1.5B (real test)
+### [Date: March 4, 2026] - Initial POC Run (GPT-2)
+- Ran GPT-2 test with **10 examples** (not 50 — synthetic dataset has 10 traces)
+- Cache size 512 was never actually exceeded by 256-token generations, so eviction
+  was never triggered in practice. Both "baseline" and "semantic" runs used identical
+  unmodified generation; any accuracy difference was random noise, not eviction effect.
+- Real memory usage was identical between methods (confirmed by peak_memory_mb in results)
+- Next: Integrate eviction into generation loop (see codebase-fix entry below)
 
-### [Date: March 4, 2026] - Git & Visualizations ✓
-- Initialized git repository with 3 commits
-- Created comprehensive visualization script (`scripts/visualize.py`)
-- Generated 4 PNG visualizations:
-  - `viz_trace_segments.png`: Segment (rambling/exploration/insight) distribution across traces
-  - `viz_segment_dist.png`: Pie + bar chart of segment type distribution
-  - `viz_trace_lengths.png`: Histogram and box plot of reasoning trace lengths
-  - `viz_memory_reduction.png`: Projected memory savings with eviction
+### [Date: March 4, 2026] - Git & Visualizations
+- Initialized git repository
+- Created `scripts/visualize.py` with segment and length visualizations
+- `viz_memory_reduction.png` used made-up reduction percentages (25–45%) — NOT measured data
 - Created `MODEL_VARIANTS.md` documenting vanilla vs reasoning-enabled testing strategy
-- Updated `poc_harness.py` to support testing multiple model variants in parallel
-- All changes committed to git
+
+### [Date: March 4, 2026] - Codebase Audit & Fixes ✓
+Issues identified and corrected:
+
+**eviction.py**
+- Fixed: first-token padding used `state_variance[:1]` (copied first diff) instead of zeros
+- Added: `evict_past_key_values()` to both classes for use with HuggingFace `past_key_values`
+- Added: `_importance_from_kv()` to `SemanticEviction` — key-vector variance proxy for steps
+  where full hidden states are not available (all decoding steps after prefill)
+- Added: `semantic_alpha` as a configurable `EvictionConfig` parameter (was hardcoded 0.5)
+
+**poc_harness.py**
+- Fixed: replaced `model.generate()` with a manual step-by-step loop that passes
+  `past_key_values` back to the model and calls `evict_past_key_values()` when the
+  cache exceeds `cache_size`. This is the first time eviction is actually integrated.
+- Fixed: removed hardcoded mock results (accuracy=0.65/0.60, memory=1500/2048 MB) that
+  were silently written to poc_results.jsonl when model loading failed. Harness now
+  skips a variant and logs clearly if the model cannot be loaded.
+- Fixed: answer matching changed from substring `in` (false positives: "2" inside "12")
+  to word-boundary regex (`(?<!\w)answer(?!\w)`)
+- Added: `eviction_method="none"` baseline that runs unmodified generation, providing
+  a true control condition separate from eviction-based methods
+
+**data_collection.py / analyze_traces.py / visualize.py**
+- Fixed: segment classifier duplicated 3× with subtly different keyword lists; consolidated
+  to a single set of compiled regex patterns shared across all files
+- Fixed: word-boundary patterns replace plain substring matching — "how" no longer matches
+  "however", "so" no longer matches "also", etc.
+
+**visualize.py**
+- Fixed: `plot_memory_reduction()` replaced with `plot_theoretical_eviction_savings()`,
+  which plots the mathematically correct retention fraction (cache_size / max_seq_len)
+  and is clearly labelled "THEORETICAL — not measured"
 
 ### [Date: TBD] - Scaling
 - Status: Not started
