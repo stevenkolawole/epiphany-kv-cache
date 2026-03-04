@@ -51,6 +51,18 @@ This document tracks the design, execution, and results of experiments for epiph
 - Ready to test on small models; will scale to larger models
 - Next: Run POC on GPT2 (quick test) then LLaMA-1.5B (real test)
 
+### [Date: March 4, 2026] - Git & Visualizations ✓
+- Initialized git repository with 3 commits
+- Created comprehensive visualization script (`scripts/visualize.py`)
+- Generated 4 PNG visualizations:
+  - `viz_trace_segments.png`: Segment (rambling/exploration/insight) distribution across traces
+  - `viz_segment_dist.png`: Pie + bar chart of segment type distribution
+  - `viz_trace_lengths.png`: Histogram and box plot of reasoning trace lengths
+  - `viz_memory_reduction.png`: Projected memory savings with eviction
+- Created `MODEL_VARIANTS.md` documenting vanilla vs reasoning-enabled testing strategy
+- Updated `poc_harness.py` to support testing multiple model variants in parallel
+- All changes committed to git
+
 ### [Date: TBD] - Scaling
 - Status: Not started
 - Plan: Larger models (LLaMA-7B, Qwen-7B), full datasets, longer sequences
