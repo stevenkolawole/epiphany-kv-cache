@@ -78,7 +78,7 @@ def analyze_dataset(traces: List[Dict[str, Any]]) -> None:
         print(f"  {seg_type:12s}: {count:4d} ({pct:5.1f}%)")
 
 
-# Synthetic reasoning traces
+# Synthetic reasoning traces (expanded to 10 examples for better analysis)
 synthetic_traces = [
     {
         "question": "If a baker made 24 loaves of bread and sold 18, how many are left?",
@@ -94,6 +94,41 @@ synthetic_traces = [
         "question": "What is 25% of 80?",
         "reasoning": "25% means 1/4. So I need to find 1/4 of 80. Hmm, let me think about this. 80 ÷ 4 = 20. Or I could calculate it as 80 × 0.25 = 20. Actually, wait, let me reconsider. If 100% is 80, then 25% is a quarter. A quarter of 80 is 20. Thus, 25% of 80 is 20.",
         "answer": "20"
+    },
+    {
+        "question": "Solve: 2x + 3 = 7",
+        "reasoning": "I have the equation 2x + 3 = 7. I need to solve for x. First, subtract 3 from both sides. 2x + 3 - 3 = 7 - 3. So 2x = 4. Now divide both sides by 2. x = 4 ÷ 2 = 2. Let me check: 2×2 + 3 = 4 + 3 = 7. Yes, correct.",
+        "answer": "x = 2"
+    },
+    {
+        "question": "If 5 apples cost $2, how much do 12 apples cost?",
+        "reasoning": "First, find the cost per apple. 5 apples cost $2, so one apple costs $2 ÷ 5 = $0.40. Now, 12 apples would cost 12 × $0.40 = $4.80. Let me double-check the calculation. 12 × 0.40 = 4.80, yes. So the answer is $4.80.",
+        "answer": "$4.80"
+    },
+    {
+        "question": "What is the area of a rectangle with length 8 cm and width 5 cm?",
+        "reasoning": "The area of a rectangle is length × width. So, 8 cm × 5 cm = 40 cm². That's straightforward. Let me confirm: 8 × 5 = 40, yes. The area is 40 square centimeters.",
+        "answer": "40 cm²"
+    },
+    {
+        "question": "If a box contains 24 balls and you take out 9, how many are left?",
+        "reasoning": "There are 24 balls in the box. I take out 9. So I need to subtract. 24 - 9 = 15. Let me count backwards to verify: 24, 23, 22, 21, 20, 19, 18, 17, 16, 15. Yes, 15 balls left.",
+        "answer": "15"
+    },
+    {
+        "question": "Convert 3.5 hours to minutes.",
+        "reasoning": "1 hour = 60 minutes. So 3.5 hours = 3.5 × 60. First, 3 × 60 = 180. Then 0.5 × 60 = 30. So 180 + 30 = 210 minutes. Let me think: 3 hours is 180 minutes, half an hour is 30 minutes, total 210. Yes.",
+        "answer": "210 minutes"
+    },
+    {
+        "question": "What is 15% of 200?",
+        "reasoning": "15% means 15/100 = 0.15. So 0.15 × 200. First, 0.1 × 200 = 20. Then 0.05 × 200 = 10. So 20 + 10 = 30. Alternatively, 15% of 200 is (15/100) × 200 = (15 × 200) / 100 = 3000 / 100 = 30. Yes, 30.",
+        "answer": "30"
+    },
+    {
+        "question": "If you have $50 and spend $27, how much do you have left?",
+        "reasoning": "I start with $50. I spend $27. So I subtract. 50 - 27 = 23. Let me check: 27 + 23 = 50, yes. So I have $23 left. That seems correct.",
+        "answer": "$23"
     },
 ]
 

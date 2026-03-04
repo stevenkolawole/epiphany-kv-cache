@@ -8,30 +8,30 @@ Testing both vanilla and reasoning-enabled LLaMA versions reveals:
 ## Model Variants
 
 ### Vanilla Models
-- **LLaMA-3-8B** (`meta-llama/Llama-3-8b`)
+- **LLaMA-3.1-8B-Instruct** (`meta-llama/Llama-3.1-8B-Instruct`)
   - Standard instruction-tuned version
   - Shorter reasoning traces (~100-300 tokens)
   - Good baseline for comparison
 
-- **Qwen-7B** (`Qwen/Qwen2-7B`)
+- **Qwen-7B-Instruct** (`Qwen/Qwen2-7B-Instruct`)
   - Qwen's instruction-tuned version
   - Good multilingual support
   - Comparable trace lengths to LLaMA-3
 
-- **Mistral-7B** (`mistralai/Mistral-7B-v0.1`)
-  - Lightweight but capable
-  - Fast inference
-  - Shorter traces due to design
-
 ### Reasoning-Enabled Models
-- **DeepSeek-R1-Distill-Qwen-7B** (`deepseek-ai/deepseek-r1-distill-qwen-7b`)
-  - Distilled from DeepSeek-R1 (reasoning model)
+- **DeepSeek-R1-Distill-LLaMA-8B** (`deepseek-ai/deepseek-r1-distill-llama-8b`)
+  - DeepSeek-R1 distilled into LLaMA-3.1-8B
   - Longer traces (1k-5k+ tokens)
   - More exploration, self-correction
-  - **Best candidate for KV cache eviction gains**
+  - **High potential for KV cache eviction gains**
 
-- **LLaMA-3-Instruct-Extended** (if available)
-  - LLaMA-3 fine-tuned for reasoning
+- **DeepSeek-R1-Distill-Qwen-7B** (`deepseek-ai/deepseek-r1-distill-qwen-7b`)
+  - DeepSeek-R1 distilled into Qwen-7B
+  - Similar characteristics to LLaMA distilled version
+
+- **Mistral-7B-Instruct-v0.3** (`mistralai/Mistral-7B-Instruct-v0.3`)
+  - Mistral's latest instruction-tuned version
+  - Capable of reasoning tasks
   - Moderate trace length increase
 
 ## Testing Plan

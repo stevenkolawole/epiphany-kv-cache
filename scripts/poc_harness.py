@@ -29,11 +29,11 @@ class POCHarness:
     
     # Available model variants for testing
     MODEL_VARIANTS = {
-        'llama3_vanilla': 'meta-llama/Llama-3-8b',
-        'llama3_reasoning': 'microsoft/phi-3-small',  # Placeholder; use actual reasoning model
-        'qwen_vanilla': 'Qwen/Qwen2-7B',
-        'deepseek_r1': 'deepseek-ai/deepseek-r1-distill-qwen-7b',  # If available
-        'mistral': 'mistralai/Mistral-7B-v0.1',
+        'llama3_vanilla': 'meta-llama/Llama-3.1-8B-Instruct',
+        'llama3_reasoning': 'deepseek-ai/deepseek-r1-distill-llama-8b',  # DeepSeek distilled LLaMA
+        'qwen_vanilla': 'Qwen/Qwen2-7B-Instruct',
+        'qwen_reasoning': 'deepseek-ai/deepseek-r1-distill-qwen-7b',
+        'mistral_reasoning': 'mistralai/Mistral-7B-Instruct-v0.3',  # Mistral's instruction-tuned (reasoning-capable)
     }
     
     def __init__(self, model_name: str = "gpt2", variant: str = None, cache_size: int = 512):
@@ -237,7 +237,8 @@ def run_poc(model_variants: List[str] = None, eviction_methods: List[str] = None
         
         # Load model
         if not harness.load_model_and_tokenizer():
-            print(f"Could not load {variant}. Using mock results.")
+            print(f"Could not load {variant}. Using mock results (for testing only).")
+            print("Note: Mock results are placeholders. For real experiments, ensure model access and try again.")
             # Mock results for testing
             for method in eviction_methods:
                 mock_result = POCResult(
