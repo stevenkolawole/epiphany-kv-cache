@@ -51,17 +51,20 @@ class AttentionBasedEviction:
             Boolean mask of shape (key_len,) where True = keep, False = evict
         """
         cache_size = self.config.cache_size
-        keep_recent = self.config.keep_recent_k
+        keep_recent = min(self.config.keep_recent_k, cache_size - 1)  # Don't keep more than cache allows
 
-        if current_seq_len <= cache_size:
-            return torch.ones(current_seq_len, dtype=torch.bool, device=attention_weights.device)
+        key_len = attention_weights.shape[3]
+        effective_seq_len = min(current_seq_len, key_len)
+        
+        if effective_seq_len <= cache_size:
+            return torch.ones(effective_seq_len, dtype=torch.bool, device=attention_weights.device)
 
         # Average attention each key token received across batch, heads, and query positions.
         # Shape: (key_len,)
         avg_attention = attention_weights.mean(dim=(0, 1, 2))
 
         # Always keep the most recent tokens
-        keep_mask = torch.zeros(current_seq_len, dtype=torch.bool, device=attention_weights.device)
+        keep_mask = torch.zeros(effective_seq_len, dtype=torch.bool, device=attention_weights.device)
         keep_mask[-keep_recent:] = True
 
         # For non-recent tokens, keep those with highest cumulative attention
@@ -121,7 +124,17 @@ class AttentionBasedEviction:
         # Using the last layer is a common heuristic; averaging across layers is
         # more principled but more expensive.
         last_attn = attention_weights[-1]  # (batch, heads, query_len, key_len)
-        keep_mask = self.compute_eviction_mask(last_attn, seq_len)
+        
+        # Debug: check shapes
+        key_len = last_attn.shape[3]
+        if key_len != seq_len:
+            print(f"Warning: attention key_len ({key_len}) != cache seq_len ({seq_len})")
+            # Use the minimum to avoid index errors
+            effective_seq_len = min(key_len, seq_len)
+        else:
+            effective_seq_len = seq_len
+            
+        keep_mask = self.compute_eviction_mask(last_attn, effective_seq_len)
 
         new_past = []
         for k, v in past_key_values:

@@ -91,6 +91,57 @@ Issues identified and corrected:
   which plots the mathematically correct retention fraction (cache_size / max_seq_len)
   and is clearly labelled "THEORETICAL — not measured"
 
+### [Date: March 4, 2026] - Current TODOs & Priorities
+
+**✅ COMPLETED (Critical Blockers Fixed)**
+- ✅ HF cache lock resolved (added `export HF_HOME=/tmp/hf_cache` to `.zshrc`)
+- ✅ Attention-based eviction working (fixed `keep_recent_k` > `cache_size` bug)
+- ✅ Shape mismatch handling (attention tensor vs cache length)
+- ✅ Eviction actually triggers (cache_size=64 forces eviction, memory/token reduction visible)
+
+**🔴 CRITICAL (Next 1-2 hours)**
+1. **Per-Example Memory Tracking** (15 min)
+   - **Issue**: Currently measures peak memory across entire run, not per-evaluation
+   - **Fix**: Reset `torch.cuda.reset_peak_memory_stats()` *before each example*, store per-example, then average
+   - **Why**: Real differences between eviction methods masked by cumulative measurements
+
+2. **Validate Key-Vector Variance Signal** (30 min)
+   - **Issue**: Does key-vector variance actually correlate with token importance?
+   - **Test**: Run with cache_size=32 (extreme pressure), check if semantic method maintains accuracy better than attention-only
+   - **Why**: Entire semantic approach rests on this assumption; if wrong, whole method fails
+
+**🟠 HIGH PRIORITY (Next 1-2 days)**
+3. **Ablation Study on `semantic_alpha`** (1 hour)
+   - **Issue**: Currently blending hidden state variance + attention at fixed ratio (0.5)
+   - **Fix**: Test ratios `[0.0, 0.2, 0.4, 0.6, 0.8, 1.0]`, track which maximizes accuracy
+   - **Why**: Don't know if blending helps or hurts; might be pure attention (0.0) or pure semantic (1.0) is best
+
+4. **Upgrade to Real Datasets** (1 hour)
+   - **Issue**: Currently only 10 hand-crafted synthetic traces
+   - **Fix**: Load GSM8K (math) or ARC (reasoning) or HotpotQA (multi-hop) from HuggingFace (100+ examples)
+   - **Why**: Statistical significance requires real data, not synthetic examples
+
+**🟡 MEDIUM PRIORITY (Next week)**
+5. **Fix Token Counting Metric** (10 min)
+   - **Issue**: `len(reasoning.split())` counts words, not tokens
+   - **Fix**: Count actual generated token IDs: `len(generated_ids)`
+   - **Why**: Memory analysis needs token-level granularity, not word-level
+
+6. **Interpretability: Which Tokens Get Evicted?** (30 min)
+   - **Issue**: No visibility into what semantic eviction actually discards
+   - **Fix**: Add debug mode logging top-5 kept/evicted tokens with importance scores
+   - **Why**: Understand if method makes sensible decisions or just lucky
+
+7. **Answer Matching Edge Cases** (15 min)
+   - **Issue**: Word-boundary regex prevents false positives, but untested
+   - **Fix**: Unit test with cases: "2" vs "12", "answer" vs "Answer is 5"
+   - **Why**: Ensure accuracy metrics are reliable
+
+**🔵 LOW PRIORITY (Nice to have)**
+8. **Multi-Layer Attention Analysis**
+9. **Cache Pressure Curves** (32, 64, 128, 256, 512 tokens)
+10. **Generate Comparison Plots**
+
 ### [Date: TBD] - Scaling
 - Status: Not started
 - Plan: Larger models (LLaMA-7B, Qwen-7B), full datasets, longer sequences

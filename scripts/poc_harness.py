@@ -280,6 +280,7 @@ def run_poc(
     model_variants: List[str] = None,
     eviction_methods: List[str] = None,
     max_examples: int = 10,
+    cache_size: int = 512,
 ):
     """
     Run POC experiments comparing model variants and eviction methods.
@@ -289,6 +290,7 @@ def run_poc(
                         Defaults to ['gpt2_test'] for a quick smoke test.
         eviction_methods: Eviction methods to compare. Defaults to ['none', 'baseline', 'semantic'].
         max_examples: Number of evaluation examples per method.
+        cache_size: KV cache size in tokens. Smaller values force more eviction.
     """
     if model_variants is None:
         model_variants = ['gpt2_test']
@@ -309,14 +311,15 @@ def run_poc(
 
     print(f"Loaded {len(traces)} traces")
     print(f"Testing models: {model_variants}")
-    print(f"Testing eviction methods: {eviction_methods}\n")
+    print(f"Testing eviction methods: {eviction_methods}")
+    print(f"Cache size: {cache_size} tokens\n")
 
     for variant in model_variants:
         print(f"\n{'='*60}")
         print(f"Testing: {variant}")
         print(f"{'='*60}\n")
 
-        harness = POCHarness(variant=variant, cache_size=512)
+        harness = POCHarness(variant=variant, cache_size=cache_size)
 
         if not harness.load_model_and_tokenizer():
             print(f"  Skipping {variant}: model failed to load. No results recorded.")
