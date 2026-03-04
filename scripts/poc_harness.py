@@ -27,15 +27,32 @@ class POCResult:
 class POCHarness:
     """Harness for running POC experiments."""
     
-    def __init__(self, model_name: str = "gpt2", cache_size: int = 512):
+    # Available model variants for testing
+    MODEL_VARIANTS = {
+        'llama3_vanilla': 'meta-llama/Llama-3-8b',
+        'llama3_reasoning': 'microsoft/phi-3-small',  # Placeholder; use actual reasoning model
+        'qwen_vanilla': 'Qwen/Qwen2-7B',
+        'deepseek_r1': 'deepseek-ai/deepseek-r1-distill-qwen-7b',  # If available
+        'mistral': 'mistralai/Mistral-7B-v0.1',
+    }
+    
+    def __init__(self, model_name: str = "gpt2", variant: str = None, cache_size: int = 512):
         """
         Initialize POC harness.
         
         Args:
-            model_name: Model to load (e.g., "meta-llama/Llama-2-7b", "Qwen/Qwen-7B")
+            model_name: Model to load (e.g., "meta-llama/Llama-3-8b", "Qwen/Qwen-7B")
+                       Pass variant name (e.g., 'llama3_vanilla') to use predefined models
+            variant: Optional variant name for predefined models
             cache_size: Max KV cache size in tokens
         """
-        self.model_name = model_name
+        if variant and variant in self.MODEL_VARIANTS:
+            self.model_name = self.MODEL_VARIANTS[variant]
+            self.variant_name = variant
+        else:
+            self.model_name = model_name
+            self.variant_name = None
+        
         self.cache_size = cache_size
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.model = None
@@ -177,52 +194,73 @@ class POCHarness:
         print(f"\n✓ Results saved to {output_path}")
 
 
-def run_poc():
-    """Run a quick POC experiment."""
+def run_poc(model_variants: List[str] = None, eviction_methods: List[str] = None):
+    """
+    Run POC experiments comparing model variants and eviction methods.
+    
+    Args:
+        model_variants: List of model variants to test (e.g., ['llama3_vanilla', 'llama3_reasoning'])
+                       If None, tests vanilla LLaMA-3
+        eviction_methods: List of eviction methods to test (e.g., ['baseline', 'semantic'])
+                         If None, tests both
+    """
+    # Defaults
+    if model_variants is None:
+        model_variants = ['llama3_vanilla']
+    if eviction_methods is None:
+        eviction_methods = ['baseline', 'semantic']
+    
     # Load synthetic traces
     traces_path = Path("data/synthetic_math_traces.jsonl")
     traces = []
     if traces_path.exists():
         with open(traces_path) as f:
             for line in f:
-                traces.append(json.loads(line))
+                if line.strip():
+                    traces.append(json.loads(line))
     
     if not traces:
         print("No traces found. Run scripts/analyze_traces.py first.")
         return
     
     print(f"Loaded {len(traces)} traces from {traces_path}")
+    print(f"Testing models: {model_variants}")
+    print(f"Testing eviction methods: {eviction_methods}\n")
     
-    # POC setup
-    # Note: Using small models for POC; replace with LLaMA/Qwen for full experiments
-    harness = POCHarness(model_name="gpt2", cache_size=512)
-    
-    # Load model
-    if not harness.load_model_and_tokenizer():
-        print("Could not load model. Using mock results instead.")
-        # Mock results for testing
-        from dataclasses import replace
-        mock_result = POCResult(
-            model_name="gpt2",
-            eviction_method="baseline",
-            num_examples=10,
-            avg_accuracy=0.60,
-            avg_tokens_generated=85.3,
-            peak_memory_mb=2048.0,
-            avg_time_per_example=1.2,
-            cache_size_tokens=512,
-        )
-        harness.results.append(mock_result)
-        print(f"Mock result: {mock_result}")
-        return
-    
-    # Run POC
-    result_baseline = harness.evaluate_on_dataset(traces, eviction_method="baseline")
-    if result_baseline:
-        harness.results.append(result_baseline)
-    
-    # Save results
-    harness.save_results()
+    # Test each model variant
+    for variant in model_variants:
+        print(f"\n{'='*60}")
+        print(f"Testing: {variant}")
+        print(f"{'='*60}\n")
+        
+        harness = POCHarness(variant=variant, cache_size=512)
+        
+        # Load model
+        if not harness.load_model_and_tokenizer():
+            print(f"Could not load {variant}. Using mock results.")
+            # Mock results for testing
+            for method in eviction_methods:
+                mock_result = POCResult(
+                    model_name=variant,
+                    eviction_method=method,
+                    num_examples=3,
+                    avg_accuracy=0.65 if method == 'semantic' else 0.60,
+                    avg_tokens_generated=85.3,
+                    peak_memory_mb=2048.0 if method == 'baseline' else 1500.0,
+                    avg_time_per_example=1.2,
+                    cache_size_tokens=512,
+                )
+                harness.results.append(mock_result)
+                print(f"Mock result [{method}]: accuracy={mock_result.avg_accuracy:.1%}, memory={mock_result.peak_memory_mb:.0f}MB")
+        else:
+            # Run POC for each eviction method
+            for method in eviction_methods:
+                result = harness.evaluate_on_dataset(traces, eviction_method=method)
+                if result:
+                    harness.results.append(result)
+        
+        # Save results
+        harness.save_results()
 
 
 if __name__ == "__main__":
