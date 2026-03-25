@@ -3,12 +3,12 @@
 This document tracks the design, execution, and results of experiments for epiphany-aware KV cache management in reasoning models.
 
 ## Overview
-- **Goal**: Reduce KV cache memory usage in reasoning models (10k-100k tokens) while maintaining accuracy, by evicting based on semantic importance rather than attention scores.
-- **Models**: LLaMA-3, Mistral, Qwen, DeepSeek (OSS focus).
-- **Tasks**: Math reasoning (GSM8K), long-form QA (HotpotQA).
-- **Hardware**: Single GPU start, scale to cluster/multi-GPU.
-- **Success Criteria**: Negligible accuracy loss, maximal memory reduction.
-- **Automation Vision**: Rule-based eviction (e.g., inspired by StreamingLLM: keep first N tokens + sliding window + semantic heuristics) without classifiers/LLM-judge.
+- **Goal**: Reduce KV cache memory usage in reasoning models (10k-100k tokens) while maintaining accuracy, by evicting based on representational change signals (hidden-state / KV-vector variance) rather than attention scores.
+- **Primary Models**: DeepSeek-R1-Distill-LLaMA-8B (used by ThinKV + ChunkKV), Qwen2.5-Math-7B-Instruct (used by RaaS). Vanilla instruction models (LLaMA-3.1-8B-Instruct, Qwen2-7B-Instruct) are negative controls only.
+- **Primary Tasks**: MATH-500, AIME 2024 (matches ThinKV/RaaS exactly), LiveCodeBench (required for ThinKV head-to-head). GSM8K added as low-pressure control (used by RaaS/ChunkKV; traces too short for cache pressure, but omitting it invites reviewer questions). HotpotQA is secondary — used only for Gap F (non-monotonic recall) evaluation, not as a head-to-head benchmark against ThinKV/RaaS.
+- **Hardware**: Single GPU start, scale to multi-GPU.
+- **Success Criteria**: Outperform ThinKV and RaaS on accuracy vs. cache-size curves; hidden-state variance signal shows higher correlation with token importance than cumulative attention (H2O).
+- **Automation Vision**: No training, no classifiers — compute variance-based importance scores on-the-fly from KV tensors already computed for attention.
 
 ## Experiment Order
 1. **Data Collection & Analysis** (Foundation)
@@ -91,7 +91,7 @@ Issues identified and corrected:
   which plots the mathematically correct retention fraction (cache_size / max_seq_len)
   and is clearly labelled "THEORETICAL — not measured"
 
-### [Date: March 4, 2026] - Current TODOs & Priorities
+### [Date: March 25, 2026] - Current TODOs & Priorities
 
 **✅ COMPLETED (Critical Blockers Fixed)**
 - ✅ HF cache lock resolved (added `export HF_HOME=/tmp/hf_cache` to `.zshrc`)
@@ -99,48 +99,94 @@ Issues identified and corrected:
 - ✅ Shape mismatch handling (attention tensor vs cache length)
 - ✅ Eviction actually triggers (cache_size=64 forces eviction, memory/token reduction visible)
 
-**🔴 CRITICAL (Next 1-2 hours)**
-1. **Per-Example Memory Tracking** (15 min)
-   - **Issue**: Currently measures peak memory across entire run, not per-evaluation
-   - **Fix**: Reset `torch.cuda.reset_peak_memory_stats()` *before each example*, store per-example, then average
-   - **Why**: Real differences between eviction methods masked by cumulative measurements
+---
 
-2. **Validate Key-Vector Variance Signal** (30 min)
-   - **Issue**: Does key-vector variance actually correlate with token importance?
-   - **Test**: Run with cache_size=32 (extreme pressure), check if semantic method maintains accuracy better than attention-only
-   - **Why**: Entire semantic approach rests on this assumption; if wrong, whole method fails
+**🔴 PHASE 0 — SIGNAL VALIDATION (Do first; everything else depends on this)**
 
-**🟠 HIGH PRIORITY (Next 1-2 days)**
-3. **Ablation Study on `semantic_alpha`** (1 hour)
-   - **Issue**: Currently blending hidden state variance + attention at fixed ratio (0.5)
-   - **Fix**: Test ratios `[0.0, 0.2, 0.4, 0.6, 0.8, 1.0]`, track which maximizes accuracy
-   - **Why**: Don't know if blending helps or hurts; might be pure attention (0.0) or pure semantic (1.0) is best
+1. **Real Data Pipeline** (1–2 hours)
+   - Load MATH-500 from HuggingFace (`hendrycks/competition_math`, competition-level split)
+   - Also load AIME 2024 (`Maxwell-Jia/AIME_2024` or equivalent) — use 2024 only, not pooled years, to match ThinKV exactly
+   - Run DeepSeek-R1-Distill-LLaMA-8B on 50–100 problems; collect full traces + ground-truth answers
+   - Store: generated token IDs, `past_key_values` tensors (keys + values per layer), correct/incorrect flag
+   - **Why**: All signal validation requires real reasoning traces; synthetic data is useless here
 
-4. **Upgrade to Real Datasets** (1 hour)
-   - **Issue**: Currently only 10 hand-crafted synthetic traces
-   - **Fix**: Load GSM8K (math) or ARC (reasoning) or HotpotQA (multi-hop) from HuggingFace (100+ examples)
-   - **Why**: Statistical significance requires real data, not synthetic examples
+2. **Counterfactual Importance Labels** (2–3 hours)
+   - For each trace, generate token-level importance labels via ablation: mask sliding windows of tokens; record which masked windows cause the answer to flip
+   - These are ground-truth labels: "token at position t is important if masking it (and neighbors) changes the answer"
+   - **Why**: Without ground-truth importance labels, we cannot evaluate whether any signal is better than any other
 
-**🟡 MEDIUM PRIORITY (Next week)**
-5. **Fix Token Counting Metric** (10 min)
-   - **Issue**: `len(reasoning.split())` counts words, not tokens
-   - **Fix**: Count actual generated token IDs: `len(generated_ids)`
-   - **Why**: Memory analysis needs token-level granularity, not word-level
+3. **Signal Variant Sweep — Dimension 1 (Signal Type)** (2–3 hours)
+   - Compute all six variants at each token position: L2 hidden-state diff, cosine distance (hidden), KV-key variance (head_dim), KV-key L2 norm, KV-value variance (head_dim), cross-head key variance
+   - Also compute H2O cumulative attention as the current-SOTA baseline
+   - Compute Spearman correlation of each with counterfactual labels
+   - **Why**: This directly answers whether *any* variance signal outperforms attention-based scoring. If not, core hypothesis is wrong.
 
-6. **Interpretability: Which Tokens Get Evicted?** (30 min)
-   - **Issue**: No visibility into what semantic eviction actually discards
-   - **Fix**: Add debug mode logging top-5 kept/evicted tokens with importance scores
-   - **Why**: Understand if method makes sensible decisions or just lucky
+4. **Per-Example Memory Tracking** (15 min)
+   - Reset `torch.cuda.reset_peak_memory_stats()` before each example, store per-example, average
+   - **Why**: Cumulative measurement masks real differences between methods
 
-7. **Answer Matching Edge Cases** (15 min)
-   - **Issue**: Word-boundary regex prevents false positives, but untested
-   - **Fix**: Unit test with cases: "2" vs "12", "answer" vs "Answer is 5"
-   - **Why**: Ensure accuracy metrics are reliable
+---
 
-**🔵 LOW PRIORITY (Nice to have)**
-8. **Multi-Layer Attention Analysis**
-9. **Cache Pressure Curves** (32, 64, 128, 256, 512 tokens)
-10. **Generate Comparison Plots**
+**🟠 PHASE 0B — SEQUENTIAL ABLATION (After best signal type is identified)**
+
+5. **Signal Ablation — Dimensions 2–5** (3–4 hours total, run sequentially)
+   - Dim 2: Pre-RoPE vs. post-RoPE key variance (requires hook before `apply_rotary_pos_emb`)
+   - Dim 3: Layer aggregation — last layer, mean, upper-weighted mean, optimal single layer
+   - Dim 4: Temporal aggregation — snapshot, EMA (α=0.9), sliding max, cumulative
+   - Dim 5: Multi-head — mean, max, cross-head variance
+   - Each sweep: 100-sample MATH-500, cache_size=128, accuracy + importance recall metric
+   - **Why**: Best signal configuration must be found before benchmarking; see research_overview.md §3.1
+
+6. **`semantic_alpha` Ablation** (1 hour)
+   - Sweep blend ratio between best variance signal and cumulative attention: `[0.0, 0.2, 0.4, 0.6, 0.8, 1.0]`
+   - **Why**: May be optimal to use pure variance (1.0), pure attention (0.0), or a blend — unknown until tested
+
+---
+
+**🟠 PHASE 1 — BASELINE IMPLEMENTATION (Run in parallel with Phase 0B)**
+
+7. **Implement H2O Proper** (1 hour)
+   - Add `cumulative_attention` field to `AttentionBasedEviction`; update at each step with `score[t] += attn[t]`
+   - Replace single-step attention scoring with cumulative
+   - **Why**: Current attention baseline uses only current-step attention — this is a weak strawman, not a fair comparison
+
+8. **Implement ThinKV Classifier** (3–4 hours)
+   - KDE on normalized attention scores from 4 layers, refreshed every 128 decode steps
+   - Output: R/E/T label per segment; use for progressive retention schedule {64, 32, 16, 8, 4}
+   - **Why**: SOTA baseline on reasoning-model KV compression; must beat this to claim contribution
+
+9. **Implement RaaS Baseline** (2 hours)
+   - LRU timestamp eviction for decode tokens; unconditional preservation of all prefill tokens
+   - **Why**: Strong reasoning-aware baseline; demonstrates phoenix-token preservation
+
+10. **Accuracy vs. Cache-Size Curves** (1 hour, after 7–9 done)
+    - Run H2O, ThinKV, RaaS, and our method at cache_size ∈ {32, 64, 128, 256, 512, 1024}
+    - Benchmarks: MATH-500, AIME 2024, LiveCodeBench, GSM8K (low-pressure control)
+    - Models: DeepSeek-R1-Distill-LLaMA-8B (ThinKV/ChunkKV comparability) + Qwen2.5-Math-7B-Instruct (RaaS comparability)
+    - This is the main comparison figure
+
+---
+
+**🟡 PHASE 2 — METHOD DEVELOPMENT (After best signal confirmed)**
+
+11. **Chunk-Level Eviction** (2 hours)
+    - Score 10-token chunks by mean signal across members; evict/retain at chunk granularity
+    - Ablate chunk sizes: {4, 8, 10, 16, 32}
+
+12. **Structural Token Hardcoding**
+    - Always retain: first 4 tokens (attention sinks), all prefill tokens, last 32 tokens (recent window)
+    - Apply variance scoring only to non-structural token budget
+
+13. **Layer-Wise Budget Analysis**
+    - Plot attention entropy per layer on DeepSeek-R1-Distill traces during decode
+    - If pyramidal pattern holds, adopt PyramidKV's arithmetic allocation
+
+---
+
+**🔵 CLEANUP / HOUSEKEEPING (Low priority)**
+- Fix token counting: use `len(generated_ids)` not `len(reasoning.split())`
+- Add debug mode: log top-5 kept/evicted tokens with importance scores per step
+- Unit test answer matching edge cases: "2" vs "12", "Answer is 5" etc.
 
 ### [Date: TBD] - Scaling
 - Status: Not started
@@ -152,24 +198,29 @@ Issues identified and corrected:
 - Plan: Analyze evicted tokens, edge cases, failure modes
 - Output: Refinements and insights
 
-## Next Steps
-1. **Immediate**: Run POC with GPT2 quickly, verify pipeline works
-2. **This week**: 
-   - Load a small LLaMA or Qwen model (1.5-3B params)
-   - Generate 100+ math problem reasoning traces
-   - Compare baseline vs semantic eviction
-   - Collect metrics: accuracy drop %, memory saved, latency impact
-3. **Findings to track**:
-   - Does semantic eviction beat attention-based? By how much?
-   - Which semantic heuristic works best (state variance, attention, hybrid)?
-   - Can we achieve automation without classifiers/LLM-judge?
-   
+## Immediate Next Steps (Ordered)
+1. Set up real data pipeline: MATH-500 + DeepSeek-R1-Distill-LLaMA-8B trace generation
+2. Build counterfactual importance labeler (mask windows, check answer flip)
+3. Sweep signal variants (Dimension 1 ablation); determine if any variance signal beats H2O
+4. If yes: run Dimensions 2–5 ablations to find optimal configuration
+5. Implement H2O, ThinKV, RaaS as proper baselines
+6. Run accuracy vs. cache-size curves to establish target to beat
+
+## Key Research Questions
+1. **Does any hidden-state/KV-vector variance signal correlate with token importance better than cumulative attention (H2O)?** If no, pivot.
+2. **Which of the six signal-type variants performs best?** (See research_overview.md §3.1)
+3. **Pre-RoPE or post-RoPE?** (Hypothesis: pre-RoPE is cleaner)
+4. **Which layer aggregation?** (Hypothesis: upper-layer-weighted mean)
+5. **Does chunk-level eviction improve coherence vs. token-level?**
+6. **Can our best method beat ThinKV's accuracy vs. cache-size curve?**
+
 ## Key Insights So Far
-- Attention-based eviction (e.g., attention sinks) keeps high-attention tokens
-- But in reasoning: high attention ≠ important (e.g., "let me think" gets high attention)
-- Hypothesis: Look at hidden state *changes* (jumps in representation space) instead
-- Goal: Approximate these changes with fast on-the-fly heuristics (no training needed)
-- StreamingLLM-style approach: Keep recent K + important historical tokens
+- Attention-based eviction causes 24.2% attention map failures in reasoning traces (RaaS)
+- Even H2O (cumulative attention) fails in reasoning; requires LRU-style temporal tracking (RaaS)
+- ThinKV (ICLR 2026 oral) is SOTA: classifies R/E/T thought types from attention sparsity, hybrid quantization+eviction, <5% cache retention with near-lossless accuracy
+- Our differentiator: hidden-state/KV-vector variance as importance signal (not attention) — unvalidated but untried in literature
+- Multiple valid ways to measure variance; ablation across them is itself a contribution
+- "Hidden-state variance" is not one signal — it's a 5-dimensional design space (see research_overview.md §3.1)
 
 ## Notes
 - Prioritize LLaMA-3 for popularity (also test Qwen, Mistral)
