@@ -5,7 +5,7 @@ Quick reference for running experiments. See `experiments/research_overview.md` 
 ## Setup
 ```bash
 pip install -r requirements.txt
-export HF_HOME=/tmp/hf_cache  # already in .zshrc
+# HF cache is set in .zshrc (on compute nodes: /data/hf_cache/skolawol)
 ```
 
 ---
