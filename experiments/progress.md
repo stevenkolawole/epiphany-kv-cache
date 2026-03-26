@@ -188,6 +188,31 @@ Issues identified and corrected:
 - Add debug mode: log top-5 kept/evicted tokens with importance scores per step
 - Unit test answer matching edge cases: "2" vs "12", "Answer is 5" etc.
 
+### [Date: March 25, 2026] - collect_traces.py Written and Validated ✓
+
+**Environment fixes:**
+- HF cache redirected to `/data/hf_cache/skolawol/` (user-owned dir on shared cluster). `.zshrc` updated: `HF_HOME`, `HF_HUB_CACHE`, `HF_DATASETS_CACHE` all point there.
+- `EXECUTION_GUIDE.md` updated accordingly.
+
+**DynamicCache compatibility (breaking change in newer transformers):**
+- This transformers version returns `DynamicCache` objects where `__iter__` yields `(keys, values, sliding_window_tensor)` 3-tuples (not 2-tuples as in prior versions).
+- `DynamicCache` no longer has `key_cache`/`value_cache` attributes; uses `cache.layers[i].keys` / `.values` instead.
+- Fixed via `_as_legacy_kv(past_key_values)` helper in `collect_traces.py` that normalises any cache format to a list of `(key, value)` 2-tuples per layer.
+
+**Signal collection pipeline:**
+- `collect_traces.py` collects 9 signals per token: `kv_key_var`, `kv_key_norm`, `kv_val_var`, `cross_head_var`, `h2o_attn`, `attn_entropy`, `hs_l2_diff`, `hs_cos_dist`, `hs_norm`.
+- KV signals: free (read from `past_key_values` already in GPU memory).
+- `h2o_attn` + `attn_entropy`: both require `--force_eager_attn` (FlashAttention can't materialise attention weights). `attn_entropy` is the same signal ThinKV's R/E/T classifier uses. Low entropy = model focused/"Thinking"; high entropy = diffuse/"Rambling".
+- `hs_l2_diff`, `hs_cos_dist`, `hs_norm`: post-hoc forward pass, seq ≤ `--hs_max_len` (default 4096); -1.0 sentinel for longer.
+- KV signals are post-RoPE (as stored in cache). Pre-RoPE requires a forward hook — deferred to Phase 0B ablation.
+
+**Dry-run results (all 4 datasets):**
+- math500, aime2024, livecodebench, gsm8k: all pass, 1 trace written each.
+- `pred=None` / `correct=False` in dry run is expected — 128 max tokens is far too few for DeepSeek-R1 to reach a `\boxed{}` answer.
+- All DynamicCache, dataset loading, and signal accumulation issues resolved.
+
+**Next (immediate):** Run full collection: `python scripts/collect_traces.py --dataset math500 --n_samples 100 --max_new_tokens 8192`
+
 ### [Date: TBD] - Scaling
 - Status: Not started
 - Plan: Larger models (LLaMA-7B, Qwen-7B), full datasets, longer sequences

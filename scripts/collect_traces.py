@@ -23,20 +23,29 @@ Output JSONL — one object per trace (written incrementally to avoid data loss)
     correct         bool            whether the extracted answer matched ground truth
     signals         Dict[str, List[float]]
         kv_key_var      KV key variance across head_dim, mean over heads+layers
-        kv_key_norm     KV key L2 norm, mean over heads+layers
+                        (post-RoPE; see research_overview.md §3.1 Dim 2 for pre-RoPE ablation)
+        kv_key_norm     KV key L2 norm, mean over heads+layers (post-RoPE)
         kv_val_var      KV value variance across head_dim, mean over heads+layers
         cross_head_var  Variance of per-head key means across heads, mean over layers
-        h2o_attn        H2O cumulative attention column sums (None if flash attn active)
+        h2o_attn        H2O cumulative attention column sums (None if flash attn inactive)
+        attn_entropy    Per-token attention entropy H = -sum(a*log(a)), mean over heads+layers
+                        (None if flash attn active; requires --force_eager_attn)
         hs_l2_diff      L2 norm of consecutive last-layer hidden-state diffs
                         (0.0 for first token; -1.0 sentinel if seq > hs_max_len)
         hs_cos_dist     Cosine distance between consecutive last-layer hidden states
                         (0.0 for first token; -1.0 sentinel if seq > hs_max_len)
+        hs_norm         L2 norm of the last-layer hidden state at each position
+                        (-1.0 sentinel if seq > hs_max_len)
 
 Design notes:
   - KV signals are read from past_key_values at each decode step — zero extra compute.
-  - H2O requires attention weights. We try output_attentions=True; if the model uses
-    flash attention it will raise or return None, in which case H2O is skipped and
-    marked None. Run with ATTN_IMPL=eager env var or --force_eager_attn to override.
+    Keys are post-RoPE (as stored in the cache); pre-RoPE requires a forward hook and
+    is deferred to the Phase 0B ablation (signal_ablation.py).
+  - H2O and attn_entropy both require the softmax attention weight matrix. FlashAttention
+    never materialises this, so both signals are gated behind --force_eager_attn.
+    attn_entropy at position t: entropy of the attention distribution over t's context.
+    Low entropy = model is sharply attending to a few tokens (ThinKV "Thinking" type).
+    High entropy = diffuse attention (ThinKV "Rambling" type).
   - Hidden-state signals require a second forward pass over the full sequence.
     Limited to sequences <= --hs_max_len tokens (default 4096) to avoid OOM.
     Longer traces get a -1.0 sentinel value.
@@ -281,28 +290,30 @@ class SignalAccumulator:
         prompt positions are extracted after the prefill pass.
         Cost: negligible — tensors already in GPU memory.
 
-    H2O signal (h2o_attn):
-        Accumulated from attention weights at each decode step.
-        At step t, the attention from token t to each prior token j is added
-        to h2o_attn[j].  Requires output_attentions=True, which is incompatible
-        with flash attention.  Set to None per-token if unavailable.
+    Attention signals (h2o_attn, attn_entropy) — require --force_eager_attn:
+        h2o_attn:     cumulative attention column sums (how much each token was attended to).
+        attn_entropy: per-token entropy of the attention distribution over context.
+                      Low = sharp/focused (ThinKV "Thinking"); high = diffuse ("Rambling").
+        Both require output_attentions=True, incompatible with FlashAttention.
 
-    Hidden-state signals (hs_l2_diff, hs_cos_dist):
-        Computed via a single post-generation forward pass with
-        output_hidden_states=True.  Only last hidden layer is used.
-        Limited to sequences <= hs_max_len; longer traces get -1.0 sentinel.
+    Hidden-state signals (hs_l2_diff, hs_cos_dist, hs_norm):
+        Computed via a single post-generation forward pass with output_hidden_states=True.
+        Uses only the last hidden layer.  Limited to sequences <= hs_max_len; longer
+        traces get -1.0 sentinel.
     """
 
     def __init__(self, max_len: int):
         self.max_len = max_len
-        self._kv_key_var    = np.zeros(max_len, dtype=np.float32)
-        self._kv_key_norm   = np.zeros(max_len, dtype=np.float32)
-        self._kv_val_var    = np.zeros(max_len, dtype=np.float32)
+        self._kv_key_var     = np.zeros(max_len, dtype=np.float32)
+        self._kv_key_norm    = np.zeros(max_len, dtype=np.float32)
+        self._kv_val_var     = np.zeros(max_len, dtype=np.float32)
         self._cross_head_var = np.zeros(max_len, dtype=np.float32)
-        self._h2o_attn      = np.zeros(max_len, dtype=np.float32)
-        self._h2o_available = True  # flipped to False if flash attn is active
-        self.hs_l2_diff     = np.zeros(max_len, dtype=np.float32)
-        self.hs_cos_dist    = np.zeros(max_len, dtype=np.float32)
+        self._h2o_attn       = np.zeros(max_len, dtype=np.float32)
+        self._attn_entropy   = np.zeros(max_len, dtype=np.float32)
+        self._h2o_available  = True  # flipped to False if flash attn active (both h2o+entropy)
+        self.hs_l2_diff      = np.zeros(max_len, dtype=np.float32)
+        self.hs_cos_dist     = np.zeros(max_len, dtype=np.float32)
+        self.hs_norm         = np.zeros(max_len, dtype=np.float32)
 
     # ── KV signal helpers ─────────────────────────────────────────────────
 
@@ -351,6 +362,24 @@ class SignalAccumulator:
         self._kv_val_var[:prompt_len]    = (kv_val_var    / n_layers).astype(np.float32)
         self._cross_head_var[:prompt_len] = (cross_head_var / n_layers).astype(np.float32)
 
+    def fill_prompt_attn_entropy(self, attentions, prompt_len: int):
+        """
+        Extract attention entropy for all prompt positions from the prefill attention matrix.
+        attentions: tuple of (1, n_heads, prompt_len, prompt_len) per layer (causal).
+        Requires output_attentions=True (i.e. --force_eager_attn).
+        """
+        if attentions is None:
+            return
+        n_layers = len(attentions)
+        entropy_sum = np.zeros(prompt_len, dtype=np.float64)
+        for layer_attn in attentions:
+            # (1, n_heads, prompt_len, prompt_len) — last dim is attended positions
+            a = layer_attn[0].float().cpu().clamp(min=1e-10)  # (n_heads, prompt_len, prompt_len)
+            # Masked positions have near-zero weight; their contribution is negligible after clamp
+            H = -(a * a.log()).sum(dim=-1)   # (n_heads, prompt_len)
+            entropy_sum += H.mean(dim=0).numpy()
+        self._attn_entropy[:prompt_len] = (entropy_sum / n_layers).astype(np.float32)
+
     def update_decode_step(self, pos: int, past_key_values, attn_weights):
         """
         Called once per decode step.
@@ -361,10 +390,16 @@ class SignalAccumulator:
 
         if attn_weights is not None and self._h2o_available:
             n_layers = len(attn_weights)
+            entropy_sum = 0.0
             for layer_attn in attn_weights:
                 # layer_attn: (1, n_heads, 1, pos+1) — current token attending to all prior
-                col = layer_attn[0, :, 0, :].float().cpu().mean(dim=0).numpy()  # (pos+1,)
-                self._h2o_attn[:len(col)] += col / n_layers
+                a = layer_attn[0, :, 0, :].float().cpu()   # (n_heads, pos+1)
+                # H2O: accumulate attention column sums (how much each prior token was attended to)
+                self._h2o_attn[:a.shape[-1]] += a.mean(dim=0).numpy() / n_layers
+                # Attention entropy at this position: H = -sum(a * log(a)), mean over heads
+                a_clamped = a.clamp(min=1e-10)
+                entropy_sum += -(a_clamped * a_clamped.log()).sum(dim=-1).mean().item()
+            self._attn_entropy[pos] = entropy_sum / n_layers
         elif attn_weights is None:
             self._h2o_available = False
 
@@ -380,6 +415,7 @@ class SignalAccumulator:
         if seq_len > hs_max_len:
             self.hs_l2_diff[:seq_len]  = -1.0
             self.hs_cos_dist[:seq_len] = -1.0
+            self.hs_norm[:seq_len]     = -1.0
             return
 
         device = next(model.parameters()).device
@@ -399,9 +435,12 @@ class SignalAccumulator:
         self.hs_l2_diff[0] = 0.0
         self.hs_l2_diff[1:seq_len] = diffs.numpy()
 
+        # L2 norm of the hidden state at each position
+        norms = last_h.norm(dim=-1)  # (seq_len,)
+        self.hs_norm[:seq_len] = norms.numpy()
+
         # Cosine distance: 1 - cos(h_t, h_{t-1}) — token 0 gets 0.0
-        norms = last_h.norm(dim=-1).clamp(min=1e-8)
-        normed = last_h / norms.unsqueeze(-1)
+        normed = last_h / norms.clamp(min=1e-8).unsqueeze(-1)
         cos_sim = (normed[1:] * normed[:-1]).sum(dim=-1).clamp(-1.0, 1.0)
         self.hs_cos_dist[0] = 0.0
         self.hs_cos_dist[1:seq_len] = (1.0 - cos_sim).numpy()
@@ -409,19 +448,23 @@ class SignalAccumulator:
     # ── Export ────────────────────────────────────────────────────────────
 
     def to_dict(self, seq_len: int) -> Dict[str, List]:
-        h2o = (
-            self._h2o_attn[:seq_len].tolist()
+        attn_signals = (
+            {
+                "h2o_attn":    self._h2o_attn[:seq_len].tolist(),
+                "attn_entropy": self._attn_entropy[:seq_len].tolist(),
+            }
             if self._h2o_available
-            else None
+            else {"h2o_attn": None, "attn_entropy": None}
         )
         return {
             "kv_key_var":     self._kv_key_var[:seq_len].tolist(),
             "kv_key_norm":    self._kv_key_norm[:seq_len].tolist(),
             "kv_val_var":     self._kv_val_var[:seq_len].tolist(),
             "cross_head_var": self._cross_head_var[:seq_len].tolist(),
-            "h2o_attn":       h2o,
+            **attn_signals,
             "hs_l2_diff":     self.hs_l2_diff[:seq_len].tolist(),
             "hs_cos_dist":    self.hs_cos_dist[:seq_len].tolist(),
+            "hs_norm":        self.hs_norm[:seq_len].tolist(),
         }
 
 
@@ -457,14 +500,16 @@ def run_trace(
     past_kv = prefill_out.past_key_values
     accumulator.fill_prompt_kv(past_kv, prompt_len)
 
-    # H2O for prompt tokens: each prompt token's attention from all later prompt tokens.
-    # The prefill attention matrix is (1, n_heads, prompt_len, prompt_len).
+    # H2O + attn_entropy for prompt tokens (requires --force_eager_attn).
+    # Prefill attention matrix: (1, n_heads, prompt_len, prompt_len) per layer.
     if collect_h2o and prefill_out.attentions is not None:
         n_layers = len(prefill_out.attentions)
         for layer_attn in prefill_out.attentions:
-            # Sum over query dimension (axis 2) to get column sums = H2O scores
+            # H2O: sum over query dimension to get column sums (how much each token was attended to)
             col_sums = layer_attn[0].float().cpu().mean(dim=0).sum(dim=0).numpy()
             accumulator._h2o_attn[:prompt_len] += col_sums / n_layers
+        # Attention entropy: H_j = -sum_k a_{j,k} * log(a_{j,k}), mean over heads+layers
+        accumulator.fill_prompt_attn_entropy(prefill_out.attentions, prompt_len)
     elif collect_h2o:
         accumulator._h2o_available = False
 
@@ -670,7 +715,7 @@ def main():
         print(f"Accuracy:          {n_correct}/{n_total} = {n_correct/max(n_total,1):.1%}")
     print(f"HS signals skipped (seq > {args.hs_max_len}): {n_hs_skipped}/{n_total}")
     if not collect_h2o:
-        print("H2O signal:        not collected (re-run with --force_eager_attn)")
+        print("H2O + attn_entropy: not collected (re-run with --force_eager_attn)")
     print(f"{'='*60}")
 
 

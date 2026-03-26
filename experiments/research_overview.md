@@ -371,20 +371,34 @@ Before any eviction comparison is meaningful, we must determine *which variant* 
 
 ### Dimension 1: Signal Type
 
-What quantity captures representational change?
+What quantity captures token importance?
+
+Two families: **residual-stream signals** (what the model *learned* at this token) and **attention signals** (what this token *attended to*, or was attended by). Our primary hypothesis is that residual-stream signals are better proxies for *semantic importance* in long CoT traces. Attention signals are the current SOTA baseline and must be included for a fair ablation.
+
+**Residual-stream signals** (collected in `collect_traces.py`; post-hoc forward pass for hs_* signals):
 
 | Variant | Formula | Intuition | Risk |
 |---|---|---|---|
-| **L2 hidden-state diff** | `‖h_t − h_{t−1}‖₂` | How much the residual stream changed | Expensive at decode time (requires hooking hidden states, not just KV) |
+| **L2 hidden-state diff** | `‖h_t − h_{t−1}‖₂` | How much the residual stream changed | Post-hoc pass only; expensive at decode time |
 | **Cosine distance (hidden)** | `1 − cos(h_t, h_{t−1})` | Directional change, magnitude-invariant | Same cost; may miss magnitude signals |
-| **KV-key variance (head_dim)** | `k_t.var(dim=-1)` | How spread the key vector is across channels | Currently implemented; approximates hidden-state change via keys only |
-| **KV-key L2 norm** | `‖k_t‖₂` | Magnitude of the key vector, not change | Captures representational energy, not change; different failure modes |
+| **HS L2 norm** | `‖h_t‖₂` | Absolute magnitude of the representation | Captures "energy" not change; possible proxy for token richness |
+| **KV-key variance (head_dim)** | `k_t.var(dim=-1)` | How spread the key vector is across channels | Post-RoPE (mixes positional signal; see Dim 2) |
+| **KV-key L2 norm** | `‖k_t‖₂` | Magnitude of the key vector | Representational energy, not change; different failure modes |
 | **KV-value variance (head_dim)** | `v_t.var(dim=-1)` | How spread the value vector is | Values carry "content to retrieve"; may be cleaner semantic signal than keys |
-| **Cross-head key variance** | `var({mean(k_t^h) : h in heads})` | Disagreement across attention heads about how to index this token | High cross-head variance = token is interpreted differently by different heads = potentially ambiguous or structurally important |
+| **Cross-head key variance** | `var({mean(k_t^h) : h in heads})` | Disagreement across attention heads about how to index this token | High = token is interpreted differently by different heads |
 
-**Hypothesis ordering (prior expectation)**: L2 hidden-state diff > cosine distance (hidden) ≈ value variance > key variance > key L2 norm. But this must be confirmed empirically.
+**Attention signals** (require `--force_eager_attn`; FlashAttention cannot materialise these):
 
-**Practical constraint**: Full hidden-state access requires hooking the residual stream at each layer during decode — adds latency and memory overhead. KV-vector signals are "free" since K and V are already computed for attention. The trade-off between signal quality and compute cost must be measured.
+| Variant | Formula | Intuition | Used by |
+|---|---|---|---|
+| **H2O cumulative attention** | `score[j] = sum_{t>j} a[t,j]` | How much future tokens attended back to token j | H2O, SnapKV, our baseline |
+| **Attention entropy** | `H_t = -sum_j a[t,j] log a[t,j]` | How focused vs. diffuse the model was at step t. Low H = sharp/confident ("Thinking" in ThinKV); high H = diffuse ("Rambling") | ThinKV (R/E/T classifier), our attention baseline |
+
+Note: ThinKV uses **attention entropy/sparsity**, not activation sparsity. Activation sparsity (Deja Vu, PowerInfer) measures how many FFN neurons fire near-zero — a completely separate concept used for compute reduction, not KV cache management.
+
+**Hypothesis ordering (prior expectation)**: L2 hidden-state diff > cosine distance ≈ value variance > key variance > key L2 norm > attention entropy ≈ H2O. The key question is whether *any* residual-stream signal beats the attention signals. This is unproven.
+
+**Practical constraint**: Full hidden-state access (`hs_*` signals) requires a second forward pass — adds ~1× latency. KV-vector signals (`kv_*`) are free since K/V are already in memory. Attention signals require eager attention (no FlashAttention), which roughly doubles peak VRAM at long contexts.
 
 ### Dimension 2: RoPE Interaction
 
@@ -440,18 +454,18 @@ How do we aggregate signals across the H attention heads?
 
 ### Ablation Plan
 
-The full design space is 6 × 2 × 5 × 4 × 3 = 720 combinations — far too many to sweep exhaustively. The ablation strategy is:
+The full design space is 8 × 2 × 5 × 4 × 3 = 960 combinations — far too many to sweep exhaustively. The ablation strategy is:
 
-1. **Fix a reasonable default**: post-RoPE, KV-key variance, last layer, single-step snapshot, mean across heads (current implementation)
-2. **Sweep Dimension 1** (signal type) with all other dimensions fixed: identify best signal type
-3. **Sweep Dimension 2** (RoPE) with best signal type fixed: pre vs. post
-4. **Sweep Dimension 3** (layer aggregation) with best of 1+2: identify best layer strategy
-5. **Sweep Dimension 4** (temporal) with best of 1+2+3
-6. **Sweep Dimension 5** (multi-head) with best of 1+2+3+4
+1. **Fix a reasonable default**: post-RoPE, KV-key variance, mean across layers, single-step snapshot, mean across heads
+2. **Sweep Dimension 1** (signal type, 8 variants including attention baselines): identify best signal type. If attention entropy or H2O wins, the core hypothesis is wrong — pivot.
+3. **Sweep Dimension 2** (RoPE, 2 variants) with best signal type fixed: pre vs. post
+4. **Sweep Dimension 3** (layer aggregation, 5 variants) with best of 1+2
+5. **Sweep Dimension 4** (temporal, 4 variants) with best of 1+2+3
+6. **Sweep Dimension 5** (multi-head, 3 variants) with best of 1+2+3+4
 
-This reduces to ~6+2+5+4+3 = 20 experiments for a sequential ablation. Each experiment: run MATH-500 (100-sample subset) at cache_size=128 with DeepSeek-R1-Distill-LLaMA-8B. Metric: accuracy + fraction of "important" tokens retained (counterfactual).
+This reduces to ~8+2+5+4+3 = 22 experiments for a sequential ablation. Each experiment: run MATH-500 (100-sample subset) at cache_size=128 with DeepSeek-R1-Distill-LLaMA-8B. Metric: Spearman correlation with counterfactual importance labels.
 
-**Note**: The signal-type sweep (step 2) is the most important. If KV-key variance is not competitive with full hidden-state L2 diff, the choice has major implementation implications — we may need to add hidden-state hooks to the generation loop rather than operating purely from `past_key_values`.
+**Note**: Dim 1 is the most critical experiment. If KV-key variance is not competitive with full hidden-state L2 diff, we need hidden-state hooks in the decode loop (higher latency). If attention signals win outright, the core hypothesis needs revision.
 
 ---
 
