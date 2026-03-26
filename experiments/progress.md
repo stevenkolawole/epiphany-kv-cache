@@ -203,7 +203,7 @@ Issues identified and corrected:
 - `collect_traces.py` collects 9 signals per token: `kv_key_var`, `kv_key_norm`, `kv_val_var`, `cross_head_var`, `h2o_attn`, `attn_entropy`, `hs_l2_diff`, `hs_cos_dist`, `hs_norm`.
 - KV signals: free (read from `past_key_values` already in GPU memory).
 - `h2o_attn` + `attn_entropy`: both require `--force_eager_attn` (FlashAttention can't materialise attention weights). `attn_entropy` is the same signal ThinKV's R/E/T classifier uses. Low entropy = model focused/"Thinking"; high entropy = diffuse/"Rambling".
-- `hs_l2_diff`, `hs_cos_dist`, `hs_norm`: post-hoc forward pass, seq ≤ `--hs_max_len` (default 4096); -1.0 sentinel for longer.
+- `hs_l2_diff`, `hs_cos_dist`, `hs_norm`: post-hoc forward pass, seq ≤ `--hs_max_len` (defaults to `--max_new_tokens`); -1.0 sentinel for longer.
 - KV signals are post-RoPE (as stored in cache). Pre-RoPE requires a forward hook — deferred to Phase 0B ablation.
 
 **Dry-run results (all 4 datasets):**
@@ -211,7 +211,7 @@ Issues identified and corrected:
 - `pred=None` / `correct=False` in dry run is expected — 128 max tokens is far too few for DeepSeek-R1 to reach a `\boxed{}` answer.
 - All DynamicCache, dataset loading, and signal accumulation issues resolved.
 
-**Next (immediate):** Run full collection: `python scripts/collect_traces.py --dataset math500 --n_samples 100 --max_new_tokens 8192`
+**Next (immediate):** Run full collection: `python scripts/collect_traces.py --dataset math500 --n_samples 100 --max_new_tokens 16384`
 
 ### [Date: TBD] - Scaling
 - Status: Not started
@@ -224,12 +224,15 @@ Issues identified and corrected:
 - Output: Refinements and insights
 
 ## Immediate Next Steps (Ordered)
-1. Set up real data pipeline: MATH-500 + DeepSeek-R1-Distill-LLaMA-8B trace generation
-2. Build counterfactual importance labeler (mask windows, check answer flip)
-3. Sweep signal variants (Dimension 1 ablation); determine if any variance signal beats H2O
-4. If yes: run Dimensions 2–5 ablations to find optimal configuration
-5. Implement H2O, ThinKV, RaaS as proper baselines
-6. Run accuracy vs. cache-size curves to establish target to beat
+1. ✅ Real data pipeline: collect_traces.py written and validated on all 4 datasets
+2. ✅ Counterfactual importance labeler: label_importance.py written
+3. ✅ Signal ablation framework: signal_ablation.py written
+4. **NOW**: Run full collection — `python scripts/collect_traces.py --dataset math500 --n_samples 30 --max_new_tokens 16384`
+5. **THEN**: Run label_importance.py on correctly-answered traces (start with `--max_traces 10`)
+6. **THEN**: Run signal_ablation.py — determine if any variance signal beats H2O (Spearman ρ)
+7. If yes → run Dimensions 2–5 ablations; if no → revise hypothesis
+8. Implement H2O (cumulative), ThinKV (R/E/T KDE), RaaS (LRU+prefill) baselines in eviction.py
+9. Run accuracy vs. cache-size curves
 
 ## Key Research Questions
 1. **Does any hidden-state/KV-vector variance signal correlate with token importance better than cumulative attention (H2O)?** If no, pivot.

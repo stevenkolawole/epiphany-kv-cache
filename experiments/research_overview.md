@@ -47,6 +47,10 @@ The general claim — that attention weight is an imperfect proxy for semantic i
 
 The use case (long *generation* traces from reasoning models) is also genuinely distinct from prior work, which targets long *input* contexts (document summarization, RAG). SnapKV, PyramidKV, and ChunkKV are all prefill-time methods. FreeKV and Quest are designed for retrieval, not generation-side eviction. ThinKV and RaaS are the only decode-time methods designed specifically for reasoning traces.
 
+**A practical engineering advantage (separate from accuracy)**: Every attention-score-based eviction method (H2O, SnapKV, ThinKV) requires materialising the full $n \times n$ attention weight matrix at each decode step — which is exactly what FlashAttention (FA2) is designed to avoid. FA2 tiles the attention computation in SRAM, never writing the full matrix to HBM, achieving O(n) peak memory and 2–4× throughput gains (Dao et al., FlashAttention, NeurIPS 2022; FlashAttention-2, ICLR 2024). Requesting `output_attentions=True` forces a fallback to standard (eager) attention, eliminating these gains. At the 8k–32k sequence lengths typical of reasoning traces, this is the difference between fitting comfortably on one GPU and OOMing. Our method reads only from `past_key_values` (already in HBM) and the hidden states (post-hoc pass, also FA2-compatible) — **fully compatible with FA2 inference without modification**. This should be stated explicitly in the introduction: we propose the first decode-time eviction method for reasoning traces that works within standard production inference stacks (vLLM, TGI, SGLang) without disabling their primary throughput optimisation.
+
+**A signal-quality degradation at long context (separate from cost)**: Even when eager attention is available, attention-based signals become *semantically unreliable* at long contexts due to the **attention sink** phenomenon. Xiao et al. (StreamingLLM, ICLR 2024) first documented that transformer models concentrate disproportionate attention weight on the first few tokens (positions 0–4) regardless of their semantic content — an artifact of softmax normalisation over very long sequences. At 32k tokens, a large fraction of cumulative attention goes to these sink tokens, drowning out genuinely informative positions. This makes H2O and entropy-based signals progressively noisier as context grows. KV-vector signals and hidden-state signals do not have this specific failure mode: variance and norm are computed per-position independently of the softmax distribution. This is a second, distinct reason to expect our signals to outperform attention-based baselines on long reasoning traces — and it is separately documented in the literature from the O(n²) memory argument above.
+
 ### What Is Unproven
 
 The *specific* claim — that hidden-state variance is a better signal than attention scores for token importance in reasoning traces — has not been empirically validated yet. The following remain open questions:
@@ -56,6 +60,22 @@ The *specific* claim — that hidden-state variance is a better signal than atte
 - Is key-vector variance meaningfully different from what cumulative attention (H2O-style) already captures?
 
 These must be answered empirically before the hypothesis can be claimed as validated.
+
+### Known Methodological Limitations (current implementation)
+
+Documented approximations in the Phase 0 pipeline that may affect signal ablation results. None are blockers; all are noted for paper writeup.
+
+1. **Window overlap — overwrite vs. OR semantics** *(fixed)*: In `label_importance.py`, overlapping windows (stride=16, window=32 means each interior position is covered by 2 windows) originally used overwrite semantics — the last covering window's label won. A position could be labeled 0 even if a *prior* window covering it caused an answer flip. Fixed to OR semantics: a position is labeled important if *any* covering window flipped. This increases measured importance slightly but is more conservative and correct.
+
+2. **Cumsum = position proxy** *(fixed)*: Cumulative sum of non-negative signals (variance, L2-diff) is monotonically increasing — the Spearman rank-order is equivalent to sequence position, not signal content. Empirically confirmed: all three cumsum variants produced identical ρ = -0.6043 on first test trace. Replaced with `_rolling64` (rolling mean over 64 tokens), which tests "sustained elevated signal" without the artifact.
+
+3. **Answer normaliser coverage**: `answers_match` handles LaTeX variants (`\dfrac`/`\frac`, `\left(`/`(`, `\text{}`) and set reordering. Does not handle: symbolic equivalence (`\sin(\pi/6)` ≠ `1/2` in string comparison), approximate decimal equality, or multi-line answers. Some `correct=False` traces may be false negatives.
+
+4. **Post-RoPE key signals**: All KV signals are computed from post-RoPE keys (as stored in the cache). RoPE rotation inflates variance at large positions regardless of content. Pre-RoPE ablation (Dimension 2) is deferred to Phase 0B.
+
+5. **Single-layer hidden states**: `hs_*` signals use only the final transformer layer. Layer-wise ablation (Dimension 3) — whether earlier layers provide cleaner importance signals — is deferred.
+
+6. **Short regeneration budget in labelling**: `max_new_tokens=512` per masked window. For problems requiring >512 tokens to reach `\boxed{}`, a window might appear unimportant (no flip) simply because the model couldn't finish the answer. Estimates suggest this affects ~5–15% of windows on hard AIME traces.
 
 ---
 
@@ -398,7 +418,10 @@ Note: ThinKV uses **attention entropy/sparsity**, not activation sparsity. Activ
 
 **Hypothesis ordering (prior expectation)**: L2 hidden-state diff > cosine distance ≈ value variance > key variance > key L2 norm > attention entropy ≈ H2O. The key question is whether *any* residual-stream signal beats the attention signals. This is unproven.
 
-**Practical constraint**: Full hidden-state access (`hs_*` signals) requires a second forward pass — adds ~1× latency. KV-vector signals (`kv_*`) are free since K/V are already in memory. Attention signals require eager attention (no FlashAttention), which roughly doubles peak VRAM at long contexts.
+**Practical constraints**:
+- `kv_*` signals: free — K/V tensors are already in HBM; reading them is negligible. Fully online (per decode step) and FA2-compatible.
+- `hs_*` signals: one post-hoc forward pass per trace, FA2-compatible, O(n) peak memory. Computed after generation (offline/batch). Better than attention signals on memory and FA2 compatibility; whether to extend to real-time use is a question for after signal ablation confirms usefulness.
+- Attention signals (`h2o_attn`, `attn_entropy`): require eager attention (no FlashAttention), O(n²) peak VRAM. Per-step online, but at significant memory cost and with FlashAttention disabled. ThinKV is also not fully online — it accumulates entropy statistics over a window before classifying a thought segment.
 
 ### Dimension 2: RoPE Interaction
 

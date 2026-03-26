@@ -14,56 +14,51 @@ pip install -r requirements.txt
 
 This phase answers: *does any hidden-state/KV-vector variance signal outperform cumulative attention (H2O) as a token importance proxy?*
 
-**Step 1 — Generate real reasoning traces**
+Signals collected per token (9 total):
+- **Always**: `kv_key_var`, `kv_key_norm`, `kv_val_var`, `cross_head_var` (free from KV cache), `hs_l2_diff`, `hs_cos_dist`, `hs_norm` (post-hoc forward pass, seq ≤ `--max_new_tokens`)
+- **With `--force_eager_attn` only**: `h2o_attn`, `attn_entropy` (require full attention matrix; FlashAttention incompatible)
+
+**Step 1 — Generate reasoning traces**
 ```bash
-# MATH-500: competition-level math problems (matches ThinKV/RaaS)
-python scripts/collect_traces.py \
-  --model deepseek-ai/deepseek-r1-distill-llama-8b \
-  --dataset hendrycks/competition_math \
-  --n_samples 100 \
-  --output data/math500_traces.jsonl
+# Pipeline test (fast — do this first)
+python scripts/collect_traces.py --dataset math500 --n_samples 10 --max_new_tokens 4096
 
-# AIME 2024 only (NOT pooled years — must match ThinKV exactly)
-python scripts/collect_traces.py \
-  --model deepseek-ai/deepseek-r1-distill-llama-8b \
-  --dataset Maxwell-Jia/AIME_2024 \
-  --n_samples 30 \
-  --output data/aime2024_traces.jsonl
+# Full collection (~30 is a good starting size; AIME takes longer per trace)
+python scripts/collect_traces.py --dataset math500   --n_samples 30 --max_new_tokens 16384
+python scripts/collect_traces.py --dataset aime2024  --n_samples 30 --max_new_tokens 32768
 
-# Saves: generated token IDs, per-layer KV tensors, correctness label
+# With H2O + attention entropy (requires eager attention — more VRAM at long contexts)
+# AIME eager capped at 16384: at 32768 tokens the attention matrix is ~64GB (OOM risk)
+python scripts/collect_traces.py --dataset math500   --n_samples 30 --max_new_tokens 16384 --force_eager_attn
+python scripts/collect_traces.py --dataset aime2024  --n_samples 30 --max_new_tokens 16384 --force_eager_attn
+
+# Output: data/<dataset>_traces.jsonl
 ```
 
-**Step 2 — Build counterfactual importance labels**
+**Step 2 — Label token importance (counterfactual)**
 ```bash
-# For each trace, mask sliding windows and check if answer flips
-python scripts/label_importance.py \
-  --traces data/math500_traces.jsonl \
-  --window_size 16 \
-  --output data/math500_importance_labels.jsonl
-# Output: per-token binary importance labels (1 = masking this window flips the answer)
+# Dry run first (3 traces, fast)
+python scripts/label_importance.py --dataset math500 --dry_run
+
+# Full labelling — only runs on correctly-answered traces
+# ~5–15 min/trace depending on length; use --max_traces to run a subset first
+python scripts/label_importance.py --dataset math500 --max_traces 10
+python scripts/label_importance.py --dataset math500   # all correct traces
+
+# Output: data/<dataset>_traces_labelled.jsonl
 ```
 
-**Step 3 — Sweep signal type variants (Dimension 1 ablation)**
+**Step 3 — Run signal ablation (Dimension 1)**
 ```bash
-# Compute all 6 signal variants + H2O cumulative attention at each token position
-# Report Spearman correlation with counterfactual labels
-python scripts/signal_ablation.py \
-  --traces data/math500_traces.jsonl \
-  --labels data/math500_importance_labels.jsonl \
-  --dimension signal_type \
-  --output experiments/ablation_signal_type.json
+python scripts/signal_ablation.py --dataset math500
+# Output: results/<dataset>_signal_ablation.csv + ranked console table
+
+# Key result: does any residual-stream signal beat H2O (Spearman ρ)?
+# If yes → proceed to Dimension 2–5 ablations (see research_overview.md §3.1)
+# If no  → hypothesis needs revision; review which signals came closest
 ```
 
-**Step 4 — Sequential ablation across remaining dimensions**
-```bash
-# After identifying best signal type, sweep each remaining dimension
-python scripts/signal_ablation.py --dimension rope_interaction --best_signal <from step 3>
-python scripts/signal_ablation.py --dimension layer_aggregation --best_signal <from step 3>
-python scripts/signal_ablation.py --dimension temporal_aggregation --best_signal <from step 3>
-python scripts/signal_ablation.py --dimension head_aggregation --best_signal <from step 3>
-```
-
-See `experiments/research_overview.md` §3.1 for all variants and hypotheses.
+See `experiments/research_overview.md` §3.1 for all 8 signal variants and the full ablation plan.
 
 ---
 
