@@ -25,8 +25,9 @@ For each trace (problem, generated_text, token_ids, prompt_len, correct):
        - Run the model with this masked sequence as input (no KV cache
          reuse — we need a fresh forward pass over the full modified sequence).
        - Extract the answer from the model's output.
-       - Label tokens s..s+W-1 as important=True if the answer flipped,
-         important=False otherwise.
+       - Label tokens s..s+W-1 as important=True if the answer flipped.
+         OR semantics for overlapping windows: a token is important if ANY
+         window covering it caused a flip (label stays 1 once set).
   4. Write augmented trace to output JSONL with an added field:
        importance   List[int | None]
          1  = this token was in a window whose masking caused an answer flip
@@ -103,9 +104,25 @@ def extract_boxed(text: str) -> Optional[str]:
 def answers_match(pred: Optional[str], gt: str) -> bool:
     if pred is None:
         return False
-    def norm(s):
-        return s.strip().lower().replace(" ", "").replace(",", "")
-    return norm(pred) == norm(gt)
+
+    def norm(s: str) -> str:
+        s = s.strip()
+        s = s.replace("\\dfrac", "\\frac")                          # \dfrac == \frac
+        s = re.sub(r"\\left\s*([(\[{|])", r"\1", s)                 # \left( → (
+        s = re.sub(r"\\right\s*([)\]}|])", r"\1", s)                # \right) → )
+        s = re.sub(r"\\text\{([^}]*)\}", r"\1", s)                  # \text{X} → X
+        m = re.match(r"^[a-zA-Z]\s*=\s*(.+)$", s.strip())          # x=5 → 5
+        if m:
+            s = m.group(1)
+        return s.lower().replace(" ", "").replace(",", "")
+
+    if norm(pred) == norm(gt):
+        return True
+
+    # Order-insensitive set comparison: "-2,1" vs "1,-2"
+    pred_parts = sorted(norm(p) for p in pred.split(","))
+    gt_parts   = sorted(norm(g) for g in gt.split(","))
+    return pred_parts == gt_parts
 
 
 # ── Masked inference ──────────────────────────────────────────────────────────
@@ -192,32 +209,41 @@ def label_trace(
     windows_tested = 0
     windows_flipped = 0
 
+    total_windows = max(1, (generated_len - window_size) // stride + 1)
     pos = prompt_len
-    while pos < total_len:
-        end = min(pos + window_size, total_len)
+    with tqdm(total=total_windows, desc="  windows", leave=False, unit="win") as pbar:
+        while pos < total_len:
+            end = min(pos + window_size, total_len)
 
-        masked_answer = run_masked_inference(
-            model=model,
-            tokenizer=tokenizer,
-            full_ids=full_ids,
-            prompt_len=prompt_len,
-            mask_start=pos,
-            mask_end=end,
-            max_new_tokens=max_new_tokens,
-            pad_id=pad_id,
-            device=device,
-        )
+            masked_answer = run_masked_inference(
+                model=model,
+                tokenizer=tokenizer,
+                full_ids=full_ids,
+                prompt_len=prompt_len,
+                mask_start=pos,
+                mask_end=end,
+                max_new_tokens=max_new_tokens,
+                pad_id=pad_id,
+                device=device,
+            )
 
-        flipped = not answers_match(masked_answer, ground_truth)
-        label = 1 if flipped else 0
-        for i in range(pos, end):
-            importance[i] = label
+            flipped = not answers_match(masked_answer, ground_truth)
+            label = 1 if flipped else 0
+            for i in range(pos, end):
+                # OR semantics: once a position is covered by a flipping window,
+                # it stays important even if a later overlapping window does not flip.
+                if importance[i] == -1:
+                    importance[i] = label
+                else:
+                    importance[i] = max(importance[i], label)
 
-        windows_tested += 1
-        if flipped:
-            windows_flipped += 1
+            windows_tested += 1
+            if flipped:
+                windows_flipped += 1
 
-        pos += stride
+            pbar.update(1)
+            pbar.set_postfix(flips=windows_flipped, flip_rate=f"{windows_flipped/windows_tested:.2f}")
+            pos += stride
 
     trace["importance"] = importance
     trace["label_stats"] = {
@@ -280,9 +306,29 @@ def main():
 
     pad_id = tokenizer.pad_token_id or tokenizer.eos_token_id
 
+    # Resume support: skip traces already labelled
+    done_problems: set = set()
+    if output_path.exists():
+        with open(output_path) as _f:
+            for _line in _f:
+                _line = _line.strip()
+                if _line:
+                    try:
+                        done_problems.add(json.loads(_line)["problem"])
+                    except Exception:
+                        pass
+    if done_problems:
+        n_skip = sum(1 for t in traces if t["problem"] in done_problems)
+        traces = [t for t in traces if t["problem"] not in done_problems]
+        print(f"  Resuming: {n_skip} traces already labelled, {len(traces)} remaining.")
+    if not traces:
+        print("All traces already labelled. Nothing to do.")
+        sys.exit(0)
+    write_mode = "a" if done_problems else "w"
+
     # Label traces
     n_written = 0
-    with open(output_path, "w") as f_out:
+    with open(output_path, write_mode) as f_out:
         for trace in tqdm(traces, desc="Labelling traces"):
             total_len   = len(trace["token_ids"])
             prompt_len  = trace["prompt_len"]

@@ -35,11 +35,18 @@ Signals evaluated
     hs_cos_dist     Cosine distance between consecutive hidden states (post-hoc)
     hs_norm         L2 norm of hidden state (post-hoc)
 
-  Derived variants (Dimensions 2–5) computed on-the-fly from the raw signals:
-    kv_key_var_cumsum   Cumulative sum of kv_key_var (temporal Dim 4)
-    kv_key_var_ema09    EMA (α=0.9) of kv_key_var
-    hs_l2_diff_cumsum   Cumulative sum of hs_l2_diff
-    hs_l2_diff_ema09    EMA (α=0.9) of hs_l2_diff
+  Derived variants (Dimension 4 — temporal aggregation) computed on-the-fly:
+    kv_key_var_rolling64  Rolling mean of kv_key_var over past 64 tokens
+    kv_key_var_ema09      EMA (α=0.9) of kv_key_var
+    kv_val_var_rolling64  Rolling mean of kv_val_var over past 64 tokens
+    kv_val_var_ema09      EMA (α=0.9) of kv_val_var
+    hs_l2_diff_rolling64  Rolling mean of hs_l2_diff over past 64 tokens
+    hs_l2_diff_ema09      EMA (α=0.9) of hs_l2_diff
+
+  Note: cumsum was removed — cumsum of non-negative signals is monotonically
+  increasing, making ranks equivalent to sequence position (a position proxy,
+  not a signal discriminator). rolling64 tests "sustained elevated signal"
+  without that artifact.
 
   NOTE: Pre-RoPE (Dim 2) requires a forward hook and is NOT computed here.
   Layer-wise ablation (Dim 3) requires per-layer signals — not stored in
@@ -92,12 +99,22 @@ def ema(values: List[float], alpha: float = 0.9) -> List[float]:
     return out
 
 
-def cumsum(values: List[float]) -> List[float]:
+def rolling_mean(values: List[float], window: int = 64) -> List[float]:
+    """
+    Rolling mean over the past `window` positions.
+    Partial windows at the start use all available values.
+    NaN positions are excluded from the window average.
+
+    Replaces cumsum: cumsum of non-negative signals is monotonically increasing
+    (ranks ≡ sequence position), making it a position proxy rather than a signal
+    discriminator. Rolling mean tests "sustained elevated signal" without that
+    artifact. Window=64 ≈ 2× the masking window used in label_importance.
+    """
     out = []
-    acc = 0.0
-    for x in values:
-        acc += x
-        out.append(acc)
+    for i in range(len(values)):
+        start = max(0, i - window + 1)
+        valid = [v for v in values[start : i + 1] if not np.isnan(v)]
+        out.append(float(np.mean(valid)) if valid else float("nan"))
     return out
 
 
@@ -117,14 +134,17 @@ def derive_signals(signals: Dict[str, Optional[List[float]]]) -> Dict[str, List[
         vals_clean = [float("nan") if v == -1.0 else v for v in vals]
         derived[name] = vals_clean
 
-    # Temporal variants for the most informative families
+    # Temporal variants: rolling mean (window=64) and EMA (α=0.9)
+    # Both test whether temporal aggregation improves signal discriminability.
+    # rolling64: "sustained elevated signal over past 64 tokens"
+    # ema09:     exponentially weighted recent history (α=0.9 = heavy recency bias)
     for base in ("kv_key_var", "kv_val_var", "hs_l2_diff"):
         if base in derived:
             v = derived[base]
-            # Replace NaN with 0 for cumsum/EMA (treat unknown as no-signal)
+            # Replace NaN with 0 for temporal smoothing (treat unknown as no-signal)
             v_filled = [0.0 if np.isnan(x) else x for x in v]
-            derived[f"{base}_cumsum"] = cumsum(v_filled)
-            derived[f"{base}_ema09"]  = ema(v_filled, alpha=0.9)
+            derived[f"{base}_rolling64"] = rolling_mean(v_filled, window=64)
+            derived[f"{base}_ema09"]     = ema(v_filled, alpha=0.9)
 
     return derived
 
@@ -256,12 +276,15 @@ def compute_correlations(
             continue
 
         rho, pval = spearmanr(v[valid], labels[valid])
+        note = ""
+        if name.endswith("_rolling64"):
+            note = "rolling mean (window=64)"
         results.append({
             "signal":       name,
             "spearman_rho": float(rho),
             "p_value":      float(pval),
             "n_pairs":      int(n_valid),
-            "note":         "",
+            "note":         note,
         })
 
     results.sort(key=lambda x: abs(x["spearman_rho"]) if not np.isnan(x["spearman_rho"]) else -1, reverse=True)
@@ -290,8 +313,15 @@ def print_table(results: List[Dict], n_traces: int, n_tokens: int):
     rho_map = {r["signal"]: r["spearman_rho"] for r in results if not (isinstance(r["spearman_rho"], float) and r["spearman_rho"] != r["spearman_rho"])}
     h2o     = rho_map.get("h2o_attn")
     entropy = rho_map.get("attn_entropy")
+    _residual_signals = (
+        "hs_l2_diff", "hs_l2_diff_ema09", "hs_l2_diff_rolling64",
+        "hs_cos_dist", "hs_norm",
+        "kv_key_var", "kv_key_var_ema09", "kv_key_var_rolling64",
+        "kv_val_var", "kv_val_var_ema09", "kv_val_var_rolling64",
+        "kv_key_norm", "cross_head_var",
+    )
     best_residual = max(
-        (rho_map.get(s, -1.0) for s in ("hs_l2_diff", "kv_key_var", "kv_val_var", "hs_cos_dist", "hs_norm", "cross_head_var")),
+        (rho_map.get(s, float("-inf")) for s in _residual_signals),
         default=None,
     )
 
