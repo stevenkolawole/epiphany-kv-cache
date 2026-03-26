@@ -47,7 +47,7 @@ Design notes:
     Low entropy = model is sharply attending to a few tokens (ThinKV "Thinking" type).
     High entropy = diffuse attention (ThinKV "Rambling" type).
   - Hidden-state signals require a second forward pass over the full sequence.
-    Limited to sequences <= --hs_max_len tokens (default 4096) to avoid OOM.
+    Limited to sequences <= --hs_max_len tokens (default: matches --max_new_tokens).
     Longer traces get a -1.0 sentinel value.
 """
 
@@ -114,9 +114,26 @@ def extract_boxed(text: str) -> Optional[str]:
 def answers_match(pred: Optional[str], gt: str) -> bool:
     if pred is None:
         return False
-    def norm(s):
-        return s.strip().lower().replace(" ", "").replace(",", "")
-    return norm(pred) == norm(gt)
+
+    def norm(s: str) -> str:
+        s = s.strip()
+        s = s.replace("\\dfrac", "\\frac")                          # \dfrac == \frac
+        s = re.sub(r"\\left\s*([(\[{|])", r"\1", s)                 # \left( → (
+        s = re.sub(r"\\right\s*([)\]}|])", r"\1", s)                # \right) → )
+        s = re.sub(r"\\text\{([^}]*)\}", r"\1", s)                  # \text{X} → X
+        m = re.match(r"^[a-zA-Z]\s*=\s*(.+)$", s.strip())          # x=5 → 5
+        if m:
+            s = m.group(1)
+        return s.lower().replace(" ", "").replace(",", "")
+
+    if norm(pred) == norm(gt):
+        return True
+
+    # Order-insensitive set comparison: "-2,1" vs "1,-2"
+    # Split before normalising so commas inside numbers don't break element boundaries
+    pred_parts = sorted(norm(p) for p in pred.split(","))
+    gt_parts   = sorted(norm(g) for g in gt.split(","))
+    return pred_parts == gt_parts
 
 
 # ── Dataset loaders ───────────────────────────────────────────────────────────
@@ -597,8 +614,8 @@ def parse_args():
                    help="Number of problems to process (default: 20)")
     p.add_argument("--max_new_tokens",  type=int, default=4096,
                    help="Max tokens to generate per problem (default: 4096)")
-    p.add_argument("--hs_max_len",      type=int, default=4096,
-                   help="Max sequence length for hidden-state forward pass (default: 4096)")
+    p.add_argument("--hs_max_len",      type=int, default=None,
+                   help="Max sequence length for hidden-state forward pass (default: matches --max_new_tokens)")
     p.add_argument("--output",          type=Path, default=None,
                    help="Output JSONL path (default: data/<dataset>_traces.jsonl)")
     p.add_argument("--force_eager_attn", action="store_true",
@@ -615,6 +632,11 @@ def main():
         args.n_samples = 1
         args.max_new_tokens = 128
         print("DRY RUN: 1 sample, 128 max tokens")
+
+    # hs_max_len defaults to match generation budget so hidden-state signals
+    # cover the same sequences as all other signals
+    if args.hs_max_len is None:
+        args.hs_max_len = args.max_new_tokens
 
     # Output path
     output_path = args.output or Path(f"data/{args.dataset}_traces.jsonl")
@@ -662,12 +684,29 @@ def main():
     print(f"  Collecting signals: KV-based always; H2O={'yes' if collect_h2o else 'no'}; "
           f"hidden-states for seqs<={args.hs_max_len} tokens\n")
 
+    # Resume support: skip problems already written to output
+    done_problems: set = set()
+    if output_path.exists():
+        with open(output_path) as _f:
+            for _line in _f:
+                _line = _line.strip()
+                if _line:
+                    try:
+                        done_problems.add(json.loads(_line)["problem"])
+                    except Exception:
+                        pass
+    if done_problems:
+        n_skip = sum(1 for p in problems if p["problem"] in done_problems)
+        problems = [p for p in problems if p["problem"] not in done_problems]
+        print(f"  Resuming: {n_skip} problems already done, {len(problems)} remaining.")
+    write_mode = "a" if done_problems else "w"
+
     # Run
     n_correct = 0
     n_total = 0
     n_hs_skipped = 0
 
-    with open(output_path, "w") as f_out:
+    with open(output_path, write_mode) as f_out:
         for problem in tqdm(problems, desc="Generating traces"):
             try:
                 result = run_trace(
