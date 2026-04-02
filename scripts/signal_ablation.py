@@ -48,9 +48,13 @@ Signals evaluated
   not a signal discriminator). rolling64 tests "sustained elevated signal"
   without that artifact.
 
-  NOTE: Pre-RoPE (Dim 2) requires a forward hook and is NOT computed here.
-  Layer-wise ablation (Dim 3) requires per-layer signals — not stored in
-  current traces. These are deferred to a separate ablation pass.
+  Phase 0B signals (present when traces collected with --phase0b):
+    kv_key_var_preRoPE   Pre-RoPE key variance via k_proj hook, all-layer mean
+    kv_key_norm_preRoPE  Pre-RoPE key L2 norm, all-layer mean
+    hs_l2_diff_lN        L2 diff of hidden states at layer N (e.g. l16, l20, l24)
+    hs_cos_dist_lN       Cosine distance at layer N
+  Temporal variants (_rolling64, _ema09) are generated for all *_preRoPE and
+  hs_l2_diff_lN signals automatically.
 
 Correlation metric
 ------------------
@@ -75,6 +79,7 @@ Usage
 import argparse
 import csv
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -134,17 +139,26 @@ def derive_signals(signals: Dict[str, Optional[List[float]]]) -> Dict[str, List[
         vals_clean = [float("nan") if v == -1.0 else v for v in vals]
         derived[name] = vals_clean
 
-    # Temporal variants: rolling mean (window=64) and EMA (α=0.9)
-    # Both test whether temporal aggregation improves signal discriminability.
-    # rolling64: "sustained elevated signal over past 64 tokens"
-    # ema09:     exponentially weighted recent history (α=0.9 = heavy recency bias)
-    for base in ("kv_key_var", "kv_val_var", "hs_l2_diff"):
-        if base in derived:
-            v = derived[base]
-            # Replace NaN with 0 for temporal smoothing (treat unknown as no-signal)
-            v_filled = [0.0 if np.isnan(x) else x for x in v]
-            derived[f"{base}_rolling64"] = rolling_mean(v_filled, window=64)
-            derived[f"{base}_ema09"]     = ema(v_filled, alpha=0.9)
+    # Temporal variants: rolling mean (window=64) and EMA (α=0.9).
+    # Generated for any signal that is a "smoothable base":
+    #   - Explicit Phase 0 bases: kv_key_var, kv_key_norm, kv_val_var, hs_l2_diff
+    #   - Phase 0B preRoPE signals: kv_key_var_preRoPE, kv_key_norm_preRoPE
+    #   - Phase 0B per-layer HS:    hs_l2_diff_lN  (any integer N)
+    # Signals already ending with _rolling64 or _ema09 are skipped.
+    _EXPLICIT_BASES = {
+        "kv_key_var", "kv_key_norm", "kv_val_var", "hs_l2_diff",
+        "kv_key_var_preRoPE", "kv_key_norm_preRoPE",
+    }
+    _layer_l2_re = re.compile(r"^hs_l2_diff_l\d+$")
+
+    for name, vals in list(derived.items()):
+        if name.endswith("_rolling64") or name.endswith("_ema09"):
+            continue
+        if name not in _EXPLICIT_BASES and not _layer_l2_re.match(name):
+            continue
+        v_filled = [0.0 if np.isnan(x) else x for x in vals]
+        derived[f"{name}_rolling64"] = rolling_mean(v_filled, window=64)
+        derived[f"{name}_ema09"]     = ema(v_filled, alpha=0.9)
 
     return derived
 
@@ -309,33 +323,36 @@ def print_table(results: List[Dict], n_traces: int, n_tokens: int):
 
     print(f"{'='*70}")
 
-    # Highlight key comparison
-    rho_map = {r["signal"]: r["spearman_rho"] for r in results if not (isinstance(r["spearman_rho"], float) and r["spearman_rho"] != r["spearman_rho"])}
+    # Key comparison summary.
+    # Build rho_map excluding NaN entries.
+    rho_map = {
+        r["signal"]: r["spearman_rho"] for r in results
+        if not np.isnan(r["spearman_rho"])
+    }
     h2o     = rho_map.get("h2o_attn")
     entropy = rho_map.get("attn_entropy")
-    _residual_signals = (
-        "hs_l2_diff", "hs_l2_diff_ema09", "hs_l2_diff_rolling64",
-        "hs_cos_dist", "hs_norm",
-        "kv_key_var", "kv_key_var_ema09", "kv_key_var_rolling64",
-        "kv_val_var", "kv_val_var_ema09", "kv_val_var_rolling64",
-        "kv_key_norm", "cross_head_var",
-    )
-    best_residual = max(
-        (rho_map.get(s, float("-inf")) for s in _residual_signals),
-        default=None,
-    )
+
+    # "Our" signals = everything that isn't h2o_attn or attn_entropy.
+    # Use max |ρ| so negative-correlation signals (e.g. kv_key_var on AIME)
+    # are not wrongly excluded — sign only indicates direction, not quality.
+    _attn_signals = {"h2o_attn", "attn_entropy"}
+    our_signals = {k: v for k, v in rho_map.items() if k not in _attn_signals}
+    best_name, best_rho = None, None
+    if our_signals:
+        best_name = max(our_signals, key=lambda k: abs(our_signals[k]))
+        best_rho  = our_signals[best_name]
 
     print("\nKey comparisons:")
     if h2o is not None:
-        print(f"  H2O (attention SOTA):       ρ = {h2o:+.4f}")
+        print(f"  H2O (attention SOTA):       ρ = {h2o:+.4f}  (|ρ| = {abs(h2o):.4f})")
     if entropy is not None:
-        print(f"  Attn entropy (ThinKV-style):ρ = {entropy:+.4f}")
-    if best_residual is not None:
-        print(f"  Best residual-stream signal:ρ = {best_residual:+.4f}")
-    if h2o is not None and best_residual is not None:
-        delta = best_residual - h2o
-        verdict = "BEATS H2O" if delta > 0 else "DOES NOT beat H2O"
-        print(f"\n  Hypothesis: residual-stream signals beat attention → {verdict} (Δρ = {delta:+.4f})")
+        print(f"  Attn entropy (ThinKV-style):ρ = {entropy:+.4f}  (|ρ| = {abs(entropy):.4f})")
+    if best_rho is not None:
+        print(f"  Best proposed signal:       ρ = {best_rho:+.4f}  (|ρ| = {abs(best_rho):.4f})  [{best_name}]")
+    if h2o is not None and best_rho is not None:
+        delta_abs = abs(best_rho) - abs(h2o)
+        verdict = "BEATS H2O" if delta_abs > 0 else "DOES NOT beat H2O"
+        print(f"\n  Hypothesis: proposed signals beat H2O → {verdict} (Δ|ρ| = {delta_abs:+.4f})")
     print()
 
 

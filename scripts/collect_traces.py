@@ -22,8 +22,9 @@ Output JSONL — one object per trace (written incrementally to avoid data loss)
     prompt_len      int             number of prompt tokens
     correct         bool            whether the extracted answer matched ground truth
     signals         Dict[str, List[float]]
+        ── Phase 0 signals (always collected) ──────────────────────────────────
         kv_key_var      KV key variance across head_dim, mean over heads+layers
-                        (post-RoPE; see research_overview.md §3.1 Dim 2 for pre-RoPE ablation)
+                        (post-RoPE; compared against pre-RoPE via --phase0b)
         kv_key_norm     KV key L2 norm, mean over heads+layers (post-RoPE)
         kv_val_var      KV value variance across head_dim, mean over heads+layers
         cross_head_var  Variance of per-head key means across heads, mean over layers
@@ -36,19 +37,30 @@ Output JSONL — one object per trace (written incrementally to avoid data loss)
                         (0.0 for first token; -1.0 sentinel if seq > hs_max_len)
         hs_norm         L2 norm of the last-layer hidden state at each position
                         (-1.0 sentinel if seq > hs_max_len)
+        ── Phase 0B signals (collected when --phase0b is set) ──────────────────
+        kv_key_var_preRoPE   Key variance before rotary position embedding is applied.
+                             Extracted via k_proj forward hook; all-layer mean.
+                             (-1.0 sentinel if seq > hs_max_len)
+        kv_key_norm_preRoPE  Key L2 norm before RoPE, all-layer mean.
+                             (-1.0 sentinel if seq > hs_max_len)
+        hs_l2_diff_lN        L2 diff of hidden states at layer N (e.g. hs_l2_diff_l16).
+                             Layers are specified via --hs_layers (default: 16,20,24).
+                             (-1.0 sentinel if seq > hs_max_len)
+        hs_cos_dist_lN       Cosine distance of hidden states at layer N.
+                             (-1.0 sentinel if seq > hs_max_len)
 
 Design notes:
   - KV signals are read from past_key_values at each decode step — zero extra compute.
-    Keys are post-RoPE (as stored in the cache); pre-RoPE requires a forward hook and
-    is deferred to the Phase 0B ablation (signal_ablation.py).
+    Post-RoPE keys are stored in the cache. Pre-RoPE keys require a forward hook on
+    k_proj and are computed in the post-generation forward pass (--phase0b).
   - H2O and attn_entropy both require the softmax attention weight matrix. FlashAttention
     never materialises this, so both signals are gated behind --force_eager_attn.
     attn_entropy at position t: entropy of the attention distribution over t's context.
     Low entropy = model is sharply attending to a few tokens (ThinKV "Thinking" type).
     High entropy = diffuse attention (ThinKV "Rambling" type).
-  - Hidden-state signals require a second forward pass over the full sequence.
-    Limited to sequences <= --hs_max_len tokens (default: matches --max_new_tokens).
-    Longer traces get a -1.0 sentinel value.
+  - Hidden-state signals (Phase 0 and 0B) all use a single post-generation forward pass
+    with output_hidden_states=True plus optional k_proj hooks for pre-RoPE keys.
+    Limited to sequences <= --hs_max_len tokens. Longer traces get -1.0 sentinel.
 """
 
 import argparse
@@ -321,16 +333,26 @@ class SignalAccumulator:
 
     def __init__(self, max_len: int):
         self.max_len = max_len
+        # Phase 0 — KV signals (post-RoPE, from past_key_values)
         self._kv_key_var     = np.zeros(max_len, dtype=np.float32)
         self._kv_key_norm    = np.zeros(max_len, dtype=np.float32)
         self._kv_val_var     = np.zeros(max_len, dtype=np.float32)
         self._cross_head_var = np.zeros(max_len, dtype=np.float32)
+        # Phase 0 — attention signals (require --force_eager_attn)
         self._h2o_attn       = np.zeros(max_len, dtype=np.float32)
         self._attn_entropy   = np.zeros(max_len, dtype=np.float32)
-        self._h2o_available  = True  # flipped to False if flash attn active (both h2o+entropy)
+        self._h2o_available  = True  # flipped to False if flash attn active
+        # Phase 0 — last-layer hidden-state signals (post-generation forward pass)
         self.hs_l2_diff      = np.zeros(max_len, dtype=np.float32)
         self.hs_cos_dist     = np.zeros(max_len, dtype=np.float32)
         self.hs_norm         = np.zeros(max_len, dtype=np.float32)
+        # Phase 0B — pre-RoPE key signals (populated by fill_hidden_states when
+        #             collect_preRoPE=True; captured via k_proj forward hooks)
+        self._kv_key_var_preRoPE  = np.zeros(max_len, dtype=np.float32)
+        self._kv_key_norm_preRoPE = np.zeros(max_len, dtype=np.float32)
+        self._preRoPE_collected   = False   # set to True once hooks have fired
+        # Phase 0B — per-layer hidden-state signals keyed by layer index
+        self._hs_by_layer: Dict[int, Dict[str, np.ndarray]] = {}
 
     # ── KV signal helpers ─────────────────────────────────────────────────
 
@@ -422,67 +444,190 @@ class SignalAccumulator:
 
     # ── Hidden-state signals ──────────────────────────────────────────────
 
-    def fill_hidden_states(self, model, input_ids: torch.Tensor, hs_max_len: int):
+    def _compute_hs_signals(self, h: torch.Tensor, seq_len: int):
         """
-        Post-generation forward pass to compute hidden-state signals.
-        Uses only the last hidden layer (cheapest option).
-        Sequences longer than hs_max_len receive -1.0 sentinel.
+        Compute l2_diff, cos_dist, and norm arrays from a hidden-state tensor.
+
+        Args:
+            h: (seq_len, d_model) float tensor for one layer.
+            seq_len: number of valid positions.
+
+        Returns:
+            (l2_diff, cos_dist, norm) each as (seq_len,) np.float32 array.
+            Token 0 always gets 0.0 for diff/dist (no predecessor).
         """
+        norms = h.norm(dim=-1)                                       # (seq_len,)
+        diffs = (h[1:] - h[:-1]).norm(dim=-1)                       # (seq_len-1,)
+        normed = h / norms.clamp(min=1e-8).unsqueeze(-1)
+        cos_sim = (normed[1:] * normed[:-1]).sum(dim=-1).clamp(-1.0, 1.0)
+
+        l2_diff  = np.zeros(seq_len, dtype=np.float32)
+        cos_dist = np.zeros(seq_len, dtype=np.float32)
+        l2_diff[1:]  = diffs.numpy()
+        cos_dist[1:] = (1.0 - cos_sim).numpy()
+        return l2_diff, cos_dist, norms.numpy().astype(np.float32)
+
+    def fill_hidden_states(
+        self,
+        model,
+        input_ids: torch.Tensor,
+        hs_max_len: int,
+        hs_layers: Optional[List[int]] = None,
+        collect_preRoPE: bool = False,
+    ):
+        """
+        Single post-generation forward pass computing all hidden-state and
+        pre-RoPE key signals.
+
+        Phase 0 (always):
+          - Last-layer hs_l2_diff, hs_cos_dist, hs_norm.
+
+        Phase 0B (when hs_layers or collect_preRoPE are set):
+          - Per-layer hs_l2_diff_lN / hs_cos_dist_lN for each layer in hs_layers.
+          - kv_key_var_preRoPE / kv_key_norm_preRoPE via k_proj forward hooks.
+
+        Sequences longer than hs_max_len receive -1.0 sentinel for all signals.
+
+        Args:
+            model:            loaded HuggingFace model (eval mode).
+            input_ids:        (1, seq_len) full token ID tensor.
+            hs_max_len:       sentinel threshold in tokens.
+            hs_layers:        list of layer indices for per-layer HS (e.g. [16, 20, 24]).
+            collect_preRoPE:  whether to register k_proj hooks and collect pre-RoPE keys.
+        """
+        if hs_layers is None:
+            hs_layers = []
+
         seq_len = input_ids.shape[1]
+
+        # ── Sentinel path: sequence too long ─────────────────────────────
         if seq_len > hs_max_len:
             self.hs_l2_diff[:seq_len]  = -1.0
             self.hs_cos_dist[:seq_len] = -1.0
             self.hs_norm[:seq_len]     = -1.0
+            for layer_idx in hs_layers:
+                self._hs_by_layer[layer_idx] = {
+                    "l2_diff":  np.full(seq_len, -1.0, dtype=np.float32),
+                    "cos_dist": np.full(seq_len, -1.0, dtype=np.float32),
+                }
+            if collect_preRoPE:
+                self._kv_key_var_preRoPE[:seq_len]  = -1.0
+                self._kv_key_norm_preRoPE[:seq_len] = -1.0
             return
 
         device = next(model.parameters()).device
+
+        # ── Register pre-RoPE hooks on k_proj of every layer ─────────────
+        # k_proj output: (1, seq_len, n_kv_heads * head_dim) — before RoPE.
+        # We capture and accumulate across layers to compute an all-layer mean.
+        preRoPE_key_var_sum  = np.zeros(seq_len, dtype=np.float64)
+        preRoPE_key_norm_sum = np.zeros(seq_len, dtype=np.float64)
+        preRoPE_n_layers     = 0
+        hooks = []
+
+        if collect_preRoPE:
+            cfg        = model.config
+            n_kv_heads = cfg.num_key_value_heads
+            head_dim   = cfg.hidden_size // cfg.num_attention_heads
+
+            def _make_preRoPE_hook():
+                # Closure captures the mutable accumulators above.
+                def _hook(module, inp, output):
+                    nonlocal preRoPE_n_layers
+                    # output: (1, seq_len, n_kv_heads * head_dim)
+                    k = output.detach().float().cpu()
+                    k = k.view(k.shape[0], k.shape[1], n_kv_heads, head_dim)
+                    k = k[0]  # (seq_len, n_kv_heads, head_dim)
+                    # Variance and norm across head_dim, averaged over n_kv_heads
+                    preRoPE_key_var_sum  [:] += k.var(dim=-1).mean(dim=-1).numpy()
+                    preRoPE_key_norm_sum [:] += k.norm(dim=-1).mean(dim=-1).numpy()
+                    preRoPE_n_layers += 1
+                return _hook
+
+            for layer in model.model.layers:
+                hooks.append(layer.self_attn.k_proj.register_forward_hook(
+                    _make_preRoPE_hook()
+                ))
+
+        # ── Single forward pass ───────────────────────────────────────────
         with torch.no_grad():
             out = model(
                 input_ids=input_ids.to(device),
                 output_hidden_states=True,
                 use_cache=False,
             )
-        # out.hidden_states: tuple of (n_layers+1) × (1, seq_len, d_model)
+
+        for h in hooks:
+            h.remove()
+
+        # out.hidden_states: tuple (n_layers+1) × (1, seq_len, d_model)
+        # Index 0 = embedding output; index i+1 = output of transformer layer i.
+
+        # ── Last-layer HS signals (Phase 0) ──────────────────────────────
         last_h = out.hidden_states[-1][0].float().cpu()  # (seq_len, d_model)
+        l2_diff, cos_dist, norm = self._compute_hs_signals(last_h, seq_len)
+        self.hs_l2_diff[:seq_len]  = l2_diff
+        self.hs_cos_dist[:seq_len] = cos_dist
+        self.hs_norm[:seq_len]     = norm
+
+        # ── Per-layer HS signals (Phase 0B) ──────────────────────────────
+        for layer_idx in hs_layers:
+            hs_index = layer_idx + 1   # hidden_states[0]=embed, [i+1]=layer i output
+            if hs_index >= len(out.hidden_states):
+                continue
+            h = out.hidden_states[hs_index][0].float().cpu()
+            l2_diff, cos_dist, _ = self._compute_hs_signals(h, seq_len)
+            self._hs_by_layer[layer_idx] = {
+                "l2_diff":  l2_diff,
+                "cos_dist": cos_dist,
+            }
+
         del out
         torch.cuda.empty_cache()
 
-        # L2 norm of consecutive differences — token 0 gets 0.0
-        diffs = (last_h[1:] - last_h[:-1]).norm(dim=-1)        # (seq_len-1,)
-        self.hs_l2_diff[0] = 0.0
-        self.hs_l2_diff[1:seq_len] = diffs.numpy()
-
-        # L2 norm of the hidden state at each position
-        norms = last_h.norm(dim=-1)  # (seq_len,)
-        self.hs_norm[:seq_len] = norms.numpy()
-
-        # Cosine distance: 1 - cos(h_t, h_{t-1}) — token 0 gets 0.0
-        normed = last_h / norms.clamp(min=1e-8).unsqueeze(-1)
-        cos_sim = (normed[1:] * normed[:-1]).sum(dim=-1).clamp(-1.0, 1.0)
-        self.hs_cos_dist[0] = 0.0
-        self.hs_cos_dist[1:seq_len] = (1.0 - cos_sim).numpy()
+        # ── Pre-RoPE key signals (Phase 0B) ──────────────────────────────
+        if collect_preRoPE and preRoPE_n_layers > 0:
+            self._kv_key_var_preRoPE[:seq_len]  = (
+                preRoPE_key_var_sum  / preRoPE_n_layers
+            ).astype(np.float32)
+            self._kv_key_norm_preRoPE[:seq_len] = (
+                preRoPE_key_norm_sum / preRoPE_n_layers
+            ).astype(np.float32)
+            self._preRoPE_collected = True
 
     # ── Export ────────────────────────────────────────────────────────────
 
     def to_dict(self, seq_len: int) -> Dict[str, List]:
         attn_signals = (
             {
-                "h2o_attn":    self._h2o_attn[:seq_len].tolist(),
+                "h2o_attn":     self._h2o_attn[:seq_len].tolist(),
                 "attn_entropy": self._attn_entropy[:seq_len].tolist(),
             }
             if self._h2o_available
             else {"h2o_attn": None, "attn_entropy": None}
         )
-        return {
+        result = {
+            # Phase 0 — KV signals (post-RoPE)
             "kv_key_var":     self._kv_key_var[:seq_len].tolist(),
             "kv_key_norm":    self._kv_key_norm[:seq_len].tolist(),
             "kv_val_var":     self._kv_val_var[:seq_len].tolist(),
             "cross_head_var": self._cross_head_var[:seq_len].tolist(),
+            # Phase 0 — attention signals
             **attn_signals,
+            # Phase 0 — last-layer hidden-state signals
             "hs_l2_diff":     self.hs_l2_diff[:seq_len].tolist(),
             "hs_cos_dist":    self.hs_cos_dist[:seq_len].tolist(),
             "hs_norm":        self.hs_norm[:seq_len].tolist(),
         }
+        # Phase 0B — pre-RoPE key signals (only if collected; non-zero = populated)
+        if self._preRoPE_collected:
+            result["kv_key_var_preRoPE"]  = self._kv_key_var_preRoPE[:seq_len].tolist()
+            result["kv_key_norm_preRoPE"] = self._kv_key_norm_preRoPE[:seq_len].tolist()
+        # Phase 0B — per-layer hidden-state signals
+        for layer_idx, sigs in sorted(self._hs_by_layer.items()):
+            result[f"hs_l2_diff_l{layer_idx}"]  = sigs["l2_diff"][:seq_len].tolist()
+            result[f"hs_cos_dist_l{layer_idx}"] = sigs["cos_dist"][:seq_len].tolist()
+        return result
 
 
 # ── Core generation loop ──────────────────────────────────────────────────────
@@ -495,6 +640,8 @@ def run_trace(
     hs_max_len: int,
     collect_h2o: bool,
     device: torch.device,
+    hs_layers: Optional[List[int]] = None,
+    collect_preRoPE: bool = False,
 ) -> Optional[Dict]:
     """
     Run a single problem through the model and collect all signals.
@@ -575,7 +722,11 @@ def run_trace(
         torch.tensor(generated_ids, dtype=torch.long).unsqueeze(0)
     ], dim=1)  # (1, total_len)
 
-    accumulator.fill_hidden_states(model, full_ids, hs_max_len)
+    accumulator.fill_hidden_states(
+        model, full_ids, hs_max_len,
+        hs_layers=hs_layers,
+        collect_preRoPE=collect_preRoPE,
+    )
 
     # ── Answer extraction ─────────────────────────────────────────────────
     generated_text = tokenizer.decode(generated_ids, skip_special_tokens=True)
@@ -620,6 +771,14 @@ def parse_args():
                    help="Output JSONL path (default: data/<dataset>_traces.jsonl)")
     p.add_argument("--force_eager_attn", action="store_true",
                    help="Force eager attention (disables flash attn) to enable H2O collection")
+    p.add_argument("--phase0b",          action="store_true",
+                   help="Enable Phase 0B signal collection: pre-RoPE key variance and "
+                        "per-layer hidden-state signals. Adds kv_key_var_preRoPE, "
+                        "kv_key_norm_preRoPE, hs_l2_diff_lN, hs_cos_dist_lN to output. "
+                        "Uses a post-generation forward pass with k_proj hooks.")
+    p.add_argument("--hs_layers",        type=str, default="16,20,24",
+                   help="Comma-separated layer indices for per-layer HS signals when "
+                        "--phase0b is set (default: 16,20,24). Ignored without --phase0b.")
     p.add_argument("--dry_run",         action="store_true",
                    help="Load model and run 1 problem to verify setup, then exit")
     return p.parse_args()
@@ -672,6 +831,15 @@ def main():
     model.eval()
 
     collect_h2o = args.force_eager_attn
+    hs_layers = (
+        [int(x.strip()) for x in args.hs_layers.split(",") if x.strip()]
+        if args.phase0b else []
+    )
+    collect_preRoPE = args.phase0b
+
+    if args.phase0b:
+        print(f"  Phase 0B: pre-RoPE key signals ENABLED; "
+              f"per-layer HS at layers {hs_layers}")
     if not collect_h2o:
         print(
             "  Note: H2O signal will be None (flash attention active). "
@@ -717,6 +885,8 @@ def main():
                     hs_max_len=args.hs_max_len,
                     collect_h2o=collect_h2o,
                     device=device,
+                    hs_layers=hs_layers,
+                    collect_preRoPE=collect_preRoPE,
                 )
             except Exception as e:
                 import traceback
@@ -755,6 +925,10 @@ def main():
     print(f"HS signals skipped (seq > {args.hs_max_len}): {n_hs_skipped}/{n_total}")
     if not collect_h2o:
         print("H2O + attn_entropy: not collected (re-run with --force_eager_attn)")
+    if args.phase0b:
+        print(f"Phase 0B: pre-RoPE keys + HS layers {hs_layers} collected")
+    else:
+        print("Phase 0B signals: not collected (re-run with --phase0b)")
     print(f"{'='*60}")
 
 
