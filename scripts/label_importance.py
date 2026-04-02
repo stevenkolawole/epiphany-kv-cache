@@ -50,24 +50,36 @@ Usage
 
 Design notes
 ------------
-- We mask by replacing with pad_token_id (or eos_token_id as fallback).
-  We do NOT delete tokens — sequence length stays constant so positional
-  encodings and attention patterns are preserved.  This is the standard
-  "occlusion" approach used in interpretability research.
-- We only mask the *generated* portion (positions >= prompt_len).  The
-  prompt is fixed; its tokens are never masked.  The prompt is always
-  fully "important" by definition (it's the problem statement).
+- We mask by replacing with pad_token_id (occlusion, not truncation).
+  Sequence length is preserved up to answer_start so positional encodings
+  and the model's contextual understanding of all other positions are intact.
+  This is the standard "occlusion" approach used in interpretability research.
+
+- answer_start is the token position where the final answer section begins
+  (after </think> for DeepSeek-R1, or estimated from the last \\boxed{ for
+  other models).  We feed token_ids[:answer_start] with the window replaced
+  by pads as context, then ask the model to generate the answer from scratch.
+  This means: every masked-inference call feeds the same-length context
+  (answer_start tokens), with the only difference being the content of the
+  masked window.  There is no position proxy — a window near the start and a
+  window near the end of the trace both feed the same total context length.
+
+- Previously the code truncated at mask_start and regenerated from there.
+  That tested "how much prefix is needed?" (a position test), not "is this
+  window's content important?" (a content test).  The old approach inflated
+  importance scores for early tokens regardless of their actual content.
+
+- We only mask the *reasoning* portion (prompt_len <= pos < answer_start).
+  The prompt is never masked (always important by definition).  The answer
+  section (answer_start..total_len) is never masked — we regenerate it.
+
 - Window size W=32 and stride S=16 are defaults tuned for reasoning traces
   of ~4k–32k tokens.  Smaller W gives higher resolution but more forward
   passes; larger W reduces cost but may give coarser labels.
-- Each masked inference re-uses the unmodified prompt prefix via a KV-cache
-  prefill (up to position s), then runs with masked tokens from s onward.
-  This is an approximation: the model sees a mixed context (real prefix,
-  masked suffix), which may not perfectly isolate the window's contribution.
-  This is an acceptable approximation for correlation analysis.
-- Runtime: O(seq_len / stride) forward passes per trace.  For a 4k-token
-  trace with W=32, S=16: ~250 passes.  Each pass is short (max_new_tokens=512).
-  Budget ~5–10 min per trace on a single A100.
+
+- Runtime: O(seq_len / stride) forward passes per trace.  Each pass prefills
+  answer_start tokens then generates up to max_new_tokens.  For a 16k-token
+  trace: ~500 passes × ~30s each ≈ 4–6 hours per trace on a single A100.
 """
 
 import argparse
@@ -125,37 +137,89 @@ def answers_match(pred: Optional[str], gt: str) -> bool:
     return pred_parts == gt_parts
 
 
+# ── Answer boundary detection ─────────────────────────────────────────────────
+
+def find_answer_start(
+    token_ids: List[int],
+    tokenizer,
+    generated_text: str,
+    prompt_len: int,
+) -> int:
+    """
+    Find the token index where the final answer section begins — i.e. the
+    point after which we ask the model to regenerate the answer during masked
+    inference.  Everything before this index is the "reasoning context" we
+    feed (with the target window occluded).
+
+    Strategy 1 — DeepSeek-R1 </think> boundary:
+        Search for the token sequence that encodes "</think>" in token_ids.
+        The answer section starts immediately after it (skipping whitespace).
+
+    Strategy 2 — last \\boxed{ in generated_text:
+        Tokenize the text up to the last \\boxed{ to estimate the token index.
+
+    Strategy 3 — fallback:
+        Use total_len - 64 (assume the answer is at most 64 tokens).
+    """
+    total_len = len(token_ids)
+
+    # Strategy 1: </think> boundary (DeepSeek-R1 style)
+    think_end_ids = tokenizer.encode("</think>", add_special_tokens=False)
+    n = len(think_end_ids)
+    for i in range(total_len - n, prompt_len - 1, -1):  # search from end
+        if token_ids[i : i + n] == think_end_ids:
+            pos = i + n
+            # Skip whitespace/newline tokens immediately after </think>
+            while pos < total_len and not tokenizer.decode([token_ids[pos]]).strip():
+                pos += 1
+            return pos
+
+    # Strategy 2: last \boxed{ in generated text
+    last_boxed = generated_text.rfind("\\boxed{")
+    if last_boxed > 0:
+        text_before = generated_text[:last_boxed]
+        ids_before  = tokenizer.encode(text_before, add_special_tokens=False)
+        candidate   = prompt_len + len(ids_before)
+        if prompt_len < candidate < total_len:
+            return candidate
+
+    # Fallback: 64 tokens from end
+    return max(prompt_len + 1, total_len - 64)
+
+
 # ── Masked inference ──────────────────────────────────────────────────────────
 
 def run_masked_inference(
     model,
     tokenizer,
-    full_ids: torch.Tensor,          # (1, total_len) — prompt + generated
+    full_ids: torch.Tensor,    # (1, total_len) — prompt + generated
     prompt_len: int,
-    mask_start: int,                 # first position to mask (>= prompt_len)
-    mask_end: int,                   # one past last position to mask
+    mask_start: int,           # first position to occlude (>= prompt_len)
+    mask_end: int,             # one past last position to occlude (<= answer_start)
+    answer_start: int,         # feed [:answer_start] as context, generate from here
     max_new_tokens: int,
     pad_id: int,
     device: torch.device,
 ) -> Optional[str]:
     """
-    Replace token_ids[mask_start:mask_end] with pad_id, then run the model
-    on the modified prompt prefix to get a new answer.
+    Occlude token_ids[mask_start:mask_end] with pad_id, feed the full modified
+    reasoning context up to answer_start, then generate the answer from scratch.
 
-    We use the prefix up to mask_start as the input (with KV caching), then
-    continue generation.  The masked tokens are *not* fed to the model —
-    instead we treat mask_start as the new "current generation point" and
-    generate up to max_new_tokens from there.
+    This is a content test, not a position test:
+    - Every call feeds the same context length (answer_start tokens).
+    - The only variable is the content of positions [mask_start, mask_end).
+    - A window at position 200 and a window at position 8000 have identical
+      positional context; the only difference is what's in that window.
 
-    This approximation is valid for our purposes: we want to know whether
-    the model can still reach the correct answer when the window [mask_start,
-    mask_end) is not present in its context.  Since the model saw the prompt
-    and the pre-window generated tokens, it has the context up to mask_start.
+    The old truncation approach fed [:mask_start], which meant early windows
+    always had less context — a position proxy, not a content test.
 
-    Returns the extracted boxed answer, or None if no answer was found.
+    Returns the extracted \\boxed{} answer, or None if not found.
     """
-    # Use the original sequence up to mask_start as context
-    context_ids = full_ids[:, :mask_start].to(device)
+    modified_ids = full_ids.clone()
+    modified_ids[0, mask_start:mask_end] = pad_id
+
+    context_ids = modified_ids[:, :answer_start].to(device)
 
     with torch.no_grad():
         output = model.generate(
@@ -166,7 +230,7 @@ def run_masked_inference(
             eos_token_id=tokenizer.eos_token_id,
         )
 
-    generated = output[0, mask_start:].tolist()
+    generated = output[0, answer_start:].tolist()
     text = tokenizer.decode(generated, skip_special_tokens=True)
     return extract_boxed(text)
 
@@ -187,33 +251,44 @@ def label_trace(
     Add an 'importance' field to the trace dict.
     Returns the augmented trace.
     """
-    token_ids   = trace["token_ids"]
-    prompt_len  = trace["prompt_len"]
+    token_ids    = trace["token_ids"]
+    prompt_len   = trace["prompt_len"]
     ground_truth = trace["ground_truth"]
-    total_len   = len(token_ids)
+    total_len    = len(token_ids)
+
+    # Find where the final answer section starts (after </think> or last \boxed{).
+    # Windows only slide over the reasoning portion [prompt_len, answer_start).
+    answer_start = find_answer_start(
+        token_ids, tokenizer, trace.get("generated_text", ""), prompt_len
+    )
+    # answer_start must be strictly after the prompt and before total_len
+    answer_start = max(prompt_len + 1, min(answer_start, total_len - 1))
 
     # Initialise all positions as unknown (-1)
     importance = [-1] * total_len
     # Prompt tokens are structurally important by definition
     for i in range(prompt_len):
         importance[i] = 1
+    # Answer tokens (answer_start..total_len) are left as -1 (not tested; we regenerate them)
 
     full_ids = torch.tensor(token_ids, dtype=torch.long).unsqueeze(0)  # (1, total_len)
 
-    # Slide window over the generated portion only
-    generated_len = total_len - prompt_len
-    if generated_len <= 0:
+    # Slide window over the *reasoning* portion only [prompt_len, answer_start)
+    reasoning_len = answer_start - prompt_len
+    if reasoning_len <= 0:
         trace["importance"] = importance
+        trace["label_stats"] = {"answer_start": answer_start, "windows_tested": 0,
+                                 "windows_flipped": 0, "flip_rate": 0.0, "important_frac": 0.0}
         return trace
 
-    windows_tested = 0
+    windows_tested  = 0
     windows_flipped = 0
 
-    total_windows = max(1, (generated_len - window_size) // stride + 1)
+    total_windows = max(1, (reasoning_len - window_size) // stride + 1)
     pos = prompt_len
     with tqdm(total=total_windows, desc="  windows", leave=False, unit="win") as pbar:
-        while pos < total_len:
-            end = min(pos + window_size, total_len)
+        while pos < answer_start:
+            end = min(pos + window_size, answer_start)  # never mask into answer section
 
             masked_answer = run_masked_inference(
                 model=model,
@@ -222,6 +297,7 @@ def label_trace(
                 prompt_len=prompt_len,
                 mask_start=pos,
                 mask_end=end,
+                answer_start=answer_start,
                 max_new_tokens=max_new_tokens,
                 pad_id=pad_id,
                 device=device,
@@ -247,6 +323,7 @@ def label_trace(
 
     trace["importance"] = importance
     trace["label_stats"] = {
+        "answer_start":    answer_start,
         "windows_tested":  windows_tested,
         "windows_flipped": windows_flipped,
         "flip_rate":       windows_flipped / max(windows_tested, 1),
@@ -359,7 +436,8 @@ def main():
 
             stats = labelled.get("label_stats", {})
             tqdm.write(
-                f"  len={total_len:>6}  windows={stats.get('windows_tested',0):>4}"
+                f"  len={total_len:>6}  ans_start={stats.get('answer_start',0):>6}"
+                f"  windows={stats.get('windows_tested',0):>4}"
                 f"  flip_rate={stats.get('flip_rate', 0):.2f}"
                 f"  important_frac={stats.get('important_frac', 0):.2f}"
             )
