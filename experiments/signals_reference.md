@@ -67,7 +67,7 @@ Note: ThinKV is also not truly online — it accumulates attention entropy over 
 
 **Cost**: Essentially free — we read `past_key_values` which is already on GPU, compute `tensor.var(dim=-1)` per layer, and average. One pass per decode step. No extra memory.
 
-**Note**: Post-RoPE (as stored in cache). Pre-RoPE ablation requires a forward hook — deferred to Phase 0B.
+**Note — post-RoPE and layer averaging**: Keys are post-RoPE and averaged across all 32 layers. Two compounding issues: (1) RoPE inflates key variance at large positions regardless of content (see Pre-RoPE section below); (2) averaging all layers dilutes any layer-specific semantic signal — if useful signal is concentrated in layers 12–20, mixing in layers 0–11 and 21–31 degrades the aggregate. Pre-RoPE ablation (Dim 2) and per-layer/upper-weighted KV signals (Dim 3) are both Phase 0B items.
 
 ---
 
@@ -155,6 +155,8 @@ Attention entropy also inherits the attention-sink problem: at long contexts, th
 
 **Why it might not**: Large L2 differences may simply reflect long sequences (hidden states drift over time even without epiphanies). Also, the last-layer hidden state includes both semantic content *and* positional information. A long sequence may have monotonically increasing hs_l2_diff even without any pivots.
 
+**Critical limitation — layer choice**: We currently use only the **final transformer layer**. Per transformer interpretability research (ROME/MEMIT — Meng et al. 2022; Geva et al. 2021; logit lens — nostalgebraist 2020), the final layer in a decoder-only model is specialised for next-token prediction: it maps the residual stream toward vocabulary space. Semantic content — factual knowledge, reasoning state, entity representations — peaks in **middle-to-upper layers** (~layers 16–24 for a 32-layer LLaMA-class model). Using the final layer is likely the worst choice for detecting meaningful representational change. Phase 0B Dimension 3 will test layers 16, 20, 24 individually. Expected to substantially improve HS results.
+
 **Cost**: Requires a post-hoc forward pass over the full sequence (up to `--hs_max_len`, which defaults to `--max_new_tokens`). Sequences beyond this limit receive a `-1.0` sentinel and are excluded from correlation analysis. The forward pass uses FlashAttention internally (no n×n attention matrix stored — O(n) peak memory), and takes ~10–30s on an A100 for a 16k-token sequence. Collected once per trace, not per step.
 
 **Timing**: computed after generation completes, so this signal is offline/batch rather than per-decode-step. This is a research design choice, not a memory or compatibility limitation — the forward pass is FA2-compatible and cheaper than any attention-based signal. Whether to pursue real-time HS-based eviction (e.g. via periodic re-evaluation or rolling windows) is a question for after the signal ablation confirms usefulness.
@@ -169,7 +171,7 @@ Attention entropy also inherits the attention-sink problem: at long contexts, th
 
 **Why it might work**: Cosine distance controls for the "drift" problem with hs_l2_diff. If L2 norms grow monotonically over a sequence, cosine distance won't — it only triggers on genuine directional shifts, which are more likely epiphany-driven.
 
-**Why it might not**: Cosine distance ignores magnitude entirely. A tiny perturbation in direction may be statistically significant but semantically meaningless. Also, both cosine and L2 use only the last layer — may miss layer-specific effects.
+**Why it might not**: Cosine distance ignores magnitude entirely. A tiny perturbation in direction may be statistically significant but semantically meaningless. Also, both cosine and L2 use only the **final layer** — which is specialised for next-token prediction, not semantic content. See `hs_l2_diff` note above; same limitation applies here.
 
 **Cost**: Same as hs_l2_diff — one post-hoc forward pass, FA2-compatible, O(n) memory. Offline/batch timing.
 
@@ -191,7 +193,7 @@ Attention entropy also inherits the attention-sink problem: at long contexts, th
 
 ## Derived Temporal Variants (computed on-the-fly in signal_ablation.py)
 
-For signals `kv_key_var`, `kv_val_var`, and `hs_l2_diff`, we compute two temporal variants:
+For signals `kv_key_var`, `kv_val_var`, `hs_l2_diff`, `kv_key_var_preRoPE`, `kv_key_norm_preRoPE`, and all per-layer HS signals (`hs_l2_diff_l16`, `hs_l2_diff_l20`, `hs_l2_diff_l24`), we compute two temporal variants:
 
 - **`{signal}_rolling64`**: Rolling mean over the past 64 tokens. Tests whether "sustained elevated signal" predicts importance better than the instantaneous value. Window=64 is ~2× the masking window size used in label_importance.
 - **`{signal}_ema09`**: Exponential moving average (α=0.9). Strong recency bias — effectively a soft version of "current signal with short memory of recent past". Standard in signal processing; related to how ThinKV's entropy-based classifier accumulates statistics before making a segment decision.
@@ -225,6 +227,30 @@ The key distinction:
 
 ---
 
+## Phase 0B Signals
+
+Two new signal groups added in Phase 0B collection (`--phase0b` flag):
+
+### `kv_key_var_preRoPE` / `kv_key_norm_preRoPE` — Pre-RoPE Key Variance / Norm
+
+**What it is**: Same as `kv_key_var` / `kv_key_norm`, but computed from keys **before** the rotary positional encoding is applied. Captured via a forward hook on `layer.self_attn.k_proj`; accumulated and averaged across all 32 layers.
+
+**Why**: Post-RoPE keys have position-dependent variance inflation (token at position 10000 has higher raw variance than the same token at position 1, purely from the rotational angle). Pre-RoPE keys are "pure content" — positional information has not yet been mixed in. Hypothesis: pre-RoPE key variance is a cleaner importance signal.
+
+**Cost**: Requires one full forward pass with hooks registered on all 32 `k_proj` modules. FA2-compatible (no attention matrix materialized). O(n) memory. Collected posthoc from saved token IDs via `extract_phase0b_signals.py`.
+
+---
+
+### `hs_l2_diff_l16`, `hs_l2_diff_l20`, `hs_l2_diff_l24` — Per-Layer Hidden-State L2 Diff
+
+**What it is**: Same computation as `hs_l2_diff` (consecutive hidden-state L2 difference) but computed at specific intermediate layers (16, 20, 24 out of 32) rather than the final layer.
+
+**Why**: The final transformer layer is specialised for next-token prediction (vocabulary projection). Semantic content — factual associations, reasoning state, entity representations — peaks in middle-to-upper layers (~16–24 for a 32-layer LLaMA-class model; see ROME/MEMIT, logit lens). Using the final layer for importance detection is likely suboptimal. Layers 16/20/24 are tested as candidate "semantic peak" layers.
+
+**Cost**: Same single post-hoc forward pass as `hs_l2_diff` — uses `output_hidden_states=True`, which returns all layer hidden states simultaneously. No extra compute beyond what was already needed. FA2-compatible, O(n) memory.
+
+---
+
 ## Pre-RoPE vs Post-RoPE (Phase 0B Ablation)
 
 KV cache stores **post-RoPE** keys — the rotary positional encoding has already been applied. RoPE rotates each token's key vector by an angle proportional to its position. This means:
@@ -252,4 +278,33 @@ When `signal_ablation.py` finishes, you'll see a Spearman ρ table. Here's how t
 - If **yes**: Core hypothesis validated. Proceed to Dimensions 2–5 to find the best configuration.
 - If **no**: Hypothesis needs revision. Check which signals came closest. Consider: are our counterfactual labels reliable? Is 30 traces enough? Did the model actually answer anything correctly?
 
-**attn_entropy vs h2o_attn**: These two are highly correlated — both require eager attention, both are attention-matrix derivatives. If attn_entropy beats h2o_attn, it validates ThinKV's design choice.
+**attn_entropy vs h2o_attn**: These are not directly comparable — they measure different things. h2o_attn measures how much a token was *attended to* by future tokens (a retrospective reuse signal). attn_entropy measures how focused the model *was* when generating each token (a concurrent cognitive-state signal). attn_entropy's ρ will be negative when it works correctly: low entropy = focused/R-type token = more likely to be important.
+
+More importantly: ThinKV's superiority over H2O on task accuracy comes from **segment-level R/E/T classification + different retention budgets per type**, not from attn_entropy having higher per-token Spearman ρ than h2o_attn. Token-level correlation analysis cannot determine whether ThinKV beats H2O. That comparison requires Phase 1 accuracy vs. cache-size curves.
+
+---
+
+## Phase 0 Preliminary Results (March 2026)
+
+> ⚠️ **These results are from truncation-based labels (pre-fix) and are being regenerated.** The masking bug (truncation instead of occlusion) introduced a position proxy that inflated h2o_attn's ρ and may have suppressed content-signal ρ values. Treat as preliminary directional evidence only. Updated results will replace this table once re-labelling completes.
+
+| Signal | math500_eager | aime2024 (32k) | aime2024_eager (16k) | Notes |
+|---|---|---|---|---|
+| h2o_attn | **+0.414** | — | **+0.358** | Attention baseline; requires eager. Likely inflated by position proxy. |
+| attn_entropy | -0.063 | — | **-0.294** | Negative = correct direction. Stronger on harder/longer AIME traces. |
+| kv_val_var_rolling64 | +0.148 | +0.114 | +0.066 | Best FA2-compatible signal on math500_eager |
+| kv_key_var_rolling64 | +0.106 | **+0.124** | +0.012 | 10× stronger on 32k AIME vs 16k AIME — population effect (longer traces) |
+| kv_key_var_ema09 | +0.108 | +0.122 | +0.024 | |
+| cross_head_var | +0.054 | **+0.119** | +0.055 | Surprisingly competitive on 32k AIME |
+| kv_key_var | +0.086 | +0.101 | +0.022 | |
+| kv_key_norm | +0.084 | +0.100 | +0.022 | |
+| hs_l2_diff_rolling64 | +0.030 | -0.025 | -0.038 | Near-null; final-layer limitation likely explains this |
+| hs_cos_dist | -0.010 | +0.010 | -0.024 | Near-null |
+| hs_norm | +0.031 | -0.003 | +0.016 | Near-null |
+| hs_l2_diff | +0.010 | +0.006 | -0.009 | Near-null |
+
+**Key observations:**
+- KV variance signals are meaningfully stronger on the harder/longer 32k AIME traces than on the 16k eager run — the signal discriminates better when traces are longer and more complex. This is promising: the use case we care about (long hard reasoning) is where the signals work best.
+- cross_head_var is unexpectedly competitive on 32k AIME (ρ=0.119, within margin of kv_key_var_rolling64=0.124). Worth watching.
+- HS signals are inconclusive — final-layer limitation makes these results uninterpretable until Phase 0B Dimension 3 (layer-wise ablation targeting layers ~16–24).
+- math500 non-eager results are invalid (cumsum artifact from pre-fix code); math500_eager supersedes them.

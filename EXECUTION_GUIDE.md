@@ -23,19 +23,22 @@ Signals collected per token (9 total):
 # Pipeline test (fast — do this first)
 python scripts/collect_traces.py --dataset math500 --n_samples 10 --max_new_tokens 4096
 
-# Full collection (~30 is a good starting size; AIME takes longer per trace)
-python scripts/collect_traces.py --dataset math500   --n_samples 30 --max_new_tokens 16384
-python scripts/collect_traces.py --dataset aime2024  --n_samples 30 --max_new_tokens 32768
+# Full collection with Phase 0B signals (--phase0b adds pre-RoPE key variance + layer-wise HS at 16/20/24)
+python scripts/collect_traces.py --dataset math500   --n_samples 100 --max_new_tokens 32768 --phase0b
+python scripts/collect_traces.py --dataset aime2024  --n_samples 30  --max_new_tokens 32768 --phase0b
 
 # With H2O + attention entropy (requires eager attention — more VRAM at long contexts)
 # AIME eager capped at 16384: at 32768 tokens the attention matrix is ~64GB (OOM risk)
-python scripts/collect_traces.py --dataset math500   --n_samples 30 --max_new_tokens 16384 --force_eager_attn
-python scripts/collect_traces.py --dataset aime2024  --n_samples 30 --max_new_tokens 16384 --force_eager_attn
+python scripts/collect_traces.py --dataset math500   --n_samples 100 --max_new_tokens 16384 --force_eager_attn --phase0b
+python scripts/collect_traces.py --dataset aime2024  --n_samples 30  --max_new_tokens 16384 --force_eager_attn --phase0b
 
 # Output: data/<dataset>_traces.jsonl
+# After collection, run posthoc extraction + cross-validate before labelling:
+python scripts/extract_phase0b_signals.py --input data/<dataset>_traces.jsonl --output data/<dataset>_traces_posthoc.jsonl
+python scripts/extract_phase0b_signals.py --input data/<dataset>_traces_posthoc.jsonl --compare data/<dataset>_traces.jsonl
 ```
 
-**Step 2 — Label token importance (counterfactual)**
+**Step 2 — Label token importance (counterfactual occlusion)**
 ```bash
 # Dry run first (3 traces, fast)
 python scripts/label_importance.py --dataset math500 --dry_run
@@ -48,6 +51,9 @@ python scripts/label_importance.py --dataset math500   # all correct traces
 # Output: data/<dataset>_traces_labelled.jsonl
 ```
 
+**Masking methodology (important)**: label_importance.py uses **occlusion**, not truncation.
+For each window, it replaces those tokens with `pad_id`, feeds the full modified reasoning trace up to the `</think>` boundary as context, then asks the model to generate the final answer. Every window call feeds the same context length — only the window's content varies. This is a content test, not a position test. The old approach (truncating at `mask_start`) was a position proxy and has been fixed.
+
 **Step 3 — Run signal ablation (Dimension 1)**
 ```bash
 python scripts/signal_ablation.py --dataset math500
@@ -59,6 +65,31 @@ python scripts/signal_ablation.py --dataset math500
 ```
 
 See `experiments/research_overview.md` §3.1 for all 8 signal variants and the full ablation plan.
+
+---
+
+---
+
+## SLURM Batch Scripts (cluster)
+
+All scripts live in `slurm/`. All use `--partition=general` (48h, non-preemptible).
+
+**Submit only these 4 commands.** Label jobs are auto-submitted via `afterok` dependency once cross-validation passes:
+```bash
+sbatch slurm/run_math500_collect.sh          # math500, 32768 tok, FA2, Phase 0B — chains run_math500_label.sh
+sbatch slurm/run_math500_eager_collect.sh    # math500, 16384 tok, eager, Phase 0B — chains run_math500_eager_label.sh
+sbatch slurm/run_aime2024_collect.sh         # aime2024, 32768 tok, FA2, Phase 0B — chains run_aime2024_label.sh
+sbatch slurm/run_aime2024_eager_collect.sh   # aime2024, 16384 tok, eager, Phase 0B — chains run_aime2024_eager_label.sh
+```
+
+Each collect script runs three steps internally:
+1. Collect traces (`collect_traces.py --phase0b`)
+2. Posthoc Phase 0B extraction (`extract_phase0b_signals.py --input → _posthoc.jsonl`)
+3. Cross-validate posthoc vs. collected signals — must PASS before label job is submitted
+
+If cross-validation fails, the label job is **not** submitted and the script exits non-zero. Inspect the posthoc vs. collected trace files before rerunning manually.
+
+**Note**: `run_math500_eager.sh` (old combined collect+label) is deprecated and deleted. `run_aime2024_preempt.sh` and `run_aime2024_eager_preempt.sh` are old preempt-partition scripts — also deprecated.
 
 ---
 

@@ -227,12 +227,82 @@ Issues identified and corrected:
 1. ✅ Real data pipeline: collect_traces.py written and validated on all 4 datasets
 2. ✅ Counterfactual importance labeler: label_importance.py written
 3. ✅ Signal ablation framework: signal_ablation.py written
-4. **NOW**: Run full collection — `python scripts/collect_traces.py --dataset math500 --n_samples 30 --max_new_tokens 16384`
-5. **THEN**: Run label_importance.py on correctly-answered traces (start with `--max_traces 10`)
-6. **THEN**: Run signal_ablation.py — determine if any variance signal beats H2O (Spearman ρ)
-7. If yes → run Dimensions 2–5 ablations; if no → revise hypothesis
-8. Implement H2O (cumulative), ThinKV (R/E/T KDE), RaaS (LRU+prefill) baselines in eviction.py
-9. Run accuracy vs. cache-size curves
+4. ✅ Full pipeline validated locally: 1 math500 trace labelled (41 min, 208 windows, flip_rate=0.71), signal ablation ran end-to-end
+5. ✅ SLURM batch jobs submitted and completed — all traces collected
+6. ✅ Phase 0 first signal ablation run complete — results obtained (see March 30, 2026 entry below)
+7. ✅ Critical masking bug identified and fixed in label_importance.py (truncation → occlusion)
+8. ✅ SLURM scripts restructured (collect/label split; all on general partition)
+9. **IN PROGRESS**: Re-running labels with fixed methodology on all 3 datasets
+10. **NEXT**: Phase 0B ablations once re-labelled results arrive — pre-RoPE keys (Dim 2), layer-wise HS (Dim 3)
+11. **WHILE WAITING**: Implement eviction baselines in eviction.py — H2O (cumulative), ThinKV (R/E/T KDE), RaaS (LRU+prefill)
+12. **AFTER PHASE 0B**: If any residual-stream signal beats H2O → Dimensions 4–5 ablations → implement eviction → accuracy vs. cache-size curves
+13. If hypothesis fails after 0B → revise; candidate pivots are in research_overview.md §"What Is Unproven"
+
+### [Date: March 30, 2026] - Phase 0 First Run + Critical Methodology Fix
+
+**Batch jobs complete.** All three trace files collected successfully:
+- `data/math500_eager_traces.jsonl` — 100 problems, 16384 tok, eager (h2o + entropy collected)
+- `data/aime2024_traces.jsonl` — 30 problems, 32768 tok, non-eager (FA2)
+- `data/aime2024_eager_traces.jsonl` — 30 problems, 16384 tok, eager
+
+**SLURM infrastructure restructured:**
+- Collect and label steps now run as separate jobs, both on `general` partition (48h, non-preemptible)
+- Preempt partition abandoned for all pipeline steps after 12+ requeues overnight
+- Renamed old combined preempt scripts with `_preempt` suffix; new scripts: `run_*_collect.sh` and `run_*_label.sh`
+- `run_math500_eager_label.sh` added (label-only, analogous to AIME label scripts)
+
+**Phase 0 first signal ablation results obtained** (for analysis details see signals_reference.md):
+- math500 non-eager: **INVALID** — cumsum artifact (stale run with old code); superseded by math500_eager
+- math500_eager: valid, 186k pairs
+- aime2024 (non-eager, 32k): valid, 78k pairs
+- aime2024_eager (16k): valid, 52k pairs
+
+**Critical masking bug found and fixed in label_importance.py:**
+- **Bug**: `run_masked_inference` truncated the sequence at `mask_start` and regenerated from there. This tests "how much prefix is needed?" — a position test. Early windows always had less context, so they were systematically labeled important regardless of content.
+- **Effect**: importance labels correlated with sequence position, not token content. This inflated h2o_attn's apparent advantage (it too correlates with position — early tokens get more future attention) and suppressed relative performance of content signals.
+- **Fix**: True occlusion — replace window tokens with pad_id, feed full modified reasoning context up to `answer_start` (the </think> boundary for DeepSeek-R1), generate the answer from there. Every window call feeds the same context length; only the content of the window varies.
+- **New function**: `find_answer_start()` — detects </think> boundary via token search, falls back to last `\boxed{` position, then to total_len - 64.
+- All stale label files (`*_traces_labelled.jsonl`) and signal ablation CSVs deleted; re-runs submitted.
+
+**Key analytical insights from Phase 0 results** (preliminary, from truncation-based labels):
+1. h2o_attn dominated (ρ≈0.36–0.41) but likely inflated by positional proxy artifact
+2. attn_entropy: ρ=-0.294 on AIME (negative = correct direction: low entropy → R-type → important); ρ=-0.063 on math500 (shorter traces, less discriminative)
+3. KV variance signals significantly stronger on longer/harder traces: kv_key_var_rolling64 was ρ=0.012 (AIME eager, 16k) vs ρ=0.124 (AIME non-eager, 32k) — same signal, different trace population. KV signals benefit from longer, more complex reasoning traces with more redundant content to discriminate.
+4. HS signals (all ρ<0.04) — inconclusive. **Critical limitation**: all HS signals use only the final transformer layer. Per interpretability literature (ROME/MEMIT, Geva et al., logit lens), the final layer is specialized for next-token prediction, not semantic representation. Semantic content peaks in middle-to-upper layers (~16–24 for a 32-layer LLaMA). Layer-wise ablation (Phase 0B Dimension 3) is required before any conclusion on HS signals.
+5. KV signals use post-RoPE keys (position-dependent contamination) and average all 32 layers (dilutes layer-specific signal). Phase 0B Dimension 2 (pre-RoPE) and single-layer/upper-weighted KV signals needed.
+6. ThinKV vs H2O comparison: cannot be resolved from token-level Spearman ρ. ThinKV beats H2O via segment-level R/E/T classification + different retention budgets per segment, not via per-token signal quality. Phase 1 accuracy curves are the correct comparison point.
+
+**Re-runs in progress**: `run_math500_eager_label.sh`, `run_aime2024_label.sh`, `run_aime2024_eager_label.sh` — all with occlusion-fixed label_importance.py.
+
+### [Date: April 2, 2026] - Phase 0B Infrastructure, Eviction Baselines, SLURM Restructuring
+
+**Phase 0B signal collection implemented:**
+- `collect_traces.py` extended: `--phase0b` flag adds pre-RoPE key variance (via `k_proj` forward hooks before RoPE application) and per-layer HS at layers 16, 20, 24 (configurable via `--hs_layers`). Single forward pass collects all target HS layers simultaneously. Explicit `_preRoPE_collected` flag guards `to_dict()` emission (robust against all-zero edge case).
+- `scripts/extract_phase0b_signals.py` written: posthoc extraction of Phase 0B signals from saved token IDs. Three modes: extract-only (`--input + --output`), compare-only (`--compare`), extract+compare. Cross-validation tolerance 1e-4; exit 0=PASS, 1=FAIL.
+- `signal_ablation.py` fixes:
+  - **Summary bug**: `max()` found max positive ρ only — silently missed large negative-ρ signals (AIME non-eager best was -0.214, reported as +0.015). Fixed to `max(abs(ρ))` with Δ|ρ| comparison.
+  - **Phase 0B temporal variants**: `_rolling64`/`_ema09` now generated for `kv_key_var_preRoPE`, `kv_key_norm_preRoPE`, and all `hs_l2_diff_lN` layer-specific signals (via regex `^hs_l2_diff_l\d+$`).
+
+**Eviction baselines implemented in `src/eviction.py`:**
+- `H2OEviction`: stateful cumulative attention, attention sinks + recency always kept, evicts lowest cumulative score — proper H2O (not single-step).
+- `ThinKVEviction`: stateless, 128-token segment entropy classification (R/E/T by tertile split), per-segment retention budgets {64, 32, 8}.
+- `RaaSEviction`: stateful LRU timestamps for decode tokens, unconditional prefill preservation, top-50% attention refreshes timestamp.
+
+**SLURM workflow restructured — user submits 4 commands only:**
+- `run_math500_collect.sh` (new): non-eager, 32768 tokens, Phase 0B signals, auto-chains `run_math500_label.sh` via `afterok`
+- `run_math500_label.sh` (new): label + ablate for non-eager math500 traces
+- `run_math500_eager_collect.sh` (new): split from deprecated combined `run_math500_eager.sh`; 16384 tokens, eager+Phase0B, auto-chains `run_math500_eager_label.sh`
+- `run_aime2024_collect.sh`, `run_aime2024_eager_collect.sh`: updated with 3-step posthoc cross-validation + `afterok` auto-chaining
+- All collect scripts follow: (1) collect → (2) posthoc extract → (3) cross-validate → if PASS: auto-submit label job
+- `run_math500_eager.sh` (combined): deprecated and deleted
+
+**Phase 0B collection jobs submitted.** Expected within 48h:
+- `data/math500_traces.jsonl` + `data/math500_eager_traces.jsonl` (re-collected with Phase 0B signals)
+- `data/aime2024_traces.jsonl` + `data/aime2024_eager_traces.jsonl` (re-collected with Phase 0B signals)
+- 4 posthoc cross-validation files
+- 4 signal ablation CSVs with pre-RoPE + layer-wise HS signals
+
+---
 
 ## Key Research Questions
 1. **Does any hidden-state/KV-vector variance signal correlate with token importance better than cumulative attention (H2O)?** If no, pivot.

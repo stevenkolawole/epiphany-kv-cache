@@ -71,11 +71,13 @@ Documented approximations in the Phase 0 pipeline that may affect signal ablatio
 
 3. **Answer normaliser coverage**: `answers_match` handles LaTeX variants (`\dfrac`/`\frac`, `\left(`/`(`, `\text{}`) and set reordering. Does not handle: symbolic equivalence (`\sin(\pi/6)` ≠ `1/2` in string comparison), approximate decimal equality, or multi-line answers. Some `correct=False` traces may be false negatives.
 
-4. **Post-RoPE key signals**: All KV signals are computed from post-RoPE keys (as stored in the cache). RoPE rotation inflates variance at large positions regardless of content. Pre-RoPE ablation (Dimension 2) is deferred to Phase 0B.
+4. **Post-RoPE key signals**: All KV signals are computed from post-RoPE keys (as stored in the cache). RoPE rotation inflates variance at large positions regardless of content. **Being addressed in Phase 0B**: `kv_key_var_preRoPE` and `kv_key_norm_preRoPE` collected via `k_proj` forward hooks before RoPE application; cross-validated posthoc via `extract_phase0b_signals.py`.
 
-5. **Single-layer hidden states**: `hs_*` signals use only the final transformer layer. Layer-wise ablation (Dimension 3) — whether earlier layers provide cleaner importance signals — is deferred.
+5. **Single-layer hidden states**: `hs_*` signals use only the final transformer layer, which is specialised for next-token prediction rather than semantic representation. **Being addressed in Phase 0B**: per-layer HS signals collected at layers 16, 20, 24 (`hs_l2_diff_l16`, `hs_l2_diff_l20`, `hs_l2_diff_l24`); same single forward pass, zero extra compute.
 
 6. **Short regeneration budget in labelling**: `max_new_tokens=512` per masked window. For problems requiring >512 tokens to reach `\boxed{}`, a window might appear unimportant (no flip) simply because the model couldn't finish the answer. Estimates suggest this affects ~5–15% of windows on hard AIME traces.
+
+7. **Truncation masking (fixed in label_importance.py)**: The original `run_masked_inference` truncated the sequence at `mask_start` and regenerated from there — a position test, not a content test. Early windows always had less context than late windows, creating a systematic position proxy: tokens near the start of generation were labeled important regardless of their semantic content. This inflated h2o_attn's apparent Spearman ρ advantage (h2o_attn also correlates with position, since early tokens accumulate more future attention). Fixed to true occlusion: replace window tokens with `pad_id`, feed the full modified reasoning trace up to `answer_start` (the `</think>` boundary for DeepSeek-R1) as context, generate the final answer from there. Every masked-inference call for a given trace feeds the same context length; only the window content varies. All labels generated before this fix are invalid and must be regenerated.
 
 ---
 

@@ -44,7 +44,7 @@ Output JSONL — one object per trace (written incrementally to avoid data loss)
         kv_key_norm_preRoPE  Key L2 norm before RoPE, all-layer mean.
                              (-1.0 sentinel if seq > hs_max_len)
         hs_l2_diff_lN        L2 diff of hidden states at layer N (e.g. hs_l2_diff_l16).
-                             Layers are specified via --hs_layers (default: 16,20,24).
+                             Layers are specified via --hs_layers (default: all 32 layers, 0-31).
                              (-1.0 sentinel if seq > hs_max_len)
         hs_cos_dist_lN       Cosine distance of hidden states at layer N.
                              (-1.0 sentinel if seq > hs_max_len)
@@ -776,9 +776,10 @@ def parse_args():
                         "per-layer hidden-state signals. Adds kv_key_var_preRoPE, "
                         "kv_key_norm_preRoPE, hs_l2_diff_lN, hs_cos_dist_lN to output. "
                         "Uses a post-generation forward pass with k_proj hooks.")
-    p.add_argument("--hs_layers",        type=str, default="16,20,24",
+    p.add_argument("--hs_layers",        type=str,
+                   default=",".join(str(i) for i in range(32)),
                    help="Comma-separated layer indices for per-layer HS signals when "
-                        "--phase0b is set (default: 16,20,24). Ignored without --phase0b.")
+                        "--phase0b is set (default: all 32 layers, 0-31). Ignored without --phase0b.")
     p.add_argument("--dry_run",         action="store_true",
                    help="Load model and run 1 problem to verify setup, then exit")
     return p.parse_args()

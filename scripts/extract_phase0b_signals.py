@@ -218,8 +218,8 @@ def parse_args():
     p.add_argument("--compare", type=Path, default=None,
                    help="Phase 0B trace JSONL to cross-validate against --input")
     p.add_argument("--model",   default="deepseek-ai/deepseek-r1-distill-llama-8b")
-    p.add_argument("--hs_layers", default="16,20,24",
-                   help="Comma-separated layer indices for per-layer HS (default: 16,20,24)")
+    p.add_argument("--hs_layers", default=",".join(str(i) for i in range(32)),
+                   help="Comma-separated layer indices for per-layer HS (default: all 32 layers, 0-31)")
     p.add_argument("--tol",     type=float, default=1e-4,
                    help="Absolute error tolerance for cross-validation (default: 1e-4)")
     p.add_argument("--max_traces", type=int, default=None,
