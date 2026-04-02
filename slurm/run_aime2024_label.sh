@@ -1,19 +1,21 @@
 #!/bin/bash
-#SBATCH --job-name=kvc_math500_eager
+#SBATCH --job-name=kvc_aime24_lbl
 #SBATCH --partition=general
-#SBATCH --output=/home/%u/workspace/kvcache/slurm_logs/math500_eager_%j.out
-#SBATCH --error=/home/%u/workspace/kvcache/slurm_logs/math500_eager_%j.err
+#SBATCH --output=/home/%u/workspace/kvcache/slurm_logs/aime2024_label_%j.out
+#SBATCH --error=/home/%u/workspace/kvcache/slurm_logs/aime2024_label_%j.err
 #SBATCH --gres=gpu:2
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem-per-gpu=24G
 #SBATCH --time=48:00:00
-#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=skolawol@andrew.cmu.edu
 
-# Math500 — eager attention only (adds h2o_attn + attn_entropy signals)
-# Writes to separate *_eager_* files so existing math500 data is untouched.
-# Preempt-safe: both collect and label skip already-completed entries on restart.
+# AIME 2024 — labelling + signal ablation only.
+# Reads from data/aime2024_traces.jsonl (produced by run_aime2024_collect.sh).
+# Runs on general (non-preemptible) — 30 traces at 5-15 min each fits well within 48h.
+#
+# Prerequisite: run_aime2024_collect.sh must be complete before submitting this.
 
 # ── Environment ────────────────────────────────────────────────────────────────
 source $(conda info --base)/etc/profile.d/conda.sh
@@ -28,31 +30,29 @@ WORKDIR=/home/skolawol/workspace/kvcache
 cd "$WORKDIR"
 mkdir -p slurm_logs results data
 
-TRACES=data/math500_eager_traces.jsonl
-LABELS=data/math500_eager_traces_labelled.jsonl
-RESULTS=results/math500_eager_signal_ablation.csv
+TRACES=data/aime2024_traces.jsonl
+LABELS=data/aime2024_traces_labelled.jsonl
+RESULTS=results/aime2024_signal_ablation.csv
 
 echo "=========================================="
-echo "math500 — eager attention"
+echo "aime2024 — label + ablate (general, 48h)"
 echo "Node: $(hostname)   Job: $SLURM_JOB_ID"
 echo "GPU: $(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null || echo 'n/a')"
 echo "Started: $(date)"
-echo "Outputs: $TRACES / $LABELS / $RESULTS"
+echo "Inputs:  $TRACES"
+echo "Outputs: $LABELS / $RESULTS"
 echo "=========================================="
 
-# ── Step 1: Collect traces ────────────────────────────────────────────────────
-echo ""
-echo "[Step 1] Collecting math500 traces with eager attention ..."
-python scripts/collect_traces.py \
-    --dataset math500 \
-    --n_samples 100 \
-    --max_new_tokens 16384 \
-    --force_eager_attn \
-    --output "$TRACES"
+if [ ! -f "$TRACES" ]; then
+    echo "[ERROR] Traces file not found: $TRACES"
+    echo "[ERROR] Run run_aime2024_collect.sh first."
+    exit 1
+fi
 
-STEP1=$?
-echo "[Step 1] Done (exit $STEP1) at $(date)"
-[ $STEP1 -ne 0 ] && { echo "[ERROR] collect_traces failed. Aborting."; exit $STEP1; }
+# Clear stale labels and results so resume logic doesn't skip re-labelling.
+echo ""
+echo "[Cleanup] Removing stale label and result files ..."
+rm -f "$LABELS" "$RESULTS"
 
 # ── Step 2a: Sanity check (1 trace) ──────────────────────────────────────────
 echo ""
@@ -91,8 +91,8 @@ echo "[Step 3] Done (exit $STEP3) at $(date)"
 echo ""
 echo "=========================================="
 echo "Complete at $(date)   exit=$STEP3"
-echo "  Traces:  $TRACES"
 echo "  Labels:  $LABELS"
 echo "  Results: $RESULTS"
+echo "  Note: h2o_attn + attn_entropy not in this run (see run_aime2024_eager_*.sh)"
 echo "=========================================="
 exit $STEP3

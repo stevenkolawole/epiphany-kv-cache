@@ -1,25 +1,21 @@
 #!/bin/bash
-#SBATCH --job-name=kvc_aime2024_eager
-#SBATCH --partition=preempt
-#SBATCH --output=/home/%u/workspace/kvcache/slurm_logs/aime2024_eager_%j.out
-#SBATCH --error=/home/%u/workspace/kvcache/slurm_logs/aime2024_eager_%j.err
+#SBATCH --job-name=kvc_aime24e_lbl
+#SBATCH --partition=general
+#SBATCH --output=/home/%u/workspace/kvcache/slurm_logs/aime2024_eager_label_%j.out
+#SBATCH --error=/home/%u/workspace/kvcache/slurm_logs/aime2024_eager_label_%j.err
 #SBATCH --gres=gpu:2
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem-per-gpu=24G
-#SBATCH --time=72:00:00
-#SBATCH --requeue
-#SBATCH --mail-type=END,FAIL,REQUEUE
+#SBATCH --time=48:00:00
+#SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=skolawol@andrew.cmu.edu
 
-# AIME 2024 — eager attention (preempt partition for long labelling times).
-# --requeue: SLURM automatically restarts the job if preempted.
-# Both collect and label skip already-completed entries on restart — safe to requeue.
-# Writes to *_eager_* files so existing aime2024 data is untouched.
+# AIME 2024 — eager labelling + signal ablation only.
+# Reads from data/aime2024_eager_traces.jsonl (produced by run_aime2024_eager_collect.sh).
+# Runs on general (non-preemptible) — 30 traces at 5-15 min each fits well within 48h.
 #
-# max_new_tokens capped at 16384 for the eager run: at 32768 tokens the full
-# attention matrix is ~64 GB (32768² × 32 layers × fp16) — OOM on most GPUs.
-# For a non-eager AIME collection (KV signals only), use run_aime2024.sh at 32768.
+# Prerequisite: run_aime2024_eager_collect.sh must be complete before submitting this.
 
 # ── Environment ────────────────────────────────────────────────────────────────
 source $(conda info --base)/etc/profile.d/conda.sh
@@ -39,26 +35,24 @@ LABELS=data/aime2024_eager_traces_labelled.jsonl
 RESULTS=results/aime2024_eager_signal_ablation.csv
 
 echo "=========================================="
-echo "aime2024 — eager attention (preempt, requeue-safe)"
-echo "Node: $(hostname)   Job: $SLURM_JOB_ID   Restart: ${SLURM_RESTART_COUNT:-0}"
+echo "aime2024 — eager label + ablate (general, 48h)"
+echo "Node: $(hostname)   Job: $SLURM_JOB_ID"
 echo "GPU: $(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null || echo 'n/a')"
 echo "Started: $(date)"
-echo "Outputs: $TRACES / $LABELS / $RESULTS"
+echo "Inputs:  $TRACES"
+echo "Outputs: $LABELS / $RESULTS"
 echo "=========================================="
 
-# ── Step 1: Collect traces ────────────────────────────────────────────────────
-echo ""
-echo "[Step 1] Collecting aime2024 traces with eager attention ..."
-python scripts/collect_traces.py \
-    --dataset aime2024 \
-    --n_samples 30 \
-    --max_new_tokens 16384 \
-    --force_eager_attn \
-    --output "$TRACES"
+if [ ! -f "$TRACES" ]; then
+    echo "[ERROR] Traces file not found: $TRACES"
+    echo "[ERROR] Run run_aime2024_eager_collect.sh first."
+    exit 1
+fi
 
-STEP1=$?
-echo "[Step 1] Done (exit $STEP1) at $(date)"
-[ $STEP1 -ne 0 ] && { echo "[ERROR] collect_traces failed. Aborting."; exit $STEP1; }
+# Clear labels and results to guarantee a clean run with the current methodology.
+echo ""
+echo "[Cleanup] Removing stale label and result files ..."
+rm -f "$LABELS" "$RESULTS"
 
 # ── Step 2a: Sanity check (1 trace) ──────────────────────────────────────────
 echo ""
@@ -97,9 +91,8 @@ echo "[Step 3] Done (exit $STEP3) at $(date)"
 echo ""
 echo "=========================================="
 echo "Complete at $(date)   exit=$STEP3"
-echo "  Traces:  $TRACES"
 echo "  Labels:  $LABELS"
 echo "  Results: $RESULTS"
-echo "  Note: h2o_attn + attn_entropy collected (eager). Non-eager at 32768 tokens: run_aime2024.sh"
+echo "  Note: h2o_attn + attn_entropy collected (eager). Non-eager at 32768: run_aime2024_*.sh"
 echo "=========================================="
 exit $STEP3

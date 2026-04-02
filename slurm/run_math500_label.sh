@@ -1,25 +1,22 @@
 #!/bin/bash
-#SBATCH --job-name=kvc_aime2024
-#SBATCH --partition=preempt
-#SBATCH --output=/home/%u/workspace/kvcache/slurm_logs/aime2024_%j.out
-#SBATCH --error=/home/%u/workspace/kvcache/slurm_logs/aime2024_%j.err
+#SBATCH --job-name=kvc_math500_lbl
+#SBATCH --partition=general
+#SBATCH --output=/home/%u/workspace/kvcache/slurm_logs/math500_label_%j.out
+#SBATCH --error=/home/%u/workspace/kvcache/slurm_logs/math500_label_%j.err
 #SBATCH --gres=gpu:2
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem-per-gpu=24G
-#SBATCH --time=72:00:00
-#SBATCH --requeue
-#SBATCH --mail-type=END,FAIL,REQUEUE
+#SBATCH --time=48:00:00
+#SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=skolawol@andrew.cmu.edu
 
-# AIME 2024 — NO eager attention. Runs at 32768 max tokens.
-# - No attention matrix materialised — FlashAttention stays on
-# - KV-vector signals + hidden-state signals collected for all seqs
-# - h2o_attn + attn_entropy NOT collected (see run_aime2024_eager.sh)
-# - 32768 tokens is safe because FA2 keeps memory O(n), not O(n²)
+# Math500 — non-eager labelling + signal ablation only.
+# Reads from data/math500_traces.jsonl (produced by run_math500_collect.sh).
+# Runs on general (non-preemptible).
 #
-# --requeue: preempt-safe. Both collect_traces and label_importance skip
-# already-completed entries on restart.
+# Prerequisite: run_math500_collect.sh must be complete before submitting this.
+# Clean start: deletes stale labels and results before running.
 
 # ── Environment ────────────────────────────────────────────────────────────────
 source $(conda info --base)/etc/profile.d/conda.sh
@@ -34,30 +31,29 @@ WORKDIR=/home/skolawol/workspace/kvcache
 cd "$WORKDIR"
 mkdir -p slurm_logs results data
 
-TRACES=data/aime2024_traces.jsonl
-LABELS=data/aime2024_traces_labelled.jsonl
-RESULTS=results/aime2024_signal_ablation.csv
+TRACES=data/math500_traces.jsonl
+LABELS=data/math500_traces_labelled.jsonl
+RESULTS=results/math500_signal_ablation.csv
 
 echo "=========================================="
-echo "aime2024 — non-eager, 32768 tokens (preempt, requeue-safe)"
-echo "Node: $(hostname)   Job: $SLURM_JOB_ID   Restart: ${SLURM_RESTART_COUNT:-0}"
+echo "math500 — non-eager label + ablate (general, 48h)"
+echo "Node: $(hostname)   Job: $SLURM_JOB_ID"
 echo "GPU: $(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null || echo 'n/a')"
 echo "Started: $(date)"
-echo "Outputs: $TRACES / $LABELS / $RESULTS"
+echo "Inputs:  $TRACES"
+echo "Outputs: $LABELS / $RESULTS"
 echo "=========================================="
 
-# ── Step 1: Collect traces ────────────────────────────────────────────────────
-echo ""
-echo "[Step 1] Collecting aime2024 traces (no eager attn, 32768 max tokens) ..."
-python scripts/collect_traces.py \
-    --dataset aime2024 \
-    --n_samples 30 \
-    --max_new_tokens 32768 \
-    --output "$TRACES"
+if [ ! -f "$TRACES" ]; then
+    echo "[ERROR] Traces file not found: $TRACES"
+    echo "[ERROR] Run run_math500_collect.sh first."
+    exit 1
+fi
 
-STEP1=$?
-echo "[Step 1] Done (exit $STEP1) at $(date)"
-[ $STEP1 -ne 0 ] && { echo "[ERROR] collect_traces failed. Aborting."; exit $STEP1; }
+# Clean start — labels and results always regenerated from scratch.
+echo ""
+echo "[Cleanup] Removing stale label and result files ..."
+rm -f "$LABELS" "$RESULTS"
 
 # ── Step 2a: Sanity check (1 trace) ──────────────────────────────────────────
 echo ""
@@ -96,9 +92,9 @@ echo "[Step 3] Done (exit $STEP3) at $(date)"
 echo ""
 echo "=========================================="
 echo "Complete at $(date)   exit=$STEP3"
-echo "  Traces:  $TRACES"
 echo "  Labels:  $LABELS"
 echo "  Results: $RESULTS"
-echo "  Note: h2o_attn + attn_entropy not in this run (see run_aime2024_eager.sh)"
+echo "  Note: KV/HS + Phase 0B signals (no h2o_attn/attn_entropy — non-eager run)"
+echo "  Cross-val pair: results/math500_eager_signal_ablation.csv"
 echo "=========================================="
 exit $STEP3
