@@ -274,6 +274,65 @@ Issues identified and corrected:
 
 **Re-runs in progress**: `run_math500_eager_label.sh`, `run_aime2024_label.sh`, `run_aime2024_eager_label.sh` — all with occlusion-fixed label_importance.py.
 
+### [Date: April 6, 2026] - Phase 0B Signal Ablation Analysis Complete
+
+All 4 Phase 0B signal ablation runs completed and analysed. Full results in
+`experiments/phase0b_ablation_results.md`. Key findings:
+
+**Data collected:**
+- math500: 75 labelled traces, 172k pairs, avg important_frac ~0.20
+- math500_eager: 81 labelled traces, 191k pairs, avg important_frac ~0.20
+- aime2024: 14 labelled traces, 82k pairs, avg important_frac ~0.52
+- aime2024_eager: 11 labelled traces (hook bug → only 15/30 collected), 52k pairs, avg ~0.64
+- **aime2024_eager is partial** — hook leak bug fixed; rerun queued (`sbatch slurm/run_aime2024_eager_collect.sh`)
+
+**Infrastructure fixes applied before/during this phase:**
+- `collect_traces.py` + `extract_phase0b_signals.py`: `try/finally` added around forward
+  pass in `fill_hidden_states` — prevents hook leak on OOM/exception (root cause of
+  aime2024_eager 15/30 failure)
+- `extract_phase0b_signals.py`: cross-validation replaced with Spearman ρ ≥ 0.99 (was
+  absolute error tolerance 1e-4, which always failed due to fp16 GPU non-determinism)
+- `--hs_layers` default changed from "16,20,24" to all 32 layers (0–31)
+
+**Top findings (see phase0b_ablation_results.md for full tables and CIs):**
+
+1. **Two consistent-direction HS bands discovered:**
+   - Band A (l7–l13): consistently POSITIVE ρ across all 4 datasets — high signal at these
+     layers = important token. Evict tokens with LOW l7–l13 signal.
+   - Band B (l18–l25): consistently NEGATIVE ρ across all 4 datasets — high signal at these
+     layers = dispensable token. Evict tokens with HIGH l18–l25 signal.
+   - Combined score `l10_rolling64 − l21_rolling64` is the Phase 1 candidate signal.
+
+2. **preRoPE vs postRoPE: null result.** Max Δρ = 0.0005 across all datasets. Collecting
+   preRoPE signals adds zero benefit. Remove from future runs.
+
+3. **Rolling64 beats ema09 beats raw by 30–57%** universally. Token importance is a
+   sustained contextual property, not an instantaneous spike.
+
+4. **Sign flip between easy and hard problems** for kv_key_var, kv_val_var, cross_head_var,
+   hs_l2_diff_l31, and all attention signals. Root cause: important_frac ~0.20 in math500
+   vs ~0.52–0.64 in AIME. The same signal's relationship to importance inverts with label
+   density. Not confirmed as a real effect (vs sampling noise) due to small AIME n.
+
+5. **h2o_attn is the weakest signal tested** — 3–12× weaker than attn_entropy, substantially
+   weaker than multiple HS and KV signals. Confirms the core hypothesis: attention score is
+   a poor token importance proxy.
+
+6. **AIME results are statistically unreliable.** With 11–14 effective samples (traces),
+   95% CIs on all AIME-side correlations span zero. Directionally consistent with math500
+   findings, but cannot be claimed as independent evidence. Adding AIME 2025 and AIME 2026
+   (MathArena/aime_2025, MathArena/aime_2026) is strongly recommended — 90 total AIME
+   problems would yield ~35–45 labelled traces.
+
+**Code change required (AIME 2025/2026):** `collect_traces.py` needs `load_aime2025` and
+`load_aime2026` functions + `--dataset` choices extended. Dataset field names need
+verification against HuggingFace schema before implementation.
+
+**Phase 1 recommended signal:** `hs_l2_diff_l21_rolling64` (or combined Band A−B score).
+Posthoc signal (requires separate forward pass); not available during generation.
+Online fallback: `kv_key_var_rolling64` (free, FlashAttention-compatible, sign depends on
+task difficulty).
+
 ### [Date: April 2, 2026] - Phase 0B Infrastructure, Eviction Baselines, SLURM Restructuring
 
 **Phase 0B signal collection implemented:**

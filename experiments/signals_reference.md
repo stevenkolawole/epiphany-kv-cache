@@ -1,6 +1,6 @@
 # Signal Reference: KV Cache Token Importance Proxies
 
-A permanent reference for all signals collected in `collect_traces.py`, including motivation, computation, cost, and known failure modes. Last updated: March 2026.
+A permanent reference for all signals collected in `collect_traces.py`, including motivation, computation, cost, and known failure modes. Last updated: April 2026.
 
 ---
 
@@ -193,7 +193,7 @@ Attention entropy also inherits the attention-sink problem: at long contexts, th
 
 ## Derived Temporal Variants (computed on-the-fly in signal_ablation.py)
 
-For signals `kv_key_var`, `kv_val_var`, `hs_l2_diff`, `kv_key_var_preRoPE`, `kv_key_norm_preRoPE`, and all per-layer HS signals (`hs_l2_diff_l16`, `hs_l2_diff_l20`, `hs_l2_diff_l24`), we compute two temporal variants:
+For signals `kv_key_var`, `kv_val_var`, `hs_l2_diff`, `kv_key_var_preRoPE`, `kv_key_norm_preRoPE`, and all per-layer HS signals (`hs_l2_diff_l0` … `hs_l2_diff_l31`), we compute two temporal variants:
 
 - **`{signal}_rolling64`**: Rolling mean over the past 64 tokens. Tests whether "sustained elevated signal" predicts importance better than the instantaneous value. Window=64 is ~2× the masking window size used in label_importance.
 - **`{signal}_ema09`**: Exponential moving average (α=0.9). Strong recency bias — effectively a soft version of "current signal with short memory of recent past". Standard in signal processing; related to how ThinKV's entropy-based classifier accumulates statistics before making a segment decision.
@@ -241,13 +241,13 @@ Two new signal groups added in Phase 0B collection (`--phase0b` flag):
 
 ---
 
-### `hs_l2_diff_l16`, `hs_l2_diff_l20`, `hs_l2_diff_l24` — Per-Layer Hidden-State L2 Diff
+### `hs_l2_diff_l0` … `hs_l2_diff_l31` — Per-Layer Hidden-State L2 Diff (all 32 layers)
 
-**What it is**: Same computation as `hs_l2_diff` (consecutive hidden-state L2 difference) but computed at specific intermediate layers (16, 20, 24 out of 32) rather than the final layer.
+**What it is**: Same computation as `hs_l2_diff` (consecutive hidden-state L2 difference) but computed at every transformer layer (0–31) rather than only the final layer.
 
-**Why**: The final transformer layer is specialised for next-token prediction (vocabulary projection). Semantic content — factual associations, reasoning state, entity representations — peaks in middle-to-upper layers (~16–24 for a 32-layer LLaMA-class model; see ROME/MEMIT, logit lens). Using the final layer for importance detection is likely suboptimal. Layers 16/20/24 are tested as candidate "semantic peak" layers.
+**Why**: The final transformer layer is specialised for next-token prediction (vocabulary projection). Semantic content — factual associations, reasoning state, entity representations — peaks in middle-to-upper layers (~16–24 for a 32-layer LLaMA-class model; see ROME/MEMIT, logit lens). Rather than guessing which specific layer to sample, we collect all 32 and let `signal_ablation.py` sweep over them empirically. Storage cost is negligible (each signal is a 1D float32 array of length `seq_len`; 32 layers × 16k tokens × 4 bytes ≈ 2MB/trace).
 
-**Cost**: Same single post-hoc forward pass as `hs_l2_diff` — uses `output_hidden_states=True`, which returns all layer hidden states simultaneously. No extra compute beyond what was already needed. FA2-compatible, O(n) memory.
+**Cost**: `output_hidden_states=True` materializes all 33 hidden states (embedding + 32 layer outputs) in memory during the single post-hoc forward pass regardless of how many we save. Choosing to store all 32 costs zero additional compute. FA2-compatible, O(n) memory.
 
 ---
 
@@ -284,27 +284,88 @@ More importantly: ThinKV's superiority over H2O on task accuracy comes from **se
 
 ---
 
-## Phase 0 Preliminary Results (March 2026)
+## Phase 0B Ablation Results (April 2026)
 
-> ⚠️ **These results are from truncation-based labels (pre-fix) and are being regenerated.** The masking bug (truncation instead of occlusion) introduced a position proxy that inflated h2o_attn's ρ and may have suppressed content-signal ρ values. Treat as preliminary directional evidence only. Updated results will replace this table once re-labelling completes.
+> Full results, tables, confidence intervals, and Phase 1 recommendation in
+> `experiments/phase0b_ablation_results.md`. This section is a condensed reference.
+> Phase 0 preliminary results (March 2026, truncation-based labels) are archived in
+> `data/phase_OA/` and superseded by the results below.
 
-| Signal | math500_eager | aime2024 (32k) | aime2024_eager (16k) | Notes |
+### Best signals per dataset (rolling64, sorted by |ρ|)
+
+| Signal | math500 | math500_eager | aime2024 | aime2024_eager |
 |---|---|---|---|---|
-| h2o_attn | **+0.414** | — | **+0.358** | Attention baseline; requires eager. Likely inflated by position proxy. |
-| attn_entropy | -0.063 | — | **-0.294** | Negative = correct direction. Stronger on harder/longer AIME traces. |
-| kv_val_var_rolling64 | +0.148 | +0.114 | +0.066 | Best FA2-compatible signal on math500_eager |
-| kv_key_var_rolling64 | +0.106 | **+0.124** | +0.012 | 10× stronger on 32k AIME vs 16k AIME — population effect (longer traces) |
-| kv_key_var_ema09 | +0.108 | +0.122 | +0.024 | |
-| cross_head_var | +0.054 | **+0.119** | +0.055 | Surprisingly competitive on 32k AIME |
-| kv_key_var | +0.086 | +0.101 | +0.022 | |
-| kv_key_norm | +0.084 | +0.100 | +0.022 | |
-| hs_l2_diff_rolling64 | +0.030 | -0.025 | -0.038 | Near-null; final-layer limitation likely explains this |
-| hs_cos_dist | -0.010 | +0.010 | -0.024 | Near-null |
-| hs_norm | +0.031 | -0.003 | +0.016 | Near-null |
-| hs_l2_diff | +0.010 | +0.006 | -0.009 | Near-null |
+| kv_key_var | **+0.380** | +0.214 | −0.203 | −0.022 |
+| hs_l2_diff best layer | −0.254 (l23) | −0.202 (l1) | −0.178 (l31) | **−0.227 (l21)** |
+| attn_entropy (eager only) | — | +0.176 | — | −0.139 |
+| cross_head_var | +0.207 | +0.101 | −0.094 | +0.006 |
+| kv_val_var | −0.135 | −0.145 | +0.105 | −0.060 |
+| h2o_attn (eager only) | — | **+0.050** | — | **−0.011** |
 
-**Key observations:**
-- KV variance signals are meaningfully stronger on the harder/longer 32k AIME traces than on the 16k eager run — the signal discriminates better when traces are longer and more complex. This is promising: the use case we care about (long hard reasoning) is where the signals work best.
-- cross_head_var is unexpectedly competitive on 32k AIME (ρ=0.119, within margin of kv_key_var_rolling64=0.124). Worth watching.
-- HS signals are inconclusive — final-layer limitation makes these results uninterpretable until Phase 0B Dimension 3 (layer-wise ablation targeting layers ~16–24).
-- math500 non-eager results are invalid (cumsum artifact from pre-fix code); math500_eager supersedes them.
+**h2o_attn is the weakest signal in every dataset.** attn_entropy outperforms it by
+3–12×. Multiple HS and KV signals outperform h2o_attn across the board. Core hypothesis
+confirmed: attention score is a poor token importance proxy.
+
+### Definitive null results
+
+| Ablation | Finding |
+|---|---|
+| preRoPE vs postRoPE | Max Δρ = 0.0005. RoPE contamination is negligible. Do not collect preRoPE signals. |
+| hs_cos_dist vs hs_l2_diff | hs_cos_dist is consistently weaker at every layer. Cosine distance discards scale information that is predictive. |
+| hs_norm | Max |ρ| = 0.087 (aime2024_eager). Weak and inconsistent. |
+| Redundant signals | kv_key_norm ≈ kv_key_var (Δρ < 0.001). kv_key_{var,norm}_preRoPE ≈ postRoPE. hs_l2_diff = hs_l2_diff_l31. |
+
+### Layer anatomy (hs_l2_diff_lN rolling64)
+
+Two bands with consistent sign across all 4 datasets:
+
+**Band A — layers 7–13: consistently POSITIVE ρ**
+High hs_l2_diff at these layers → token is IMPORTANT (label=1).
+Eviction rule: keep high-signal tokens, evict low-signal tokens.
+Peak: l10 in math500_eager (ρ=+0.141), l8 in aime2024_eager (ρ=+0.155).
+Interpretation: mid-network feature routing / factual retrieval layers (per ROME/MEMIT).
+Important tokens cause larger hidden-state changes here.
+
+**Band B — layers 18–25: consistently NEGATIVE ρ**
+High hs_l2_diff at these layers → token is DISPENSABLE (label=0).
+Eviction rule: keep low-signal tokens, evict high-signal tokens.
+Peak: l23 in math500 (ρ=−0.254), l21 in aime2024_eager (ρ=−0.227).
+Interpretation: upper-mid output-preparation layers. Large changes may mark verbose or
+transitional tokens.
+
+**Unstable layers:**
+- l0: mixed (negative in math500 but positive in aime2024_eager)
+- l14–l17: near-zero in math500, moderately negative in AIME — dataset-dependent
+- l31 (last layer): strongly positive in math500 (+0.220), strongly negative in aime2024
+  (−0.178). Follows same sign-flip pattern as kv_key_var. Do not use as universal signal.
+
+### Sign flip between easy and hard problems
+
+Most signals (kv_key_var, kv_val_var, cross_head_var, hs_l2_diff_l31, attn_entropy) flip
+sign between math500 (~0.20 important_frac) and aime2024 (~0.52 important_frac). This is
+driven by label density: when most tokens are important (AIME), the rare dispensable tokens
+have different signal characteristics than when most tokens are dispensable (math500).
+
+Only Band A (l7–l13) and Band B (l18–l25) maintain consistent sign across both datasets.
+
+**Statistical caveat**: aime2024 has 14 labelled traces, aime2024_eager has 11. With these
+effective sample sizes, 95% confidence intervals span approximately ±0.5–0.6 around any
+point estimate. All AIME-side ρ values are consistent with zero. Extending to AIME 2025
+and AIME 2026 (MathArena datasets) is required before AIME conclusions can be trusted.
+
+### Temporal smoothing
+
+Rolling64 outperforms ema09 outperforms raw by 30–57% universally.
+Use rolling64 for all signals. Rolling window of 64 ≈ 2× masking window size (32).
+
+### Phase 1 recommended signal
+
+Primary: `hs_l2_diff_l21_rolling64` — consistently negative, strong across datasets.
+Posthoc (requires separate forward pass). Evict tokens with highest values.
+
+Combined: `hs_l2_diff_l10_rolling64 − hs_l2_diff_l21_rolling64` — exploits both bands.
+Tokens high in Band A and low in Band B are doubly important. Tokens low in Band A and
+high in Band B are doubly dispensable. Evict tokens with lowest combined score.
+
+Online fallback (during generation): `kv_key_var_rolling64`. FlashAttention-compatible,
+zero overhead. Sign is task-difficulty-dependent; use with awareness of context.
