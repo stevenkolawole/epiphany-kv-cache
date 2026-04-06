@@ -31,16 +31,24 @@ Usage
 
 Cross-validation interpretation
 --------------------------------
-The two extraction paths should agree to within float32 precision (~1e-7
-relative error) at every token position for every signal.  Larger discrepancies
-indicate:
-  - Token ID mismatch: the stored token_ids don't reproduce the same forward
-    pass (e.g. different tokenizer, prompt template change).
-  - Hook placement mismatch: k_proj hook fires at different point in one path.
-  - dtype/precision difference between the two runs.
+The two extraction paths compute signals via separate fp16 forward passes.
+GPU floating-point arithmetic is non-deterministic (non-associative parallel
+reductions in CUDA/cuBLAS), so absolute values will differ between runs even
+with identical inputs.  At middle transformer layers the residual stream can
+have large magnitudes, amplifying fp16 rounding differences to absolute errors
+of O(100-1000) — making absolute-error tolerances useless as a quality gate.
 
-The --compare flag prints per-signal max absolute error and flags any position
-where |error| > --tol (default 1e-4, chosen to be well above float32 noise).
+Instead, we check Spearman rank correlation (ρ) between the two signal vectors
+for each trace.  Bugs produce qualitatively different signals (ρ near 0 or
+negative); fp16 non-determinism produces nearly identical rankings (ρ > 0.99).
+
+The --compare flag prints per-signal mean Spearman ρ across all trace pairs
+and exits 0 (PASS) only if every signal meets --min_corr (default 0.99).
+
+What low ρ indicates (the actual bugs to catch):
+  - Token ID mismatch: stored token_ids don't reproduce the same sequence.
+  - Hook placement mismatch: k_proj hook fires at a different point in one path.
+  - Layer index off-by-one: hs_index = layer_idx + 1 wrong in one path.
 """
 
 import argparse
@@ -120,15 +128,16 @@ def extract_phase0b(
     for layer in model.model.layers:
         hooks.append(layer.self_attn.k_proj.register_forward_hook(_make_hook()))
 
-    with torch.no_grad():
-        out = model(
-            input_ids=input_ids.to(device),
-            output_hidden_states=True,
-            use_cache=False,
-        )
-
-    for h in hooks:
-        h.remove()
+    try:
+        with torch.no_grad():
+            out = model(
+                input_ids=input_ids.to(device),
+                output_hidden_states=True,
+                use_cache=False,
+            )
+    finally:
+        for h in hooks:
+            h.remove()
 
     signals: Dict[str, List[float]] = {}
 
@@ -165,16 +174,32 @@ def extract_phase0b(
 
 # ── Cross-validation comparison ───────────────────────────────────────────────
 
+def _spearman(a: np.ndarray, b: np.ndarray) -> float:
+    """
+    Spearman rank correlation between two 1-D arrays, skipping -1.0 sentinels.
+    Returns nan if fewer than 10 valid positions remain.
+    """
+    mask = (a != -1.0) & (b != -1.0)
+    if mask.sum() < 10:
+        return float("nan")
+    a, b = a[mask], b[mask]
+    rank_a = np.argsort(np.argsort(a)).astype(np.float64)
+    rank_b = np.argsort(np.argsort(b)).astype(np.float64)
+    n = len(a)
+    d = rank_a - rank_b
+    return float(1.0 - 6.0 * (d * d).sum() / (n * (n * n - 1)))
+
+
 def compare_signals(
     rec_a: Dict,
     rec_b: Dict,
-    tol: float,
     signal_names: List[str],
 ) -> Dict[str, Dict]:
     """
-    Compare Phase 0B signals between two trace records for the same problem.
+    Compare Phase 0B signals between two trace records via Spearman correlation.
 
-    Returns per-signal stats: {"max_abs_err": float, "n_violations": int}.
+    Returns per-signal stats: {"rho": float, "note": str}.
+    rho == nan means the signal was missing or too short to evaluate.
     """
     sigs_a = rec_a.get("signals", {})
     sigs_b = rec_b.get("signals", {})
@@ -184,23 +209,15 @@ def compare_signals(
         a = sigs_a.get(name)
         b = sigs_b.get(name)
         if a is None or b is None:
-            stats[name] = {"max_abs_err": float("nan"), "n_violations": -1,
-                           "note": "missing in one file"}
+            stats[name] = {"rho": float("nan"), "note": "missing in one file"}
             continue
         if len(a) != len(b):
-            stats[name] = {"max_abs_err": float("nan"), "n_violations": -1,
+            stats[name] = {"rho": float("nan"),
                            "note": f"length mismatch {len(a)} vs {len(b)}"}
             continue
-
         arr_a = np.array(a, dtype=np.float64)
         arr_b = np.array(b, dtype=np.float64)
-        abs_err = np.abs(arr_a - arr_b)
-        stats[name] = {
-            "max_abs_err": float(abs_err.max()),
-            "mean_abs_err": float(abs_err.mean()),
-            "n_violations": int((abs_err > tol).sum()),
-            "note": "",
-        }
+        stats[name] = {"rho": _spearman(arr_a, arr_b), "note": ""}
     return stats
 
 
@@ -220,8 +237,8 @@ def parse_args():
     p.add_argument("--model",   default="deepseek-ai/deepseek-r1-distill-llama-8b")
     p.add_argument("--hs_layers", default=",".join(str(i) for i in range(32)),
                    help="Comma-separated layer indices for per-layer HS (default: all 32 layers, 0-31)")
-    p.add_argument("--tol",     type=float, default=1e-4,
-                   help="Absolute error tolerance for cross-validation (default: 1e-4)")
+    p.add_argument("--min_corr", type=float, default=0.99,
+                   help="Minimum Spearman ρ for cross-validation PASS (default: 0.99)")
     p.add_argument("--max_traces", type=int, default=None,
                    help="Process only the first N traces (useful for spot-checks)")
     return p.parse_args()
@@ -234,7 +251,7 @@ def main():
     # ── Compare mode (no model needed) ───────────────────────────────────
     if args.compare is not None and args.output is None:
         print(f"Cross-validation mode: {args.input}  vs  {args.compare}")
-        print(f"Tolerance: {args.tol:.1e}")
+        print(f"Min Spearman ρ required: {args.min_corr:.3f}")
 
         with open(args.input) as f:
             recs_a = [json.loads(l) for l in f if l.strip()]
@@ -255,27 +272,28 @@ def main():
             if rec_b is None:
                 print(f"  [SKIP] No match for problem: {rec_a['problem'][:60]}...")
                 continue
-            stats = compare_signals(rec_a, rec_b, args.tol, _p0b_signals)
+            stats = compare_signals(rec_a, rec_b, _p0b_signals)
             n_checked += 1
             for name, s in stats.items():
-                if s["n_violations"] >= 0:
-                    agg[name].append(s["max_abs_err"])
+                if not np.isnan(s["rho"]):
+                    agg[name].append(s["rho"])
 
         print(f"\nChecked {n_checked} trace pairs.")
-        print(f"\n{'Signal':<30} {'Max |err|':>12} {'Mean max |err|':>16} {'Status'}")
-        print("-" * 65)
+        print(f"\n{'Signal':<30} {'Mean ρ':>10} {'Min ρ':>10} {'Status'}")
+        print("-" * 58)
         all_ok = True
         for name in _p0b_signals:
-            errs = agg.get(name, [])
-            if not errs:
-                print(f"  {name:<28} {'N/A':>12}  (not present in both files)")
+            rhos = agg.get(name, [])
+            if not rhos:
+                print(f"  {name:<28} {'N/A':>10}  (not present in both files)")
                 continue
-            max_err  = max(errs)
-            mean_err = float(np.mean(errs))
-            status   = "OK" if max_err <= args.tol else f"FAIL (>{args.tol:.1e})"
-            if max_err > args.tol:
+            mean_rho = float(np.mean(rhos))
+            min_rho  = float(np.min(rhos))
+            ok       = min_rho >= args.min_corr
+            status   = "OK" if ok else f"FAIL (min ρ < {args.min_corr:.2f})"
+            if not ok:
                 all_ok = False
-            print(f"  {name:<28} {max_err:>12.2e} {mean_err:>16.2e}  {status}")
+            print(f"  {name:<28} {mean_rho:>10.4f} {min_rho:>10.4f}  {status}")
 
         print()
         print("Cross-validation: " + ("PASSED" if all_ok else "FAILED"))
@@ -336,10 +354,10 @@ def main():
         import subprocess, sys as _sys
         result = subprocess.run(
             [_sys.executable, __file__,
-             "--input",   str(out_path),
-             "--compare", str(args.compare),
+             "--input",    str(out_path),
+             "--compare",  str(args.compare),
              "--hs_layers", args.hs_layers,
-             "--tol",     str(args.tol)],
+             "--min_corr", str(args.min_corr)],
             check=False,
         )
         sys.exit(result.returncode)

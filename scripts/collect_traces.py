@@ -215,6 +215,77 @@ def load_aime2024(n_samples: int) -> List[Dict]:
     return problems
 
 
+def _load_matharena_aime(hf_repo: str, dataset_tag: str, n_samples: int) -> List[Dict]:
+    """
+    Generic loader for MathArena AIME datasets (aime_2025, aime_2026, etc.).
+    HF repo: e.g. "MathArena/aime_2025".
+    Column names are discovered dynamically at runtime — MathArena may differ from
+    Maxwell-Jia/AIME_2024 (which uses "Problem" / "Answer").
+    Likely columns: problem/Problem/question, answer/Answer/solution_value/answer_value.
+    """
+    print(f"Loading {hf_repo} ...")
+    # MathArena datasets may use "train" or "test" split — try both.
+    ds = None
+    for split in ("train", "test", "validation"):
+        try:
+            ds = load_dataset(hf_repo, split=split, cache_dir=_hf_cache())
+            print(f"  Split '{split}': {len(ds)} problems available.")
+            break
+        except Exception:
+            continue
+    if ds is None:
+        raise RuntimeError(
+            f"Could not load {hf_repo} on any split (train/test/validation). "
+            f"Check that the dataset exists on HuggingFace and the repo name is correct."
+        )
+
+    first = ds[0]
+    print(f"  Columns: {list(first.keys())}")
+
+    _PROBLEM_COLS = ["problem", "Problem", "question", "Question", "problem_statement"]
+    _ANSWER_COLS  = ["answer", "Answer", "answer_value", "solution_value", "ground_truth"]
+
+    problem_col = next((c for c in _PROBLEM_COLS if c in first), None)
+    answer_col  = next((c for c in _ANSWER_COLS  if c in first), None)
+
+    if problem_col is None:
+        raise RuntimeError(
+            f"Cannot find problem column in {hf_repo}. "
+            f"Tried: {_PROBLEM_COLS}. Available: {list(first.keys())}"
+        )
+    if answer_col is None:
+        raise RuntimeError(
+            f"Cannot find answer column in {hf_repo}. "
+            f"Tried: {_ANSWER_COLS}. Available: {list(first.keys())}"
+        )
+
+    print(f"  Using columns: problem='{problem_col}', answer='{answer_col}'")
+
+    problems = []
+    for item in ds:
+        problems.append({
+            "problem":      str(item[problem_col]).strip(),
+            "ground_truth": str(item[answer_col]).strip(),
+            "dataset":      dataset_tag,
+            "id":           str(item.get("id", item.get("ID", item.get("problem_id", "")))),
+        })
+        if len(problems) >= n_samples:
+            break
+
+    print(f"  Collected {len(problems)} usable problems.")
+    return problems
+
+
+def load_aime2025(n_samples: int) -> List[Dict]:
+    """MathArena/aime_2025 — AIME 2025 competition problems (30 rows expected)."""
+    return _load_matharena_aime("MathArena/aime_2025", "AIME2025", n_samples)
+
+
+def load_aime2026(n_samples: int) -> List[Dict]:
+    """MathArena/aime_2026 — AIME 2026 competition problems (30 rows expected)."""
+    return _load_matharena_aime("MathArena/aime_2026", "AIME2026", n_samples)
+
+
 def load_livecodebench(n_samples: int) -> List[Dict]:
     """
     livecodebench/code_generation, split=test (121 rows).
@@ -550,15 +621,16 @@ class SignalAccumulator:
                 ))
 
         # ── Single forward pass ───────────────────────────────────────────
-        with torch.no_grad():
-            out = model(
-                input_ids=input_ids.to(device),
-                output_hidden_states=True,
-                use_cache=False,
-            )
-
-        for h in hooks:
-            h.remove()
+        try:
+            with torch.no_grad():
+                out = model(
+                    input_ids=input_ids.to(device),
+                    output_hidden_states=True,
+                    use_cache=False,
+                )
+        finally:
+            for h in hooks:
+                h.remove()
 
         # out.hidden_states: tuple (n_layers+1) × (1, seq_len, d_model)
         # Index 0 = embedding output; index i+1 = output of transformer layer i.
@@ -758,7 +830,8 @@ def parse_args():
     p.add_argument("--model",           default="deepseek-ai/deepseek-r1-distill-llama-8b",
                    help="HuggingFace model ID (default: deepseek-r1-distill-llama-8b)")
     p.add_argument("--dataset",
-                   choices=["math500", "aime2024", "livecodebench", "gsm8k"],
+                   choices=["math500", "aime2024", "aime2025", "aime2026",
+                            "livecodebench", "gsm8k"],
                    default="math500",
                    help="Dataset to use (default: math500)")
     p.add_argument("--n_samples",       type=int, default=20,
@@ -806,6 +879,8 @@ def main():
     loader = {
         "math500":       load_math500,
         "aime2024":      load_aime2024,
+        "aime2025":      load_aime2025,
+        "aime2026":      load_aime2026,
         "livecodebench": load_livecodebench,
         "gsm8k":         load_gsm8k,
     }[args.dataset]
