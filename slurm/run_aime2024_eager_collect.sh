@@ -13,7 +13,7 @@
 
 # AIME 2024 eager — collect → posthoc cross-validate → auto-chain label job.
 # Phase 0B edition: all Phase 0 signals (incl. h2o_attn + attn_entropy via
-# --force_eager_attn) + pre-RoPE key variance + per-layer HS at layers 16/20/24.
+# --force_eager_attn) + pre-RoPE key variance + per-layer HS at all 32 layers (0–31).
 # max_new_tokens capped at 16384: at 32768 the full attention matrix is ~64GB OOM.
 #
 # Steps run in this script:
