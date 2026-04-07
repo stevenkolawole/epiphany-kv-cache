@@ -1,5 +1,7 @@
 # Epiphany-Aware KV Cache Management — Technical Research Overview
 
+**Potential Title: Epiphany-Aware KV Cache Eviction: Why Hidden States Outperform Attention**
+
 *Last updated: March 2026*
 
 ---
@@ -51,15 +53,15 @@ The use case (long *generation* traces from reasoning models) is also genuinely 
 
 **A signal-quality degradation at long context (separate from cost)**: Even when eager attention is available, attention-based signals become *semantically unreliable* at long contexts due to the **attention sink** phenomenon. Xiao et al. (StreamingLLM, ICLR 2024) first documented that transformer models concentrate disproportionate attention weight on the first few tokens (positions 0–4) regardless of their semantic content — an artifact of softmax normalisation over very long sequences. At 32k tokens, a large fraction of cumulative attention goes to these sink tokens, drowning out genuinely informative positions. This makes H2O and entropy-based signals progressively noisier as context grows. KV-vector signals and hidden-state signals do not have this specific failure mode: variance and norm are computed per-position independently of the softmax distribution. This is a second, distinct reason to expect our signals to outperform attention-based baselines on long reasoning traces — and it is separately documented in the literature from the O(n²) memory argument above.
 
-### What Is Unproven
+### What Is Unproven → Phase 0B Results (April 2026)
 
-The *specific* claim — that hidden-state variance is a better signal than attention scores for token importance in reasoning traces — has not been empirically validated yet. The following remain open questions:
+Phase 0B signal ablation across math500, math500_eager, aime2024, aime2024_eager answered the core empirical questions. See `experiments/phase0b_ablation_results.md` for full results.
 
-- Does L2 hidden-state difference actually correlate with semantic importance, or does it correlate with syntactic/punctuation boundaries?
-- Does KV-vector variance (the available proxy at decode time, since full hidden states are expensive) carry enough signal to be useful?
-- Is key-vector variance meaningfully different from what cumulative attention (H2O-style) already captures?
-
-These must be answered empirically before the hypothesis can be claimed as validated.
+- ✅ **Does HS L2 diff correlate with importance?** Yes. Band A (layers 7–13) shows consistently positive Spearman ρ across all datasets. Band B (layers 18–25) consistently negative. The layer anatomy aligns with ROME/MEMIT: mid-layers are factual retrieval / feature routing layers.
+- ✅ **Is key-vector variance meaningfully different from H2O?** Yes — h2o_attn is the weakest signal tested (3–12× weaker than Band A HS signals), confirming the core hypothesis.
+- ✅ **Does KV-vector variance carry useful signal?** Partially. kv_key_var and kv_val_var show positive ρ on math500 but are more dataset-dependent than HS signals (sign varies with label density). Useful signal, less stable than HS.
+- ✅ **Pre-RoPE vs post-RoPE?** Null result — max Δρ = 0.0005. No benefit from pre-RoPE computation.
+- **Open (Phase 1):** Does the eviction policy using `l10_rolling64 − l21_rolling64` maintain task accuracy at reduced cache budgets? Does it outperform H2O/ThinKV/RaaS on accuracy vs. cache-size curves?
 
 ### Known Methodological Limitations (current implementation)
 
@@ -73,7 +75,7 @@ Documented approximations in the Phase 0 pipeline that may affect signal ablatio
 
 4. **Post-RoPE key signals**: All KV signals are computed from post-RoPE keys (as stored in the cache). RoPE rotation inflates variance at large positions regardless of content. **Being addressed in Phase 0B**: `kv_key_var_preRoPE` and `kv_key_norm_preRoPE` collected via `k_proj` forward hooks before RoPE application; cross-validated posthoc via `extract_phase0b_signals.py`.
 
-5. **Single-layer hidden states**: `hs_*` signals use only the final transformer layer, which is specialised for next-token prediction rather than semantic representation. **Being addressed in Phase 0B**: per-layer HS signals collected at layers 16, 20, 24 (`hs_l2_diff_l16`, `hs_l2_diff_l20`, `hs_l2_diff_l24`); same single forward pass, zero extra compute.
+5. **Single-layer hidden states** *(resolved)*: `hs_*` signals originally used only the final transformer layer. **Phase 0B fix**: per-layer HS signals collected at all 32 layers (0–31) via `output_hidden_states=True`. Result: last layer is Band B territory (negative ρ, wrong for eviction). Best layers are Band A (l7–l13). Mean across all layers washes out the signal — single optimal layer or Band A−B combined score is required.
 
 6. **Short regeneration budget in labelling**: `max_new_tokens=512` per masked window. For problems requiring >512 tokens to reach `\boxed{}`, a window might appear unimportant (no flip) simply because the model couldn't finish the answer. Estimates suggest this affects ~5–15% of windows on hard AIME traces.
 
@@ -231,6 +233,16 @@ Two compression operations:
 **Relevance**: Quantization is orthogonal and complementary to eviction. Our method determines *which* tokens to retain; KVQuant determines *at what precision* to retain them. ThinKV already combines these (TBQ). A complete system would use both.
 
 ---
+
+### 2.12 EAGLE / EAGLE-2 (speculative decoding)
+
+**Core mechanism**: EAGLE trains a lightweight one-layer draft model that takes hidden states from the target model's last layer as input — not token embeddings — and predicts several future tokens speculatively. The target model verifies in parallel. EAGLE-2 adds adaptive draft length based on confidence. ~3x inference speedup with no quality loss.
+
+**Relevance**: EAGLE independently validates the core inductive bias of this project: hidden states carry richer predictive structure than token embeddings or attention weights. EAGLE uses HS for forward prediction (what token comes next); we use HS variance for importance assessment (which past tokens to retain). Complementary applications of the same architectural observation. Also FA2-compatible for the same reason — neither needs to materialize the attention matrix.
+
+**Key difference**: EAGLE speeds up generation via speculative decoding; it does not reduce KV cache memory. The two methods are orthogonal and potentially stackable — a system could run EAGLE for throughput and our method for memory simultaneously.
+
+**Citation use**: Cite in related work as convergent evidence for the HS-as-information-carrier inductive bias. One clause, not a paragraph.
 
 ### 2.11 MiniKV (arXiv 2411)
 
@@ -418,7 +430,9 @@ Two families: **residual-stream signals** (what the model *learned* at this toke
 
 Note: ThinKV uses **attention entropy/sparsity**, not activation sparsity. Activation sparsity (Deja Vu, PowerInfer) measures how many FFN neurons fire near-zero — a completely separate concept used for compute reduction, not KV cache management.
 
-**Hypothesis ordering (prior expectation)**: L2 hidden-state diff > cosine distance ≈ value variance > key variance > key L2 norm > attention entropy ≈ H2O. The key question is whether *any* residual-stream signal beats the attention signals. This is unproven.
+**Hypothesis ordering (prior expectation)**: L2 hidden-state diff > cosine distance ≈ value variance > key variance > key L2 norm > attention entropy ≈ H2O. The key question is whether *any* residual-stream signal beats the attention signals.
+
+**Phase 0B result**: Confirmed. HS mid-layer signals (Band A, l7–l13) outperform all attention signals. h2o_attn is the weakest signal tested. KV signals are competitive but more dataset-dependent than HS. See `phase0b_ablation_results.md`.
 
 **Practical constraints**:
 - `kv_*` signals: free — K/V tensors are already in HBM; reading them is negligible. Fully online (per decode step) and FA2-compatible.
@@ -477,20 +491,17 @@ How do we aggregate signals across the H attention heads?
 
 **Hypothesis**: Max across heads will outperform mean for detecting rare high-signal tokens that only activate in specific heads. Cross-head variance is the most novel and highest-risk variant.
 
-### Ablation Plan
+### Ablation Plan — STATUS (April 2026)
 
-The full design space is 8 × 2 × 5 × 4 × 3 = 960 combinations — far too many to sweep exhaustively. The ablation strategy is:
+The full design space is 8 × 2 × 5 × 4 × 3 = 960 combinations. Phase 0B executed the sequential ablation across all five dimensions simultaneously via per-layer HS collection (all 32 layers) and temporal variant generation. Results:
 
-1. **Fix a reasonable default**: post-RoPE, KV-key variance, mean across layers, single-step snapshot, mean across heads
-2. **Sweep Dimension 1** (signal type, 8 variants including attention baselines): identify best signal type. If attention entropy or H2O wins, the core hypothesis is wrong — pivot.
-3. **Sweep Dimension 2** (RoPE, 2 variants) with best signal type fixed: pre vs. post
-4. **Sweep Dimension 3** (layer aggregation, 5 variants) with best of 1+2
-5. **Sweep Dimension 4** (temporal, 4 variants) with best of 1+2+3
-6. **Sweep Dimension 5** (multi-head, 3 variants) with best of 1+2+3+4
+- ✅ **Dim 1 (signal type)**: HS L2 diff at mid-layers wins. H2O is weakest. KV signals competitive but less stable.
+- ✅ **Dim 2 (RoPE)**: Null result. Pre-RoPE adds no benefit (max Δρ = 0.0005). Use post-RoPE for simplicity.
+- ✅ **Dim 3 (layer)**: Not a single optimal layer — a band. Band A (l7–l13) positive, Band B (l18–l25) negative. Combined score `l10 − l21` is the recommendation. Mean across all layers washes out the signal.
+- ✅ **Dim 4 (temporal)**: Rolling64 > EMA09 > raw by 30–57% universally. Token importance is sustained, not instantaneous.
+- ⬜ **Dim 5 (multi-head)**: Mean across heads used throughout Phase 0B. Max/cross-head ablation not yet run — lower priority given other findings.
 
-This reduces to ~8+2+5+4+3 = 22 experiments for a sequential ablation. Each experiment: run MATH-500 (100-sample subset) at cache_size=128 with DeepSeek-R1-Distill-LLaMA-8B. Metric: Spearman correlation with counterfactual importance labels.
-
-**Note**: Dim 1 is the most critical experiment. If KV-key variance is not competitive with full hidden-state L2 diff, we need hidden-state hooks in the decode loop (higher latency). If attention signals win outright, the core hypothesis needs revision.
+**Phase 0B conclusion**: Best signal is `hs_l2_diff_l10_rolling64 − hs_l2_diff_l21_rolling64`. Phase 1 is eviction implementation and accuracy vs. cache-size evaluation.
 
 ---
 

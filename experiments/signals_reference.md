@@ -360,12 +360,19 @@ Use rolling64 for all signals. Rolling window of 64 ≈ 2× masking window size 
 
 ### Phase 1 recommended signal
 
-Primary: `hs_l2_diff_l21_rolling64` — consistently negative, strong across datasets.
-Posthoc (requires separate forward pass). Evict tokens with highest values.
-
 Combined: `hs_l2_diff_l10_rolling64 − hs_l2_diff_l21_rolling64` — exploits both bands.
 Tokens high in Band A and low in Band B are doubly important. Tokens low in Band A and
 high in Band B are doubly dispensable. Evict tokens with lowest combined score.
 
-Online fallback (during generation): `kv_key_var_rolling64`. FlashAttention-compatible,
-zero overhead. Sign is task-difficulty-dependent; use with awareness of context.
+**Online computation (during generation — no extra forward pass):**
+At each decode step, the current token's hidden states at all layers are already computed
+via `output_hidden_states=True`. To get `hs_l2_diff_l10` for the new token, store the
+previous token's HS at layers 10 and 21 (two vectors, ~20KB for a 5120-dim model) and
+diff against the current step's HS. Apply causal rolling64 (mean of last 64 values).
+Store the resulting importance score per token. Evict by ranking stored scores when cache
+exceeds budget. No refresh cycle needed — hs_l2_diff is a fixed local property at
+generation time, not context-dependent (unlike attention-based signals). Cost: negligible
+additional memory vs KV signals (which read already-cached tensors with no extra storage).
+
+Online fallback if HS unavailable: `kv_key_var_rolling64`. FlashAttention-compatible,
+zero extra storage. Sign is task-difficulty-dependent; use with awareness of context.

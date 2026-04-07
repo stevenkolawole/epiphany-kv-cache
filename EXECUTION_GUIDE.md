@@ -23,14 +23,20 @@ Signals collected per token (9 total):
 # Pipeline test (fast — do this first)
 python scripts/collect_traces.py --dataset math500 --n_samples 10 --max_new_tokens 4096
 
-# Full collection with Phase 0B signals (--phase0b adds pre-RoPE key variance + layer-wise HS at 16/20/24)
+# Full collection with Phase 0B signals (--phase0b adds pre-RoPE key variance + per-layer HS at all 32 layers 0-31)
 python scripts/collect_traces.py --dataset math500   --n_samples 100 --max_new_tokens 32768 --phase0b
 python scripts/collect_traces.py --dataset aime2024  --n_samples 30  --max_new_tokens 32768 --phase0b
+python scripts/collect_traces.py --dataset aime2025  --n_samples 30  --max_new_tokens 32768 --phase0b
+python scripts/collect_traces.py --dataset aime2026  --n_samples 30  --max_new_tokens 32768 --phase0b
 
 # With H2O + attention entropy (requires eager attention — more VRAM at long contexts)
 # AIME eager capped at 16384: at 32768 tokens the attention matrix is ~64GB (OOM risk)
+# GSM8K: use 500 samples (traces ~1-2k tokens, fast)
 python scripts/collect_traces.py --dataset math500   --n_samples 100 --max_new_tokens 16384 --force_eager_attn --phase0b
 python scripts/collect_traces.py --dataset aime2024  --n_samples 30  --max_new_tokens 16384 --force_eager_attn --phase0b
+python scripts/collect_traces.py --dataset aime2025  --n_samples 30  --max_new_tokens 16384 --force_eager_attn --phase0b
+python scripts/collect_traces.py --dataset aime2026  --n_samples 30  --max_new_tokens 16384 --force_eager_attn --phase0b
+python scripts/collect_traces.py --dataset gsm8k     --n_samples 500 --max_new_tokens 16384 --force_eager_attn --phase0b
 
 # Output: data/<dataset>_traces.jsonl
 # After collection, run posthoc extraction + cross-validate before labelling:
@@ -72,14 +78,27 @@ See `experiments/research_overview.md` §3.1 for all 8 signal variants and the f
 
 ## SLURM Batch Scripts (cluster)
 
-All scripts live in `slurm/`. All use `--partition=general` (48h, non-preemptible).
+All scripts live in `slurm/`. Most use `--partition=general` (48h, non-preemptible).
+GSM8K uses `--partition=preempt` with `--requeue --signal=B:USR1@60` (traces short enough that requeues are cheap; collect and label scripts both have resume logic).
 
-**Submit only these 4 commands.** Label jobs are auto-submitted via `afterok` dependency once cross-validation passes:
+**Submit only collect scripts — label jobs auto-chain via `afterok`:**
 ```bash
-sbatch slurm/run_math500_collect.sh          # math500, 32768 tok, FA2, Phase 0B — chains run_math500_label.sh
-sbatch slurm/run_math500_eager_collect.sh    # math500, 16384 tok, eager, Phase 0B — chains run_math500_eager_label.sh
-sbatch slurm/run_aime2024_collect.sh         # aime2024, 32768 tok, FA2, Phase 0B — chains run_aime2024_label.sh
-sbatch slurm/run_aime2024_eager_collect.sh   # aime2024, 16384 tok, eager, Phase 0B — chains run_aime2024_eager_label.sh
+# math500 (complete)
+sbatch slurm/run_math500_collect.sh          # math500, 32768 tok, FA2 — chains run_math500_label.sh
+sbatch slurm/run_math500_eager_collect.sh    # math500, 16384 tok, eager — chains run_math500_eager_label.sh
+
+# aime2024 (complete; eager rerun in progress with hook fix)
+sbatch slurm/run_aime2024_collect.sh         # aime2024, 32768 tok, FA2 — chains run_aime2024_label.sh
+sbatch slurm/run_aime2024_eager_collect.sh   # aime2024, 16384 tok, eager — chains run_aime2024_eager_label.sh
+
+# aime2025 / aime2026 (MathArena — in progress)
+sbatch slurm/run_aime2025_collect.sh         # aime2025, 32768 tok, FA2 — chains run_aime2025_label.sh
+sbatch slurm/run_aime2025_eager_collect.sh   # aime2025, 16384 tok, eager — chains run_aime2025_eager_label.sh
+sbatch slurm/run_aime2026_collect.sh         # aime2026, 32768 tok, FA2 — chains run_aime2026_label.sh
+sbatch slurm/run_aime2026_eager_collect.sh   # aime2026, 16384 tok, eager — chains run_aime2026_eager_label.sh
+
+# gsm8k — preempt partition, requeue-safe
+sbatch slurm/run_gsm8k_eager_collect.sh      # gsm8k, 500 samples, 16384 tok, eager — chains run_gsm8k_eager_label.sh
 ```
 
 Each collect script runs three steps internally:
@@ -93,50 +112,48 @@ If cross-validation fails, the label job is **not** submitted and the script exi
 
 ---
 
-## Phase 1: Eviction Logic (DONE — but needs upgrades)
+## Phase 1: Eviction Logic
 
 ```bash
-# Verify current eviction implementations work
+# Verify baseline eviction implementations work
 python src/eviction.py
-# Expected: cache reduces from 1000 → 512 tokens for both methods
+# Expected: all 5 classes reduce cache from 1000 → 512 tokens
 ```
 
-**Upgrades needed before benchmarking**:
-- `AttentionBasedEviction`: upgrade to H2O (cumulative attention, not single-step)
-- Add ThinKV thought classifier (R/E/T from KDE on 4 layers, refresh every 128 steps)
-- Add RaaS eviction (LRU timestamp + prefill preservation)
+**Current state of `src/eviction.py`:**
+- `H2OEviction` — stateful cumulative attention, sink tokens, recency window. Usable as baseline.
+- `ThinKVEviction` — segment entropy R/E/T classification. **Known bug**: per-segment fixed budgets don't enforce total cache_size; can over-retain. Fix before using as benchmark baseline.
+- `RaaSEviction` — LRU timestamps + unconditional prefill preservation. Usable as baseline.
+- `SemanticEviction` — **stale, replace for Phase 1.** Uses last-layer HS L1 diff + average post-RoPE KV variance. Phase 0B showed both choices are wrong (last layer is Band B; average over all layers washes out Band A). Replace with `HSVarianceEviction` implementing `l10_rolling64 − l21_rolling64` with incremental online computation.
+- `AttentionBasedEviction` — legacy single-step POC baseline. Superseded by H2OEviction.
+
+**Phase 1 deliverable**: `HSVarianceEviction` — incremental HS scoring at layers 10 and 21, causal rolling64 smoothing, stored per-token importance scores, no extra forward pass.
 
 ---
 
-## Phase 2: POC Harness (DONE — needs real models + data)
+## Phase 2: Accuracy vs. Cache-Size Benchmarking (TODO — after Phase 1)
+
+Once `HSVarianceEviction` is implemented, run end-to-end accuracy curves:
 
 ```bash
-# Run with DeepSeek-R1-Distill (primary target — long reasoning traces)
-python scripts/poc_harness.py \
+# Primary comparison (ThinKV/RaaS benchmarks)
+python scripts/benchmark.py \
   --model deepseek-ai/deepseek-r1-distill-llama-8b \
-  --cache_size 128 \
-  --eviction_method semantic
+  --dataset math500 aime2024 gsm8k \
+  --cache_sizes 32 64 128 256 512 1024 \
+  --methods none h2o thinKV raas hs_variance \
+  --output results/benchmark_results.json
 
-# Run baseline comparison (no eviction)
-python scripts/poc_harness.py \
-  --model deepseek-ai/deepseek-r1-distill-llama-8b \
-  --cache_size 128 \
-  --eviction_method none
-
-# Results saved to: experiments/poc_results.jsonl
-```
-
-**Note**: GPT-2 is no longer the target. Use DeepSeek-R1-Distill variants — vanilla instruction
-models (LLaMA-3, Qwen) produce traces too short to stress the KV cache meaningfully.
-
-For RaaS comparability, also run with Qwen2.5-Math-7B-Instruct:
-```bash
-python scripts/poc_harness.py \
+# RaaS-specific comparison (their model, their datasets)
+python scripts/benchmark.py \
   --model Qwen/Qwen2.5-Math-7B-Instruct \
-  --dataset GSM8K MATH-500 AIME_2024 \
-  --cache_size 128 \
-  --eviction_method semantic
+  --dataset gsm8k math500 aime2024 \
+  --cache_sizes 64 128 256 512 1024 \
+  --methods none h2o raas hs_variance \
+  --output results/benchmark_results_raas_model.json
 ```
+
+**Note**: `scripts/poc_harness.py` is deprecated — known issues with hardcoded mock results and eviction never being called during generation. Do not use.
 
 ---
 

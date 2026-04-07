@@ -361,6 +361,47 @@ task difficulty).
 - 4 posthoc cross-validation files
 - 4 signal ablation CSVs with pre-RoPE + layer-wise HS signals
 
+### [Date: April 6, 2026] - AIME 2025/2026 + GSM8K added; paper strategy written
+
+**Dataset expansion:**
+- `collect_traces.py`: Added `_load_matharena_aime()` generic loader with runtime column
+  discovery (no hard-coded field names). `load_aime2025()` and `load_aime2026()` backed by
+  `MathArena/aime_2025` and `MathArena/aime_2026`. Verified HuggingFace schema: both datasets
+  use `problem` + `answer` columns (answer is int64; `str()` cast handles this).
+- `--dataset` choices extended to `aime2025`, `aime2026`.
+- GSM8K added to Phase 0B suite: rationale is difficulty-robustness validation for Band A/B
+  layer anatomy — if l7–l13 positive ρ holds on grade-school math (500 samples, ~1–2k token
+  traces), the signal spans the full difficulty spectrum.
+
+**New SLURM scripts:**
+- `slurm/run_aime2025_collect.sh`, `run_aime2025_label.sh` (non-eager, 32768 tokens)
+- `slurm/run_aime2025_eager_collect.sh`, `run_aime2025_eager_label.sh` (eager, 16384 tokens)
+- `slurm/run_aime2026_collect.sh`, `run_aime2026_label.sh` (non-eager, 32768 tokens)
+- `slurm/run_aime2026_eager_collect.sh`, `run_aime2026_eager_label.sh` (eager, 16384 tokens)
+- `slurm/run_gsm8k_eager_collect.sh`, `run_gsm8k_eager_label.sh` (eager only — traces too
+  short for FA2/eager split to matter; preempt partition with `--requeue --signal=B:USR1@60`;
+  collect_traces.py resume logic makes requeues safe)
+
+**Currently running (general partition):**
+- `aime2024_eager` rerun (hook fix applied, all 30 traces expected)
+- `aime2025` collect + label (auto-chained)
+- `aime2026` collect + label (auto-chained)
+- `gsm8k_eager` collect + label (preempt, requeue-safe)
+
+**paper_strategy.md created** (`experiments/paper_strategy.md`):
+- Target: NeurIPS. Core claim, advisor framing (FA2 engineering win), figure plan (4 figures),
+  section-by-section notes, related work (EAGLE, ROME/MEMIT), presentation asymmetry.
+
+**eviction.py audit:**
+- `H2OEviction`, `RaaSEviction`: faithful to papers, usable as baselines.
+- `ThinKVEviction`: real bug — per-segment fixed budgets (retain_r/e/t) don't enforce total
+  cache_size; can over-retain. Also stateless (re-classifies every call, paper refreshes
+  every 128 steps). Budget values are made up.
+- `SemanticEviction`: completely stale. Uses last-layer HS L1 diff + average post-RoPE
+  KV variance across all layers — Phase 0B showed both are wrong choices. Needs full
+  replacement with Band A−B combined score (l10_rolling64 − l21_rolling64). This is
+  Phase 1's primary deliverable.
+
 ---
 
 ## Key Research Questions

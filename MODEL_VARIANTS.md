@@ -50,20 +50,20 @@ This project targets long reasoning traces — sequences of 5,000–60,000 token
 
 ## Testing Priority
 
-### Phase 0 (Signal Validation)
+### Phase 0B (Signal Ablation — COMPLETE)
 - **Model**: DeepSeek-R1-Distill-LLaMA-8B only
-- **Tasks**: MATH-500 (100 samples); AIME 2024 (20–50 samples for harder/longer traces)
-- **Purpose**: Generate real reasoning traces with ground-truth answers for signal ablation
+- **Tasks**: MATH-500 (100 samples), AIME 2024 (30 samples), AIME 2025/2026 (30 each, in progress), GSM8K (500, in progress — difficulty-robustness check for Band A/B layer anatomy)
+- **Outcome**: Band A (l7–l13, positive ρ) and Band B (l18–l25, negative ρ) identified. Combined score `l10_rolling64 − l21_rolling64` is Phase 1 candidate. h2o_attn is weakest signal tested. See `experiments/phase0b_ablation_results.md`.
 
-### Phase 1 (Baseline Comparison — Primary)
+### Phase 1 (Eviction Implementation + Baseline Comparison — NEXT)
 - **Models**: DeepSeek-R1-Distill-LLaMA-8B (primary), Qwen2.5-Math-7B-Instruct (RaaS comparability)
-- **Tasks**: MATH-500 (full 500), AIME 2024, LiveCodeBench, GSM8K (low-pressure control)
-- **Purpose**: Establish accuracy vs. cache-size curves for all baselines + our method; directly reproducible comparisons against ThinKV and RaaS
+- **Tasks**: MATH-500, AIME 2024, GSM8K (low-pressure control)
+- **Purpose**: Implement `HSVarianceEviction` using Phase 0B signal; establish accuracy vs. cache-size curves against H2O, ThinKV, RaaS
 
 ### Phase 2 (Robustness / Generalization)
 - **Models**: Add DeepSeek-R1-Distill-Qwen-7B, DeepSeek-R1-Distill-Qwen-14B; add LLaMA-3.1-8B-Instruct and Qwen2-7B-Instruct as negative controls
-- **Tasks**: Add HotpotQA (multi-hop, for Gap F non-monotonic recall claim)
-- **Purpose**: Confirm results generalize across model size and architecture; establish HotpotQA as additional evaluation regime (not head-to-head with ThinKV/RaaS, which did not use it)
+- **Tasks**: Add LiveCodeBench (required for ThinKV head-to-head), HotpotQA (Gap F non-monotonic recall — not a ThinKV/RaaS comparison point)
+- **Purpose**: Confirm results generalize across model size and architecture
 
 ---
 
@@ -85,9 +85,9 @@ This project targets long reasoning traces — sequences of 5,000–60,000 token
 ## Key Empirical Questions by Model
 
 **DeepSeek-R1-Distill-LLaMA-8B** (primary):
-- Does hidden-state variance correlate with counterfactual importance labels?
-- Which of the six signal variants wins? (see research_overview.md §3.1)
-- Does our method outperform ThinKV/RaaS at the same cache budget on MATH-500, AIME 2024, LiveCodeBench?
+- ✅ Does hidden-state variance correlate with counterfactual importance labels? Yes — Band A (l7–l13) consistently positive ρ across datasets.
+- ✅ Which signal variant wins? `hs_l2_diff_l10_rolling64 − hs_l2_diff_l21_rolling64` combined score. Rolling64 universally best smoother.
+- **Open**: Does our method outperform ThinKV/RaaS at the same cache budget on MATH-500, AIME 2024? (Phase 1)
 
 **Qwen2.5-Math-7B-Instruct** (RaaS comparability):
 - Do our results on GSM8K, MATH-500, AIME reproduce the RaaS baseline numbers?
