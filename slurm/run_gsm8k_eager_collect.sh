@@ -1,8 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=kvc_gsm8k_e_col
-#SBATCH --partition=preempt
-#SBATCH --requeue
-#SBATCH --signal=B:USR1@60
+#SBATCH --partition=general
 #SBATCH --output=/home/%u/workspace/kvcache/slurm_logs/gsm8k_eager_collect_%j.out
 #SBATCH --error=/home/%u/workspace/kvcache/slurm_logs/gsm8k_eager_collect_%j.err
 #SBATCH --gres=gpu:2
@@ -52,7 +50,7 @@ echo "Output:  $TRACES"
 echo "=========================================="
 
 # No rm -f here: resume logic in collect_traces.py skips already-collected problems
-# and appends to the existing file, so preempt+requeue continues where it left off.
+# and appends to the existing file, so reruns continue where they left off.
 
 python scripts/collect_traces.py \
     --dataset gsm8k \
