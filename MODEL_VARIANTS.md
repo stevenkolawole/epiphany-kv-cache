@@ -55,15 +55,16 @@ This project targets long reasoning traces — sequences of 5,000–60,000 token
 - **Tasks**: MATH-500 (100 samples), AIME 2024 (30 samples), AIME 2025/2026 (30 each, in progress), GSM8K (500, in progress — difficulty-robustness check for Band A/B layer anatomy)
 - **Outcome**: Band A (l7–l13, positive ρ) and Band B (l18–l25, negative ρ) identified. Combined score `l10_rolling64 − l21_rolling64` is Phase 1 candidate. h2o_attn is weakest signal tested. See `experiments/phase0b_ablation_results.md`.
 
-### Phase 1 (Eviction Implementation + Baseline Comparison — NEXT)
-- **Models**: DeepSeek-R1-Distill-LLaMA-8B (primary), Qwen2.5-Math-7B-Instruct (RaaS comparability)
-- **Tasks**: MATH-500, AIME 2024, GSM8K (low-pressure control)
-- **Purpose**: Implement `HSVarianceEviction` using Phase 0B signal; establish accuracy vs. cache-size curves against H2O, ThinKV, RaaS
+### Phase 1 (Eviction Implementation + Baseline Comparison — COMPLETE April 24, 2026)
+- **Model**: DeepSeek-R1-Distill-LLaMA-8B (primary; Qwen2.5-Math-7B-Instruct deferred to Phase 2)
+- **Tasks**: MATH-500 (n=100), AIME 2024 (n=30)
+- **Outcome**: All 12 eviction methods benchmarked. `hs_variance_detrend` (FA2) reaches 72% on MATH-500 @ 4096 (beats ThinKV); `lag_kv` (FA2) reaches 37% on AIME @ 8192 (beats every attention method). 2.8× speedup vs `raas` at 8192. H2O collapses on 93/100 problems at MATH-500 cache=1024. Full numbers in `experiments/paper_strategy.md` §"Phase 1 Results".
 
-### Phase 2 (Robustness / Generalization)
-- **Models**: Add DeepSeek-R1-Distill-Qwen-7B, DeepSeek-R1-Distill-Qwen-14B; add LLaMA-3.1-8B-Instruct and Qwen2-7B-Instruct as negative controls
-- **Tasks**: Add LiveCodeBench (required for ThinKV head-to-head), HotpotQA (Gap F non-monotonic recall — not a ThinKV/RaaS comparison point)
-- **Purpose**: Confirm results generalize across model size and architecture
+### Phase 2 (Robustness / Generalization — NEXT)
+- **Datasets**: combine AIME 2024+2025+2026 (n=90) for AIME-class robustness; add GSM8K as low-pressure sanity check; extend cache budgets to {256, 12288}.
+- **Models**: add Qwen2.5-Math-7B-Instruct for RaaS comparability; defer LLaMA-3.1-8B-Instruct and Qwen2-7B-Instruct (negative controls) until cross-architecture is needed.
+- **New ablations**: per-layer ablation (l10 vs l21 vs l10−l21); detrending at lower budgets; FA2-compatible `kv_seg_hs` analog of `hybrid_seg_hs`; token-retention case study figure.
+- **Optional engineering validation**: long-prefill experiments to surface FA2's prefill-memory advantage; vLLM integration for production-stack throughput claim.
 
 ---
 
@@ -105,25 +106,4 @@ This project targets long reasoning traces — sequences of 5,000–60,000 token
 
 ## How to Run
 
-```bash
-# Primary target — reasoning model, MATH-500
-python scripts/poc_harness.py \
-  --model deepseek-ai/deepseek-r1-distill-llama-8b \
-  --dataset MATH-500 \
-  --cache_size 128 \
-  --eviction_method semantic
-
-# Cross-architecture check
-python scripts/poc_harness.py \
-  --model deepseek-ai/deepseek-r1-distill-qwen-7b \
-  --dataset MATH-500 \
-  --cache_size 128 \
-  --eviction_method semantic
-
-# Negative control — vanilla model
-python scripts/poc_harness.py \
-  --model meta-llama/Llama-3.1-8B-Instruct \
-  --dataset MATH-500 \
-  --cache_size 512 \
-  --eviction_method semantic
-```
+Phase 1 benchmarking uses `scripts/benchmark.py`, which dispatches all 12 eviction methods (baselines + HS family + KV family + hybrids) on math500 / aime2024. See `EXECUTION_GUIDE.md` for SLURM submission commands and `scripts/analyze_phase1.py` for the result tables and accuracy plots.

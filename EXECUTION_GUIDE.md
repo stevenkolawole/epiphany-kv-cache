@@ -10,9 +10,9 @@ pip install -r requirements.txt
 
 ---
 
-## Phase 0: Signal Validation (CURRENT PRIORITY)
+## Phase 0: Signal Validation (COMPLETE — April 13, 2026)
 
-This phase answers: *does any hidden-state/KV-vector variance signal outperform cumulative attention (H2O) as a token importance proxy?*
+This phase answered: *does any hidden-state/KV-vector variance signal outperform cumulative attention (H2O) as a token importance proxy?* Answer: yes — Band A (l7–l13) HS variance is positive across datasets, Band B (l18–l25) is negative, and h2o_attn is the weakest signal tested. Reproduction commands below; full results in `experiments/phase0b_ablation_results.md`.
 
 Signals collected per token (9 total):
 - **Always**: `kv_key_var`, `kv_key_norm`, `kv_val_var`, `cross_head_var` (free from KV cache), `hs_l2_diff`, `hs_cos_dist`, `hs_norm` (post-hoc forward pass, seq ≤ `--max_new_tokens`)
@@ -78,27 +78,26 @@ See `experiments/research_overview.md` §3.1 for all 8 signal variants and the f
 
 ## SLURM Batch Scripts (cluster)
 
-All scripts live in `slurm/`. Most use `--partition=general` (48h, non-preemptible).
-GSM8K uses `--partition=preempt` with `--requeue --signal=B:USR1@60` (traces short enough that requeues are cheap; collect and label scripts both have resume logic).
+Scripts are organized by phase: `slurm/phase0/` (trace collection + labelling), `slurm/phase1/` (accuracy/timing benchmarks), `slurm/setup/` (environment, e.g. `install_flash_attn.sh`). Most use `--partition=general` (48h, non-preemptible). GSM8K uses `--partition=preempt` with `--requeue --signal=B:USR1@60` (traces short enough that requeues are cheap; resume logic in both collect and label scripts).
 
-**Submit only collect scripts — label jobs auto-chain via `afterok`:**
+**Phase 0 (collect → label auto-chains via `afterok`):**
 ```bash
-# math500 (complete)
-sbatch slurm/run_math500_collect.sh          # math500, 32768 tok, FA2 — chains run_math500_label.sh
-sbatch slurm/run_math500_eager_collect.sh    # math500, 16384 tok, eager — chains run_math500_eager_label.sh
+# math500
+sbatch slurm/phase0/run_math500_collect.sh          # 32768 tok, FA2
+sbatch slurm/phase0/run_math500_eager_collect.sh    # 16384 tok, eager
 
-# aime2024 (complete; eager rerun in progress with hook fix)
-sbatch slurm/run_aime2024_collect.sh         # aime2024, 32768 tok, FA2 — chains run_aime2024_label.sh
-sbatch slurm/run_aime2024_eager_collect.sh   # aime2024, 16384 tok, eager — chains run_aime2024_eager_label.sh
+# aime2024
+sbatch slurm/phase0/run_aime2024_collect.sh         # 32768 tok, FA2
+sbatch slurm/phase0/run_aime2024_eager_collect.sh   # 16384 tok, eager
 
-# aime2025 / aime2026 (MathArena — in progress)
-sbatch slurm/run_aime2025_collect.sh         # aime2025, 32768 tok, FA2 — chains run_aime2025_label.sh
-sbatch slurm/run_aime2025_eager_collect.sh   # aime2025, 16384 tok, eager — chains run_aime2025_eager_label.sh
-sbatch slurm/run_aime2026_collect.sh         # aime2026, 32768 tok, FA2 — chains run_aime2026_label.sh
-sbatch slurm/run_aime2026_eager_collect.sh   # aime2026, 16384 tok, eager — chains run_aime2026_eager_label.sh
+# aime2025 / aime2026 (MathArena)
+sbatch slurm/phase0/run_aime2025_collect.sh
+sbatch slurm/phase0/run_aime2025_eager_collect.sh
+sbatch slurm/phase0/run_aime2026_collect.sh
+sbatch slurm/phase0/run_aime2026_eager_collect.sh
 
 # gsm8k — preempt partition, requeue-safe
-sbatch slurm/run_gsm8k_eager_collect.sh      # gsm8k, 500 samples, 16384 tok, eager — chains run_gsm8k_eager_label.sh
+sbatch slurm/phase0/run_gsm8k_eager_collect.sh
 ```
 
 Each collect script runs three steps internally:
@@ -108,84 +107,71 @@ Each collect script runs three steps internally:
 
 If cross-validation fails, the label job is **not** submitted and the script exits non-zero. Inspect the posthoc vs. collected trace files before rerunning manually.
 
-**Note**: `run_math500_eager.sh` (old combined collect+label) is deprecated and deleted. `run_aime2024_preempt.sh` and `run_aime2024_eager_preempt.sh` are old preempt-partition scripts — also deprecated.
+**Note**: Old combined collect+label scripts and preempt-partition variants have been removed. The split collect→label model is the only supported flow.
 
 ---
 
-## Phase 1: Eviction Logic
+## Phase 1: Eviction Logic + Accuracy Benchmarks (COMPLETE — April 24, 2026)
 
 ```bash
-# Verify baseline eviction implementations work
+# Smoke-test all eviction classes (CPU-only, no model needed)
 python src/eviction.py
-# Expected: all 5 classes reduce cache from 1000 → 512 tokens
+# Expected: all classes reduce cache from 1000 → ≤cache_size; no NaN; bookkeeping OK
 ```
 
-**Current state of `src/eviction.py`:**
-- `H2OEviction` — stateful cumulative attention, sink tokens, recency window. Usable as baseline.
-- `ThinKVEviction` — segment entropy R/E/T classification. **Known bug**: per-segment fixed budgets don't enforce total cache_size; can over-retain. Fix before using as benchmark baseline.
-- `RaaSEviction` — LRU timestamps + unconditional prefill preservation. Usable as baseline.
-- `SemanticEviction` — **stale, replace for Phase 1.** Uses last-layer HS L1 diff + average post-RoPE KV variance. Phase 0B showed both choices are wrong (last layer is Band B; average over all layers washes out Band A). Replace with `HSVarianceEviction` implementing `l10_rolling64 − l21_rolling64` with incremental online computation.
-- `AttentionBasedEviction` — legacy single-step POC baseline. Superseded by H2OEviction.
+**`src/eviction.py` classes:**
+- Baselines: `H2OEviction`, `ThinKVEviction` (budget-capped), `RaaSEviction` — all eager (need attn matrix).
+- HS family (FA2-compatible): `HSVarianceEviction` (l10_r64 − l21_r64), `DetrendendHSVarianceEviction` (rolling z-score detrending), `BandAdaptiveHSEviction` (Band A/B aggregated).
+- KV family (FA2-compatible): `KVValVarianceEviction`, `KVKeyVarianceEviction`, `LagKVKeyVarianceEviction`, `LagKVEviction`.
+- Hybrid (eager only): `AttentionHSProductEviction`, `HybridSegmentHSEviction`.
 
-**Phase 1 deliverable**: `HSVarianceEviction` — incremental HS scoring at layers 10 and 21, causal rolling64 smoothing, stored per-token importance scores, no extra forward pass.
+### Running benchmarks (`scripts/benchmark.py`)
+
+Phase 1 SLURM scripts are in `slurm/phase1/`. Results write to `/data/user_data/skolawol/kvcache/results/phase1/` (NVMe; /home is too small for full result JSONs). Logs stay on /home in `slurm_logs/phase1/`.
+
+```bash
+# Local smoke-test (single problem, single budget — verify pipeline works)
+python scripts/benchmark.py \
+  --dataset math500 --n_samples 2 --max_new_tokens 1024 \
+  --cache_sizes 512 --methods none hs_variance \
+  --output /tmp/smoke.json
+
+# Cluster: full eager run (attention-required methods)
+sbatch slurm/phase1/run_benchmark_math500_eager.sh   # 100 problems, 4 cache sizes
+sbatch slurm/phase1/run_benchmark_aime2024_eager.sh  # 30 problems, 5 cache sizes
+
+# Cluster: full flash run (FA2-compatible methods)
+sbatch slurm/phase1/run_benchmark_math500_flash.sh
+sbatch slurm/phase1/run_benchmark_aime2024_flash.sh
+```
+
+The eager scripts request 2 GPUs; the flash scripts request 1 GPU (single-GPU avoids a flash_attn multi-GPU kernel coordination crash). Both use `--resume` so partial results survive job preemption.
+
+### Analyzing results (`scripts/analyze_phase1.py`)
+
+```bash
+python scripts/analyze_phase1.py
+# Prints accuracy / wall_time / peak_gpu_mb tables for each dataset
+# Writes accuracy-vs-cache-size PDFs to reports/phase1_plots/
+```
+
+Outputs:
+- Console: 6 tables (3 metrics × 2 datasets), with FA2 ✓/✗ column.
+- `reports/phase1_plots/accuracy_math500.pdf` and `accuracy_aime2024.pdf` — solid lines for FA2-compatible methods, dashed for attention-required, dotted for the `none` ceiling.
+
+### Phase 1 results summary
+
+See `experiments/progress.md` (April 24 entry) and `experiments/paper_strategy.md` (Phase 1 Results section) for the full table. Headlines: `hs_variance_detrend` reaches 72% on MATH-500 @ 4096 (FA2-compatible, beats ThinKV 71%); `lag_kv` reaches 37% on AIME-2024 @ 8192 (FA2-compatible, beats every attention method by 3 points); `lag_kv` is 2.8× faster than `raas` at the same cache budget; H2O collapses to empty generations on 93/100 MATH-500 problems at cache=1024.
 
 ---
 
-## Phase 2: Accuracy vs. Cache-Size Benchmarking (TODO — after Phase 1)
+## Phase 2: Robustness, Ablations, FA2-compatible hybrid (TODO)
 
-Once `HSVarianceEviction` is implemented, run end-to-end accuracy curves:
-
-```bash
-# Primary comparison (ThinKV/RaaS benchmarks)
-python scripts/benchmark.py \
-  --model deepseek-ai/deepseek-r1-distill-llama-8b \
-  --dataset math500 aime2024 gsm8k \
-  --cache_sizes 32 64 128 256 512 1024 \
-  --methods none h2o thinKV raas hs_variance \
-  --output results/benchmark_results.json
-
-# RaaS-specific comparison (their model, their datasets)
-python scripts/benchmark.py \
-  --model Qwen/Qwen2.5-Math-7B-Instruct \
-  --dataset gsm8k math500 aime2024 \
-  --cache_sizes 64 128 256 512 1024 \
-  --methods none h2o raas hs_variance \
-  --output results/benchmark_results_raas_model.json
-```
-
-**Note**: `scripts/poc_harness.py` is deprecated — known issues with hardcoded mock results and eviction never being called during generation. Do not use.
-
----
-
-## Phase 3: Baseline Comparison Curves (TODO)
-
-Once H2O, ThinKV, and RaaS are implemented:
-
-```bash
-# Primary comparison (ThinKV/RaaS benchmarks)
-python scripts/benchmark.py \
-  --model deepseek-ai/deepseek-r1-distill-llama-8b \
-  --dataset MATH-500 AIME_2024 LiveCodeBench GSM8K \
-  --cache_sizes 32 64 128 256 512 1024 \
-  --methods none h2o thinKV raas semantic \
-  --output experiments/benchmark_results.json
-
-# RaaS-specific comparison (their model, their datasets)
-python scripts/benchmark.py \
-  --model Qwen/Qwen2.5-Math-7B-Instruct \
-  --dataset GSM8K MATH-500 AIME_2024 \
-  --cache_sizes 64 128 256 512 1024 \
-  --methods none h2o raas semantic \
-  --output experiments/benchmark_results_raas_model.json
-```
-
-Target: beat ThinKV's accuracy vs. cache-size Pareto curve on MATH-500, AIME 2024, LiveCodeBench.
-
-**Benchmark framing notes**:
-- MATH-500 + AIME 2024 + LiveCodeBench: head-to-head with ThinKV
-- MATH-500 + AIME 2024 + GSM8K on Qwen2.5-Math: head-to-head with RaaS
-- GSM8K on DeepSeek-R1-Distill: low-pressure control only (traces too short for cache pressure; run to show no regression)
-- HotpotQA: secondary evaluation for Gap F (non-monotonic recall claim); NOT a ThinKV/RaaS comparison point
+Plan from `experiments/progress.md`:
+1. **Robustness**: combine AIME 2024+2025+2026 to n=90; add GSM8K; extend cache budgets to 256 (find breakdown) and 12288 (interpolate AIME curve).
+2. **Ablations**: per-layer ablation (l10 vs l21 vs l10−l21); detrending at lower budgets; token-retention case study figure.
+3. **FA2-compatible hybrid**: `kv_seg_hs` — KV statistics for segment classification (replacing ThinKV's attention-entropy classifier) + HS for within-segment ranking. Closes the gap at tight budgets where `hybrid_seg_hs` (eager) currently wins.
+4. **Engineering validation**: optional vLLM integration or long-prefill experiments to surface FA2's prefill memory advantage.
 
 ---
 
