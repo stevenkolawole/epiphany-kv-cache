@@ -284,7 +284,7 @@ The following gaps are identified in the current landscape. They are ordered fro
 - Structural signals: always keep the first few tokens (attention sinks), always keep prefill tokens (phoenix pattern confirmed by RaaS), always keep very recent tokens (recent context window)
 - Semantic signal: within the non-structural portion, keep tokens with high hidden-state variance (insight positions)
 
-**The current implementation**: `SemanticEviction` blends these at a fixed ratio (`semantic_alpha=0.5`). The ratio is untested and the blend function is naive. A proper ablation would sweep `semantic_alpha` from 0 (pure attention) to 1 (pure semantic), with structural tokens hardcoded in.
+**Phase 1 implementation**: `HSVarianceEviction` will combine structural rules (sink tokens, prefill tokens, recency window) with Band A−B HS score (`l10_rolling64 − l21_rolling64`). Blending with attention is not needed — Phase 0B showed HS signals outperform attention signals on competition math. `SemanticEviction` (the prior stale placeholder) was removed April 13.
 
 ---
 
@@ -588,19 +588,19 @@ Once the method is validated:
 
 ## 6. Current Implementation Status
 
-| Component | Status | Issues |
+| Component | Status | Notes |
 |---|---|---|
-| `src/eviction.py` — AttentionBasedEviction | Implemented, single-step attention | Needs H2O upgrade (cumulative) |
-| `src/eviction.py` — SemanticEviction | Implemented, KV-vector variance proxy | Not validated against real traces |
-| `src/eviction.py` — evict_past_key_values() | Implemented, both classes | Works, needs per-layer budget option |
-| `scripts/poc_harness.py` — step-by-step loop | Fixed, eviction triggers | Needs per-example memory reset |
-| `scripts/poc_harness.py` — mock results | Removed | OK |
-| `src/data_collection.py` — segment classifier | Consolidated, word-boundary regex | Synthetic traces only; needs real data |
-| `scripts/analyze_traces.py` | Working on synthetic data | Needs real DeepSeek-R1 traces |
-| `scripts/visualize.py` — memory plot | Replaced with theoretical plot | Correct, clearly labeled |
-| H2O baseline | Not implemented | Needed before any comparison |
-| ThinKV baseline | Not implemented | Needed to claim SOTA comparison |
-| Real data pipeline | Not implemented | Critical blocker |
+| `src/eviction.py` — H2OEviction | Implemented, stateful cumulative attn | Usable as baseline |
+| `src/eviction.py` — ThinKVEviction | Implemented; budget bug fixed April 13 | Usable as baseline |
+| `src/eviction.py` — RaaSEviction | Implemented, LRU + prefill preservation | Usable as baseline |
+| `src/eviction.py` — HSVarianceEviction | Not yet implemented | Phase 1 primary deliverable |
+| `scripts/collect_traces.py` | Complete, all 9 datasets | Phase 0B signals collected |
+| `scripts/label_importance.py` | Complete, occlusion-fixed methodology | Counterfactual labels done |
+| `scripts/signal_ablation.py` | Complete, all 9 dataset CSVs | Phase 0B results in results/ |
+| `scripts/extract_phase0b_signals.py` | Complete, Spearman ρ ≥ 0.99 cross-val | Posthoc HS extraction validated |
+| `scripts/inspect_traces.py` | Implemented April 13 | Manual trace inspection tool |
+| Real data pipeline | Complete | math500, AIME2024/2025/2026, GSM8K |
+| Phase 0B signal ablation | COMPLETE April 13 | All findings in phase0b_ablation_results.md |
 
 ---
 
@@ -626,13 +626,96 @@ Once the method is validated:
 
 ## 8. Summary of Differentiation
 
-| Dimension | This Project | ThinKV (closest) | RaaS | FreeKV |
+| Dimension | This Project | ThinKV (closest) | RaaS | LongFlow |
 |---|---|---|---|---|
-| Target | Long-generation reasoning traces | Long-generation reasoning | Long-generation reasoning | Long-input retrieval |
-| Importance signal | Hidden-state variance (proposed) | Attention sparsity | Attention LRU timestamps | Query vector similarity |
-| Predictive capacity | Hidden states may precede transitions | Post-hoc classification | Post-hoc LRU aging | Inter-step extrapolation |
-| Eviction unit | Chunk-level (proposed) | Segment-level | Page-level | Page-level |
-| Recoverability | Warm tier (proposed) | Permanent eviction | Permanent eviction | Full retrieval (all tokens) |
+| Target | Long-generation reasoning traces | Long-generation reasoning | Long-generation reasoning | Long-generation reasoning |
+| Importance signal | HS Band A−B variance (confirmed) | Attention sparsity (key-perspective) | Attention LRU timestamps | ‖attn × val‖₁ per-step |
+| Temporal handling | Rolling z-score detrending | Segment-level (coarse) | Median-relative threshold | Per-step implicit |
+| FA2 compatible | **Yes (pure HS methods)** | No (CT kernel fork) | No (needs attn matrix) | No (needs attn × val) |
+| Eviction unit | Token-level (HS methods); segment+token (hybrid) | Segment-level | Token LRU | Token-level |
+| Validation | Counterfactual importance labels (Phase 0B) | Proxy accuracy benchmark | Proxy accuracy benchmark | Proxy accuracy benchmark |
 | Training required | No | No | No | No |
-| Layer-wise budget | Yes (proposed, Gap D) | No | No | No |
-| Dead-end prediction | Future work (Gap E) | Not addressed | Not addressed | Not addressed |
+| Layer anatomy | Band A (l7–l13 positive) + Band B (l18–l25 negative) | None | None | None |
+
+---
+
+## 9. Temporal Trend Problem — Analysis and Mitigation (April 13, 2026)
+
+### The problem
+
+All HS signals and KV variance signals show **within-trace temporal trends** — monotonic
+changes in signal value with token position over the course of generation. Specifically:
+- `hs_l2_diff_l10` (Band A): DECREASES with position over the trace
+- `hs_l2_diff_l21` (Band B): INCREASES with position over the trace
+- Combined `l10 − l21`: HIGHER for early tokens, LOWER for late tokens
+
+This means that in simple problems where KEEP tokens (important) appear at late positions
+and DROP tokens (unimportant) appear at early positions, the naive combined score evicts
+the WRONG tokens. Trace inspection confirmed:
+- DROP tokens: importance_score ≈ 17.0 (should be low — instead highest)
+- KEEP tokens: importance_score ≈ 13.4 (should be high — instead lowest)
+
+Root cause: **Aggregate Spearman ρ is driven by cross-problem structure, not within-trace
+discrimination.** Complex problems have different signal distributions than simple ones;
+positive aggregate ρ does not mean the signal correctly ranks tokens WITHIN a trace.
+
+### Why ThinKV sidesteps this
+
+ThinKV classifies entire segments (128 tokens) holistically by key-perspective entropy.
+Segments are labeled R/E/T based on the distribution of attention sparsity across the
+segment, not by per-token scores. Within each segment, ThinKV ranks by column-sum
+attention (cumulative). The segment-level classifier is not susceptible to single-token
+temporal trends.
+
+Our `HybridSegmentHSEviction` borrows ThinKV's segment-level classifier but replaces the
+within-segment column-sum ranker with our detrended HS score — a potentially better
+within-segment discriminator.
+
+### Mitigations implemented
+
+1. **DetrendendHSVarianceEviction**: rolling z-score detrending.
+   `z(t) = (signal(t) − rolling_mean[t]) / (rolling_std[t] + ε)`
+   Converts absolute magnitude (position-contaminated) to local deviation (position-agnostic).
+   Inspired by AhaKV (analytical λ detrending) and LagKV (lag-relative normalization).
+
+2. **HybridSegmentHSEviction**: outer ThinKV segment classification eliminates the temporal
+   trend at the segment level; HS z-score used only for within-segment ranking.
+
+### What Phase 1 will answer
+
+Whether z-score detrending suffices for per-token eviction quality is an empirical question.
+The accuracy vs. cache-size curves on math500 and AIME2024 will compare:
+- Naive HS: HSVarianceEviction (temporal trend not corrected)
+- Detrended HS: DetrendendHSVarianceEviction (z-score corrected)
+- Segment: HybridSegmentHSEviction (segment-level avoids problem)
+
+If DetrendendHSVariance ≫ HSVariance, temporal detrending is the key fix.
+If HybridSegmentHS ≫ DetrendendHSVariance, segment-level classification is necessary.
+
+---
+
+## 10. Literature Survey — Papers Surveyed April 13, 2026
+
+| Method | Core Signal | Temporal Fix | FA2? | Reasoning? |
+|--------|------------|-------------|------|-----------|
+| H2O | Cumulative attn col-sum | None | No | No |
+| ThinKV | Key-perspective attn sparsity (KDE) | Segment-level | No | Yes |
+| RaaS | LRU timestamp (attn > median) | Median relative | No | Yes |
+| LongFlow | ‖attn × val‖₁ current step | Per-step (implicit) | No | Yes |
+| SnapKV | Attn col-sum in window; pooling | Window relative | No | No |
+| LagKV | Std(lag-normalized KV channel) | Lag window minmax | Yes | No |
+| CAOTE | (α/(1−α))·‖VA^T−v_j‖₂ | None | Yes | No |
+| AhaKV | Adaptive softmax temp λ=√(2log(i/k)/d) | Analytical detrend | No | No |
+| VATP | attn × ‖value‖₁ | None | No | No |
+| PyramidKV | Top-k attn per layer | None | No | No |
+| **HSVarianceEviction** | l10_r64 − l21_r64 | None | **Yes** | Yes |
+| **DetrendendHSVariance** | l10−l21 z-scored | **Rolling z-score** | **Yes** | Yes |
+| **BandAdaptiveHS** | All Band A/B layers, weighted | Rolling z-score | **Yes** | Yes |
+| **AttentionHSProduct** | Cumul attn + HS z-score | Rolling z-score | No | Yes |
+| **HybridSegmentHS** | ThinKV segs + HS ranking | Segment-level | No | Yes |
+
+**What no prior method does that we do:**
+1. Layer-indexed HS L2 diff (Band A−B) as eviction signal
+2. Explicit rolling z-score temporal detrending for HS signals
+3. Bi-directional band polarity (Band A positive, Band B negative)
+4. Counterfactual importance labeling for signal validation
