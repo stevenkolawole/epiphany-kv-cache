@@ -361,6 +361,70 @@ task difficulty).
 - 4 posthoc cross-validation files
 - 4 signal ablation CSVs with pre-RoPE + layer-wise HS signals
 
+### [Date: April 11, 2026] - Phase 0B COMPLETE — All 9 Datasets Analysed
+
+All AIME 2025, AIME 2026, and GSM8K runs finished. Full 9-dataset analysis written in
+`experiments/phase0b_ablation_results.md` (§11 added). Phase 0B is now complete.
+
+**Final run inventory:**
+- gsm8k_eager: 355 correct traces, 200,881 pairs (moved from preempt → general partition; resume logic preserved, no `rm -f`)
+- aime2025 non-eager: ~7 traces, 37,714 pairs
+- aime2025_eager: ~3–4 traces, 17,065 pairs (too small for any conclusion)
+- aime2026 non-eager: ~7 traces, 36,224 pairs
+- aime2026_eager: ~8 traces, 41,077 pairs
+
+**Key new findings (see §11 of phase0b_ablation_results.md for full tables):**
+
+1. **GSM8K is a qualitatively different domain.** 200,881 pairs (n_eff=352) — the second
+   high-n dataset after math500_eager. The layer anatomy for grade-school math diverges
+   strongly from competition math:
+   - Early layers l0–l7: POSITIVE ρ (+0.181 at l0) — early layers are predictive for simple math
+   - Mid layers l10–l30: STRONGLY NEGATIVE (l15=−0.351, the strongest signal across all 9 datasets)
+   - Last layer l31: +0.231 (strongly positive — unlike math500/aime2024)
+   - attn_entropy: −0.313 (strongly negative — sign FLIPS from math500_eager's +0.176)
+   - kv_key_var: −0.261 (strongly negative — confirms sign flip from math500's +0.380)
+
+2. **KV signal sign flip is CONFIRMED, not sampling noise.** kv_key_var = +0.380 in math500,
+   −0.261 in gsm8k_eager (both n_eff ≥ 72). Cannot be used as a fixed-direction signal.
+
+3. **Band A (l7–l13) positive ρ holds for competition math eager datasets.** Robust in
+   math500 (+0.112 at l10), math500_eager (+0.141), aime2024 (+0.097), aime2024_eager (+0.120).
+   In gsm8k_eager, l7=+0.076 (weakly positive) but l10=−0.048 (goes negative). Band A
+   for easy math is l0–l7, not l7–l13.
+
+4. **Band B (l18–l25) negative ρ holds for competition math eager datasets** and is EXTENDED
+   in gsm8k to l10–l30. In AIME 2025/2026 non-eager (very low n_eff), Band B shows sign
+   instability — cannot be trusted.
+
+5. **Phase 1 target signal confirmed: l10_rolling64 − l21_rolling64 for competition math.**
+   Valid for math500-difficulty and AIME-difficulty problems. For GSM8K-difficulty, a
+   different combined score would be needed (l3 − l15), but GSM8K is not the Phase 1 target.
+
+6. **attn_entropy sign is unpredictable.** +0.176 (math500_eager), −0.139 (aime2024_eager),
+   −0.313 (gsm8k_eager). Not usable as a fixed-direction signal across difficulty regimes.
+
+7. **h2o_attn remains the weakest signal.** Consistently weak (|ρ| ≤ 0.086 across all eager
+   datasets). Hypothesis confirmed.
+
+8. **AIME 2025/2026 are too small to be conclusive.** n_eff ≤ 8 for all AIME 2025/2026
+   runs; 95% CIs span zero for every signal. Used only as directional indicators. AIME
+   2025_eager (n_eff≈1–3) is noise.
+
+**Phase 0B status: COMPLETE.** The signal landscape is now characterized across difficulty
+regimes. Phase 1 is unblocked: implement `HSVarianceEviction` using l10_rolling64 −
+l21_rolling64, targeting competition-math difficulty problems.
+
+**Paper implications (see paper_strategy.md):**
+- GSM8K finding adds a new dimension: the "Epiphany" layer shifts by difficulty. This can
+  be mentioned as a finding (l7–l13 for hard math, l0–l7 for easy math) without undermining
+  Phase 1 scope.
+- The KV sign flip being confirmed is important: KV signals require difficulty-regime
+  detection, while HS Band A/B is more robustly directional within a difficulty class.
+- GSM8K's attn_entropy = −0.313 (very strong) but sign-flipped confirms that even the
+  stronger attention metric is not universally applicable.
+
+---
+
 ### [Date: April 6, 2026] - AIME 2025/2026 + GSM8K added; paper strategy written
 
 **Dataset expansion:**
@@ -401,6 +465,160 @@ task difficulty).
   KV variance across all layers — Phase 0B showed both are wrong choices. Needs full
   replacement with Band A−B combined score (l10_rolling64 − l21_rolling64). This is
   Phase 1's primary deliverable.
+
+---
+
+### [Date: April 13, 2026] - Full Codebase Audit + Cross-Dataset Signal Analysis
+
+**Cross-dataset signal analysis (AIME 2025/2026 + GSM8K) — complete:**
+
+Analyzed all 9 dataset CSVs. Key synthesis:
+- **What converges across all datasets:** A negative-ρ zone always exists (l15–l25 for competition
+  math, extending to l10–l30 for GSM8K). Early layers l0–l3 always positive. Rolling64 universally
+  best smoothing. h2o_attn consistently weakest signal. kv_val_var consistently non-negative (never
+  strong sign-flip). preRoPE null result reconfirmed.
+- **What diverges:** Band A location (l7–l13 for competition math, l0–l7 for GSM8K). kv_key_var
+  direction (+0.380 math500 vs −0.261 GSM8K — both high-n, confirmed real sign flip). attn_entropy
+  and h2o_attn also flip sign across domains (not unique to our signals).
+- **kv_val_var stability noted:** Across 7 datasets, kv_val_var is non-negative everywhere except
+  weakly (−0.145 at one AIME non-eager dataset). More reliable online fallback than kv_key_var.
+- **Scope formalized:** math500 + AIME2024 as Phase 1 primaries. GSM8K out of Phase 1 scope (different
+  difficulty regime, different anatomy). Full synthesis documented in §12–13 of phase0b_ablation_results.md.
+
+**Codebase audit — errors found and corrected:**
+
+- **ThinKVEviction budget bug FIXED** (`src/eviction.py`): `evict_past_key_values` now tracks
+  `remaining_budget` across segments and stops allocating once `cache_size` is reached. Previously,
+  per-segment budgets were applied without any cap on total retained tokens — could exceed `cache_size`
+  by a factor of 2× or more in long sequences. Smoke test assert updated from `≤ seq_len` to
+  `≤ cache_size`.
+- **Dead code removed:**
+  - `scripts/poc_harness.py` deleted — explicitly deprecated; used synthetic traces + stale eviction classes
+  - `scripts/analyze_traces.py` deleted — operated on synthetic GSM8K-level examples; irrelevant to Phase 0/1 pipeline
+  - `scripts/visualize.py` deleted — POC visualization; referenced non-existent `src/data_collection.py`
+  - `AttentionBasedEviction` class removed from `eviction.py` — single-step attention (poc only); superseded by H2OEviction
+  - `SemanticEviction` class removed from `eviction.py` — stale placeholder; implementation inconsistent
+    with Phase 0B findings (used L1/last-layer vs L2/mid-layer). Will be replaced by HSVarianceEviction in Phase 1.
+  - `eviction_method`, `semantic_alpha` fields removed from `EvictionConfig` — only used by deleted classes
+- **CLAUDE.md digested** (`.claude/CLAUDE.md`): surgical changes, simplicity-first, no speculative additions.
+  All Phase 1 implementation should follow these guidelines.
+
+**Remaining open items before Phase 1:**
+- Manual trace inspection (`scripts/inspect_traces.py`) — script exists, output not yet analyzed
+  (background execution environment issue; run manually to inspect labelled traces vs signal values)
+- Phase 1: run accuracy vs. cache-size curves (all methods) on math500 + AIME2024
+
+---
+
+### [Date: April 13, 2026] - Phase 1 HS Eviction Family Implemented
+
+**ThinKV paper analysis (April 13, 2026):**
+
+Read ThinKV (He et al., ICLR 2026 oral) in full. Key findings:
+- Signal: key-perspective attention sparsity (fraction of attn scores < 1% of row-wise max per column)
+- Segment-level: classifies 128-token segments into R/E/T types via KDE; per-type retention budgets
+- CT kernel: "lazy deletion" marks evicted tokens with bit flags (no gather) — zero overhead at 95%+ decode steps
+- Cannot implement lazy deletion in plain HuggingFace DynamicCache; requires custom CUDA kernel
+- Our boolean-mask gather is the main throughput gap vs ThinKV — engineering, not algorithmic
+- Generation length inflation risk: up to 5.1× on quantized models (not DeepSeek-R1 at bf16)
+
+**Literature survey — 10+ papers read (April 13, 2026):**
+
+Key temporal detrending methods studied:
+- **AhaKV**: analytical detrending via λ=√(2log(i/k)/d); equalizes entropy across positions
+- **LagKV**: lag-relative minmax normalization against local lag window; direct applicability to HS signals
+- **CAOTE**: closed-form eviction error (α/(1−α))·||VA^T−v_j||₂; theoretical grounding for future work
+- **LongFlow**: ||attn×val||₁ per-step; direct competitor (same model class, DeepSeek-R1)
+- **RaaS**: LRU timestamp refreshed on top-50% attn; "milestone"/"phoenix" token taxonomy
+- Full survey in `experiments/research_overview.md` and `memory/project_literature.md`
+
+**Temporal trend contamination documented (April 13, 2026):**
+
+Critical finding: aggregate Spearman ρ overestimates per-token eviction quality. Within a trace:
+- l10 decreases monotonically with position; l21 increases
+- Combined score l10−l21 is HIGHER for early-position (DROP) tokens than late-position (KEEP) tokens
+  in simple math500 problems — evicts the WRONG tokens
+- Phase 0B aggregate ρ is dominated by cross-problem structure, not within-trace discrimination
+- Mitigation: rolling z-score detrending (DetrendendHSVarianceEviction); or segment-level eviction
+- Fully documented in §10 caveat 4 of phase0b_ablation_results.md
+
+**5 eviction classes implemented in `src/eviction.py`:**
+
+1. `HSVarianceEviction` — original: l10_rolling64 − l21_rolling64 (online HS diff, Band A−B)
+2. `DetrendendHSVarianceEviction` — z-score detrended l10−l21; removes temporal position bias
+3. `BandAdaptiveHSEviction` — averages all Band A (l7–l13) and Band B (l18–l25) layers, ρ-weighted
+   (weight_a=1.29, weight_b=1.0 from Phase 0B math500_eager ρ ratio); FA2-compatible
+4. `AttentionHSProductEviction` — cumulative key-perspective attn + detrended Band A HS z-score;
+   normalized and summed; eager-only (requires output_attentions=True)
+5. `HybridSegmentHSEviction` — ThinKV segment R/E/T classification (key-perspective entropy) +
+   detrended HS Band A−B z-score for within-segment ranking; eager-only
+
+Helper functions added:
+- `_rolling_z_score(buf, window, eps) -> float` — z-score of last element vs rolling window
+- `_hs_diff(hidden_states, layer, prev) -> (float, Tensor)` — HS L2 diff at specified layer
+
+**`scripts/benchmark.py` updated:**
+
+- Added imports for all 4 new classes + helpers
+- Split method sets: ATTN_ONLY_METHODS, HS_ONLY_METHODS, BOTH_METHODS, KV_METHODS
+- BOTH_METHODS = {"attn_hs_product", "hybrid_seg_hs"} — need attn AND hs; eager-only
+- Updated make_eviction() factory for all 5 new HS method names
+- Updated run_one() dispatch: need_both branch passes both attentions and hidden_states
+- Updated eviction init: all HS classes call reset(prefill_len=prompt_len) + set_prefill_end()
+
+**kv_val_var stability error corrected (April 13, 2026):**
+
+Phase0b_ablation_results.md §10 claimed kv_val_var "consistently non-negative." CORRECTED:
+- math500 = −0.135 (NEGATIVE, n_eff=75), math500_eager = −0.145 (NEGATIVE, n_eff=81)
+- kv_val_var is NEGATIVE in the two primary Phase 1 datasets
+- Removed "primary online fallback" recommendation; downgraded to secondary comparison
+
+---
+
+### [Date: April 24, 2026] - Phase 1 Results: Eager + Flash Benchmarks Complete
+
+**Setup**: `scripts/benchmark.py` ran on DeepSeek-R1-Distill-LLaMA-8B against MATH-500 (n=100) and AIME-2024 (n=30), under both eager and flash_attention_2 configurations. Cache budgets {512, 1024, 2048, 4096} on MATH-500 and {512, 1024, 2048, 4096, 8192} on AIME. Methods: none, h2o, thinKV, raas, hs_variance, hs_variance_detrend, band_adaptive_hs, attn_hs_product, hybrid_seg_hs, kv_val, kv_key, lag_kv_key, lag_kv. Results JSONs under `/data/user_data/skolawol/kvcache/results/phase1/`. Summary script: `scripts/analyze_phase1.py`.
+
+**Headline accuracy results**:
+
+| Dataset / Budget | Best FA2-compatible | Best attention-based | Ceiling (none) |
+|---|---|---|---|
+| MATH-500 @ 4096 | **hs_variance_detrend = 72%** | thinKV = 71% | 75% |
+| MATH-500 @ 2048 | band_adaptive_hs / kv_val_var ≈ 57% | raas = 60% | 75% |
+| MATH-500 @ 1024 | hs_variance = 28% | hybrid_seg_hs = 36% | 75% |
+| AIME-2024 @ 8192 | **lag_kv = 37%** | h2o / hybrid_seg_hs = 33% | 43% |
+| AIME-2024 @ 4096 | lag_kv = 20% | thinKV / h2o / hybrid_seg_hs = 20% | 43% |
+
+**Engineering results**:
+- **Speed**: lag_kv (FA2) is **2.8× faster than raas (eager)** at AIME-2024 @ 8192 (441s vs 1239s mean wall-time per problem). Several FA2 methods are *faster than the no-eviction baseline* at high cache budgets, since smaller caches reduce per-step decode cost while signal extraction adds negligible overhead.
+- **Memory**: peak GPU memory differences are dominated by cache budget, not method choice. At AIME @ 512 cache, all eviction methods save ~3GB vs none (~16% saving); at AIME @ 8192, savings shrink to ~700MB. FA2 vs eager at the same cache budget differs by ~100–500MB. Honest framing for the paper: claim time wins, not memory wins, in the decode regime measured here. The known O(n²)→O(n) FA2 prefill memory advantage is real but not measured by these short-prompt benchmarks.
+
+**H2O catastrophic collapse on MATH-500**: H2O's `n_zero_tokens` audit revealed 93/100 problems generate zero tokens at cache=1024, 48/100 at cache=2048, 27/100 at cache=4096. No exceptions — silent collapse to immediate EOS. This matches RaaS's documented attention-map failure mode (24.2% on reasoning traces in their analysis). For the paper, this is a usable concrete example to motivate the need for non-attention signals.
+
+**Phase 1 debugging saga**:
+
+1. **Multi-GPU device mismatch in eviction code**: `keep_mask` was created on cuda:0 (device of layer 0 KV) and applied to all layers, including those on cuda:1 under `device_map="auto"`. Symptom: every problem failed with `indices should be either on cpu or on the same device as the indexed tensor (cuda:1)`. Fix: replace `k[:, :, keep_mask, :]` with `k[:, :, keep_mask.to(k.device), :]` across all 12 occurrences in `src/eviction.py`.
+
+2. **DynamicCache `_seen_tokens` desync**: After fixing the device issue, the next failure was `tensor a (514) must match tensor b (513) at non-singleton dimension 3` inside the model forward — caused by `_to_model_kv()` using `DynamicCache(ddp_cache_data=kv_pairs)`, which is a non-standard constructor that left `_seen_tokens` one ahead of the actual cached tokens after eviction. The model then built a 514-position causal mask while the post-update KV had 513 keys. `from_legacy_cache()` was tried first but is absent in the installed transformers version. **Correct fix**: construct an empty `DynamicCache()` and call `cache.update(k, v, layer_idx)` for each layer — this sets `_seen_tokens = k.shape[-2]` from the first layer correctly. (`scripts/benchmark.py:_to_model_kv`).
+
+3. **Multi-GPU flash_attn kernel coordination crash**: 2-GPU flash_attn jobs crashed even on the `none` method with `CUDA error: unspecified launch failure`. Solution: switch all flash benchmark scripts to single-GPU 48G allocation. Eliminated the crashes.
+
+4. **Node-specific CPU loading**: One AIME-2024 eager submission landed on `babel-v9-28`, where `device_map="auto"` placed the model on CPU despite nvidia-smi showing GPUs. Symptom: `_reset_gpu_peak` raised `Invalid device argument: did you call init?`. Fixes: (a) wrapped `_reset_gpu_peak`/`_peak_gpu_mb` in `try/except RuntimeError` to handle uninitialized CUDA contexts; (b) added an early `sys.exit` in `main()` if the model lands on CPU while CUDA is available, with the node name in the error message.
+
+5. **Disk full from logs/results on /home**: /home (NFS, 100G) hit 100% mid-run. Phase 1 results moved to `/data/user_data/skolawol/kvcache/results/phase1/` (NVMe, 221G). `slurm_logs/` stays on /home per user preference. Phase 1 SLURM scripts updated.
+
+6. **Redundant `none` runs**: previous `benchmark.py` re-ran `none` for every cache_size (4× duplicate work, identical accuracies). Now runs once and copies results across cache_size slots. Display label flips to "Cache size: unlimited (no eviction)".
+
+7. **Better error visibility**: `traceback.print_exc(file=sys.stderr)` added to the per-problem exception handler so future failures surface the full stack instead of one-line messages.
+
+**Decision (Phase 2 plan)**: AIME n=30 makes the 3-pt absolute win on lag_kv@8192 fragile (one problem of difference). Phase 2A combines AIME 2024+2025+2026 to n=90 + adds GSM8K. Phase 2B adds detrending ablation at lower budgets, an FA2-compatible kv_seg_hs analog of hybrid_seg_hs (to close the tight-budget gap), and a token-retention case study. Engineering validation in production stacks (vLLM/TGI) is Phase 2C if time permits.
+
+**Files updated this session**:
+- `scripts/benchmark.py` — DynamicCache fix, `_reset_gpu_peak` guards, model-on-CPU exit, none-once optimization, traceback logging
+- `src/eviction.py` — multi-GPU device fix (12 occurrences)
+- `slurm/phase1/*.sh` — single-GPU flash, results path on /data
+- `scripts/analyze_phase1.py` — new: prints accuracy/timing/memory tables and produces accuracy-vs-cache-size PDFs to `reports/phase1_plots/`
+- `experiments/paper_strategy.md` — kv_val_var status corrected ("primary online fallback" claim removed)
 
 ---
 
