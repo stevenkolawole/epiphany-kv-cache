@@ -88,6 +88,9 @@ try:
         BandAdaptiveHSEviction,
         AttentionHSProductEviction,
         HybridSegmentHSEviction,
+        KVSegHSEviction,
+        RKVEviction,
+        LongFlowEviction,
     )
 except ImportError as e:
     sys.exit(f"Cannot import eviction module: {e}")
@@ -237,9 +240,9 @@ def build_prompt_ids(tokenizer, problem: str, device) -> torch.Tensor:
 # ── Eviction factory ──────────────────────────────────────────────────────────
 
 # Methods that need the full softmax attention matrix (eager attn only).
-ATTN_ONLY_METHODS = {"h2o", "thinKV", "raas"}
+ATTN_ONLY_METHODS = {"h2o", "thinKV", "raas", "r_kv", "longflow"}
 # Methods that need output_hidden_states=True only (FA2-compatible).
-HS_ONLY_METHODS   = {"hs_variance", "hs_variance_detrend", "band_adaptive_hs"}
+HS_ONLY_METHODS   = {"hs_variance", "hs_variance_detrend", "band_adaptive_hs", "kv_seg_hs"}
 # Methods that need BOTH attention matrix AND hidden states (eager only).
 BOTH_METHODS      = {"attn_hs_product", "hybrid_seg_hs"}
 # Methods that only read past_key_values (compatible with flash attn).
@@ -279,6 +282,12 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128):
         return LagKVKeyVarianceEviction(cfg)
     if method == "lag_kv":
         return LagKVEviction(cfg)
+    if method == "kv_seg_hs":
+        return KVSegHSEviction(cfg)
+    if method == "r_kv":
+        return RKVEviction(cfg)
+    if method == "longflow":
+        return LongFlowEviction(cfg)
     raise ValueError(f"Unknown method: {method}")
 
 
@@ -321,7 +330,7 @@ def run_one(
     # Initialise eviction state
     _hs_eviction_classes = (
         HSVarianceEviction, DetrendendHSVarianceEviction, BandAdaptiveHSEviction,
-        AttentionHSProductEviction, HybridSegmentHSEviction,
+        AttentionHSProductEviction, HybridSegmentHSEviction, KVSegHSEviction,
     )
     if eviction is not None:
         if hasattr(eviction, "reset"):
