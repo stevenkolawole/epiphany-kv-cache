@@ -1816,11 +1816,18 @@ class RKVEviction:
         obs_window: int = 8,
         kernel_size: int = 7,
         mix_lambda: float = 0.1,
+        buffer_size: int = 128,
     ):
         self.config = config
         self.obs_window = obs_window
         self.kernel_size = kernel_size
         self.mix_lambda = mix_lambda
+        # B_buffer: the cache is allowed to grow to cache_size + buffer_size
+        # before being compressed back to cache_size in one shot, matching the
+        # paper's every-128-step compression.  Per-step eviction (dropping one
+        # token at a time) makes the score nearly irrelevant, since cache
+        # composition is then dominated by arrival order rather than selection.
+        self.buffer_size = buffer_size
         self._obs: List[torch.Tensor] = []  # last obs_window attention rows
 
     def reset(self, prefill_len: int = 0):
@@ -1843,7 +1850,8 @@ class RKVEviction:
         if len(self._obs) > self.obs_window:
             self._obs.pop(0)
 
-        if seq_len <= self.config.cache_size:
+        # Periodic compression: let the buffer fill, then compress in one shot.
+        if seq_len < self.config.cache_size + self.buffer_size:
             return past_key_values
 
         # ── Importance: pooled mean over the observation rows ─────────────────
@@ -1870,7 +1878,18 @@ class RKVEviction:
         redundancy = torch.stack(red_layers).mean(dim=0)        # (seq_len,)
 
         # ── Joint score and eviction ──────────────────────────────────────────
-        scores = self.mix_lambda * importance - (1.0 - self.mix_lambda) * redundancy
+        # Scale-match the two terms before mixing.  Attention importance is
+        # sharply peaked while the redundancy softmax over ~10^3 candidates is
+        # nearly flat, so the raw mix (Eq. 7) is dominated by importance by
+        # ~50x in our single-global-mask setting and the redundancy signal --
+        # the method's contribution -- becomes numerically inert.  We
+        # standardise each term over positions first, which preserves the
+        # within-term ranking and makes lambda behave as the paper intends.
+        def _std(x):
+            return (x - x.mean()) / (x.std() + 1e-8)
+
+        scores = (self.mix_lambda * _std(importance)
+                  - (1.0 - self.mix_lambda) * _std(redundancy))
         scores[-self.obs_window:] = float('inf')  # observation tokens always kept
 
         n_keep = min(self.config.cache_size, seq_len)
