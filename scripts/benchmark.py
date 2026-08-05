@@ -284,7 +284,9 @@ HS_METHODS    = HS_ONLY_METHODS | BOTH_METHODS
 ALL_METHODS   = {"none"} | ATTN_ONLY_METHODS | HS_ONLY_METHODS | BOTH_METHODS | KV_METHODS
 
 
-def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128):
+def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
+                  band_a_layer: int = None, band_b_layer: int = None,
+                  window: int = None):
     """Return a fresh eviction object for the given method and cache_size."""
     cfg = EvictionConfig(cache_size=cache_size, keep_recent_k=keep_recent_k)
     if method == "none":
@@ -298,7 +300,11 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128):
     if method == "hs_variance":
         return HSVarianceEviction(cfg)
     if method == "hs_variance_detrend":
-        return DetrendendHSVarianceEviction(cfg)
+        kw = {}
+        if band_a_layer is not None: kw["band_a_layer"] = band_a_layer
+        if band_b_layer is not None: kw["band_b_layer"] = band_b_layer
+        if window is not None:       kw["window"] = window
+        return DetrendendHSVarianceEviction(cfg, **kw)
     if method == "band_adaptive_hs":
         return BandAdaptiveHSEviction(cfg)
     if method == "attn_hs_product":
@@ -454,6 +460,15 @@ def parse_args():
     p.add_argument("--cache_sizes",    type=int, nargs="+",
                    default=[512, 1024, 2048, 4096],
                    help="KV cache budgets in tokens to sweep over")
+    p.add_argument("--band_a_layer",   type=int, default=None,
+                   help="Override Band A layer for hs_variance_detrend "
+                        "(default: class default 10). Rebuttal-committed band "
+                        "ablation: shifted boundaries and +/-2-layer perturbations.")
+    p.add_argument("--band_b_layer",   type=int, default=None,
+                   help="Override Band B layer (default: class default 21).")
+    p.add_argument("--window",         type=int, default=None,
+                   help="Override rolling z-score window (default: class "
+                        "default 64). Rebuttal-committed w-sweep: 32/64/128.")
     p.add_argument("--keep_recent_k",  type=int, default=128,
                    help="Tokens always kept in recency window (default: 128)")
     p.add_argument("--methods",        nargs="+",
@@ -584,7 +599,10 @@ def main():
 
             desc = "none@unlimited" if method == "none" else f"{method}@{cache_size}"
             for i, prob in enumerate(tqdm(problems, desc=desc)):
-                eviction = make_eviction(method, cache_size, args.keep_recent_k)
+                eviction = make_eviction(method, cache_size, args.keep_recent_k,
+                                         band_a_layer=args.band_a_layer,
+                                         band_b_layer=args.band_b_layer,
+                                         window=args.window)
                 try:
                     res = run_one(model, tokenizer, prob, method, eviction,
                                   args.max_new_tokens, device)
