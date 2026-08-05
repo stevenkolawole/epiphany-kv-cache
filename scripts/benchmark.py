@@ -208,6 +208,33 @@ def load_problems(dataset: str, n_samples: int, start_idx: int = 0) -> List[Dict
             {"problem": item["Problem"].strip(), "ground_truth": str(item["Answer"]).strip()}
             for item in ds
         ][:start_idx + n_samples]
+    elif dataset in ("aime2025", "aime2026"):
+        # MathArena rather than Maxwell-Jia, and its column names differ from
+        # AIME_2024's Problem/Answer -- so discover them rather than assume, the
+        # same way collect_traces.py does. Pooling 2024-2026 to n~90 is what the
+        # paper's Limitations propose to fix the n=30 power problem; at n=30 a
+        # three-point gap is a single problem.
+        repo = {"aime2025": "MathArena/aime_2025", "aime2026": "MathArena/aime_2026"}[dataset]
+        ds = None
+        for split in ("train", "test", "validation"):
+            try:
+                ds = load_dataset(repo, split=split, cache_dir=_hf_cache())
+                break
+            except Exception:
+                continue
+        if ds is None:
+            raise RuntimeError(f"Could not load {repo} on any split")
+        first = ds[0]
+        pcol = next((c for c in ("problem", "Problem", "question", "Question",
+                                 "problem_statement") if c in first), None)
+        acol = next((c for c in ("answer", "Answer", "answer_value",
+                                 "solution_value", "ground_truth") if c in first), None)
+        if pcol is None or acol is None:
+            raise RuntimeError(f"{repo}: could not find problem/answer columns in {list(first)}")
+        problems = [
+            {"problem": str(item[pcol]).strip(), "ground_truth": str(item[acol]).strip()}
+            for item in ds
+        ][:start_idx + n_samples]
     elif dataset == "gsm8k":
         ds = load_dataset("openai/gsm8k", "main", split="test", cache_dir=_hf_cache())
         _re = re.compile(r"####\s*(-?[\d,]+)")
@@ -417,7 +444,8 @@ def parse_args():
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--model",          default="deepseek-ai/deepseek-r1-distill-llama-8b")
-    p.add_argument("--dataset",        choices=["math500", "aime2024", "gsm8k"],
+    p.add_argument("--dataset",
+                   choices=["math500", "aime2024", "aime2025", "aime2026", "gsm8k"],
                    default="math500")
     p.add_argument("--n_samples",      type=int, default=50)
     p.add_argument("--start_idx",      type=int, default=0,
