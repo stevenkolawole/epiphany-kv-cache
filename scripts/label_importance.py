@@ -189,6 +189,40 @@ def find_answer_start(
 
 # ── Masked inference ──────────────────────────────────────────────────────────
 
+class MultiTokenFiller:
+    """Occlusion filler that writes a *different* random in-vocabulary token at
+    every masked position.
+
+    The single-token `random` arm did not test what it was built to test. Filling
+    a window with 32 copies of one id is another degenerate repeated pattern,
+    structurally the same manipulation as the `pad` arm, which is why the two came
+    out statistically indistinguishable (p=0.55). That leaves the interesting
+    question open: does EOS flip more windows because it perturbs harder, or
+    because it means *stop*?
+
+    A window of 32 distinct tokens is a genuine high-entropy perturbation carrying
+    no stop semantics, so it separates the two. If it flips at EOS-like rates, EOS
+    is simply a high-gain probe and the published bands stand; if it flips at
+    pad-like rates, EOS's stop semantics are doing the work.
+
+    Sampling is keyed on the window's start position rather than drawn from a
+    running stream, so a resumed run reproduces the same fill as an uninterrupted
+    one.
+    """
+
+    def __init__(self, tokenizer, seed: int = 0):
+        import random as _r
+        self._random = _r.Random
+        self.seed = seed
+        special = set(tokenizer.all_special_ids)
+        self.vocab = [i for i in range(tokenizer.vocab_size) if i not in special]
+
+    def sample(self, n: int, key: int) -> List[int]:
+        # Seeded from a string, not a tuple: Random() rejects tuple seeds on 3.12.
+        rng = self._random(f"{self.seed}:{key}")
+        return [rng.choice(self.vocab) for _ in range(n)]
+
+
 def run_masked_inference(
     model,
     tokenizer,
@@ -200,6 +234,7 @@ def run_masked_inference(
     max_new_tokens: int,
     pad_id: int,
     device: torch.device,
+    mask_id: Optional[int] = None,
 ) -> Optional[str]:
     """
     Occlude token_ids[mask_start:mask_end] with pad_id, feed the full modified
@@ -217,7 +252,16 @@ def run_masked_inference(
     Returns the extracted \\boxed{} answer, or None if not found.
     """
     modified_ids = full_ids.clone()
-    modified_ids[0, mask_start:mask_end] = pad_id
+    # The occlusion filler is deliberately separate from generate()'s pad_token_id
+    # below: the filler is the manipulation under test, pad_token_id is only HF's
+    # batching argument. Defaults to pad_id so existing behaviour is unchanged.
+    if hasattr(mask_id, "sample"):
+        # High-entropy arm: a distinct random token per position (see MultiTokenFiller).
+        fill = mask_id.sample(mask_end - mask_start, mask_start)
+        modified_ids[0, mask_start:mask_end] = torch.tensor(
+            fill, dtype=modified_ids.dtype)
+    else:
+        modified_ids[0, mask_start:mask_end] = pad_id if mask_id is None else mask_id
 
     context_ids = modified_ids[:, :answer_start].to(device)
 
@@ -246,6 +290,7 @@ def label_trace(
     max_new_tokens: int,
     pad_id: int,
     device: torch.device,
+    mask_id: Optional[int] = None,
 ) -> Dict:
     """
     Add an 'importance' field to the trace dict.
@@ -301,6 +346,7 @@ def label_trace(
                 max_new_tokens=max_new_tokens,
                 pad_id=pad_id,
                 device=device,
+                mask_id=mask_id,
             )
 
             flipped = not answers_match(masked_answer, ground_truth)
@@ -383,6 +429,41 @@ def main():
 
     pad_id = tokenizer.pad_token_id or tokenizer.eos_token_id
 
+    # Resolve the occlusion filler. It must encode to exactly one token: the
+    # method's invariant is that every occluded call feeds an identical context
+    # length, so a multi-token filler would silently break the comparison.
+    choice = args.mask_token
+    if choice == "eos":
+        mask_id = pad_id
+    elif choice == "pad":
+        mask_id = tokenizer.convert_tokens_to_ids("<|finetune_right_pad_id|>")
+        if mask_id is None or mask_id == tokenizer.unk_token_id:
+            sys.exit("--mask_token pad: <|finetune_right_pad_id|> not in this vocab")
+    elif choice == "random":
+        import random as _r
+        rng = _r.Random(args.mask_seed)
+        special = set(tokenizer.all_special_ids)
+        while True:
+            cand = rng.randrange(tokenizer.vocab_size)
+            if cand not in special:
+                mask_id = cand
+                break
+    elif choice == "randmulti":
+        mask_id = MultiTokenFiller(tokenizer, args.mask_seed)
+    else:
+        enc = tokenizer.encode(choice, add_special_tokens=False)
+        if len(enc) != 1:
+            sys.exit(f"--mask_token {choice!r} encodes to {len(enc)} tokens; need exactly 1")
+        mask_id = enc[0]
+    if hasattr(mask_id, "sample"):
+        print(f"Occlusion filler: {choice} -> distinct random token per position "
+              f"(seed {args.mask_seed}, {len(mask_id.vocab)} eligible ids); "
+              f"generate pad_token_id stays {pad_id}")
+    else:
+        print(f"Occlusion filler: {choice} -> id {mask_id} "
+              f"({tokenizer.convert_ids_to_tokens([mask_id])[0]!r}); "
+              f"generate pad_token_id stays {pad_id}")
+
     # Resume support: skip traces already labelled
     done_problems: set = set()
     if output_path.exists():
@@ -422,6 +503,7 @@ def main():
                     max_new_tokens=args.max_new_tokens,
                     pad_id=pad_id,
                     device=device,
+                    mask_id=mask_id,
                 )
             except Exception as e:
                 import traceback
@@ -466,6 +548,15 @@ def parse_args():
                    help="Stride between windows (default: 16)")
     p.add_argument("--max_new_tokens", type=int, default=512,
                    help="Max tokens to generate per masked inference (default: 512)")
+    p.add_argument("--mask_token", default="eos",
+                   help="Occlusion filler: 'eos' (current behaviour), 'pad' "
+                        "(<|finetune_right_pad_id|>), 'random' (one fixed random "
+                        "in-vocab token repeated), 'randmulti' (a distinct random "
+                        "in-vocab token per position -- the high-entropy control), "
+                        "or a literal string that encodes to exactly one token.")
+    p.add_argument("--mask_seed", type=int, default=0,
+                   help="Seed for --mask_token random/randmulti, so the arm is "
+                        "reproducible.")
     p.add_argument("--max_traces", type=int, default=None,
                    help="Process at most this many traces (default: all)")
     p.add_argument("--dry_run", action="store_true",

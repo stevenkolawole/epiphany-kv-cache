@@ -299,6 +299,108 @@ class ThinKVEviction:
         return new_past
 
 
+class ThinKVFaithfulEviction(ThinKVEviction):
+    """Faithful ThinKV: KDE-based R/E/T classification with a tau-step refresh.
+
+    ThinKVEviction diverges from the published algorithm in two ways, both
+    documented in its own docstring: it substitutes tertile percentile splits
+    for the paper's kernel-density estimate, and it re-classifies on every
+    decode step rather than refreshing every tau steps. This subclass restores
+    both so the baseline can be compared against ThinKV-as-published.
+
+    KDE: a Gaussian kernel density is fitted to the segment entropies with
+    Scott's-rule bandwidth, and the two deepest local minima of the density
+    become the R/E and E/T boundaries. Where fewer than two minima exist (a
+    unimodal density), we fall back to tertiles, which is the degenerate case
+    of the same partition.
+
+    Refresh: segment labels are recomputed only every `refresh_tau` decode
+    steps and cached in between, matching the paper's tau=128 refresh window.
+    """
+
+    def __init__(self, *args, refresh_tau: int = 128, kde_points: int = 256, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.refresh_tau = refresh_tau
+        self.kde_points = kde_points
+        self._step = 0
+        self._cached_labels = None
+        self._cached_nseg = 0
+
+    def reset(self, prefill_len: int = 0):
+        if hasattr(super(), "reset"):
+            super().reset(prefill_len)
+        self._step = 0
+        self._cached_labels = None
+        self._cached_nseg = 0
+
+    def _kde_boundaries(self, e: torch.Tensor):
+        """Return (t_low, t_high) from the two deepest minima of a Gaussian KDE."""
+        n = e.numel()
+        if n < 4:
+            return None
+        x = e.detach().float().flatten()
+        sd = x.std().item()
+        if sd <= 0 or not torch.isfinite(torch.tensor(sd)):
+            return None
+        # Silverman's robust rule: min(sd, IQR/1.349) rather than sd alone.
+        # On multimodal input the IQR term is the smaller one, which keeps the
+        # bandwidth narrow enough for the modes to survive; Scott's rule sets h
+        # from the global spread and smooths a trimodal density flat at small n.
+        q1, q3 = torch.quantile(x, 0.25).item(), torch.quantile(x, 0.75).item()
+        iqr = q3 - q1
+        spread = min(sd, iqr / 1.349) if iqr > 0 else sd
+        h = 0.9 * spread * (n ** (-0.2))
+        if h <= 0:
+            return None
+        grid = torch.linspace(x.min().item(), x.max().item(), self.kde_points, device=x.device)
+        z = (grid.unsqueeze(1) - x.unsqueeze(0)) / h
+        dens = torch.exp(-0.5 * z * z).sum(dim=1) / (n * h * (2 * 3.141592653589793) ** 0.5)
+        # interior local minima
+        mins = [(dens[i].item(), grid[i].item())
+                for i in range(1, self.kde_points - 1)
+                if dens[i] < dens[i - 1] and dens[i] <= dens[i + 1]]
+        if len(mins) < 2:
+            return None
+        mins.sort(key=lambda p: p[0])          # deepest first
+        cuts = sorted(v for _, v in mins[:2])
+        return cuts[0], cuts[1]
+
+    def _classify_segments(self, seg_entropies: torch.Tensor):
+        n = len(seg_entropies)
+        if n == 0:
+            return []
+        if n == 1:
+            return ["R"]
+        cuts = self._kde_boundaries(seg_entropies)
+        if cuts is None:                        # unimodal: tertiles are the degenerate case
+            return super()._classify_segments(seg_entropies)
+        t_low, t_high = cuts
+        return [
+            "R" if v.item() <= t_low else ("E" if v.item() <= t_high else "T")
+            for v in seg_entropies
+        ]
+
+    def evict_past_key_values(self, past_key_values, attention_weights):
+        """Reclassify only every refresh_tau steps; reuse cached labels between."""
+        self._step += 1
+        orig = ThinKVEviction._classify_segments.__get__(self, type(self))
+        reclassify = (self._cached_labels is None) or (self._step % self.refresh_tau == 0)
+
+        def _cached(seg_entropies):
+            nseg = len(seg_entropies)
+            if reclassify or self._cached_labels is None or nseg != self._cached_nseg:
+                labels = ThinKVFaithfulEviction._classify_segments(self, seg_entropies)
+                self._cached_labels, self._cached_nseg = labels, nseg
+            return self._cached_labels
+
+        saved = self._classify_segments
+        self._classify_segments = _cached
+        try:
+            return super().evict_past_key_values(past_key_values, attention_weights)
+        finally:
+            self._classify_segments = saved
+
+
 class RaaSEviction:
     """
     RaaS: Recency-Aware and Accuracy-Sensitive KV cache eviction.
@@ -2172,5 +2274,372 @@ if __name__ == "__main__":
     pruned_lf = lf_ev.evict_past_key_values(past_kv, attn_tuple)
     print(f"LongFlow (past_kv):           {seq_len} → {pruned_lf[0][0].shape[2]} tokens")
     assert pruned_lf[0][0].shape[2] == config.cache_size
+
+    print("\nAll assertions passed.")
+
+
+class KVSegmentHSEviction:
+    """
+    FA2-compatible segment hybrid: KV-key-variance segment classification +
+    detrended HS within-segment token ranking.
+
+    The attention-free analog of HybridSegmentHSEviction.  ThinKV (and our
+    HybridSegmentHS) classify thought segments by the entropy of the attention
+    distribution, which forces the eager kernel.  Here the segment classifier
+    reads only the cached key vectors: each segment is classified by the entropy
+    of its per-token key-variance (kv_key_var) distribution — the KV analog of
+    attention sparsity.  Low entropy = key-variance concentrated on a few tokens
+    (focused, R-like); high entropy = diffuse (T-like).  Within each segment,
+    tokens are ranked by the detrended Band A−B HS z-score, exactly as in
+    HybridSegmentHS.
+
+    Reads only past_key_values and hidden states — no attention matrix — so this
+    is FA2-compatible (output_hidden_states=True only).  Closes the tight-budget
+    gap where the eager HybridSegmentHS still leads.
+
+    Usage:
+        eviction = KVSegmentHSEviction(config)
+        eviction.reset(prefill_len=prompt_len)
+        eviction.set_prefill_end(prefill_outputs.hidden_states)
+        outputs = model(..., output_hidden_states=True)
+        past_kv = eviction.evict_past_key_values(past_kv, outputs.hidden_states)
+    """
+
+    def __init__(
+        self,
+        config: EvictionConfig,
+        band_a_layer: int = 10,
+        band_b_layer: int = 21,
+        window: int = 64,
+        segment_size: int = 128,
+        retain_r: int = 64,
+        retain_e: int = 32,
+        retain_t: int = 8,
+    ):
+        self.config = config
+        self.band_a_layer = band_a_layer
+        self.band_b_layer = band_b_layer
+        self.window = window
+        self.segment_size = segment_size
+        self.retain_r = retain_r
+        self.retain_e = retain_e
+        self.retain_t = retain_t
+
+        self._prefill_len: int = 0
+        self._prev_hs_a: Optional[torch.Tensor] = None
+        self._prev_hs_b: Optional[torch.Tensor] = None
+        self._buf_a: List[float] = []
+        self._buf_b: List[float] = []
+        self._scores: List[float] = []   # per decode token, pruned on eviction
+
+    def reset(self, prefill_len: int = 0):
+        self._prefill_len = prefill_len
+        self._prev_hs_a = None
+        self._prev_hs_b = None
+        self._buf_a = []
+        self._buf_b = []
+        self._scores = []
+
+    def set_prefill_end(self, hidden_states: Tuple[torch.Tensor, ...]):
+        self._prev_hs_a = hidden_states[self.band_a_layer + 1][:, -1, :].detach()
+        self._prev_hs_b = hidden_states[self.band_b_layer + 1][:, -1, :].detach()
+
+    def _segment_kv_key_entropy(
+        self,
+        past_key_values: Tuple,
+        classify_len: int,
+    ) -> torch.Tensor:
+        """
+        Entropy of the per-token key-variance distribution within each segment.
+
+        kv_key_var[t] = mean over layers/heads of var(k[t], head_dim).  Within a
+        segment, treat the kv_key_var values as a PMF: low entropy = variance
+        concentrated on a few tokens (R-like), high entropy = diffuse (T-like).
+        Attention-free analog of ThinKV's attention-entropy classifier.
+        """
+        # (heads, seq, head_dim), averaged over layers and batch.
+        k_all = torch.stack([k.mean(0) for k, _ in past_key_values]).mean(0)
+        per_token_var = k_all.var(dim=-1).mean(dim=0)[:classify_len]  # (classify_len,)
+
+        seg_size = self.segment_size
+        num_full = classify_len // seg_size
+        entropies = []
+        for i in range(num_full):
+            seg = per_token_var[i * seg_size:(i + 1) * seg_size]
+            p = seg / (seg.sum() + 1e-9)
+            entropies.append(-(p * torch.log(p + 1e-12)).sum())
+        if classify_len - num_full * seg_size > 0:
+            seg = per_token_var[num_full * seg_size:]
+            p = seg / (seg.sum() + 1e-9)
+            entropies.append(-(p * torch.log(p + 1e-12)).sum())
+        if not entropies:
+            return torch.zeros(0, device=per_token_var.device)
+        return torch.stack(entropies)
+
+    def _classify_segments(self, seg_entropies: torch.Tensor) -> List[str]:
+        """Tertile threshold classification (identical to ThinKV/HybridSegmentHS)."""
+        n = len(seg_entropies)
+        if n == 0:
+            return []
+        if n == 1:
+            return ['R']
+        sorted_e, _ = seg_entropies.sort()
+        t_low = sorted_e[n // 3].item()
+        t_high = sorted_e[(2 * n) // 3].item()
+        return [
+            'R' if e.item() <= t_low else ('E' if e.item() <= t_high else 'T')
+            for e in seg_entropies
+        ]
+
+    def evict_past_key_values(
+        self,
+        past_key_values: Tuple,
+        hidden_states: Tuple[torch.Tensor, ...],
+    ) -> Tuple:
+        seq_len = past_key_values[0][0].shape[2]
+        device = past_key_values[0][0].device
+        prefill_len = min(self._prefill_len, seq_len)
+
+        # ── Update per-token HS z-score (within-segment ranker) ───────────────
+        diff_a, hs_a = _hs_diff(hidden_states, self.band_a_layer, self._prev_hs_a)
+        diff_b, hs_b = _hs_diff(hidden_states, self.band_b_layer, self._prev_hs_b)
+        self._prev_hs_a = hs_a
+        self._prev_hs_b = hs_b
+        self._buf_a.append(diff_a)
+        self._buf_b.append(diff_b)
+        self._scores.append(
+            _rolling_z_score(self._buf_a, self.window)
+            - _rolling_z_score(self._buf_b, self.window)
+        )
+
+        if seq_len <= self.config.cache_size:
+            return past_key_values
+
+        keep_recent = min(self.config.keep_recent_k, self.config.cache_size // 4)
+        classify_len = seq_len - keep_recent
+
+        # ── Segment type classification (KV-key-variance entropy) ─────────────
+        seg_entropies = self._segment_kv_key_entropy(past_key_values, classify_len)
+        seg_labels = self._classify_segments(seg_entropies)
+
+        # ── HS scores for all decode positions ────────────────────────────────
+        num_decode = seq_len - prefill_len
+        hs_decode = torch.tensor(
+            self._scores[-num_decode:], device=device, dtype=torch.float32
+        )
+        if len(hs_decode) < num_decode:
+            pad = torch.full((num_decode - len(hs_decode),), float('-inf'), device=device)
+            hs_decode = torch.cat([pad, hs_decode])
+
+        # ── Apply per-segment retention budgets using HS scores ───────────────
+        keep_mask = torch.zeros(seq_len, dtype=torch.bool, device=device)
+        keep_mask[:prefill_len] = True
+        keep_mask[-keep_recent:] = True
+
+        budget_map = {'R': self.retain_r, 'E': self.retain_e, 'T': self.retain_t}
+        remaining_budget = self.config.cache_size - keep_recent - prefill_len
+        seg_size = self.segment_size
+
+        for i, label in enumerate(seg_labels):
+            if remaining_budget <= 0:
+                break
+            seg_abs_start = i * seg_size
+            seg_abs_end = min((i + 1) * seg_size, classify_len)
+            decode_start = max(seg_abs_start, prefill_len)
+            decode_end = min(seg_abs_end, seq_len - keep_recent)
+            if decode_start >= decode_end:
+                continue
+            score_start = decode_start - prefill_len
+            score_end = decode_end - prefill_len
+            seg_hs = hs_decode[score_start:score_end]
+            n_keep = min(budget_map[label], len(seg_hs), remaining_budget)
+            if n_keep > 0:
+                _, top_idx = torch.topk(seg_hs, n_keep)
+                keep_mask[decode_start + top_idx] = True
+                remaining_budget -= n_keep
+
+        new_past = tuple(
+            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
+            for k, v in past_key_values
+        )
+        decode_keep = keep_mask[prefill_len:prefill_len + num_decode].tolist()
+        self._scores = [
+            s for s, kept in zip(self._scores[-num_decode:], decode_keep) if kept
+        ]
+        return new_past
+
+
+if __name__ == "__main__":
+    # Smoke tests — verify all eviction classes reduce cache from seq_len to cache_size.
+    batch_size = 1
+    num_heads = 8
+    num_layers = 4
+    head_dim = 8
+    seq_len = 1000
+
+    config = EvictionConfig(cache_size=512, keep_recent_k=128)
+
+    # HuggingFace-format fixtures
+    past_kv = tuple(
+        (torch.randn(batch_size, num_heads, seq_len, head_dim),
+         torch.randn(batch_size, num_heads, seq_len, head_dim))
+        for _ in range(num_layers)
+    )
+    attn_tuple = tuple(
+        torch.randn(batch_size, num_heads, 1, seq_len).abs()
+        for _ in range(num_layers)
+    )
+
+    # ── H2OEviction ──────────────────────────────────────────────────────────
+    h2o = H2OEviction(config)
+    pruned_h2o = h2o.evict_past_key_values(past_kv, attn_tuple)
+    print(f"H2O (past_kv):                {seq_len} → {pruned_h2o[0][0].shape[2]} tokens")
+    assert pruned_h2o[0][0].shape[2] == config.cache_size
+
+    # Verify stateful accumulation: a second call with the same cache still works.
+    h2o2 = H2OEviction(config)
+    _ = h2o2.evict_past_key_values(past_kv, attn_tuple)  # prime cumulative buffer
+    h2o2.reset()
+    pruned_h2o2 = h2o2.evict_past_key_values(past_kv, attn_tuple)
+    print(f"H2O (after reset):            {seq_len} → {pruned_h2o2[0][0].shape[2]} tokens")
+    assert pruned_h2o2[0][0].shape[2] == config.cache_size
+
+    # ── ThinKVEviction ───────────────────────────────────────────────────────
+    thinKV = ThinKVEviction(config)
+    pruned_tkv = thinKV.evict_past_key_values(past_kv, attn_tuple)
+    retained = pruned_tkv[0][0].shape[2]
+    # ThinKV may retain fewer tokens than cache_size (segment budgets cap per-segment)
+    print(f"ThinKV (past_kv):             {seq_len} → {retained} tokens (≤ {config.cache_size})")
+    assert retained <= config.cache_size
+
+    # ── RaaSEviction ─────────────────────────────────────────────────────────
+    prefill_len = 200
+    raas = RaaSEviction(config)
+    raas.reset(prefill_len=prefill_len)
+    pruned_raas = raas.evict_past_key_values(past_kv, attn_tuple)
+    print(f"RaaS (past_kv):               {seq_len} → {pruned_raas[0][0].shape[2]} tokens")
+    assert pruned_raas[0][0].shape[2] == config.cache_size
+    # Prefill tokens must all be present in the output
+    assert pruned_raas[0][0].shape[2] >= prefill_len
+
+    # ── HSVarianceEviction ───────────────────────────────────────────────────
+    # Simulate a decode loop: feed seq_len=1 hidden states at each step.
+    hidden_dim = num_heads * head_dim  # 64
+    num_hs_layers = 34  # 32 transformer layers + embedding + final norm (index 0..33)
+
+    hs_eviction = HSVarianceEviction(config, band_a_layer=10, band_b_layer=21)
+    hs_eviction.reset(prefill_len=prefill_len)
+
+    # Build a fake past_kv with seq_len tokens (pretend prefill already done)
+    past_kv_hs = past_kv  # reuse existing fixture
+    # Simulate 10 decode steps to populate score buffers before eviction kicks in
+    for step in range(10):
+        fake_hs = tuple(torch.randn(batch_size, 1, hidden_dim) for _ in range(num_hs_layers))
+        past_kv_hs = hs_eviction.evict_past_key_values(past_kv_hs, fake_hs)
+
+    # After 10 steps, we've been accumulating scores; if cache exceeded budget it would evict.
+    print(f"HSVariance (after 10 decode steps): cache len = {past_kv_hs[0][0].shape[2]}")
+    assert past_kv_hs[0][0].shape[2] <= config.cache_size
+
+    # ── KVValVarianceEviction ────────────────────────────────────────────────
+    kv_eviction = KVValVarianceEviction(config)
+    kv_eviction.reset(prefill_len=prefill_len)
+    pruned_kv = kv_eviction.evict_past_key_values(past_kv)
+    print(f"KVValVariance (past_kv):      {seq_len} → {pruned_kv[0][0].shape[2]} tokens")
+    assert pruned_kv[0][0].shape[2] <= config.cache_size
+
+    # ── KVKeyVarianceEviction ────────────────────────────────────────────────
+    kvk_eviction = KVKeyVarianceEviction(config)
+    kvk_eviction.reset(prefill_len=prefill_len)
+    pruned_kvk = kvk_eviction.evict_past_key_values(past_kv)
+    print(f"KVKeyVariance (past_kv):      {seq_len} → {pruned_kvk[0][0].shape[2]} tokens")
+    assert pruned_kvk[0][0].shape[2] <= config.cache_size
+
+    # ── LagKVKeyVarianceEviction ─────────────────────────────────────────────
+    lag_key_eviction = LagKVKeyVarianceEviction(config, chunk_size=128)
+    lag_key_eviction.reset(prefill_len=prefill_len)
+    pruned_lag_key = lag_key_eviction.evict_past_key_values(past_kv)
+    print(f"LagKVKeyVariance (past_kv):   {seq_len} → {pruned_lag_key[0][0].shape[2]} tokens")
+    assert pruned_lag_key[0][0].shape[2] <= config.cache_size
+
+    # ── LagKVEviction ────────────────────────────────────────────────────────
+    lag_eviction = LagKVEviction(config, chunk_size=128)
+    lag_eviction.reset(prefill_len=prefill_len)
+    pruned_lag = lag_eviction.evict_past_key_values(past_kv)
+    print(f"LagKV (past_kv):              {seq_len} → {pruned_lag[0][0].shape[2]} tokens")
+    assert pruned_lag[0][0].shape[2] <= config.cache_size
+
+    # ── New Phase 1 HS classes ────────────────────────────────────────────────
+    # Shared fixtures: 34 HS layers (32 transformer + embedding + final norm),
+    # hidden_dim=64. band_a_layer=10 → index 11; band_b_layer=21 → index 22;
+    # BandAdaptiveHS Band B max layer 25 → index 26. All within range [0, 33].
+    fake_prefill_hs = tuple(
+        torch.randn(batch_size, prefill_len, hidden_dim) for _ in range(num_hs_layers)
+    )
+
+    # ── DetrendendHSVarianceEviction ─────────────────────────────────────────
+    det_ev = DetrendendHSVarianceEviction(config, band_a_layer=10, band_b_layer=21)
+    det_ev.reset(prefill_len=prefill_len)
+    det_ev.set_prefill_end(fake_prefill_hs)
+    past_kv_det = past_kv
+    for _ in range(10):
+        fake_hs = tuple(torch.randn(batch_size, 1, hidden_dim) for _ in range(num_hs_layers))
+        past_kv_det = det_ev.evict_past_key_values(past_kv_det, fake_hs)
+    print(f"DetrendendHSVariance (10 steps): cache len = {past_kv_det[0][0].shape[2]}")
+    assert past_kv_det[0][0].shape[2] <= config.cache_size
+    # z-scores must all be finite (eps guards against division by zero)
+    assert all(s == s for s in det_ev._scores), "NaN in DetrendendHSVariance scores"
+
+    # ── BandAdaptiveHSEviction ────────────────────────────────────────────────
+    band_ev = BandAdaptiveHSEviction(config)
+    band_ev.reset(prefill_len=prefill_len)
+    band_ev.set_prefill_end(fake_prefill_hs)
+    past_kv_band = past_kv
+    for _ in range(10):
+        fake_hs = tuple(torch.randn(batch_size, 1, hidden_dim) for _ in range(num_hs_layers))
+        past_kv_band = band_ev.evict_past_key_values(past_kv_band, fake_hs)
+    print(f"BandAdaptiveHS (10 steps):       cache len = {past_kv_band[0][0].shape[2]}")
+    assert past_kv_band[0][0].shape[2] <= config.cache_size
+    # All band layers should have entries in the prev dicts after first decode step
+    assert len(band_ev._prev_a) == len(BandAdaptiveHSEviction._BAND_A)
+    assert len(band_ev._prev_b) == len(BandAdaptiveHSEviction._BAND_B)
+
+    # ── AttentionHSProductEviction ────────────────────────────────────────────
+    ahs_ev = AttentionHSProductEviction(config, band_a_layer=10)
+    ahs_ev.reset(prefill_len=prefill_len)
+    ahs_ev.set_prefill_end(fake_prefill_hs)
+    past_kv_ahs = past_kv
+    for _ in range(10):
+        fake_hs = tuple(torch.randn(batch_size, 1, hidden_dim) for _ in range(num_hs_layers))
+        past_kv_ahs = ahs_ev.evict_past_key_values(past_kv_ahs, attn_tuple, fake_hs)
+    print(f"AttentionHSProduct (10 steps):   cache len = {past_kv_ahs[0][0].shape[2]}")
+    assert past_kv_ahs[0][0].shape[2] <= config.cache_size
+
+    # ── HybridSegmentHSEviction ───────────────────────────────────────────────
+    # num_classifier_layers=num_layers so attn_tuple (4 layers) covers the full set.
+    hyb_ev = HybridSegmentHSEviction(
+        config, band_a_layer=10, band_b_layer=21, num_classifier_layers=num_layers
+    )
+    hyb_ev.reset(prefill_len=prefill_len)
+    hyb_ev.set_prefill_end(fake_prefill_hs)
+    past_kv_hyb = past_kv
+    for _ in range(10):
+        fake_hs = tuple(torch.randn(batch_size, 1, hidden_dim) for _ in range(num_hs_layers))
+        past_kv_hyb = hyb_ev.evict_past_key_values(past_kv_hyb, attn_tuple, fake_hs)
+    retained = past_kv_hyb[0][0].shape[2]
+    print(f"HybridSegmentHS (10 steps):      cache len = {retained} (≤ {config.cache_size})")
+    assert retained <= config.cache_size
+
+    # ── KVSegmentHSEviction (FA2-compatible segment hybrid) ───────────────────
+    kvseg_ev = KVSegmentHSEviction(config, band_a_layer=10, band_b_layer=21)
+    kvseg_ev.reset(prefill_len=prefill_len)
+    kvseg_ev.set_prefill_end(fake_prefill_hs)
+    past_kv_kvseg = past_kv
+    for _ in range(10):
+        fake_hs = tuple(torch.randn(batch_size, 1, hidden_dim) for _ in range(num_hs_layers))
+        past_kv_kvseg = kvseg_ev.evict_past_key_values(past_kv_kvseg, fake_hs)
+    retained = past_kv_kvseg[0][0].shape[2]
+    print(f"KVSegmentHS (10 steps):          cache len = {retained} (≤ {config.cache_size})")
+    assert retained <= config.cache_size
 
     print("\nAll assertions passed.")

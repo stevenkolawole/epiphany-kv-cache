@@ -78,6 +78,7 @@ try:
         EvictionConfig,
         H2OEviction,
         ThinKVEviction,
+        ThinKVFaithfulEviction,
         RaaSEviction,
         HSVarianceEviction,
         KVValVarianceEviction,
@@ -89,6 +90,7 @@ try:
         AttentionHSProductEviction,
         HybridSegmentHSEviction,
         KVSegHSEviction,
+        KVSegmentHSEviction,
         RKVEviction,
         LongFlowEviction,
     )
@@ -190,7 +192,7 @@ def answers_match(pred: Optional[str], gt: str) -> bool:
 
 # ── Dataset loaders ───────────────────────────────────────────────────────────
 
-def load_problems(dataset: str, n_samples: int) -> List[Dict]:
+def load_problems(dataset: str, n_samples: int, start_idx: int = 0) -> List[Dict]:
     if dataset == "math500":
         ds = load_dataset("HuggingFaceH4/MATH-500", split="test", cache_dir=_hf_cache())
         problems = []
@@ -198,14 +200,14 @@ def load_problems(dataset: str, n_samples: int) -> List[Dict]:
             ans = extract_boxed(item["solution"])
             if ans:
                 problems.append({"problem": item["problem"].strip(), "ground_truth": ans})
-            if len(problems) >= n_samples:
+            if len(problems) >= start_idx + n_samples:
                 break
     elif dataset == "aime2024":
         ds = load_dataset("Maxwell-Jia/AIME_2024", split="train", cache_dir=_hf_cache())
         problems = [
             {"problem": item["Problem"].strip(), "ground_truth": str(item["Answer"]).strip()}
             for item in ds
-        ][:n_samples]
+        ][:start_idx + n_samples]
     elif dataset == "gsm8k":
         ds = load_dataset("openai/gsm8k", "main", split="test", cache_dir=_hf_cache())
         _re = re.compile(r"####\s*(-?[\d,]+)")
@@ -215,11 +217,13 @@ def load_problems(dataset: str, n_samples: int) -> List[Dict]:
             if m:
                 problems.append({"problem": item["question"].strip(),
                                   "ground_truth": m.group(1).replace(",", "")})
-            if len(problems) >= n_samples:
+            if len(problems) >= start_idx + n_samples:
                 break
     else:
         raise ValueError(f"Unknown dataset: {dataset}")
-    print(f"  Loaded {len(problems)} problems from {dataset}.")
+    problems = problems[start_idx:start_idx + n_samples]
+    print(f"  Loaded {len(problems)} problems from {dataset} "
+          f"(shard [{start_idx}, {start_idx + n_samples})).")
     return problems
 
 
@@ -240,9 +244,9 @@ def build_prompt_ids(tokenizer, problem: str, device) -> torch.Tensor:
 # ── Eviction factory ──────────────────────────────────────────────────────────
 
 # Methods that need the full softmax attention matrix (eager attn only).
-ATTN_ONLY_METHODS = {"h2o", "thinKV", "raas", "r_kv", "longflow"}
+ATTN_ONLY_METHODS = {"h2o", "thinKV", "raas", "r_kv", "longflow", "thinkv_faithful"}
 # Methods that need output_hidden_states=True only (FA2-compatible).
-HS_ONLY_METHODS   = {"hs_variance", "hs_variance_detrend", "band_adaptive_hs", "kv_seg_hs"}
+HS_ONLY_METHODS   = {"hs_variance", "hs_variance_detrend", "band_adaptive_hs", "kv_seg_hs", "kv_seg_hs_entropy"}
 # Methods that need BOTH attention matrix AND hidden states (eager only).
 BOTH_METHODS      = {"attn_hs_product", "hybrid_seg_hs"}
 # Methods that only read past_key_values (compatible with flash attn).
@@ -282,8 +286,12 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128):
         return LagKVKeyVarianceEviction(cfg)
     if method == "lag_kv":
         return LagKVEviction(cfg)
+    if method == "thinkv_faithful":
+        return ThinKVFaithfulEviction(cfg)
     if method == "kv_seg_hs":
         return KVSegHSEviction(cfg)
+    if method == "kv_seg_hs_entropy":
+        return KVSegmentHSEviction(cfg)
     if method == "r_kv":
         return RKVEviction(cfg)
     if method == "longflow":
@@ -331,6 +339,7 @@ def run_one(
     _hs_eviction_classes = (
         HSVarianceEviction, DetrendendHSVarianceEviction, BandAdaptiveHSEviction,
         AttentionHSProductEviction, HybridSegmentHSEviction, KVSegHSEviction,
+        KVSegmentHSEviction,
     )
     if eviction is not None:
         if hasattr(eviction, "reset"):
@@ -411,6 +420,8 @@ def parse_args():
     p.add_argument("--dataset",        choices=["math500", "aime2024", "gsm8k"],
                    default="math500")
     p.add_argument("--n_samples",      type=int, default=50)
+    p.add_argument("--start_idx",      type=int, default=0,
+                   help="First problem index; with --n_samples defines a shard [start, start+n).")
     p.add_argument("--max_new_tokens", type=int, default=8192)
     p.add_argument("--cache_sizes",    type=int, nargs="+",
                    default=[512, 1024, 2048, 4096],
@@ -468,7 +479,7 @@ def main():
                  f"Resubmit to get a different node.")
 
     print(f"Loading {args.dataset} ...")
-    problems = load_problems(args.dataset, args.n_samples)
+    problems = load_problems(args.dataset, args.n_samples, args.start_idx)
 
     # Load existing results for resume
     existing: Dict = {}
@@ -578,6 +589,7 @@ def main():
                     "n_tokens_generated": res.get("n_tokens_generated", 0),
                     "wall_time_s":        res.get("wall_time_s"),
                     "peak_gpu_mb":        res.get("peak_gpu_mb"),
+                    "error":              res.get("error"),
                 })
 
             accuracy = n_correct / len(problems) if problems else 0.0
