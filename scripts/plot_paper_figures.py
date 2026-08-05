@@ -86,16 +86,25 @@ def plot(dataset, out_dir):
     ceiling = merged.get("none", {})
     ceil_val = 100 * next(iter(ceiling.values()))["accuracy"] if ceiling else None
 
-    fig, ax = plt.subplots(figsize=(7.5, 5))
+    # Sized for the width it is actually printed at (half of a two-column
+    # page), not for a full-width figure that then gets scaled down.
+    plt.rcParams.update({"font.size": 8, "axes.labelsize": 9,
+                         "xtick.labelsize": 8, "ytick.labelsize": 8,
+                         "legend.fontsize": 6.5})
+    fig, ax = plt.subplots(figsize=(4.2, 3.2))
     for m, label in NAME:
         pts = data.get(m)
         if not pts:
             continue
         xs = sorted(pts)
+        ours = m in ("hs_variance_detrend", "kv_seg_hs")
         ax.plot(xs, [pts[x] for x in xs],
                 "-" if m in FA2 else "--",
-                marker="o", color=COLOR[m], label=label, linewidth=1.8,
-                markersize=4)
+                marker="o", color=COLOR[m], label=label,
+                linewidth=2.4 if ours else 1.0,
+                alpha=1.0 if ours else 0.55,
+                markersize=5 if ours else 3,
+                zorder=3 if ours else 2)
     if ceil_val is not None:
         ax.axhline(ceil_val, color="black", linestyle=":", linewidth=1,
                    label=f"none ({ceil_val:.0f}%)")
@@ -106,7 +115,8 @@ def plot(dataset, out_dir):
     ax.set_xlabel("KV cache budget (tokens)")
     ax.set_ylabel("Accuracy (%)")
     ax.grid(True, alpha=0.3)
-    ax.legend(loc="lower right", fontsize=8, ncol=2)
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.22),
+              ncol=4, frameon=False, columnspacing=1.0, handlelength=1.6)
     fig.tight_layout()
     out = out_dir / f"accuracy_{dataset}.pdf"
     fig.savefig(out)
