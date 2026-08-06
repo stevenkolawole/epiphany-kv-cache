@@ -388,6 +388,7 @@ def run_one(
     torch.cuda.empty_cache()
 
     # ── Decode loop ───────────────────────────────────────────────────────
+    cache_obj = _to_model_kv(past_kv)   # built once; reused unless eviction fires
     generated_ids: List[int] = []
     eos_id = tokenizer.eos_token_id
 
@@ -400,17 +401,23 @@ def run_one(
         with torch.no_grad():
             step_out = model(
                 input_ids=next_token,
-                past_key_values=_to_model_kv(past_kv),
+                past_key_values=cache_obj,
                 use_cache=True,
                 output_attentions=need_attn,
                 output_hidden_states=need_hs,
             )
 
-        past_kv = _as_legacy_kv(step_out.past_key_values)
+        cache_obj = step_out.past_key_values
 
         # Apply eviction — eviction methods expect the legacy tuple format.
+        # The cache is rebuilt ONLY when eviction actually dropped tokens.
+        # Rebuilding every step (the previous behaviour) copied the whole KV
+        # cache per layer per token for every method, including no-eviction,
+        # which costs more than the attention it was meant to measure and
+        # scales with cache size -- so it penalised exactly the methods that
+        # hold smaller caches. Timing before this fix measures the harness.
         if eviction is not None:
-            kv_tuple = tuple(past_kv)
+            kv_tuple = tuple(_as_legacy_kv(cache_obj))
             if need_both:
                 evicted = eviction.evict_past_key_values(
                     kv_tuple, step_out.attentions, step_out.hidden_states
@@ -421,7 +428,8 @@ def run_one(
                 evicted = eviction.evict_past_key_values(kv_tuple, step_out.hidden_states)
             else:
                 evicted = eviction.evict_past_key_values(kv_tuple)
-            past_kv = _as_legacy_kv(evicted)
+            if evicted[0][0].shape[2] != kv_tuple[0][0].shape[2]:
+                cache_obj = _to_model_kv(_as_legacy_kv(evicted))
 
         next_token = step_out.logits[0, -1, :].argmax().unsqueeze(0).unsqueeze(0)
         del step_out
