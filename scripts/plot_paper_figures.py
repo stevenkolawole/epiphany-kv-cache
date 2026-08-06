@@ -40,7 +40,6 @@ NAME = [
     ("thinKV",              "ThinKV"),
     ("h2o",                 "H2O"),
     ("raas",                "RaaS"),
-    ("hybrid_seg_hs",       "Hybrid-Seg (eager)"),
     ("attn_hs_product",     r"Attn$\times$HS"),
 ]
 COLOR = {
@@ -49,7 +48,7 @@ COLOR = {
     "kv_val": "tab:blue", "kv_key": "tab:cyan",
     "lag_kv_key": "tab:purple", "lag_kv": "indigo",
     "thinKV": "tab:green", "h2o": "tab:gray", "raas": "tab:brown",
-    "hybrid_seg_hs": "tab:pink", "attn_hs_product": "olive",
+"attn_hs_product": "olive",
 }
 
 
@@ -88,10 +87,10 @@ def plot(dataset, out_dir):
 
     # Sized for the width it is actually printed at (half of a two-column
     # page), not for a full-width figure that then gets scaled down.
-    plt.rcParams.update({"font.size": 8, "axes.labelsize": 9,
-                         "xtick.labelsize": 8, "ytick.labelsize": 8,
-                         "legend.fontsize": 6.5})
-    fig, ax = plt.subplots(figsize=(4.2, 3.2))
+    plt.rcParams.update({"font.size": 9, "axes.labelsize": 10,
+                         "xtick.labelsize": 9, "ytick.labelsize": 9,
+                         "legend.fontsize": 8})
+    fig, ax = plt.subplots(figsize=(4.6, 3.9))
     for m, label in NAME:
         pts = data.get(m)
         if not pts:
@@ -115,8 +114,8 @@ def plot(dataset, out_dir):
     ax.set_xlabel("KV cache budget (tokens)")
     ax.set_ylabel("Accuracy (%)")
     ax.grid(True, alpha=0.3)
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.22),
-              ncol=4, frameon=False, columnspacing=1.0, handlelength=1.6)
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.16),
+              ncol=3, frameon=False, columnspacing=1.2, handlelength=1.8)
     fig.tight_layout()
     out = out_dir / f"accuracy_{dataset}.pdf"
     fig.savefig(out)
