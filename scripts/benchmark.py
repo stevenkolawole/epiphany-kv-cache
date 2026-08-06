@@ -135,6 +135,35 @@ def _as_legacy_kv(past_key_values) -> List[Tuple[torch.Tensor, torch.Tensor]]:
     return [(layer[0], layer[1]) for layer in past_key_values]
 
 
+def _write_back(cache, kv_pairs) -> bool:
+    """Write evicted tensors into the live cache's own slots.
+
+    Rebuilding a DynamicCache per step costs a full per-layer concatenation and
+    holds two copies of the cache at once, which inflates both wall-clock and
+    peak memory and scales with cache size. Eviction fires on essentially every
+    step once the budget is reached, so that cost is paid throughout decode, not
+    just at the boundary.
+
+    Assigning into `key_cache`/`value_cache` reuses the cache object and skips
+    the concatenation; `_seen_tokens` is set to the retained length so the causal
+    mask matches (otherwise the model builds a mask one position too long).
+    Returns False if this transformers version exposes neither layout, in which
+    case the caller falls back to reconstruction.
+    """
+    if hasattr(cache, "key_cache"):
+        for i, (k, v) in enumerate(kv_pairs):
+            cache.key_cache[i] = k
+            cache.value_cache[i] = v
+    elif hasattr(cache, "layers"):
+        for layer, (k, v) in zip(cache.layers, kv_pairs):
+            layer.keys, layer.values = k, v
+    else:
+        return False
+    if hasattr(cache, "_seen_tokens"):
+        cache._seen_tokens = kv_pairs[0][0].shape[2]
+    return True
+
+
 def _to_model_kv(kv_pairs: List[Tuple[torch.Tensor, torch.Tensor]]):
     """
     Convert a list of (k, v) pairs to a DynamicCache for model input.
@@ -429,7 +458,8 @@ def run_one(
             else:
                 evicted = eviction.evict_past_key_values(kv_tuple)
             if evicted[0][0].shape[2] != kv_tuple[0][0].shape[2]:
-                cache_obj = _to_model_kv(_as_legacy_kv(evicted))
+                if not _write_back(cache_obj, _as_legacy_kv(evicted)):
+                    cache_obj = _to_model_kv(_as_legacy_kv(evicted))
 
         next_token = step_out.logits[0, -1, :].argmax().unsqueeze(0).unsqueeze(0)
         del step_out
