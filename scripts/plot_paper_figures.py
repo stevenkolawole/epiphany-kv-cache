@@ -123,6 +123,54 @@ def plot(dataset, out_dir):
     print(f"wrote {out}")
 
 
+
+
+def plot_tradeoff(out_dir):
+    """AIME-2024 accuracy vs wall-clock at K=8192. Replaces an ad-hoc figure
+    that had no generator, plotted the withdrawn Segment-HS point, and omitted
+    EpiKV-Seg entirely -- the fastest method measured and the one the caption
+    names."""
+    import statistics as st
+    pts = {}
+    for variant in ("flash", "eager"):
+        p = PHASE1 / f"benchmark_aime2024_{variant}.json"
+        for m, byk in json.load(open(p))["results"].items():
+            if m in ("none", "hybrid_seg_hs") or m in pts:
+                continue
+            s = byk.get("8192")
+            if not s:
+                continue
+            pp = s["per_problem"]
+            wt = st.mean(x.get("wall_time_s", 0) for x in pp)
+            pts[m] = (wt, 100 * s["accuracy"])
+    LBL = dict(NAME)
+    # hand offsets so labels never overlap points or one another
+    OFF = {"kv_seg_hs": (-2, -16), "lag_kv": (12, 6), "hs_variance_detrend": (30, 9),
+           "thinKV": (0, -16), "h2o": (-10, 10), "raas": (-8, 10),
+           "kv_key": (-14, -15), "lag_kv_key": (14, 9), "attn_hs_product": (16, -16),
+           "band_adaptive_hs": (-30, 9), "kv_val": (-2, -16), "hs_variance": (34, -5)}
+    plt.rcParams.update({"font.size": 9, "axes.labelsize": 10,
+                         "xtick.labelsize": 9, "ytick.labelsize": 9})
+    fig, ax = plt.subplots(figsize=(4.6, 3.4))
+    for m, (x, y) in pts.items():
+        fa2 = m in FA2
+        ax.scatter(x, y, s=52, marker="o" if fa2 else "s",
+                   color="#1b7837" if fa2 else "#d73027", zorder=3)
+        dx, dy = OFF.get(m, (0, 10))
+        ax.annotate(LBL.get(m, m), (x, y), textcoords="offset points",
+                    xytext=(dx, dy), ha="center", fontsize=7.5)
+    ax.scatter([], [], marker="o", color="#1b7837", label="FA2-compatible")
+    ax.scatter([], [], marker="s", color="#d73027", label="attention (eager)")
+    ax.set_xlabel("wall-clock time / problem (s)")
+    ax.set_ylabel("accuracy (%)")
+    ax.grid(True, alpha=0.3)
+    ax.legend(loc="lower left", frameon=False, fontsize=8.5)
+    fig.tight_layout()
+    out = out_dir / "tradeoff_aime2024.pdf"
+    fig.savefig(out)
+    plt.close(fig)
+    print(f"wrote {out}")
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", type=Path,
@@ -131,3 +179,4 @@ if __name__ == "__main__":
     a.out.mkdir(parents=True, exist_ok=True)
     plot("math500", a.out)
     plot("aime2024", a.out)
+    plot_tradeoff(a.out)
