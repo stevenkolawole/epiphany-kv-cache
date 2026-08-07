@@ -306,7 +306,8 @@ ATTN_ONLY_METHODS = {"h2o", "thinKV", "raas", "r_kv", "longflow", "thinkv_faithf
 # {range, var, norm}. Enumerated rather than prefix-matched so --methods keeps
 # validating its input; these read cached V and hidden states, no attention.
 VALUE_RESERVE_METHODS = {
-    f"kv_seg_hs_v{stat}{n}"
+    f"{base}_v{stat}{n}"
+    for base in ("kv_seg_hs", "hs_variance_detrend")
     for stat in ("range", "var", "norm")
     for n in (8, 16, 32, 64)
 }
@@ -360,6 +361,11 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
         return ThinKVFaithfulEviction(cfg)
     if method == "kv_seg_hs":
         return KVSegHSEviction(cfg)
+    if method.startswith("hs_variance_detrend_v"):
+        tail = method[len("hs_variance_detrend_v"):]
+        stat = "".join(c for c in tail if not c.isdigit()) or "range"
+        n = int("".join(c for c in tail if c.isdigit()) or 16)
+        return DetrendendHSVarianceEviction(cfg, value_reserve=n, value_stat=stat)
     if method.startswith("kv_seg_hs_v"):
         # kv_seg_hs_v<stat><N>: EpiKV-Seg with a value-magnitude reserve of N
         # slots, swapped against the lowest-scoring retained tokens so the

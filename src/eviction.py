@@ -1148,11 +1148,19 @@ class DetrendendHSVarianceEviction:
         band_a_layer: int = 10,
         band_b_layer: int = 21,
         window: int = 64,
+        value_reserve: int = 0,
+        value_stat: str = "range",
     ):
         self.config = config
         self.band_a_layer = band_a_layer
         self.band_b_layer = band_b_layer
         self.window = window
+        # Value-magnitude reserve. Flat's global top-K fills the budget exactly,
+        # so unlike the segment variant a reserve displaces rather than enlarges
+        # and needs no swap construction: lifting a position's score to +inf
+        # puts it in the kept set at the cost of the lowest-scoring survivor.
+        self.value_reserve = value_reserve
+        self.value_stat = value_stat
 
         self._prefill_len: int = 0
         self._prev_hs_a: Optional[torch.Tensor] = None
@@ -1214,6 +1222,26 @@ class DetrendendHSVarianceEviction:
                 pad = torch.full((num_decode - len(scores),), float('-inf'), device=device)
                 scores = torch.cat([pad, scores])
             scores[-keep_recent:] = float('inf')
+            if self.value_reserve > 0:
+                def vstat(v):
+                    vf = v[:, :, prefill_len:prefill_len + num_decode, :].float()
+                    if self.value_stat == "range":
+                        return vf.amax(dim=-1) - vf.amin(dim=-1)
+                    if self.value_stat == "var":
+                        return vf.var(dim=-1)
+                    if self.value_stat == "norm":
+                        return vf.norm(dim=-1)
+                    raise ValueError(f"unknown value_stat {self.value_stat!r}")
+                val = torch.stack([
+                    vstat(v).mean(dim=(0, 1)).to(device) for _, v in past_key_values
+                ]).mean(dim=0)
+                eligible = torch.isfinite(scores)
+                n_res = min(self.value_reserve, int(eligible.sum().item()))
+                if n_res > 0:
+                    masked = val.clone()
+                    masked[~eligible] = float('-inf')
+                    _, res_idx = torch.topk(masked, n_res)
+                    scores[res_idx] = float('inf')
             n_keep = min(decode_budget, num_decode)
             _, keep_idx = torch.topk(scores, n_keep)
             keep_mask[prefill_len + keep_idx] = True
