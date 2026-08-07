@@ -1727,6 +1727,8 @@ class KVSegHSEviction:
         retain_r: int = 64,
         retain_e: int = 32,
         retain_t: int = 8,
+        value_reserve: int = 0,
+        value_stat: str = "range",
     ):
         self.config = config
         self.band_a_layer = band_a_layer
@@ -1736,6 +1738,16 @@ class KVSegHSEviction:
         self.retain_r = retain_r
         self.retain_e = retain_e
         self.retain_t = retain_t
+        # Value-magnitude reserve. Chang et al. report that evicting
+        # large-magnitude value states drives reasoning models into repetitive
+        # loops that never terminate -- the same failure our per-problem records
+        # attribute the tight-budget accuracy loss to. This exempts the top
+        # `value_reserve` decode positions by value magnitude from eviction,
+        # before the segment budgets are spent. It reads cached V only, so it
+        # costs nothing in FA2 compatibility, and value_reserve=0 is exactly
+        # the unmodified method.
+        self.value_reserve = value_reserve
+        self.value_stat = value_stat
 
         self._prefill_len: int = 0
         self._prev_hs_a: Optional[torch.Tensor] = None
@@ -1784,6 +1796,29 @@ class KVSegHSEviction:
         if classify_len - num_full * seg_size > 0:
             stats.append(per_pos[num_full * seg_size:].mean())
         return torch.stack(stats)
+
+    def _value_magnitude(self, past_key_values, classify_len, device):
+        """
+        Per-position value magnitude, averaged over batch, heads and layers.
+
+        `range` (max-min over the head dimension) is the statistic Chang et al.
+        use; it targets the outlier channels a single scale cannot represent.
+        `var` is what our own KV-val variant ranks by, included so the two are
+        measured under one harness rather than compared across methods. `l2` is
+        the norm the K-side literature uses, whose V-side analogue is untested.
+        """
+        def stat(v):
+            vf = v[:, :, :classify_len, :].float()
+            if self.value_stat == "range":
+                return vf.amax(dim=-1) - vf.amin(dim=-1)
+            if self.value_stat == "var":
+                return vf.var(dim=-1)
+            if self.value_stat == "norm":
+                return vf.norm(dim=-1)
+            raise ValueError(f"unknown value_stat {self.value_stat!r}")
+        return torch.stack([
+            stat(v).mean(dim=(0, 1)).to(device) for _, v in past_key_values
+        ]).mean(dim=0)
 
     def _classify_segments(self, seg_stats: torch.Tensor) -> List[str]:
         """Tertile classification by DESCENDING key variance (high → R)."""
@@ -1849,6 +1884,7 @@ class KVSegHSEviction:
         remaining_budget = self.config.cache_size - keep_recent - prefill_len
         seg_size = self.segment_size
 
+
         for i, label in enumerate(seg_labels):
             if remaining_budget <= 0:
                 break
@@ -1869,6 +1905,31 @@ class KVSegHSEviction:
                 _, top_idx = torch.topk(seg_hs, n_keep)
                 keep_mask[decode_start + top_idx] = True
                 remaining_budget -= n_keep
+
+        # Value-magnitude reserve, applied as a SWAP rather than an addition.
+        # The per-segment R/E/T caps bind before the cache budget does, so this
+        # method routinely retains fewer than K tokens; simply reserving extra
+        # slots would enlarge the cache and any accuracy gain would confound
+        # "better tokens" with "more tokens". Instead we exchange the lowest-
+        # scoring retained decode positions for the highest value-magnitude
+        # evicted ones, which holds the count fixed and changes only membership.
+        if self.value_reserve > 0:
+            val_pos = self._value_magnitude(past_key_values, classify_len, device)
+            swappable = torch.zeros(seq_len, dtype=torch.bool, device=device)
+            if seq_len - keep_recent > prefill_len:
+                swappable[prefill_len:seq_len - keep_recent] = True
+            cand_in = swappable[:classify_len] & ~keep_mask[:classify_len]
+            n_swap = min(self.value_reserve, int(cand_in.sum().item()),
+                         int((swappable & keep_mask).sum().item()))
+            if n_swap > 0:
+                vin = val_pos.clone()
+                vin[~cand_in] = float('-inf')
+                _, idx_in = torch.topk(vin, n_swap)
+                held = (swappable & keep_mask).nonzero(as_tuple=True)[0]
+                held_scores = hs_decode[held - prefill_len]
+                _, worst = torch.topk(held_scores, n_swap, largest=False)
+                keep_mask[held[worst]] = False
+                keep_mask[idx_in] = True
 
         new_past = tuple(
             (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())

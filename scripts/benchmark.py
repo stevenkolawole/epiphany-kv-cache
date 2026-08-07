@@ -302,7 +302,15 @@ def build_prompt_ids(tokenizer, problem: str, device) -> torch.Tensor:
 # Methods that need the full softmax attention matrix (eager attn only).
 ATTN_ONLY_METHODS = {"h2o", "thinKV", "raas", "r_kv", "longflow", "thinkv_faithful"}
 # Methods that need output_hidden_states=True only (FA2-compatible).
-HS_ONLY_METHODS   = {"hs_variance", "hs_variance_detrend", "band_adaptive_hs", "kv_seg_hs", "kv_seg_hs_entropy"}
+# EpiKV-Seg with a value-magnitude reserve of N slots, statistic in
+# {range, var, norm}. Enumerated rather than prefix-matched so --methods keeps
+# validating its input; these read cached V and hidden states, no attention.
+VALUE_RESERVE_METHODS = {
+    f"kv_seg_hs_v{stat}{n}"
+    for stat in ("range", "var", "norm")
+    for n in (8, 16, 32, 64)
+}
+HS_ONLY_METHODS   = {"hs_variance", "hs_variance_detrend", "band_adaptive_hs", "kv_seg_hs", "kv_seg_hs_entropy"} | VALUE_RESERVE_METHODS
 # Methods that need BOTH attention matrix AND hidden states (eager only).
 BOTH_METHODS      = {"attn_hs_product", "hybrid_seg_hs"}
 # Methods that only read past_key_values (compatible with flash attn).
@@ -352,6 +360,14 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
         return ThinKVFaithfulEviction(cfg)
     if method == "kv_seg_hs":
         return KVSegHSEviction(cfg)
+    if method.startswith("kv_seg_hs_v"):
+        # kv_seg_hs_v<stat><N>: EpiKV-Seg with a value-magnitude reserve of N
+        # slots, swapped against the lowest-scoring retained tokens so the
+        # cache count is unchanged. stat in {range, var, l2}.
+        tail = method[len("kv_seg_hs_v"):]
+        stat = "".join(c for c in tail if not c.isdigit()) or "range"
+        n = int("".join(c for c in tail if c.isdigit()) or 16)
+        return KVSegHSEviction(cfg, value_reserve=n, value_stat=stat)
     if method == "kv_seg_hs_entropy":
         return KVSegmentHSEviction(cfg)
     if method == "r_kv":

@@ -135,7 +135,10 @@ def plot_tradeoff(out_dir):
     for variant in ("flash", "eager"):
         p = PHASE1 / f"benchmark_aime2024_{variant}.json"
         for m, byk in json.load(open(p))["results"].items():
-            if m in ("none", "hybrid_seg_hs") or m in pts:
+            # Attn-HS and Segment-HS are appendix ablations, not deployable
+            # methods; they were removed from the paper's tables and must not
+            # reappear in a figure the tables are supposed to agree with.
+            if m in ("none", "hybrid_seg_hs", "attn_hs_product") or m in pts:
                 continue
             s = byk.get("8192")
             if not s:
