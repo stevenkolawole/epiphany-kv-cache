@@ -236,16 +236,17 @@ def panel_a_only(fig, rect, meta, toks, excerpt):
     for s in ("left", "top", "right"):
         ax_b.spines[s].set_visible(False)
     ax_b.set_xticks([0, 250, 500, 750, 1000, 1250])
-    ax_b.tick_params(axis="x", labelsize=6, length=2, pad=1)
-    ax_b.set_xlabel("generated token", fontsize=6.5, labelpad=1)
+    ax_b.tick_params(axis="x", labelsize=7, length=2, pad=1)
     e0, e1 = excerpt
     ax_b.add_patch(Rectangle((e0, -0.12), e1 - e0, 1.24, fill=False, edgecolor=fs.INK, lw=0.8,
                              zorder=5, clip_on=False))
-    ax_b.text(0, 1.25, "kept by score", color=fs.BLUE, fontsize=6.5, va="bottom",
+    ax_b.text(0, 1.25, "generated token:", color=fs.INK, fontsize=7.5, va="bottom",
               transform=ax_b.transAxes)
-    ax_b.text(0.27, 1.25, "kept, recency window", color=fs.AMBER, fontsize=6.5, va="bottom",
+    ax_b.text(0.26, 1.25, "kept by score", color=fs.BLUE, fontsize=7.5, va="bottom",
               transform=ax_b.transAxes)
-    ax_b.text(0.66, 1.25, "evicted", color="#8a8a8a", fontsize=6.5, va="bottom",
+    ax_b.text(0.49, 1.25, "kept, recency window", color=fs.AMBER, fontsize=7.5, va="bottom",
+              transform=ax_b.transAxes)
+    ax_b.text(0.86, 1.25, "evicted", color="#8a8a8a", fontsize=7.5, va="bottom",
               transform=ax_b.transAxes)
     ax_w = fig.add_axes([L, B, W, 0.50 * H])
     ax_w.axis("off")
@@ -254,27 +255,36 @@ def panel_a_only(fig, rect, meta, toks, excerpt):
     h_pt = 0.50 * H * fig_h_in * 72
     ax_w.set_xlim(0, width_pt)
     ax_w.set_ylim(0, h_pt)
-    size, line_h = 6.6, 9.6
-    draw_words(ax_w, toks[e0:e1], 5, h_pt - 11, width_pt - 4, size, fp, line_h,
-               fs.BLUE_LIGHT, "#f6e3b5", max_lines=int((h_pt - 6) // line_h))
-    ax_w.add_patch(Rectangle((0.5, 0.5), width_pt + 4, h_pt - 1, fill=False, edgecolor=fs.INK,
-                             lw=0.6, zorder=0, clip_on=False))
+    size, line_h = 7.0, 10.2
+    used = draw_words(ax_w, toks[e0:e1], 5, h_pt - 11, width_pt - 4, size, fp, line_h,
+                      fs.BLUE_LIGHT, "#f6e3b5", max_lines=int((h_pt - 6) // line_h))
+    # Frame hugs the text: its bottom sits one half-line under the last line.
+    box_bottom = h_pt - 11 - (used - 1) * line_h - 0.6 * line_h
+    ax_w.add_patch(Rectangle((0.5, box_bottom), width_pt + 4, h_pt - 0.5 - box_bottom,
+                             fill=False, edgecolor=fs.INK, lw=0.6, zorder=0, clip_on=False))
     from matplotlib.patches import ConnectionPatch
     for xb, xw in ((e0, 0.5), (e1, width_pt + 4.5)):
         fig.add_artist(ConnectionPatch(xyA=(xb, -0.12), coordsA=ax_b.transData,
                                        xyB=(xw, h_pt - 0.5), coordsB=ax_w.transData,
                                        color=fs.INK, lw=0.5, ls=(0, (2, 2))))
+    return ax_w, box_bottom
 
 
 def make_fig1a(args):
     """Panel (a) alone, at 0.60 of the text width; panel (b) is the paper's
     existing prefill_memory.pdf placed beside it in LaTeX."""
+    from matplotlib.transforms import Bbox
     meta, toks = load_trace(args.seg)
     fig = plt.figure(figsize=(0.60 * fs.TEXT_W, 1.85))
-    panel_a_only(fig, [0.02, 0.04, 0.96, 0.90], meta, toks, (args.excerpt_start, args.excerpt_end))
+    ax_w, box_bottom = panel_a_only(fig, [0.02, 0.04, 0.96, 0.90], meta, toks,
+                                    (args.excerpt_start, args.excerpt_end))
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out)
+    # Crop at the excerpt frame so no empty band is left under it.
+    fig.canvas.draw()
+    y0_in = ax_w.transData.transform((0, box_bottom))[1] / fig.dpi
+    w_in, h_in = fig.get_size_inches()
+    fig.savefig(out, bbox_inches=Bbox([[0, max(y0_in - 0.03, 0)], [w_in, h_in]]))
     print("wrote", out)
 
 
