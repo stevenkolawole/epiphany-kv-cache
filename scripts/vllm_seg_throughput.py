@@ -140,6 +140,12 @@ def main():
                 st.steps_since_refresh = 0
                 continue
             new_n = math.ceil(len(keep) / block_size)
+            # Compaction gathers into fresh blocks before freeing the old ones,
+            # so it needs new_n free blocks transiently. When the pool is
+            # exhausted (hundreds of resident requests) defer to the next step
+            # rather than raise; vLLM's own preemption handles the pressure.
+            if pool.get_num_free_blocks() < new_n + 1:
+                continue
             new_blocks = pool.get_new_blocks(new_n)
             new_ids = [b.block_id for b in new_blocks]
             gather_compact_kv(runner.kv_caches, old_ids, new_ids, keep, block_size)

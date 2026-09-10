@@ -244,8 +244,10 @@ def panel_a_only(fig, rect, meta, toks, excerpt):
     ax_b.set_xlim(0, n)
     ax_b.set_ylim(0, 1)
     mark_after_last_eviction(toks)
-    colors = [fs.AMBER if t.get("recency") else ("#bcd3f2" if t.get("unpressured") else
-              (fs.BLUE if t["kept"] else fs.GREY_LIGHT)) for t in toks]
+    KEPT = "#0b3a8c"   # deep blue: scored and kept
+    PALE = "#cfdff5"   # pale blue: never scored against a full cache
+    colors = [fs.AMBER if t.get("recency") else (PALE if t.get("unpressured") else
+              (KEPT if t["kept"] else fs.GREY_LIGHT)) for t in toks]
     ax_b.bar(range(n), [1] * n, width=1.0, color=colors, linewidth=0)
     ax_b.set_yticks([])
     for s in ("left", "top", "right"):
@@ -255,7 +257,7 @@ def panel_a_only(fig, rect, meta, toks, excerpt):
     e0, e1 = excerpt
     ax_b.add_patch(Rectangle((e0, -0.12), e1 - e0, 1.24, fill=False, edgecolor=fs.INK, lw=0.8,
                              zorder=5, clip_on=False))
-    ax_b.text(0, 1.25, "kept by score", color=fs.BLUE, fontsize=7.2, va="bottom",
+    ax_b.text(0, 1.25, "kept by score", color=KEPT, fontsize=7.2, va="bottom",
               transform=ax_b.transAxes)
     ax_b.text(0.235, 1.25, "evicted", color="#8a8a8a", fontsize=7.2, va="bottom",
               transform=ax_b.transAxes)
@@ -272,7 +274,7 @@ def panel_a_only(fig, rect, meta, toks, excerpt):
     ax_w.set_ylim(0, h_pt)
     size, line_h = 7.0, 10.2
     used = draw_words(ax_w, toks[e0:e1], 5, h_pt - 11, width_pt - 4, size, fp, line_h,
-                      fs.BLUE_LIGHT, "#f6e3b5", max_lines=int((h_pt - 6) // line_h))
+                      "#9dbdf0", "#f6e3b5", max_lines=int((h_pt - 6) // line_h))
     # Frame hugs the text: its bottom sits one half-line under the last line.
     box_bottom = h_pt - 11 - (used - 1) * line_h - 0.6 * line_h
     ax_w.add_patch(Rectangle((0.5, box_bottom), width_pt + 4, h_pt - 0.5 - box_bottom,
@@ -328,21 +330,16 @@ def make_appendix(args):
     h_pt = H_in * 72
     ax.set_xlim(0, W_in * 72)
     ax.set_ylim(0, h_pt)
-    ax.text(4, h_pt - 10, f"EpiKV-Seg, $K$=1024, MATH-500 problem {meta['problem_idx']}: "
-                          f"{meta['generated']:,} tokens generated, {meta['retained_generated']:,} kept. "
-                          "Highlighted = kept by score; amber = recency window; grey = evicted.",
-            fontsize=7, va="top", color=fs.INK)
     for t in toks:
         if "end" in t["text"] and "sentence" in t["text"]:
             t["text"] = " <EOS>"
     mark_after_last_eviction(toks)
+    # One short header line: a long unwrapped line here widened the saved
+    # figure to twice the text width and the trace printed at half size.
     ax.text(4, h_pt - 10, f"EpiKV-Seg, $K$=1024, MATH-500 problem {meta['problem_idx']}: "
-                          f"{meta['generated']:,} tokens generated, {meta['retained_generated']:,} kept. "
-                          "Blue = kept by score; pale blue = generated after the last eviction (never "
-                          "scored against a full cache); amber = recency window; grey = evicted.",
-            fontsize=7, va="top", color=fs.INK,
-            bbox=dict(facecolor="white", edgecolor="none", pad=0))
-    draw_words(ax, toks, 4, h_pt - 30, width_pt, 8.4, fp, 12.8, fs.BLUE_LIGHT, "#f6e3b5")
+                          f"{meta['generated']:,} tokens generated, {meta['retained_generated']:,} kept.",
+            fontsize=7.5, va="top", color=fs.INK)
+    draw_words(ax, toks, 4, h_pt - 30, width_pt, 8.4, fp, 12.8, "#9dbdf0", "#f6e3b5")
     out = Path(args.out)
     fig.savefig(out)
     print("wrote", out)
