@@ -112,6 +112,10 @@ def main():
             req = sched.requests.get(rid)
             if req is None:
                 continue
+            if rid in pl.restarted:
+                # Preempted and recomputed by vLLM: no eviction after restart.
+                states.pop(rid, None)
+                continue
             st = states.get(rid)
             if st is None:
                 st = SeqEvictState(prefill_len=req.num_prompt_tokens)
@@ -119,6 +123,10 @@ def main():
                 st.logical_len = len(st.alive_logical)
                 states[rid] = st
             L = req.num_computed_tokens
+            if L < st.logical_len:
+                # went backwards: preempted before any compaction; start over
+                states.pop(rid, None)
+                continue
             if L > st.logical_len:
                 st.alive_logical.extend(range(st.logical_len, L))
                 st.logical_len = L
@@ -187,6 +195,7 @@ def main():
     n_gen = sum(len(o.outputs[0].token_ids) for o in outs)
     peak_blocks = total_blocks - stats["min_free_blocks"]
     payload = {"meta": vars(args) | {"block_size": block_size, "runner": path},
+               "restarted_requests": len(pl.restarted) if evict else 0,
                "wall_s": round(wall, 2), "decode_tokens": n_gen,
                "tokens_per_s": round(n_gen / wall, 1),
                "peak_kv_blocks": peak_blocks, "peak_kv_tokens": peak_blocks * block_size,
