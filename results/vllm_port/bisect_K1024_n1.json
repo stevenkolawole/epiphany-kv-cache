@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "dataset": "math500",
+    "n": 1,
+    "cache_size": 1024,
+    "keep_recent": 128,
+    "tau": 128,
+    "max_new_tokens": 8192,
+    "band": [
+      10,
+      21
+    ],
+    "block_size": 16,
+    "vllm_runner_path": "llm_engine.model_executor.driver_worker.worker.model_runner",
+    "wall_s": 12
+  },
+  "accuracy": 1.0,
+  "per_problem": [
+    {
+      "problem": "Convert the point $(0,3)$ in rectangular coordinates to polar coordinates.  Ente",
+      "ground_truth": "\\left( 3, \\frac{\\pi}{2} \\right)",
+      "pred": "\\left(3, \\frac{\\pi}{2}\\right)",
+      "correct": true,
+      "n_tokens_generated": 1221,
+      "wall_s": 11.73,
+      "compactions": [
+        {
+          "req": "0",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 342,
+          "freed_blocks": 43
+        }
+      ]
+    }
+  ]
+}

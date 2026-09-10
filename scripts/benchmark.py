@@ -311,7 +311,7 @@ VALUE_RESERVE_METHODS = {
     for stat in ("range", "var", "norm")
     for n in (8, 16, 32, 64)
 }
-HS_ONLY_METHODS   = {"hs_variance", "hs_variance_detrend", "band_adaptive_hs", "kv_seg_hs", "kv_seg_hs_entropy"} | VALUE_RESERVE_METHODS
+HS_ONLY_METHODS   = {"hs_variance", "hs_variance_detrend", "band_adaptive_hs", "kv_seg_hs", "kv_seg_hs_fill", "kv_seg_hs_entropy"} | VALUE_RESERVE_METHODS
 # Methods that need BOTH attention matrix AND hidden states (eager only).
 BOTH_METHODS      = {"attn_hs_product", "hybrid_seg_hs"}
 # Methods that only read past_key_values (compatible with flash attn).
@@ -324,7 +324,9 @@ ALL_METHODS   = {"none"} | ATTN_ONLY_METHODS | HS_ONLY_METHODS | BOTH_METHODS | 
 
 def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
                   band_a_layer: int = None, band_b_layer: int = None,
-                  window: int = None):
+                  window: int = None, band_mode: str = None,
+                  retain_r: int = None, retain_e: int = None, retain_t: int = None,
+                  segment_size: int = None, refresh_tau: int = None):
     """Return a fresh eviction object for the given method and cache_size."""
     cfg = EvictionConfig(cache_size=cache_size, keep_recent_k=keep_recent_k)
     if method == "none":
@@ -342,6 +344,7 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
         if band_a_layer is not None: kw["band_a_layer"] = band_a_layer
         if band_b_layer is not None: kw["band_b_layer"] = band_b_layer
         if window is not None:       kw["window"] = window
+        if band_mode is not None:    kw["band_mode"] = band_mode
         return DetrendendHSVarianceEviction(cfg, **kw)
     if method == "band_adaptive_hs":
         return BandAdaptiveHSEviction(cfg)
@@ -359,8 +362,30 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
         return LagKVEviction(cfg)
     if method == "thinkv_faithful":
         return ThinKVFaithfulEviction(cfg)
-    if method == "kv_seg_hs":
-        return KVSegHSEviction(cfg)
+    if method in ("kv_seg_hs", "kv_seg_hs_fill"):
+        # Band overrides must reach Seg too. Without this the class defaults of
+        # 10/21 -- located on Llama-8B -- silently apply to any other model, and
+        # a second-model grid would measure Llama's bands on Qwen's residual
+        # stream. kv_seg_hs_fill additionally spends leftover tier budget.
+        kw = {}
+        if band_a_layer is not None: kw["band_a_layer"] = band_a_layer
+        if band_b_layer is not None: kw["band_b_layer"] = band_b_layer
+        if window is not None:       kw["window"] = window
+        if method == "kv_seg_hs_fill": kw["fill_budget"] = True
+        # Tier and segment knobs, for the sparsity sweep. Section 18 showed
+        # adding tokens hurts termination; these let us test the opposite
+        # direction (retain_t=0, smaller E, larger segments) without a code
+        # change per variant.
+        if retain_r is not None:     kw["retain_r"] = retain_r
+        if retain_e is not None:     kw["retain_e"] = retain_e
+        if retain_t is not None:     kw["retain_t"] = retain_t
+        if segment_size is not None: kw["segment_size"] = segment_size
+        # Evict every tau steps instead of every step. Exists so the HF path
+        # can be run at the same operating point as the vLLM port, which can
+        # only compact at a tau boundary; that is what makes the agreement
+        # test a test of the port rather than of two different policies.
+        if refresh_tau is not None: kw["refresh_tau"] = refresh_tau
+        return KVSegHSEviction(cfg, **kw)
     if method.startswith("hs_variance_detrend_v"):
         tail = method[len("hs_variance_detrend_v"):]
         stat = "".join(c for c in tail if not c.isdigit()) or "range"
@@ -384,6 +409,17 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
 
 
 # ── Single-problem runner ─────────────────────────────────────────────────────
+
+# Positional convention after eviction. With the default (False) the decode
+# loop passes no position_ids, so transformers derives the new token's RoPE
+# position from the cache's *physical* length: after a 1025 -> 342 compaction
+# the next token is embedded at position 343 while the retained keys keep the
+# rotations they received at their original positions. Every HF-harness
+# eviction method in the literature inherits this rewind. With True the new
+# token is embedded at its *logical* position (prompt_len + step), which is
+# what the vLLM port does (wrapB adds the logical-physical offset).
+LOGICAL_POSITIONS = False
+
 
 def run_one(
     model,
@@ -443,12 +479,17 @@ def run_one(
     generated_ids: List[int] = []
     eos_id = tokenizer.eos_token_id
 
-    for _ in range(max_new_tokens):
+    for step in range(max_new_tokens):
         token_id = int(next_token[0, 0])
         generated_ids.append(token_id)
         if token_id == eos_id:
             break
 
+        pos_kw = {}
+        if LOGICAL_POSITIONS:
+            lp = prompt_len + step
+            pos_kw["position_ids"] = torch.tensor([[lp]], device=device)
+            pos_kw["cache_position"] = torch.tensor([lp], device=device)
         with torch.no_grad():
             step_out = model(
                 input_ids=next_token,
@@ -456,6 +497,7 @@ def run_one(
                 use_cache=True,
                 output_attentions=need_attn,
                 output_hidden_states=need_hs,
+                **pos_kw,
             )
 
         cache_obj = step_out.past_key_values
@@ -526,9 +568,25 @@ def parse_args():
                         "ablation: shifted boundaries and +/-2-layer perturbations.")
     p.add_argument("--band_b_layer",   type=int, default=None,
                    help="Override Band B layer (default: class default 21).")
+    p.add_argument("--band_mode",      type=str, default=None,
+                   choices=["diff", "a_only", "b_only"],
+                   help="Scoring mode for hs_variance_detrend: the deployed "
+                        "difference, or a single band alone. Answers whether "
+                        "the subtraction is load-bearing (BgY3 Q5).")
     p.add_argument("--window",         type=int, default=None,
                    help="Override rolling z-score window (default: class "
                         "default 64). Rebuttal-committed w-sweep: 32/64/128.")
+    p.add_argument("--retain_r",       type=int, default=None,
+                   help="EpiKV-Seg R-tier budget per segment (class default 64)")
+    p.add_argument("--retain_e",       type=int, default=None,
+                   help="EpiKV-Seg E-tier budget per segment (class default 32)")
+    p.add_argument("--retain_t",       type=int, default=None,
+                   help="EpiKV-Seg T-tier budget per segment (class default 8)")
+    p.add_argument("--segment_size",   type=int, default=None,
+                   help="EpiKV-Seg segment length in tokens (class default 128)")
+    p.add_argument("--refresh_tau",    type=int, default=None,
+                   help="EpiKV-Seg: evict only every tau decode steps (class default 1, "
+                        "the published per-step method). 128 matches the vLLM port.")
     p.add_argument("--keep_recent_k",  type=int, default=128,
                    help="Tokens always kept in recency window (default: 128)")
     p.add_argument("--methods",        nargs="+",
@@ -539,6 +597,11 @@ def parse_args():
                    help="Output JSON path (default: results/benchmark_<dataset>.json)")
     p.add_argument("--resume",         action="store_true",
                    help="Resume: skip (method, cache_size) pairs already in output file")
+    p.add_argument("--logical_positions", action="store_true",
+                   help="embed each new decode token at its logical position "
+                        "(prompt_len + step) instead of the cache's physical length; "
+                        "matches the vLLM port's convention. Default off = the "
+                        "rewound convention every HF-harness eviction method uses.")
     p.add_argument("--attn_impl",      default="auto",
                    choices=["auto", "eager", "sdpa", "flash_attention_2"],
                    help="Attention implementation override. 'auto' uses eager when any "
@@ -548,6 +611,10 @@ def parse_args():
 
 def main():
     args = parse_args()
+    global LOGICAL_POSITIONS
+    LOGICAL_POSITIONS = bool(getattr(args, "logical_positions", False))
+    if LOGICAL_POSITIONS:
+        print("  Positional convention: LOGICAL (prompt_len + step)")
 
     output_path = args.output or Path(f"results/benchmark_{args.dataset}.json")
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -662,7 +729,13 @@ def main():
                 eviction = make_eviction(method, cache_size, args.keep_recent_k,
                                          band_a_layer=args.band_a_layer,
                                          band_b_layer=args.band_b_layer,
-                                         window=args.window)
+                                         window=args.window,
+                                         band_mode=args.band_mode,
+                                         retain_r=args.retain_r,
+                                         retain_e=args.retain_e,
+                                         retain_t=args.retain_t,
+                                         segment_size=args.segment_size,
+                                         refresh_tau=args.refresh_tau)
                 try:
                     res = run_one(model, tokenizer, prob, method, eviction,
                                   args.max_new_tokens, device)

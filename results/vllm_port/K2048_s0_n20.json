@@ -1,0 +1,571 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "dataset": "math500",
+    "n": 20,
+    "cache_size": 2048,
+    "keep_recent": 128,
+    "tau": 128,
+    "max_new_tokens": 8192,
+    "band": [
+      10,
+      21
+    ],
+    "block_size": 16,
+    "vllm_runner_path": "llm_engine.model_executor.driver_worker.worker.model_runner",
+    "wall_s": 1298
+  },
+  "accuracy": 0.55,
+  "per_problem": [
+    {
+      "problem": "Convert the point $(0,3)$ in rectangular coordinates to polar coordinates.  Ente",
+      "ground_truth": "\\left( 3, \\frac{\\pi}{2} \\right)",
+      "pred": "\\left(3, \\dfrac{\\pi}{2}\\right)",
+      "correct": true,
+      "n_tokens_generated": 1037,
+      "wall_s": 10.62,
+      "compactions": []
+    },
+    {
+      "problem": "Define\n\\[p = \\sum_{k = 1}^\\infty \\frac{1}{k^2} \\quad \\text{and} \\quad q = \\sum_{",
+      "ground_truth": "p - q",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 160.37,
+      "compactions": [
+        {
+          "req": "1",
+          "step_logical": 2049,
+          "from": 2049,
+          "to": 709,
+          "freed_blocks": 84
+        },
+        {
+          "req": "1",
+          "step_logical": 3389,
+          "from": 2049,
+          "to": 709,
+          "freed_blocks": 167
+        },
+        {
+          "req": "1",
+          "step_logical": 4729,
+          "from": 2049,
+          "to": 741,
+          "freed_blocks": 249
+        },
+        {
+          "req": "1",
+          "step_logical": 6037,
+          "from": 2049,
+          "to": 709,
+          "freed_blocks": 333
+        },
+        {
+          "req": "1",
+          "step_logical": 7377,
+          "from": 2049,
+          "to": 741,
+          "freed_blocks": 415
+        }
+      ]
+    },
+    {
+      "problem": "If $f(x) = \\frac{3x-2}{x-2}$, what is the value of $f(-2) +f(-1)+f(0)$? Express ",
+      "ground_truth": "\\frac{14}{3}",
+      "pred": "\\dfrac{14}{3}",
+      "correct": true,
+      "n_tokens_generated": 1513,
+      "wall_s": 28.69,
+      "compactions": []
+    },
+    {
+      "problem": "How many positive whole-number divisors does 196 have?",
+      "ground_truth": "9",
+      "pred": "9",
+      "correct": true,
+      "n_tokens_generated": 974,
+      "wall_s": 18.78,
+      "compactions": []
+    },
+    {
+      "problem": "The results of a cross-country team's training run are graphed below. Which stud",
+      "ground_truth": "\\text{Evelyn}",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 161.52,
+      "compactions": [
+        {
+          "req": "4",
+          "step_logical": 2049,
+          "from": 2049,
+          "to": 910,
+          "freed_blocks": 72
+        },
+        {
+          "req": "4",
+          "step_logical": 3188,
+          "from": 2049,
+          "to": 942,
+          "freed_blocks": 141
+        },
+        {
+          "req": "4",
+          "step_logical": 4295,
+          "from": 2049,
+          "to": 910,
+          "freed_blocks": 212
+        },
+        {
+          "req": "4",
+          "step_logical": 5434,
+          "from": 2049,
+          "to": 966,
+          "freed_blocks": 279
+        },
+        {
+          "req": "4",
+          "step_logical": 6517,
+          "from": 2049,
+          "to": 897,
+          "freed_blocks": 351
+        },
+        {
+          "req": "4",
+          "step_logical": 7669,
+          "from": 2049,
+          "to": 953,
+          "freed_blocks": 420
+        }
+      ]
+    },
+    {
+      "problem": "A regular hexagon can be divided into six equilateral triangles. If the perimete",
+      "ground_truth": "42",
+      "pred": "42",
+      "correct": true,
+      "n_tokens_generated": 985,
+      "wall_s": 18.91,
+      "compactions": []
+    },
+    {
+      "problem": "What is the smallest positive perfect cube that can be written as the sum of thr",
+      "ground_truth": "27",
+      "pred": "27",
+      "correct": true,
+      "n_tokens_generated": 2825,
+      "wall_s": 55.04,
+      "compactions": [
+        {
+          "req": "6",
+          "step_logical": 2049,
+          "from": 2049,
+          "to": 674,
+          "freed_blocks": 86
+        }
+      ]
+    },
+    {
+      "problem": "The set of points $(x,y,z)$ that satisfy\n\\[2x = 3y = -z\\]is a line.\n\nThe set of ",
+      "ground_truth": "90^\\circ",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 160.54,
+      "compactions": [
+        {
+          "req": "7",
+          "step_logical": 2049,
+          "from": 2049,
+          "to": 721,
+          "freed_blocks": 83
+        },
+        {
+          "req": "7",
+          "step_logical": 3377,
+          "from": 2049,
+          "to": 697,
+          "freed_blocks": 168
+        },
+        {
+          "req": "7",
+          "step_logical": 4729,
+          "from": 2049,
+          "to": 721,
+          "freed_blocks": 250
+        },
+        {
+          "req": "7",
+          "step_logical": 6057,
+          "from": 2049,
+          "to": 657,
+          "freed_blocks": 337
+        },
+        {
+          "req": "7",
+          "step_logical": 7449,
+          "from": 2049,
+          "to": 657,
+          "freed_blocks": 424
+        }
+      ]
+    },
+    {
+      "problem": "What is the distance, in units, between the points $(2, -6)$ and $(-4, 3)$? Expr",
+      "ground_truth": "3\\sqrt{13}",
+      "pred": "3\\sqrt{13}",
+      "correct": true,
+      "n_tokens_generated": 1213,
+      "wall_s": 23.28,
+      "compactions": []
+    },
+    {
+      "problem": "The expression $2\\cdot 3 \\cdot 4\\cdot 5+1$ is equal to 121, since multiplication",
+      "ground_truth": "4",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 147.72,
+      "compactions": [
+        {
+          "req": "9",
+          "step_logical": 2049,
+          "from": 2049,
+          "to": 788,
+          "freed_blocks": 79
+        },
+        {
+          "req": "9",
+          "step_logical": 3310,
+          "from": 2049,
+          "to": 788,
+          "freed_blocks": 157
+        },
+        {
+          "req": "9",
+          "step_logical": 4571,
+          "from": 2049,
+          "to": 788,
+          "freed_blocks": 236
+        },
+        {
+          "req": "9",
+          "step_logical": 5832,
+          "from": 2049,
+          "to": 732,
+          "freed_blocks": 319
+        },
+        {
+          "req": "9",
+          "step_logical": 7149,
+          "from": 2049,
+          "to": 764,
+          "freed_blocks": 399
+        }
+      ]
+    },
+    {
+      "problem": "What is the least positive integer multiple of 30 that can be written with only ",
+      "ground_truth": "2220",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 5552,
+      "wall_s": 91.2,
+      "compactions": [
+        {
+          "req": "10",
+          "step_logical": 2049,
+          "from": 2049,
+          "to": 623,
+          "freed_blocks": 90
+        },
+        {
+          "req": "10",
+          "step_logical": 3475,
+          "from": 2049,
+          "to": 623,
+          "freed_blocks": 179
+        },
+        {
+          "req": "10",
+          "step_logical": 4901,
+          "from": 2049,
+          "to": 655,
+          "freed_blocks": 266
+        }
+      ]
+    },
+    {
+      "problem": "Let $p(x)$ be a polynomial of degree 5 such that\n\\[p(n) = \\frac{n}{n^2 - 1}\\]for",
+      "ground_truth": "\\frac{3}{56}",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 80.56,
+      "compactions": [
+        {
+          "req": "11",
+          "step_logical": 2049,
+          "from": 2049,
+          "to": 714,
+          "freed_blocks": 84
+        },
+        {
+          "req": "11",
+          "step_logical": 3384,
+          "from": 2049,
+          "to": 714,
+          "freed_blocks": 167
+        },
+        {
+          "req": "11",
+          "step_logical": 4719,
+          "from": 2049,
+          "to": 714,
+          "freed_blocks": 250
+        },
+        {
+          "req": "11",
+          "step_logical": 6054,
+          "from": 2049,
+          "to": 714,
+          "freed_blocks": 334
+        },
+        {
+          "req": "11",
+          "step_logical": 7389,
+          "from": 2049,
+          "to": 658,
+          "freed_blocks": 420
+        }
+      ]
+    },
+    {
+      "problem": "The proper divisors of 12 are 1, 2, 3, 4 and 6. A proper divisor of an integer $",
+      "ground_truth": "284",
+      "pred": "284",
+      "correct": true,
+      "n_tokens_generated": 4309,
+      "wall_s": 41.99,
+      "compactions": [
+        {
+          "req": "12",
+          "step_logical": 2049,
+          "from": 2049,
+          "to": 699,
+          "freed_blocks": 85
+        },
+        {
+          "req": "12",
+          "step_logical": 3399,
+          "from": 2049,
+          "to": 723,
+          "freed_blocks": 167
+        }
+      ]
+    },
+    {
+      "problem": "The volume of the cylinder shown is $45\\pi$ cubic cm. What is the height in cent",
+      "ground_truth": "5",
+      "pred": "5",
+      "correct": true,
+      "n_tokens_generated": 384,
+      "wall_s": 3.71,
+      "compactions": []
+    },
+    {
+      "problem": "Suppose $\\sin D = 0.7$ in the diagram below. What is $DE$? [asy]\npair D,E,F;\nF =",
+      "ground_truth": "\\sqrt{51}",
+      "pred": "\\sqrt{51}",
+      "correct": true,
+      "n_tokens_generated": 2326,
+      "wall_s": 22.48,
+      "compactions": [
+        {
+          "req": "14",
+          "step_logical": 2049,
+          "from": 2049,
+          "to": 742,
+          "freed_blocks": 82
+        }
+      ]
+    },
+    {
+      "problem": "Let $z = 2 + \\sqrt{2} - (3 + 3 \\sqrt{2})i$, and let $c = 2 - 3i$.  Let $w$ be th",
+      "ground_truth": "6 - 5i",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 81.51,
+      "compactions": [
+        {
+          "req": "15",
+          "step_logical": 2049,
+          "from": 2049,
+          "to": 768,
+          "freed_blocks": 81
+        },
+        {
+          "req": "15",
+          "step_logical": 3330,
+          "from": 2049,
+          "to": 800,
+          "freed_blocks": 159
+        },
+        {
+          "req": "15",
+          "step_logical": 4579,
+          "from": 2049,
+          "to": 824,
+          "freed_blocks": 235
+        },
+        {
+          "req": "15",
+          "step_logical": 5804,
+          "from": 2049,
+          "to": 768,
+          "freed_blocks": 315
+        },
+        {
+          "req": "15",
+          "step_logical": 7085,
+          "from": 2049,
+          "to": 824,
+          "freed_blocks": 391
+        },
+        {
+          "req": "15",
+          "step_logical": 8310,
+          "from": 2049,
+          "to": 824,
+          "freed_blocks": 468
+        }
+      ]
+    },
+    {
+      "problem": "Compute: $1-2+3-4+5- \\dots +99-100$.",
+      "ground_truth": "-50",
+      "pred": "-50",
+      "correct": true,
+      "n_tokens_generated": 2207,
+      "wall_s": 21.5,
+      "compactions": [
+        {
+          "req": "16",
+          "step_logical": 2049,
+          "from": 2049,
+          "to": 619,
+          "freed_blocks": 90
+        }
+      ]
+    },
+    {
+      "problem": "Below is the graph of $y = a \\sin (bx + c) + d$ for some positive constants $a,$",
+      "ground_truth": "\\pi",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 81.37,
+      "compactions": [
+        {
+          "req": "17",
+          "step_logical": 2049,
+          "from": 2049,
+          "to": 830,
+          "freed_blocks": 77
+        },
+        {
+          "req": "17",
+          "step_logical": 3268,
+          "from": 2049,
+          "to": 854,
+          "freed_blocks": 151
+        },
+        {
+          "req": "17",
+          "step_logical": 4463,
+          "from": 2049,
+          "to": 798,
+          "freed_blocks": 229
+        },
+        {
+          "req": "17",
+          "step_logical": 5714,
+          "from": 2049,
+          "to": 854,
+          "freed_blocks": 304
+        },
+        {
+          "req": "17",
+          "step_logical": 6909,
+          "from": 2049,
+          "to": 798,
+          "freed_blocks": 382
+        },
+        {
+          "req": "17",
+          "step_logical": 8160,
+          "from": 2049,
+          "to": 830,
+          "freed_blocks": 458
+        }
+      ]
+    },
+    {
+      "problem": "$\\overline{BC}$ is parallel to the segment through $A$, and $AB = BC$. What is t",
+      "ground_truth": "28",
+      "pred": "28",
+      "correct": true,
+      "n_tokens_generated": 788,
+      "wall_s": 7.62,
+      "compactions": []
+    },
+    {
+      "problem": "Let $a$ be a positive real number such that all the roots of\n\\[x^3 + ax^2 + ax +",
+      "ground_truth": "3",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 80.6,
+      "compactions": [
+        {
+          "req": "19",
+          "step_logical": 2049,
+          "from": 2049,
+          "to": 646,
+          "freed_blocks": 88
+        },
+        {
+          "req": "19",
+          "step_logical": 3452,
+          "from": 2049,
+          "to": 646,
+          "freed_blocks": 175
+        },
+        {
+          "req": "19",
+          "step_logical": 4855,
+          "from": 2049,
+          "to": 646,
+          "freed_blocks": 263
+        },
+        {
+          "req": "19",
+          "step_logical": 6258,
+          "from": 2049,
+          "to": 702,
+          "freed_blocks": 348
+        },
+        {
+          "req": "19",
+          "step_logical": 7605,
+          "from": 2049,
+          "to": 646,
+          "freed_blocks": 435
+        }
+      ]
+    }
+  ]
+}

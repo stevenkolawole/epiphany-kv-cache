@@ -123,6 +123,9 @@ class H2OEviction:
             _, top_idx = torch.topk(mid_scores, n)
             keep_mask[mid_start + top_idx] = True
 
+        # For the retained-vs-evicted exhibit (scripts/dump_retained.py), which
+        # draws H2O beside EpiKV-Seg on the same trace. Not used by the policy.
+        self.last_keep_mask = keep_mask
         new_past = tuple(
             (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
             for k, v in past_key_values
@@ -136,7 +139,13 @@ class ThinKVEviction:
     """
     ThinKV: Thought-type segment eviction.
 
-    He et al., "ThinKV: Token Compression for Efficient Long Reasoning" (2025).
+    Ramachandran, Neseem, Sakr, Venkatesan, Khailany and Krishna, "ThinKV:
+    Thought-Adaptive KV Cache Compression for Efficient Reasoning Models",
+    ICLR 2026 (Oral).
+
+    This class implements the segment classifier and its R/E/T retention
+    budgets. The tau-step refresh and the KDE boundaries are restored in
+    ThinKVFaithfulEviction below.
 
     Classifies each `segment_size`-token block of the reasoning chain as:
       R (Reasoning)  — low entropy; focused attention, high-value tokens
@@ -490,6 +499,9 @@ class RaaSEviction:
             _, keep_idx = torch.topk(self._lru_timestamps[:num_decode], n_keep)
             keep_mask[prefill_len + keep_idx] = True
 
+        # For the retained-vs-evicted exhibit (scripts/dump_retained.py), which
+        # draws H2O beside EpiKV-Seg on the same trace. Not used by the policy.
+        self.last_keep_mask = keep_mask
         new_past = tuple(
             (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
             for k, v in past_key_values
@@ -1150,11 +1162,19 @@ class DetrendendHSVarianceEviction:
         window: int = 64,
         value_reserve: int = 0,
         value_stat: str = "range",
+        band_mode: str = "diff",
     ):
         self.config = config
         self.band_a_layer = band_a_layer
         self.band_b_layer = band_b_layer
         self.window = window
+        # "diff" is the deployed score, z_a - z_b. "a_only" and "b_only" drop
+        # one half so the ablation can ask whether the subtraction is doing
+        # work or whether either band alone ranks as well. b_only carries the
+        # minus sign the difference gives it, so a large Band B change still
+        # means evict.
+        assert band_mode in ("diff", "a_only", "b_only"), band_mode
+        self.band_mode = band_mode
         # Value-magnitude reserve. Flat's global top-K fills the budget exactly,
         # so unlike the segment variant a reserve displaces rather than enlarges
         # and needs no swap construction: lifting a position's score to +inf
@@ -1198,10 +1218,14 @@ class DetrendendHSVarianceEviction:
 
         self._buf_a.append(diff_a)
         self._buf_b.append(diff_b)
-        score = (
-            _rolling_z_score(self._buf_a, self.window)
-            - _rolling_z_score(self._buf_b, self.window)
-        )
+        z_a = _rolling_z_score(self._buf_a, self.window)
+        z_b = _rolling_z_score(self._buf_b, self.window)
+        if self.band_mode == "a_only":
+            score = z_a
+        elif self.band_mode == "b_only":
+            score = -z_b
+        else:
+            score = z_a - z_b
         self._scores.append(score)
 
         if seq_len <= self.config.cache_size:
@@ -1757,6 +1781,8 @@ class KVSegHSEviction:
         retain_t: int = 8,
         value_reserve: int = 0,
         value_stat: str = "range",
+        fill_budget: bool = False,
+        refresh_tau: int = 1,
     ):
         self.config = config
         self.band_a_layer = band_a_layer
@@ -1766,6 +1792,23 @@ class KVSegHSEviction:
         self.retain_r = retain_r
         self.retain_e = retain_e
         self.retain_t = retain_t
+        # Evict only every `refresh_tau` decode steps. 1 is the published
+        # method (evict to the tier caps on every step). The vLLM port can only
+        # compact at a tau boundary, so validating it against the HF path means
+        # running the HF path at the same tau; otherwise the port is measured
+        # against a stricter policy than it implements and the comparison says
+        # nothing about the port. Between boundaries the cache grows freely.
+        self.refresh_tau = max(1, int(refresh_tau))
+        # Spend budget the per-segment tier caps leave unspent. Retention below
+        # is (#segments x mean tier budget), which depends on trace length and
+        # not on K, so on long traces the caps bind well under the cache size
+        # and the method runs a cache it never fills. Default False keeps the
+        # published behaviour reproducible; the A/B decided: it does NOT ship.
+        # Section 18 -- zero wins at K in {512,1024}, cap-hit up 60->90.
+        self.fill_budget = fill_budget
+        # The last keep decision, by cache slot, for the retained-vs-evicted
+        # dump (scripts/dump_retained.py). Not used by the policy itself.
+        self.last_keep_mask: Optional[torch.Tensor] = None
         # Value-magnitude reserve. Chang et al. report that evicting
         # large-magnitude value states drives reasoning models into repetitive
         # loops that never terminate -- the same failure our per-problem records
@@ -1884,6 +1927,12 @@ class KVSegHSEviction:
             - _rolling_z_score(self._buf_b, self.window)
         )
 
+        # tau-amortised eviction: act only every refresh_tau decode steps. The
+        # step counter is len(_scores), which reset() clears per request, so
+        # no extra state. refresh_tau=1 is the published per-step method.
+        if len(self._scores) % self.refresh_tau != 0:
+            return past_key_values
+
         if seq_len <= self.config.cache_size:
             return past_key_values
 
@@ -1934,6 +1983,27 @@ class KVSegHSEviction:
                 keep_mask[decode_start + top_idx] = True
                 remaining_budget -= n_keep
 
+        # Second pass: spend what the tier caps left on the table.
+        #
+        # At K=1024 on a 4k MATH trace the caps demand more than the budget and
+        # this is a no-op. At K=8192 on a 13k AIME trace they demand about 3.5k
+        # against 7.9k available, so the method retains 45% of what it is allowed
+        # while every competitor retains all of it -- visible as a 528 MB peak
+        # memory deficit, roughly 4.2k tokens. Ranking the leftovers globally by
+        # the same within-segment score can only add positions; nothing the tier
+        # pass kept is dropped here.
+        if self.fill_budget and remaining_budget > 0:
+            tail = seq_len - keep_recent
+            if tail > prefill_len:
+                unkept = ~keep_mask[prefill_len:tail]
+                n_fill = min(remaining_budget, int(unkept.sum().item()))
+                if n_fill > 0:
+                    cand = hs_decode[: tail - prefill_len].clone()
+                    cand[~unkept] = float('-inf')
+                    _, fill_idx = torch.topk(cand, n_fill)
+                    keep_mask[prefill_len + fill_idx] = True
+                    remaining_budget -= n_fill
+
         # Value-magnitude reserve, applied as a SWAP rather than an addition.
         # The per-segment R/E/T caps bind before the cache budget does, so this
         # method routinely retains fewer than K tokens; simply reserving extra
@@ -1959,6 +2029,7 @@ class KVSegHSEviction:
                 keep_mask[held[worst]] = False
                 keep_mask[idx_in] = True
 
+        self.last_keep_mask = keep_mask
         new_past = tuple(
             (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
             for k, v in past_key_values
