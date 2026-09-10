@@ -91,8 +91,21 @@ def text_width(s, size, fp):
     return w
 
 
+def mark_after_last_eviction(toks):
+    """Tokens generated after the last eviction were never scored against a
+    full cache: the cache did not exceed the budget again before the trace
+    ended. Colouring them "kept by score" would overstate the score's role,
+    so they get their own class. The last evicted position bounds the last
+    compaction from below; everything after it that is not in the recency
+    window is marked `unpressured`."""
+    last_evicted = max((i for i, t in enumerate(toks) if not t["kept"]), default=-1)
+    for i, t in enumerate(toks):
+        t["unpressured"] = bool(t["kept"] and not t.get("recency") and i > last_evicted)
+    return toks
+
+
 def draw_words(ax, toks, x0, y0, width_pt, size, fp, line_h, kept_face, rec_face,
-               max_lines=None):
+               max_lines=None, unp_face="#e4eefb"):
     """Lay tokens out as highlighted words in axes points; returns lines used."""
     x, line = 0.0, 0
     space = text_width(" ", size, fp)
@@ -112,10 +125,10 @@ def draw_words(ax, toks, x0, y0, width_pt, size, fp, line_h, kept_face, rec_face
                 return line
         y = y0 - line * line_h
         if t["kept"]:
-            face = rec_face if t.get("recency") else kept_face
+            face = rec_face if t.get("recency") else (unp_face if t.get("unpressured") else kept_face)
             ax.add_patch(Rectangle((x0 + x + lead - 0.6, y - 0.28 * size), w + 1.2, 1.15 * size,
                                    facecolor=face, edgecolor="none", zorder=1))
-            col = fs.INK
+            col = fs.INK if not t.get("unpressured") else "#4a5a6a"
         else:
             col = "#9a9a9a"
         ax.text(x0 + x + lead, y, s_stripped, fontsize=size, color=col, va="baseline",
@@ -230,7 +243,9 @@ def panel_a_only(fig, rect, meta, toks, excerpt):
     ax_b = fig.add_axes([L, B + 0.72 * H, W, 0.13 * H])
     ax_b.set_xlim(0, n)
     ax_b.set_ylim(0, 1)
-    colors = [fs.AMBER if t.get("recency") else (fs.BLUE if t["kept"] else fs.GREY_LIGHT) for t in toks]
+    mark_after_last_eviction(toks)
+    colors = [fs.AMBER if t.get("recency") else ("#bcd3f2" if t.get("unpressured") else
+              (fs.BLUE if t["kept"] else fs.GREY_LIGHT)) for t in toks]
     ax_b.bar(range(n), [1] * n, width=1.0, color=colors, linewidth=0)
     ax_b.set_yticks([])
     for s in ("left", "top", "right"):
@@ -240,13 +255,13 @@ def panel_a_only(fig, rect, meta, toks, excerpt):
     e0, e1 = excerpt
     ax_b.add_patch(Rectangle((e0, -0.12), e1 - e0, 1.24, fill=False, edgecolor=fs.INK, lw=0.8,
                              zorder=5, clip_on=False))
-    ax_b.text(0, 1.25, "generated token:", color=fs.INK, fontsize=7.5, va="bottom",
+    ax_b.text(0, 1.25, "kept by score", color=fs.BLUE, fontsize=7.2, va="bottom",
               transform=ax_b.transAxes)
-    ax_b.text(0.26, 1.25, "kept by score", color=fs.BLUE, fontsize=7.5, va="bottom",
+    ax_b.text(0.235, 1.25, "evicted", color="#8a8a8a", fontsize=7.2, va="bottom",
               transform=ax_b.transAxes)
-    ax_b.text(0.49, 1.25, "kept, recency window", color=fs.AMBER, fontsize=7.5, va="bottom",
+    ax_b.text(0.385, 1.25, "after the last eviction", color="#5b7aa6", fontsize=7.2, va="bottom",
               transform=ax_b.transAxes)
-    ax_b.text(0.86, 1.25, "evicted", color="#8a8a8a", fontsize=7.5, va="bottom",
+    ax_b.text(0.80, 1.25, "recency", color=fs.AMBER, fontsize=7.2, va="bottom",
               transform=ax_b.transAxes)
     ax_w = fig.add_axes([L, B, W, 0.50 * H])
     ax_w.axis("off")
@@ -320,6 +335,13 @@ def make_appendix(args):
     for t in toks:
         if "end" in t["text"] and "sentence" in t["text"]:
             t["text"] = " <EOS>"
+    mark_after_last_eviction(toks)
+    ax.text(4, h_pt - 10, f"EpiKV-Seg, $K$=1024, MATH-500 problem {meta['problem_idx']}: "
+                          f"{meta['generated']:,} tokens generated, {meta['retained_generated']:,} kept. "
+                          "Blue = kept by score; pale blue = generated after the last eviction (never "
+                          "scored against a full cache); amber = recency window; grey = evicted.",
+            fontsize=7, va="top", color=fs.INK,
+            bbox=dict(facecolor="white", edgecolor="none", pad=0))
     draw_words(ax, toks, 4, h_pt - 30, width_pt, 8.4, fp, 12.8, fs.BLUE_LIGHT, "#f6e3b5")
     out = Path(args.out)
     fig.savefig(out)
