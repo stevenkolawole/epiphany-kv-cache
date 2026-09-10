@@ -1,0 +1,351 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "dataset": "math500",
+    "n": 10,
+    "cache_size": 1024,
+    "keep_recent": 128,
+    "tau": 128,
+    "max_new_tokens": 8192,
+    "band": [
+      10,
+      21
+    ],
+    "block_size": 16,
+    "vllm_runner_path": "llm_engine.model_executor.driver_worker.worker.model_runner",
+    "wall_s": 281
+  },
+  "accuracy": 0.6,
+  "per_problem": [
+    {
+      "problem": "Find the product of $6_8 \\cdot 7_8.$ Express your answer in base $8.$",
+      "ground_truth": "52_8",
+      "pred": "52_8",
+      "correct": true,
+      "n_tokens_generated": 1681,
+      "wall_s": 16.11,
+      "compactions": [
+        {
+          "req": "0",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 318,
+          "freed_blocks": 45
+        }
+      ]
+    },
+    {
+      "problem": "Simplify $\\sqrt{242}$.",
+      "ground_truth": "11\\sqrt2",
+      "pred": "11\\sqrt{2}",
+      "correct": false,
+      "n_tokens_generated": 1095,
+      "wall_s": 10.4,
+      "compactions": [
+        {
+          "req": "1",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 359,
+          "freed_blocks": 42
+        }
+      ]
+    },
+    {
+      "problem": "In how many ways can 8 people sit around a round table if 3 of the people -- Pie",
+      "ground_truth": "720",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 78.96,
+      "compactions": [
+        {
+          "req": "2",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 378,
+          "freed_blocks": 41
+        },
+        {
+          "req": "2",
+          "step_logical": 1672,
+          "from": 1025,
+          "to": 346,
+          "freed_blocks": 83
+        },
+        {
+          "req": "2",
+          "step_logical": 2351,
+          "from": 1025,
+          "to": 402,
+          "freed_blocks": 121
+        },
+        {
+          "req": "2",
+          "step_logical": 2974,
+          "from": 1025,
+          "to": 346,
+          "freed_blocks": 164
+        },
+        {
+          "req": "2",
+          "step_logical": 3653,
+          "from": 1025,
+          "to": 346,
+          "freed_blocks": 207
+        },
+        {
+          "req": "2",
+          "step_logical": 4332,
+          "from": 1025,
+          "to": 346,
+          "freed_blocks": 249
+        },
+        {
+          "req": "2",
+          "step_logical": 5011,
+          "from": 1025,
+          "to": 402,
+          "freed_blocks": 288
+        },
+        {
+          "req": "2",
+          "step_logical": 5634,
+          "from": 1025,
+          "to": 346,
+          "freed_blocks": 331
+        },
+        {
+          "req": "2",
+          "step_logical": 6313,
+          "from": 1025,
+          "to": 402,
+          "freed_blocks": 369
+        },
+        {
+          "req": "2",
+          "step_logical": 6936,
+          "from": 1025,
+          "to": 402,
+          "freed_blocks": 408
+        },
+        {
+          "req": "2",
+          "step_logical": 7559,
+          "from": 1025,
+          "to": 402,
+          "freed_blocks": 447
+        },
+        {
+          "req": "2",
+          "step_logical": 8182,
+          "from": 1025,
+          "to": 346,
+          "freed_blocks": 490
+        }
+      ]
+    },
+    {
+      "problem": "Consider the geometric sequence $\\frac{125}{9}, \\frac{25}{3}, 5, 3, \\ldots$. Wha",
+      "ground_truth": "\\frac{243}{625}",
+      "pred": "\\dfrac{243}{625}",
+      "correct": true,
+      "n_tokens_generated": 3512,
+      "wall_s": 33.57,
+      "compactions": [
+        {
+          "req": "3",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 340,
+          "freed_blocks": 43
+        },
+        {
+          "req": "3",
+          "step_logical": 1710,
+          "from": 1025,
+          "to": 396,
+          "freed_blocks": 82
+        },
+        {
+          "req": "3",
+          "step_logical": 2339,
+          "from": 1025,
+          "to": 372,
+          "freed_blocks": 123
+        },
+        {
+          "req": "3",
+          "step_logical": 2992,
+          "from": 1025,
+          "to": 396,
+          "freed_blocks": 162
+        }
+      ]
+    },
+    {
+      "problem": "Find the constant term in the expansion of $$\\left(10x^3-\\frac{1}{2x^2}\\right)^{",
+      "ground_truth": "-125",
+      "pred": "-125",
+      "correct": true,
+      "n_tokens_generated": 3575,
+      "wall_s": 34.26,
+      "compactions": [
+        {
+          "req": "4",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 383,
+          "freed_blocks": 41
+        },
+        {
+          "req": "4",
+          "step_logical": 1667,
+          "from": 1025,
+          "to": 359,
+          "freed_blocks": 82
+        },
+        {
+          "req": "4",
+          "step_logical": 2333,
+          "from": 1025,
+          "to": 327,
+          "freed_blocks": 125
+        },
+        {
+          "req": "4",
+          "step_logical": 3031,
+          "from": 1025,
+          "to": 327,
+          "freed_blocks": 169
+        }
+      ]
+    },
+    {
+      "problem": "If $n \\equiv 2 \\pmod{7}$, then find the remainder when $(n + 2)(n + 4)(n + 6)$ i",
+      "ground_truth": "3",
+      "pred": "3",
+      "correct": true,
+      "n_tokens_generated": 1517,
+      "wall_s": 14.4,
+      "compactions": [
+        {
+          "req": "5",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 336,
+          "freed_blocks": 44
+        }
+      ]
+    },
+    {
+      "problem": "Find the roots of $(x - 3)^3 + (x -7)^3 = (2x - 10)^3.$",
+      "ground_truth": "3, 5, 7",
+      "pred": "5",
+      "correct": false,
+      "n_tokens_generated": 4909,
+      "wall_s": 47.7,
+      "compactions": [
+        {
+          "req": "6",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 379,
+          "freed_blocks": 41
+        },
+        {
+          "req": "6",
+          "step_logical": 1671,
+          "from": 1025,
+          "to": 323,
+          "freed_blocks": 84
+        },
+        {
+          "req": "6",
+          "step_logical": 2373,
+          "from": 1025,
+          "to": 379,
+          "freed_blocks": 125
+        },
+        {
+          "req": "6",
+          "step_logical": 3019,
+          "from": 1025,
+          "to": 323,
+          "freed_blocks": 168
+        },
+        {
+          "req": "6",
+          "step_logical": 3721,
+          "from": 1025,
+          "to": 379,
+          "freed_blocks": 209
+        },
+        {
+          "req": "6",
+          "step_logical": 4367,
+          "from": 1025,
+          "to": 379,
+          "freed_blocks": 249
+        }
+      ]
+    },
+    {
+      "problem": "A regular pentagon is rotated counterclockwise about its center. What is the min",
+      "ground_truth": "72",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 2565,
+      "wall_s": 25.05,
+      "compactions": [
+        {
+          "req": "7",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 329,
+          "freed_blocks": 44
+        },
+        {
+          "req": "7",
+          "step_logical": 1721,
+          "from": 1025,
+          "to": 329,
+          "freed_blocks": 87
+        },
+        {
+          "req": "7",
+          "step_logical": 2417,
+          "from": 1025,
+          "to": 329,
+          "freed_blocks": 131
+        }
+      ]
+    },
+    {
+      "problem": "If a snack-size tin of peaches has $40$ calories and is $2\\%$ of a person's dail",
+      "ground_truth": "2000",
+      "pred": "2000",
+      "correct": true,
+      "n_tokens_generated": 1549,
+      "wall_s": 14.65,
+      "compactions": [
+        {
+          "req": "8",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 336,
+          "freed_blocks": 44
+        }
+      ]
+    },
+    {
+      "problem": "What is the result when the greatest common factor of 6432 and 132 is increased ",
+      "ground_truth": "23",
+      "pred": "23",
+      "correct": true,
+      "n_tokens_generated": 595,
+      "wall_s": 5.62,
+      "compactions": []
+    }
+  ]
+}

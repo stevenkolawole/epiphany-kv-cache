@@ -1,0 +1,111 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "dataset": "math500",
+    "n": 10,
+    "cache_size": 1000000,
+    "keep_recent": 128,
+    "tau": 128,
+    "max_new_tokens": 8192,
+    "band": [
+      10,
+      21
+    ],
+    "block_size": 16,
+    "vllm_runner_path": "llm_engine.model_executor.driver_worker.worker.model_runner",
+    "wall_s": 324
+  },
+  "accuracy": 0.8,
+  "per_problem": [
+    {
+      "problem": "The polynomial $x^3 - 3x^2 + 4x - 1$ is a factor of $x^9 + px^6 + qx^3 + r.$  En",
+      "ground_truth": "(6,31,-1)",
+      "pred": "(6, 31, -1)",
+      "correct": true,
+      "n_tokens_generated": 3116,
+      "wall_s": 30.26,
+      "compactions": []
+    },
+    {
+      "problem": "For some real numbers $a$ and $b$, the equation \\[\n8x^3 + 4ax^2 + 2bx + a = 0\n\\]",
+      "ground_truth": "-256",
+      "pred": "-256",
+      "correct": true,
+      "n_tokens_generated": 3157,
+      "wall_s": 29.96,
+      "compactions": []
+    },
+    {
+      "problem": "Find the smallest positive real number $C$ for which\n\\[\\left\\| \\begin{pmatrix} 2",
+      "ground_truth": "4",
+      "pred": "4",
+      "correct": true,
+      "n_tokens_generated": 4595,
+      "wall_s": 43.57,
+      "compactions": []
+    },
+    {
+      "problem": "Let\n\\[x^8 + 3x^4 - 4 = p_1(x) p_2(x) \\dotsm p_k(x),\\]where each non-constant pol",
+      "ground_truth": "10",
+      "pred": "10",
+      "correct": true,
+      "n_tokens_generated": 2059,
+      "wall_s": 19.46,
+      "compactions": []
+    },
+    {
+      "problem": "There exist constants $a$, $b$, $c$, and $d$ such that\n\\[(\\sin x)^7 = a \\sin 7x ",
+      "ground_truth": "\\frac{35}{64}",
+      "pred": "\\dfrac{1}{64}",
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 78.44,
+      "compactions": []
+    },
+    {
+      "problem": "What is $1^{(2^{235423523})}$?",
+      "ground_truth": "1",
+      "pred": "1",
+      "correct": true,
+      "n_tokens_generated": 1245,
+      "wall_s": 11.84,
+      "compactions": []
+    },
+    {
+      "problem": "Expand and simplify completely: \\begin{align*}\nx\\left(x(1+x)+2x\\right)-3(x^2-x+2",
+      "ground_truth": "x^3+3x-6",
+      "pred": "x^3 + 3x - 6",
+      "correct": true,
+      "n_tokens_generated": 1985,
+      "wall_s": 18.75,
+      "compactions": []
+    },
+    {
+      "problem": "The lengths of two opposite sides of a square are decreased by $40\\%$ while the ",
+      "ground_truth": "10",
+      "pred": "10\\%",
+      "correct": false,
+      "n_tokens_generated": 1408,
+      "wall_s": 13.29,
+      "compactions": []
+    },
+    {
+      "problem": "For some value of $x,$ $0 < x < 180,$\n\\[\\tan 53^\\circ \\tan 81^\\circ \\tan x^\\circ",
+      "ground_truth": "46",
+      "pred": "46",
+      "correct": true,
+      "n_tokens_generated": 6166,
+      "wall_s": 59.78,
+      "compactions": []
+    },
+    {
+      "problem": "Let $z$ be a complex number such that $z^5 = 1$ and $z \\neq 1.$  Compute\n\\[z + \\",
+      "ground_truth": "-1",
+      "pred": "-1",
+      "correct": true,
+      "n_tokens_generated": 1930,
+      "wall_s": 18.56,
+      "compactions": []
+    }
+  ]
+}

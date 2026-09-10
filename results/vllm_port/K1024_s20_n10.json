@@ -1,0 +1,498 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "dataset": "math500",
+    "n": 10,
+    "cache_size": 1024,
+    "keep_recent": 128,
+    "tau": 128,
+    "max_new_tokens": 8192,
+    "band": [
+      10,
+      21
+    ],
+    "block_size": 16,
+    "vllm_runner_path": "llm_engine.model_executor.driver_worker.worker.model_runner",
+    "wall_s": 397
+  },
+  "accuracy": 0.5,
+  "per_problem": [
+    {
+      "problem": "Evaluate $(1+2i)6-3i$.",
+      "ground_truth": "6+9i",
+      "pred": "6 + 9i",
+      "correct": true,
+      "n_tokens_generated": 1051,
+      "wall_s": 10.05,
+      "compactions": [
+        {
+          "req": "0",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 363,
+          "freed_blocks": 42
+        }
+      ]
+    },
+    {
+      "problem": "Find the greatest integer less than $(\\sqrt{7} + \\sqrt{5})^6.$  (Do not use a ca",
+      "ground_truth": "13535",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 80.1,
+      "compactions": [
+        {
+          "req": "1",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 324,
+          "freed_blocks": 44
+        },
+        {
+          "req": "1",
+          "step_logical": 1726,
+          "from": 1025,
+          "to": 324,
+          "freed_blocks": 87
+        },
+        {
+          "req": "1",
+          "step_logical": 2427,
+          "from": 1025,
+          "to": 324,
+          "freed_blocks": 131
+        },
+        {
+          "req": "1",
+          "step_logical": 3128,
+          "from": 1025,
+          "to": 324,
+          "freed_blocks": 175
+        },
+        {
+          "req": "1",
+          "step_logical": 3829,
+          "from": 1025,
+          "to": 380,
+          "freed_blocks": 216
+        },
+        {
+          "req": "1",
+          "step_logical": 4474,
+          "from": 1025,
+          "to": 324,
+          "freed_blocks": 259
+        },
+        {
+          "req": "1",
+          "step_logical": 5175,
+          "from": 1025,
+          "to": 380,
+          "freed_blocks": 300
+        },
+        {
+          "req": "1",
+          "step_logical": 5820,
+          "from": 1025,
+          "to": 324,
+          "freed_blocks": 343
+        },
+        {
+          "req": "1",
+          "step_logical": 6521,
+          "from": 1025,
+          "to": 380,
+          "freed_blocks": 384
+        },
+        {
+          "req": "1",
+          "step_logical": 7166,
+          "from": 1025,
+          "to": 324,
+          "freed_blocks": 427
+        },
+        {
+          "req": "1",
+          "step_logical": 7867,
+          "from": 1025,
+          "to": 380,
+          "freed_blocks": 468
+        }
+      ]
+    },
+    {
+      "problem": "Denali and Nate work for a dog walking business and are paid for each dog they w",
+      "ground_truth": "5",
+      "pred": "5",
+      "correct": true,
+      "n_tokens_generated": 5809,
+      "wall_s": 55.59,
+      "compactions": [
+        {
+          "req": "2",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 467,
+          "freed_blocks": 35
+        },
+        {
+          "req": "2",
+          "step_logical": 1583,
+          "from": 1025,
+          "to": 467,
+          "freed_blocks": 69
+        },
+        {
+          "req": "2",
+          "step_logical": 2141,
+          "from": 1025,
+          "to": 467,
+          "freed_blocks": 104
+        },
+        {
+          "req": "2",
+          "step_logical": 2699,
+          "from": 1025,
+          "to": 411,
+          "freed_blocks": 143
+        },
+        {
+          "req": "2",
+          "step_logical": 3313,
+          "from": 1025,
+          "to": 467,
+          "freed_blocks": 178
+        },
+        {
+          "req": "2",
+          "step_logical": 3871,
+          "from": 1025,
+          "to": 467,
+          "freed_blocks": 212
+        },
+        {
+          "req": "2",
+          "step_logical": 4429,
+          "from": 1025,
+          "to": 467,
+          "freed_blocks": 247
+        },
+        {
+          "req": "2",
+          "step_logical": 4987,
+          "from": 1025,
+          "to": 411,
+          "freed_blocks": 286
+        },
+        {
+          "req": "2",
+          "step_logical": 5601,
+          "from": 1025,
+          "to": 467,
+          "freed_blocks": 321
+        }
+      ]
+    },
+    {
+      "problem": "Find all values of $x$ that satisfy the equation $x = \\!\\sqrt{11-2x} + 4$.",
+      "ground_truth": "x=5",
+      "pred": "5",
+      "correct": true,
+      "n_tokens_generated": 1488,
+      "wall_s": 14.11,
+      "compactions": [
+        {
+          "req": "3",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 378,
+          "freed_blocks": 41
+        }
+      ]
+    },
+    {
+      "problem": "A worker receives an annual wage of $\\$20{,}000$, which he always deposits into ",
+      "ground_truth": "10",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 78.81,
+      "compactions": [
+        {
+          "req": "4",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 392,
+          "freed_blocks": 40
+        },
+        {
+          "req": "4",
+          "step_logical": 1658,
+          "from": 1025,
+          "to": 448,
+          "freed_blocks": 76
+        },
+        {
+          "req": "4",
+          "step_logical": 2235,
+          "from": 1025,
+          "to": 448,
+          "freed_blocks": 112
+        },
+        {
+          "req": "4",
+          "step_logical": 2812,
+          "from": 1025,
+          "to": 392,
+          "freed_blocks": 151
+        },
+        {
+          "req": "4",
+          "step_logical": 3445,
+          "from": 1025,
+          "to": 448,
+          "freed_blocks": 188
+        },
+        {
+          "req": "4",
+          "step_logical": 4022,
+          "from": 1025,
+          "to": 392,
+          "freed_blocks": 227
+        },
+        {
+          "req": "4",
+          "step_logical": 4655,
+          "from": 1025,
+          "to": 409,
+          "freed_blocks": 265
+        },
+        {
+          "req": "4",
+          "step_logical": 5271,
+          "from": 1025,
+          "to": 409,
+          "freed_blocks": 304
+        },
+        {
+          "req": "4",
+          "step_logical": 5887,
+          "from": 1025,
+          "to": 409,
+          "freed_blocks": 342
+        },
+        {
+          "req": "4",
+          "step_logical": 6503,
+          "from": 1025,
+          "to": 409,
+          "freed_blocks": 381
+        },
+        {
+          "req": "4",
+          "step_logical": 7119,
+          "from": 1025,
+          "to": 409,
+          "freed_blocks": 419
+        },
+        {
+          "req": "4",
+          "step_logical": 7735,
+          "from": 1025,
+          "to": 409,
+          "freed_blocks": 458
+        }
+      ]
+    },
+    {
+      "problem": "The function $f$ satisfies the functional equation\n\\[f(x) + f(y) = f(x + y) - xy",
+      "ground_truth": "1,-2",
+      "pred": "1",
+      "correct": false,
+      "n_tokens_generated": 5173,
+      "wall_s": 49.56,
+      "compactions": [
+        {
+          "req": "5",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 430,
+          "freed_blocks": 38
+        },
+        {
+          "req": "5",
+          "step_logical": 1620,
+          "from": 1025,
+          "to": 406,
+          "freed_blocks": 76
+        },
+        {
+          "req": "5",
+          "step_logical": 2239,
+          "from": 1025,
+          "to": 430,
+          "freed_blocks": 113
+        },
+        {
+          "req": "5",
+          "step_logical": 2834,
+          "from": 1025,
+          "to": 430,
+          "freed_blocks": 151
+        },
+        {
+          "req": "5",
+          "step_logical": 3429,
+          "from": 1025,
+          "to": 374,
+          "freed_blocks": 191
+        },
+        {
+          "req": "5",
+          "step_logical": 4080,
+          "from": 1025,
+          "to": 353,
+          "freed_blocks": 232
+        },
+        {
+          "req": "5",
+          "step_logical": 4752,
+          "from": 1025,
+          "to": 409,
+          "freed_blocks": 271
+        }
+      ]
+    },
+    {
+      "problem": "In how many ways can $7$ people sit around a round table if no two of the $3$ pe",
+      "ground_truth": "144",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 79.97,
+      "compactions": [
+        {
+          "req": "6",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 347,
+          "freed_blocks": 43
+        },
+        {
+          "req": "6",
+          "step_logical": 1703,
+          "from": 1025,
+          "to": 347,
+          "freed_blocks": 85
+        },
+        {
+          "req": "6",
+          "step_logical": 2381,
+          "from": 1025,
+          "to": 403,
+          "freed_blocks": 123
+        },
+        {
+          "req": "6",
+          "step_logical": 3003,
+          "from": 1025,
+          "to": 347,
+          "freed_blocks": 166
+        },
+        {
+          "req": "6",
+          "step_logical": 3681,
+          "from": 1025,
+          "to": 379,
+          "freed_blocks": 207
+        },
+        {
+          "req": "6",
+          "step_logical": 4327,
+          "from": 1025,
+          "to": 403,
+          "freed_blocks": 245
+        },
+        {
+          "req": "6",
+          "step_logical": 4949,
+          "from": 1025,
+          "to": 403,
+          "freed_blocks": 284
+        },
+        {
+          "req": "6",
+          "step_logical": 5571,
+          "from": 1025,
+          "to": 347,
+          "freed_blocks": 327
+        },
+        {
+          "req": "6",
+          "step_logical": 6249,
+          "from": 1025,
+          "to": 347,
+          "freed_blocks": 369
+        },
+        {
+          "req": "6",
+          "step_logical": 6927,
+          "from": 1025,
+          "to": 347,
+          "freed_blocks": 411
+        },
+        {
+          "req": "6",
+          "step_logical": 7605,
+          "from": 1025,
+          "to": 347,
+          "freed_blocks": 454
+        }
+      ]
+    },
+    {
+      "problem": "A math club is having a bake sale as a fundraiser to raise money for an upcoming",
+      "ground_truth": "78",
+      "pred": "78",
+      "correct": true,
+      "n_tokens_generated": 988,
+      "wall_s": 9.4,
+      "compactions": [
+        {
+          "req": "7",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 428,
+          "freed_blocks": 38
+        }
+      ]
+    },
+    {
+      "problem": "A $90^\\circ$ rotation around the origin in the counter-clockwise direction is ap",
+      "ground_truth": "-2 + 7i",
+      "pred": "-2 + 7i",
+      "correct": true,
+      "n_tokens_generated": 1524,
+      "wall_s": 14.4,
+      "compactions": [
+        {
+          "req": "8",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 385,
+          "freed_blocks": 40
+        }
+      ]
+    },
+    {
+      "problem": "The Greek army contained two types of soldiers: the upper class and the lower cl",
+      "ground_truth": "225",
+      "pred": "50",
+      "correct": false,
+      "n_tokens_generated": 489,
+      "wall_s": 4.62,
+      "compactions": []
+    }
+  ]
+}

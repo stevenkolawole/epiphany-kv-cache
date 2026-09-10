@@ -1,0 +1,499 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "dataset": "math500",
+    "n": 10,
+    "cache_size": 1024,
+    "keep_recent": 128,
+    "tau": 128,
+    "max_new_tokens": 8192,
+    "band": [
+      10,
+      21
+    ],
+    "block_size": 16,
+    "vllm_runner_path": "llm_engine.model_executor.driver_worker.worker.model_runner",
+    "wall_s": 400
+  },
+  "accuracy": 0.5,
+  "per_problem": [
+    {
+      "problem": "The polynomial $x^3 - 3x^2 + 4x - 1$ is a factor of $x^9 + px^6 + qx^3 + r.$  En",
+      "ground_truth": "(6,31,-1)",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 80.08,
+      "compactions": [
+        {
+          "req": "0",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 377,
+          "freed_blocks": 41
+        },
+        {
+          "req": "0",
+          "step_logical": 1673,
+          "from": 1025,
+          "to": 345,
+          "freed_blocks": 83
+        },
+        {
+          "req": "0",
+          "step_logical": 2353,
+          "from": 1025,
+          "to": 377,
+          "freed_blocks": 124
+        },
+        {
+          "req": "0",
+          "step_logical": 3001,
+          "from": 1025,
+          "to": 345,
+          "freed_blocks": 166
+        },
+        {
+          "req": "0",
+          "step_logical": 3681,
+          "from": 1025,
+          "to": 377,
+          "freed_blocks": 207
+        },
+        {
+          "req": "0",
+          "step_logical": 4329,
+          "from": 1025,
+          "to": 377,
+          "freed_blocks": 247
+        },
+        {
+          "req": "0",
+          "step_logical": 4977,
+          "from": 1025,
+          "to": 377,
+          "freed_blocks": 288
+        },
+        {
+          "req": "0",
+          "step_logical": 5625,
+          "from": 1025,
+          "to": 401,
+          "freed_blocks": 326
+        },
+        {
+          "req": "0",
+          "step_logical": 6249,
+          "from": 1025,
+          "to": 401,
+          "freed_blocks": 365
+        },
+        {
+          "req": "0",
+          "step_logical": 6873,
+          "from": 1025,
+          "to": 345,
+          "freed_blocks": 408
+        },
+        {
+          "req": "0",
+          "step_logical": 7553,
+          "from": 1025,
+          "to": 345,
+          "freed_blocks": 451
+        },
+        {
+          "req": "0",
+          "step_logical": 8233,
+          "from": 1025,
+          "to": 401,
+          "freed_blocks": 489
+        }
+      ]
+    },
+    {
+      "problem": "For some real numbers $a$ and $b$, the equation \\[\n8x^3 + 4ax^2 + 2bx + a = 0\n\\]",
+      "ground_truth": "-256",
+      "pred": "-256",
+      "correct": true,
+      "n_tokens_generated": 2079,
+      "wall_s": 20.46,
+      "compactions": [
+        {
+          "req": "1",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 420,
+          "freed_blocks": 38
+        },
+        {
+          "req": "1",
+          "step_logical": 1630,
+          "from": 1025,
+          "to": 420,
+          "freed_blocks": 75
+        }
+      ]
+    },
+    {
+      "problem": "Find the smallest positive real number $C$ for which\n\\[\\left\\| \\begin{pmatrix} 2",
+      "ground_truth": "4",
+      "pred": "2",
+      "correct": false,
+      "n_tokens_generated": 5662,
+      "wall_s": 54.63,
+      "compactions": [
+        {
+          "req": "2",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 400,
+          "freed_blocks": 40
+        },
+        {
+          "req": "2",
+          "step_logical": 1650,
+          "from": 1025,
+          "to": 456,
+          "freed_blocks": 75
+        },
+        {
+          "req": "2",
+          "step_logical": 2219,
+          "from": 1025,
+          "to": 400,
+          "freed_blocks": 114
+        },
+        {
+          "req": "2",
+          "step_logical": 2844,
+          "from": 1025,
+          "to": 456,
+          "freed_blocks": 149
+        },
+        {
+          "req": "2",
+          "step_logical": 3413,
+          "from": 1025,
+          "to": 432,
+          "freed_blocks": 187
+        },
+        {
+          "req": "2",
+          "step_logical": 4006,
+          "from": 1025,
+          "to": 456,
+          "freed_blocks": 222
+        },
+        {
+          "req": "2",
+          "step_logical": 4575,
+          "from": 1025,
+          "to": 432,
+          "freed_blocks": 259
+        },
+        {
+          "req": "2",
+          "step_logical": 5168,
+          "from": 1025,
+          "to": 400,
+          "freed_blocks": 298
+        }
+      ]
+    },
+    {
+      "problem": "Let\n\\[x^8 + 3x^4 - 4 = p_1(x) p_2(x) \\dotsm p_k(x),\\]where each non-constant pol",
+      "ground_truth": "10",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 79.64,
+      "compactions": [
+        {
+          "req": "3",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 440,
+          "freed_blocks": 37
+        },
+        {
+          "req": "3",
+          "step_logical": 1610,
+          "from": 1025,
+          "to": 384,
+          "freed_blocks": 77
+        },
+        {
+          "req": "3",
+          "step_logical": 2251,
+          "from": 1025,
+          "to": 440,
+          "freed_blocks": 113
+        },
+        {
+          "req": "3",
+          "step_logical": 2836,
+          "from": 1025,
+          "to": 385,
+          "freed_blocks": 153
+        },
+        {
+          "req": "3",
+          "step_logical": 3476,
+          "from": 1025,
+          "to": 385,
+          "freed_blocks": 193
+        },
+        {
+          "req": "3",
+          "step_logical": 4116,
+          "from": 1025,
+          "to": 384,
+          "freed_blocks": 234
+        },
+        {
+          "req": "3",
+          "step_logical": 4757,
+          "from": 1025,
+          "to": 384,
+          "freed_blocks": 274
+        },
+        {
+          "req": "3",
+          "step_logical": 5398,
+          "from": 1025,
+          "to": 385,
+          "freed_blocks": 313
+        },
+        {
+          "req": "3",
+          "step_logical": 6038,
+          "from": 1025,
+          "to": 409,
+          "freed_blocks": 352
+        },
+        {
+          "req": "3",
+          "step_logical": 6654,
+          "from": 1025,
+          "to": 384,
+          "freed_blocks": 392
+        },
+        {
+          "req": "3",
+          "step_logical": 7295,
+          "from": 1025,
+          "to": 385,
+          "freed_blocks": 431
+        },
+        {
+          "req": "3",
+          "step_logical": 7935,
+          "from": 1025,
+          "to": 384,
+          "freed_blocks": 472
+        }
+      ]
+    },
+    {
+      "problem": "There exist constants $a$, $b$, $c$, and $d$ such that\n\\[(\\sin x)^7 = a \\sin 7x ",
+      "ground_truth": "\\frac{35}{64}",
+      "pred": "\\dfrac{35}{16}",
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 79.46,
+      "compactions": [
+        {
+          "req": "4",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 392,
+          "freed_blocks": 40
+        },
+        {
+          "req": "4",
+          "step_logical": 1658,
+          "from": 1025,
+          "to": 416,
+          "freed_blocks": 78
+        },
+        {
+          "req": "4",
+          "step_logical": 2267,
+          "from": 1025,
+          "to": 360,
+          "freed_blocks": 119
+        },
+        {
+          "req": "4",
+          "step_logical": 2932,
+          "from": 1025,
+          "to": 416,
+          "freed_blocks": 158
+        },
+        {
+          "req": "4",
+          "step_logical": 3541,
+          "from": 1025,
+          "to": 360,
+          "freed_blocks": 199
+        },
+        {
+          "req": "4",
+          "step_logical": 4206,
+          "from": 1025,
+          "to": 360,
+          "freed_blocks": 240
+        },
+        {
+          "req": "4",
+          "step_logical": 4871,
+          "from": 1025,
+          "to": 360,
+          "freed_blocks": 282
+        },
+        {
+          "req": "4",
+          "step_logical": 5536,
+          "from": 1025,
+          "to": 416,
+          "freed_blocks": 320
+        },
+        {
+          "req": "4",
+          "step_logical": 6145,
+          "from": 1025,
+          "to": 360,
+          "freed_blocks": 362
+        },
+        {
+          "req": "4",
+          "step_logical": 6810,
+          "from": 1025,
+          "to": 416,
+          "freed_blocks": 400
+        },
+        {
+          "req": "4",
+          "step_logical": 7419,
+          "from": 1025,
+          "to": 416,
+          "freed_blocks": 438
+        },
+        {
+          "req": "4",
+          "step_logical": 8028,
+          "from": 1025,
+          "to": 409,
+          "freed_blocks": 476
+        }
+      ]
+    },
+    {
+      "problem": "What is $1^{(2^{235423523})}$?",
+      "ground_truth": "1",
+      "pred": "1",
+      "correct": true,
+      "n_tokens_generated": 1219,
+      "wall_s": 11.51,
+      "compactions": [
+        {
+          "req": "5",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 309,
+          "freed_blocks": 45
+        }
+      ]
+    },
+    {
+      "problem": "Expand and simplify completely: \\begin{align*}\nx\\left(x(1+x)+2x\\right)-3(x^2-x+2",
+      "ground_truth": "x^3+3x-6",
+      "pred": "x^3 + 3x - 6",
+      "correct": true,
+      "n_tokens_generated": 1466,
+      "wall_s": 14.25,
+      "compactions": [
+        {
+          "req": "6",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 389,
+          "freed_blocks": 40
+        }
+      ]
+    },
+    {
+      "problem": "The lengths of two opposite sides of a square are decreased by $40\\%$ while the ",
+      "ground_truth": "10",
+      "pred": "10\\%",
+      "correct": false,
+      "n_tokens_generated": 1420,
+      "wall_s": 13.87,
+      "compactions": [
+        {
+          "req": "7",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 399,
+          "freed_blocks": 40
+        }
+      ]
+    },
+    {
+      "problem": "For some value of $x,$ $0 < x < 180,$\n\\[\\tan 53^\\circ \\tan 81^\\circ \\tan x^\\circ",
+      "ground_truth": "46",
+      "pred": "46",
+      "correct": true,
+      "n_tokens_generated": 2799,
+      "wall_s": 27.18,
+      "compactions": [
+        {
+          "req": "8",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 355,
+          "freed_blocks": 42
+        },
+        {
+          "req": "8",
+          "step_logical": 1695,
+          "from": 1025,
+          "to": 355,
+          "freed_blocks": 83
+        },
+        {
+          "req": "8",
+          "step_logical": 2365,
+          "from": 1025,
+          "to": 409,
+          "freed_blocks": 122
+        }
+      ]
+    },
+    {
+      "problem": "Let $z$ be a complex number such that $z^5 = 1$ and $z \\neq 1.$  Compute\n\\[z + \\",
+      "ground_truth": "-1",
+      "pred": "-1",
+      "correct": true,
+      "n_tokens_generated": 1964,
+      "wall_s": 19.17,
+      "compactions": [
+        {
+          "req": "9",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 351,
+          "freed_blocks": 43
+        },
+        {
+          "req": "9",
+          "step_logical": 1699,
+          "from": 1025,
+          "to": 351,
+          "freed_blocks": 85
+        }
+      ]
+    }
+  ]
+}

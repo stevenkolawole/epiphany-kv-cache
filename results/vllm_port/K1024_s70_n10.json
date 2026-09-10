@@ -1,0 +1,386 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "dataset": "math500",
+    "n": 10,
+    "cache_size": 1024,
+    "keep_recent": 128,
+    "tau": 128,
+    "max_new_tokens": 8192,
+    "band": [
+      10,
+      21
+    ],
+    "block_size": 16,
+    "vllm_runner_path": "llm_engine.model_executor.driver_worker.worker.model_runner",
+    "wall_s": 306
+  },
+  "accuracy": 0.9,
+  "per_problem": [
+    {
+      "problem": "Compute $58_9 - 18_9.$ Express your answer in base $9.$",
+      "ground_truth": "40_9",
+      "pred": "40_9",
+      "correct": true,
+      "n_tokens_generated": 1384,
+      "wall_s": 13.41,
+      "compactions": [
+        {
+          "req": "0",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 314,
+          "freed_blocks": 45
+        }
+      ]
+    },
+    {
+      "problem": "The binary number $10101001110_{2}$ is equal to what number in base eight?",
+      "ground_truth": "2516_8",
+      "pred": "2516_8",
+      "correct": true,
+      "n_tokens_generated": 5703,
+      "wall_s": 55.36,
+      "compactions": [
+        {
+          "req": "1",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 371,
+          "freed_blocks": 41
+        },
+        {
+          "req": "1",
+          "step_logical": 1679,
+          "from": 1025,
+          "to": 315,
+          "freed_blocks": 85
+        },
+        {
+          "req": "1",
+          "step_logical": 2389,
+          "from": 1025,
+          "to": 315,
+          "freed_blocks": 130
+        },
+        {
+          "req": "1",
+          "step_logical": 3099,
+          "from": 1025,
+          "to": 371,
+          "freed_blocks": 170
+        },
+        {
+          "req": "1",
+          "step_logical": 3753,
+          "from": 1025,
+          "to": 315,
+          "freed_blocks": 215
+        },
+        {
+          "req": "1",
+          "step_logical": 4463,
+          "from": 1025,
+          "to": 315,
+          "freed_blocks": 259
+        },
+        {
+          "req": "1",
+          "step_logical": 5173,
+          "from": 1025,
+          "to": 371,
+          "freed_blocks": 300
+        }
+      ]
+    },
+    {
+      "problem": "What is the length, in units, of the radius of a sphere whose volume and surface",
+      "ground_truth": "3",
+      "pred": "3",
+      "correct": true,
+      "n_tokens_generated": 2163,
+      "wall_s": 20.78,
+      "compactions": [
+        {
+          "req": "2",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 385,
+          "freed_blocks": 40
+        },
+        {
+          "req": "2",
+          "step_logical": 1665,
+          "from": 1025,
+          "to": 385,
+          "freed_blocks": 80
+        }
+      ]
+    },
+    {
+      "problem": "Simplify\n\\[\\frac{\\sec x}{\\sin x} - \\frac{\\sin x}{\\cos x}.\\]",
+      "ground_truth": "\\cot x",
+      "pred": "\\cot x",
+      "correct": true,
+      "n_tokens_generated": 2944,
+      "wall_s": 28.43,
+      "compactions": [
+        {
+          "req": "3",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 322,
+          "freed_blocks": 44
+        },
+        {
+          "req": "3",
+          "step_logical": 1728,
+          "from": 1025,
+          "to": 322,
+          "freed_blocks": 87
+        },
+        {
+          "req": "3",
+          "step_logical": 2431,
+          "from": 1025,
+          "to": 378,
+          "freed_blocks": 128
+        }
+      ]
+    },
+    {
+      "problem": "Two fair, 6-sided dice are thrown.  What is the probability that the product of ",
+      "ground_truth": "\\frac{11}{36}",
+      "pred": "\\dfrac{11}{36}",
+      "correct": true,
+      "n_tokens_generated": 1833,
+      "wall_s": 17.62,
+      "compactions": [
+        {
+          "req": "4",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 365,
+          "freed_blocks": 42
+        },
+        {
+          "req": "4",
+          "step_logical": 1685,
+          "from": 1025,
+          "to": 333,
+          "freed_blocks": 85
+        }
+      ]
+    },
+    {
+      "problem": "If the domain of the function $\\log x^2$ is $x < a$ or $x > b$, for some $a$ and",
+      "ground_truth": "0",
+      "pred": "0",
+      "correct": true,
+      "n_tokens_generated": 1873,
+      "wall_s": 18.17,
+      "compactions": [
+        {
+          "req": "5",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 390,
+          "freed_blocks": 40
+        },
+        {
+          "req": "5",
+          "step_logical": 1660,
+          "from": 1025,
+          "to": 390,
+          "freed_blocks": 79
+        }
+      ]
+    },
+    {
+      "problem": "If $2^8=4^x$, what is the value of $x$?",
+      "ground_truth": "4",
+      "pred": "4",
+      "correct": true,
+      "n_tokens_generated": 383,
+      "wall_s": 3.65,
+      "compactions": []
+    },
+    {
+      "problem": "Let $f(x) = x^3 + 3x^2 + 1.$  There exist real numbers $a \\neq 0$ and $b,$ such ",
+      "ground_truth": "(-2,1)",
+      "pred": "(-2, 1)",
+      "correct": true,
+      "n_tokens_generated": 5800,
+      "wall_s": 56.13,
+      "compactions": [
+        {
+          "req": "7",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 364,
+          "freed_blocks": 42
+        },
+        {
+          "req": "7",
+          "step_logical": 1686,
+          "from": 1025,
+          "to": 420,
+          "freed_blocks": 79
+        },
+        {
+          "req": "7",
+          "step_logical": 2291,
+          "from": 1025,
+          "to": 409,
+          "freed_blocks": 118
+        },
+        {
+          "req": "7",
+          "step_logical": 2907,
+          "from": 1025,
+          "to": 409,
+          "freed_blocks": 156
+        },
+        {
+          "req": "7",
+          "step_logical": 3523,
+          "from": 1025,
+          "to": 409,
+          "freed_blocks": 195
+        },
+        {
+          "req": "7",
+          "step_logical": 4139,
+          "from": 1025,
+          "to": 409,
+          "freed_blocks": 233
+        },
+        {
+          "req": "7",
+          "step_logical": 4755,
+          "from": 1025,
+          "to": 420,
+          "freed_blocks": 271
+        },
+        {
+          "req": "7",
+          "step_logical": 5360,
+          "from": 1025,
+          "to": 420,
+          "freed_blocks": 308
+        }
+      ]
+    },
+    {
+      "problem": "For what value of $x$ is $2^3\\cdot3^x=72$?",
+      "ground_truth": "2",
+      "pred": "2",
+      "correct": true,
+      "n_tokens_generated": 1223,
+      "wall_s": 12.06,
+      "compactions": [
+        {
+          "req": "8",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 348,
+          "freed_blocks": 43
+        }
+      ]
+    },
+    {
+      "problem": "Find the number of integer values of $k$ in the closed interval $[-500,500]$ for",
+      "ground_truth": "501",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 80.79,
+      "compactions": [
+        {
+          "req": "9",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 393,
+          "freed_blocks": 40
+        },
+        {
+          "req": "9",
+          "step_logical": 1657,
+          "from": 1025,
+          "to": 393,
+          "freed_blocks": 79
+        },
+        {
+          "req": "9",
+          "step_logical": 2289,
+          "from": 1025,
+          "to": 337,
+          "freed_blocks": 122
+        },
+        {
+          "req": "9",
+          "step_logical": 2977,
+          "from": 1025,
+          "to": 369,
+          "freed_blocks": 163
+        },
+        {
+          "req": "9",
+          "step_logical": 3633,
+          "from": 1025,
+          "to": 337,
+          "freed_blocks": 206
+        },
+        {
+          "req": "9",
+          "step_logical": 4321,
+          "from": 1025,
+          "to": 337,
+          "freed_blocks": 249
+        },
+        {
+          "req": "9",
+          "step_logical": 5009,
+          "from": 1025,
+          "to": 337,
+          "freed_blocks": 292
+        },
+        {
+          "req": "9",
+          "step_logical": 5697,
+          "from": 1025,
+          "to": 393,
+          "freed_blocks": 332
+        },
+        {
+          "req": "9",
+          "step_logical": 6329,
+          "from": 1025,
+          "to": 393,
+          "freed_blocks": 371
+        },
+        {
+          "req": "9",
+          "step_logical": 6961,
+          "from": 1025,
+          "to": 393,
+          "freed_blocks": 411
+        },
+        {
+          "req": "9",
+          "step_logical": 7593,
+          "from": 1025,
+          "to": 393,
+          "freed_blocks": 450
+        },
+        {
+          "req": "9",
+          "step_logical": 8225,
+          "from": 1025,
+          "to": 337,
+          "freed_blocks": 493
+        }
+      ]
+    }
+  ]
+}

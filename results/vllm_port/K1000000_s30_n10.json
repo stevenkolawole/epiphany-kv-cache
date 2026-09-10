@@ -1,0 +1,111 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "dataset": "math500",
+    "n": 10,
+    "cache_size": 1000000,
+    "keep_recent": 128,
+    "tau": 128,
+    "max_new_tokens": 8192,
+    "band": [
+      10,
+      21
+    ],
+    "block_size": 16,
+    "vllm_runner_path": "llm_engine.model_executor.driver_worker.worker.model_runner",
+    "wall_s": 364
+  },
+  "accuracy": 0.7,
+  "per_problem": [
+    {
+      "problem": "Find the product of $6_8 \\cdot 7_8.$ Express your answer in base $8.$",
+      "ground_truth": "52_8",
+      "pred": "52_8",
+      "correct": true,
+      "n_tokens_generated": 5833,
+      "wall_s": 55.86,
+      "compactions": []
+    },
+    {
+      "problem": "Simplify $\\sqrt{242}$.",
+      "ground_truth": "11\\sqrt2",
+      "pred": "11\\sqrt{2}",
+      "correct": false,
+      "n_tokens_generated": 1094,
+      "wall_s": 10.51,
+      "compactions": []
+    },
+    {
+      "problem": "In how many ways can 8 people sit around a round table if 3 of the people -- Pie",
+      "ground_truth": "720",
+      "pred": "240",
+      "correct": false,
+      "n_tokens_generated": 7688,
+      "wall_s": 73.92,
+      "compactions": []
+    },
+    {
+      "problem": "Consider the geometric sequence $\\frac{125}{9}, \\frac{25}{3}, 5, 3, \\ldots$. Wha",
+      "ground_truth": "\\frac{243}{625}",
+      "pred": "\\dfrac{243}{625}",
+      "correct": true,
+      "n_tokens_generated": 4103,
+      "wall_s": 39.95,
+      "compactions": []
+    },
+    {
+      "problem": "Find the constant term in the expansion of $$\\left(10x^3-\\frac{1}{2x^2}\\right)^{",
+      "ground_truth": "-125",
+      "pred": "-125",
+      "correct": true,
+      "n_tokens_generated": 4990,
+      "wall_s": 48.29,
+      "compactions": []
+    },
+    {
+      "problem": "If $n \\equiv 2 \\pmod{7}$, then find the remainder when $(n + 2)(n + 4)(n + 6)$ i",
+      "ground_truth": "3",
+      "pred": "3",
+      "correct": true,
+      "n_tokens_generated": 1679,
+      "wall_s": 15.95,
+      "compactions": []
+    },
+    {
+      "problem": "Find the roots of $(x - 3)^3 + (x -7)^3 = (2x - 10)^3.$",
+      "ground_truth": "3, 5, 7",
+      "pred": "7",
+      "correct": false,
+      "n_tokens_generated": 5009,
+      "wall_s": 47.72,
+      "compactions": []
+    },
+    {
+      "problem": "A regular pentagon is rotated counterclockwise about its center. What is the min",
+      "ground_truth": "72",
+      "pred": "72",
+      "correct": true,
+      "n_tokens_generated": 4176,
+      "wall_s": 39.7,
+      "compactions": []
+    },
+    {
+      "problem": "If a snack-size tin of peaches has $40$ calories and is $2\\%$ of a person's dail",
+      "ground_truth": "2000",
+      "pred": "2000",
+      "correct": true,
+      "n_tokens_generated": 2772,
+      "wall_s": 26.49,
+      "compactions": []
+    },
+    {
+      "problem": "What is the result when the greatest common factor of 6432 and 132 is increased ",
+      "ground_truth": "23",
+      "pred": "23",
+      "correct": true,
+      "n_tokens_generated": 595,
+      "wall_s": 5.68,
+      "compactions": []
+    }
+  ]
+}

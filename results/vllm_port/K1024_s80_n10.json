@@ -1,0 +1,449 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "dataset": "math500",
+    "n": 10,
+    "cache_size": 1024,
+    "keep_recent": 128,
+    "tau": 128,
+    "max_new_tokens": 8192,
+    "band": [
+      10,
+      21
+    ],
+    "block_size": 16,
+    "vllm_runner_path": "llm_engine.model_executor.driver_worker.worker.model_runner",
+    "wall_s": 368
+  },
+  "accuracy": 0.6,
+  "per_problem": [
+    {
+      "problem": "Ten treeks weigh as much as three squigs and one goolee. Two treeks and one gool",
+      "ground_truth": "3",
+      "pred": "3",
+      "correct": true,
+      "n_tokens_generated": 1813,
+      "wall_s": 17.57,
+      "compactions": [
+        {
+          "req": "0",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 344,
+          "freed_blocks": 43
+        },
+        {
+          "req": "0",
+          "step_logical": 1706,
+          "from": 1025,
+          "to": 400,
+          "freed_blocks": 82
+        }
+      ]
+    },
+    {
+      "problem": "Point $A$ lies somewhere within or on the square which has opposite corners at $",
+      "ground_truth": "\\frac{3}{2}",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 79.67,
+      "compactions": [
+        {
+          "req": "1",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 438,
+          "freed_blocks": 37
+        },
+        {
+          "req": "1",
+          "step_logical": 1612,
+          "from": 1025,
+          "to": 382,
+          "freed_blocks": 77
+        },
+        {
+          "req": "1",
+          "step_logical": 2255,
+          "from": 1025,
+          "to": 382,
+          "freed_blocks": 117
+        },
+        {
+          "req": "1",
+          "step_logical": 2898,
+          "from": 1025,
+          "to": 438,
+          "freed_blocks": 154
+        },
+        {
+          "req": "1",
+          "step_logical": 3485,
+          "from": 1025,
+          "to": 385,
+          "freed_blocks": 193
+        },
+        {
+          "req": "1",
+          "step_logical": 4125,
+          "from": 1025,
+          "to": 438,
+          "freed_blocks": 230
+        },
+        {
+          "req": "1",
+          "step_logical": 4712,
+          "from": 1025,
+          "to": 382,
+          "freed_blocks": 271
+        },
+        {
+          "req": "1",
+          "step_logical": 5355,
+          "from": 1025,
+          "to": 382,
+          "freed_blocks": 311
+        },
+        {
+          "req": "1",
+          "step_logical": 5998,
+          "from": 1025,
+          "to": 382,
+          "freed_blocks": 351
+        },
+        {
+          "req": "1",
+          "step_logical": 6641,
+          "from": 1025,
+          "to": 353,
+          "freed_blocks": 393
+        },
+        {
+          "req": "1",
+          "step_logical": 7313,
+          "from": 1025,
+          "to": 353,
+          "freed_blocks": 435
+        },
+        {
+          "req": "1",
+          "step_logical": 7985,
+          "from": 1025,
+          "to": 409,
+          "freed_blocks": 474
+        }
+      ]
+    },
+    {
+      "problem": "Solve for $x: 3^{2x} + 19 = 10^x$.",
+      "ground_truth": "2",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 79.97,
+      "compactions": [
+        {
+          "req": "2",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 348,
+          "freed_blocks": 43
+        },
+        {
+          "req": "2",
+          "step_logical": 1702,
+          "from": 1025,
+          "to": 316,
+          "freed_blocks": 87
+        },
+        {
+          "req": "2",
+          "step_logical": 2411,
+          "from": 1025,
+          "to": 316,
+          "freed_blocks": 131
+        },
+        {
+          "req": "2",
+          "step_logical": 3120,
+          "from": 1025,
+          "to": 316,
+          "freed_blocks": 175
+        },
+        {
+          "req": "2",
+          "step_logical": 3829,
+          "from": 1025,
+          "to": 348,
+          "freed_blocks": 218
+        },
+        {
+          "req": "2",
+          "step_logical": 4506,
+          "from": 1025,
+          "to": 348,
+          "freed_blocks": 260
+        },
+        {
+          "req": "2",
+          "step_logical": 5183,
+          "from": 1025,
+          "to": 316,
+          "freed_blocks": 304
+        },
+        {
+          "req": "2",
+          "step_logical": 5892,
+          "from": 1025,
+          "to": 316,
+          "freed_blocks": 349
+        },
+        {
+          "req": "2",
+          "step_logical": 6601,
+          "from": 1025,
+          "to": 372,
+          "freed_blocks": 389
+        },
+        {
+          "req": "2",
+          "step_logical": 7254,
+          "from": 1025,
+          "to": 316,
+          "freed_blocks": 434
+        },
+        {
+          "req": "2",
+          "step_logical": 7963,
+          "from": 1025,
+          "to": 372,
+          "freed_blocks": 474
+        }
+      ]
+    },
+    {
+      "problem": "The product of $3t^2+5t+a$ and $4t^2+bt-2$ is $12t^4+26t^3-8t^2-16t+6$. What is ",
+      "ground_truth": "-1",
+      "pred": "-1",
+      "correct": true,
+      "n_tokens_generated": 4246,
+      "wall_s": 41.78,
+      "compactions": [
+        {
+          "req": "3",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 348,
+          "freed_blocks": 43
+        },
+        {
+          "req": "3",
+          "step_logical": 1702,
+          "from": 1025,
+          "to": 348,
+          "freed_blocks": 85
+        },
+        {
+          "req": "3",
+          "step_logical": 2379,
+          "from": 1025,
+          "to": 348,
+          "freed_blocks": 127
+        },
+        {
+          "req": "3",
+          "step_logical": 3056,
+          "from": 1025,
+          "to": 348,
+          "freed_blocks": 169
+        },
+        {
+          "req": "3",
+          "step_logical": 3733,
+          "from": 1025,
+          "to": 404,
+          "freed_blocks": 208
+        }
+      ]
+    },
+    {
+      "problem": "A right cylindrical tank with circular bases is being filled with water at a rat",
+      "ground_truth": "\\sqrt{5}",
+      "pred": "\\sqrt{5}",
+      "correct": true,
+      "n_tokens_generated": 1422,
+      "wall_s": 13.76,
+      "compactions": [
+        {
+          "req": "4",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 411,
+          "freed_blocks": 39
+        }
+      ]
+    },
+    {
+      "problem": "You have 5 shirts, 6 pairs of pants, and 8 hats.  How many outfits can you make ",
+      "ground_truth": "240",
+      "pred": "240",
+      "correct": true,
+      "n_tokens_generated": 390,
+      "wall_s": 3.74,
+      "compactions": []
+    },
+    {
+      "problem": "Find the largest value of $x$ that satisfies the equation $|5x-1|=x+3$.",
+      "ground_truth": "1",
+      "pred": "1",
+      "correct": true,
+      "n_tokens_generated": 1609,
+      "wall_s": 15.75,
+      "compactions": [
+        {
+          "req": "6",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 350,
+          "freed_blocks": 43
+        }
+      ]
+    },
+    {
+      "problem": "Consider the function \\[ f(x) =\n\\begin{cases}\nax^2 & \\text{if } x \\geq a,\\\\\nax +",
+      "ground_truth": "2",
+      "pred": null,
+      "correct": false,
+      "n_tokens_generated": 8192,
+      "wall_s": 80.13,
+      "compactions": [
+        {
+          "req": "7",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 382,
+          "freed_blocks": 41
+        },
+        {
+          "req": "7",
+          "step_logical": 1668,
+          "from": 1025,
+          "to": 414,
+          "freed_blocks": 79
+        },
+        {
+          "req": "7",
+          "step_logical": 2279,
+          "from": 1025,
+          "to": 438,
+          "freed_blocks": 115
+        },
+        {
+          "req": "7",
+          "step_logical": 2866,
+          "from": 1025,
+          "to": 382,
+          "freed_blocks": 156
+        },
+        {
+          "req": "7",
+          "step_logical": 3509,
+          "from": 1025,
+          "to": 438,
+          "freed_blocks": 192
+        },
+        {
+          "req": "7",
+          "step_logical": 4096,
+          "from": 1025,
+          "to": 438,
+          "freed_blocks": 228
+        },
+        {
+          "req": "7",
+          "step_logical": 4683,
+          "from": 1025,
+          "to": 414,
+          "freed_blocks": 267
+        },
+        {
+          "req": "7",
+          "step_logical": 5294,
+          "from": 1025,
+          "to": 382,
+          "freed_blocks": 307
+        },
+        {
+          "req": "7",
+          "step_logical": 5937,
+          "from": 1025,
+          "to": 414,
+          "freed_blocks": 346
+        },
+        {
+          "req": "7",
+          "step_logical": 6548,
+          "from": 1025,
+          "to": 414,
+          "freed_blocks": 384
+        },
+        {
+          "req": "7",
+          "step_logical": 7159,
+          "from": 1025,
+          "to": 438,
+          "freed_blocks": 420
+        },
+        {
+          "req": "7",
+          "step_logical": 7746,
+          "from": 1025,
+          "to": 438,
+          "freed_blocks": 457
+        }
+      ]
+    },
+    {
+      "problem": "Find the greatest common divisor of $3339$, $2961$, and $1491$.",
+      "ground_truth": "21",
+      "pred": "21",
+      "correct": true,
+      "n_tokens_generated": 2017,
+      "wall_s": 19.49,
+      "compactions": [
+        {
+          "req": "8",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 370,
+          "freed_blocks": 41
+        },
+        {
+          "req": "8",
+          "step_logical": 1680,
+          "from": 1025,
+          "to": 370,
+          "freed_blocks": 81
+        }
+      ]
+    },
+    {
+      "problem": "Remmy wants to divide $10$ by $\\frac{2}{3}$, but he cannot remember how to do th",
+      "ground_truth": "\\frac{3}{2}",
+      "pred": "15",
+      "correct": false,
+      "n_tokens_generated": 1638,
+      "wall_s": 15.8,
+      "compactions": [
+        {
+          "req": "9",
+          "step_logical": 1025,
+          "from": 1025,
+          "to": 336,
+          "freed_blocks": 44
+        }
+      ]
+    }
+  ]
+}
