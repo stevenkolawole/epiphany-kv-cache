@@ -41,10 +41,11 @@ def main():
     xs = sorted(none); ax.plot(xs, [none[b]["tokens_per_s"] for b in xs], marker="o", color=fs.GREY, lw=1.2, ms=3.5)
     xs = sorted(seg); ax.plot(xs, [seg[b]["tokens_per_s"] for b in xs], marker="s", color=fs.BLUE, lw=1.4, ms=3.5)
     # labels in the empty lower-right region, as a direct legend
-    ax.plot([90, 150], [190, 190], color=fs.GREY, lw=1.2); ax.plot([115], [190], marker="o", color=fs.GREY, ms=3.5)
-    ax.text(180, 190, "no eviction", color=fs.GREY, fontsize=7, va="center")
-    ax.plot([90, 150], [120, 120], color=fs.BLUE, lw=1.4); ax.plot([115], [120], marker="s", color=fs.BLUE, ms=3.5)
-    ax.text(180, 120, "EpiKV-Seg, $K$=1024", color=fs.BLUE, fontsize=7, va="center")
+    ax.plot([45, 75], [190, 190], color=fs.GREY, lw=1.2); ax.plot([58], [190], marker="o", color=fs.GREY, ms=3.5)
+    ax.text(90, 190, "no eviction", color=fs.GREY, fontsize=6.8, va="center")
+    ax.plot([45, 75], [125, 125], color=fs.BLUE, lw=1.4); ax.plot([58], [125], marker="s", color=fs.BLUE, ms=3.5)
+    ax.text(90, 125, "EpiKV-Seg, $K$=1024", color=fs.BLUE, fontsize=6.8, va="center")
+    ax.set_xlim(0.7, 1700)
     if 256 in none and 256 in seg:
         ax.annotate("KV pool full:\ncapped engine ahead", xy=(256, seg[256]["tokens_per_s"]),
                     xytext=(256, seg[256]["tokens_per_s"] * 0.25), fontsize=6.5, color=fs.BLUE,
@@ -61,14 +62,15 @@ def main():
     xs = sorted(none); bx.plot(xs, [none[b]["peak_kv_tokens_per_req"] for b in xs], marker="o", color=fs.GREY, lw=1.2, ms=3.5)
     xs = sorted(seg); bx.plot(xs, [seg[b]["peak_kv_tokens_per_req"] for b in xs], marker="s", color=fs.BLUE, lw=1.4, ms=3.5)
     bx.axhline(1024, color=fs.BLUE, lw=0.5, ls=(0, (3, 2)))
-    bx.text(Bs[0], 1024 * 1.08, "$K$", color=fs.BLUE, fontsize=7, va="bottom")
     bx.set_xscale("log", base=2)
     bx.set_xticks(ticks)
     bx.set_xticklabels([str(b) for b in ticks])
     bx.text(1.2, 3850, "no eviction", color=fs.GREY, fontsize=7, va="top")
-    bx.text(1.2, 1150, "EpiKV-Seg", color=fs.BLUE, fontsize=7, va="bottom")
+    bx.text(1.2, 1150, "EpiKV-Seg: $K$ + one block", color=fs.BLUE, fontsize=7, va="bottom")
     if 1024 in none:
-        bx.text(1024, 1350, "both engines\npool-bound", color=fs.GREY, fontsize=6.5, ha="right", va="bottom")
+        bx.text(1.2, 2700, "past 256 requests both\nengines are pool-bound", color=fs.GREY, fontsize=6.5,
+                ha="left", va="top")
+    bx.set_xlim(0.7, 1700)
     bx.set_xlabel("concurrent requests")
     bx.set_ylabel("peak KV tokens per request")
     bx.set_ylim(0, 4800)
