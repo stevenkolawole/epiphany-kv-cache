@@ -220,16 +220,70 @@ def panel_b(fig, rect, mem):
     return ax
 
 
+def panel_a_only(fig, rect, meta, toks, excerpt):
+    """Panel (a) without the score strip: the eviction decision for every
+    token as a barcode, with a token-index axis, and a zoom into one stretch
+    showing the words. No titles; the caption carries them."""
+    L, B, W, H = rect
+    n = len(toks)
+    fp = FontProperties(family=["DejaVu Sans"])
+    ax_b = fig.add_axes([L, B + 0.72 * H, W, 0.13 * H])
+    ax_b.set_xlim(0, n)
+    ax_b.set_ylim(0, 1)
+    colors = [fs.AMBER if t.get("recency") else (fs.BLUE if t["kept"] else fs.GREY_LIGHT) for t in toks]
+    ax_b.bar(range(n), [1] * n, width=1.0, color=colors, linewidth=0)
+    ax_b.set_yticks([])
+    for s in ("left", "top", "right"):
+        ax_b.spines[s].set_visible(False)
+    ax_b.set_xticks([0, 250, 500, 750, 1000, 1250])
+    ax_b.tick_params(axis="x", labelsize=6, length=2, pad=1)
+    ax_b.set_xlabel("generated token", fontsize=6.5, labelpad=1)
+    e0, e1 = excerpt
+    ax_b.add_patch(Rectangle((e0, -0.12), e1 - e0, 1.24, fill=False, edgecolor=fs.INK, lw=0.8,
+                             zorder=5, clip_on=False))
+    ax_b.text(0, 1.25, "kept by score", color=fs.BLUE, fontsize=6.5, va="bottom",
+              transform=ax_b.transAxes)
+    ax_b.text(0.27, 1.25, "kept, recency window", color=fs.AMBER, fontsize=6.5, va="bottom",
+              transform=ax_b.transAxes)
+    ax_b.text(0.66, 1.25, "evicted", color="#8a8a8a", fontsize=6.5, va="bottom",
+              transform=ax_b.transAxes)
+    ax_w = fig.add_axes([L, B, W, 0.50 * H])
+    ax_w.axis("off")
+    fig_w_in, fig_h_in = fig.get_size_inches()
+    width_pt = W * fig_w_in * 72 - 6
+    h_pt = 0.50 * H * fig_h_in * 72
+    ax_w.set_xlim(0, width_pt)
+    ax_w.set_ylim(0, h_pt)
+    size, line_h = 6.6, 9.6
+    draw_words(ax_w, toks[e0:e1], 5, h_pt - 11, width_pt - 4, size, fp, line_h,
+               fs.BLUE_LIGHT, "#f6e3b5", max_lines=int((h_pt - 6) // line_h))
+    ax_w.add_patch(Rectangle((0.5, 0.5), width_pt + 4, h_pt - 1, fill=False, edgecolor=fs.INK,
+                             lw=0.6, zorder=0, clip_on=False))
+    from matplotlib.patches import ConnectionPatch
+    for xb, xw in ((e0, 0.5), (e1, width_pt + 4.5)):
+        fig.add_artist(ConnectionPatch(xyA=(xb, -0.12), coordsA=ax_b.transData,
+                                       xyB=(xw, h_pt - 0.5), coordsB=ax_w.transData,
+                                       color=fs.INK, lw=0.5, ls=(0, (2, 2))))
+
+
+def make_fig1a(args):
+    """Panel (a) alone, at 0.60 of the text width; panel (b) is the paper's
+    existing prefill_memory.pdf placed beside it in LaTeX."""
+    meta, toks = load_trace(args.seg)
+    fig = plt.figure(figsize=(0.60 * fs.TEXT_W, 1.85))
+    panel_a_only(fig, [0.02, 0.04, 0.96, 0.90], meta, toks, (args.excerpt_start, args.excerpt_end))
+    out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out)
+    print("wrote", out)
+
+
 def make_fig1(args):
     meta, toks = load_trace(args.seg)
     mem = load_mem(args.mem)
     fig = plt.figure(figsize=(fs.TEXT_W, 2.35))
     fig.text(0.005, 0.965, "a", fontsize=9, fontweight="bold", va="top")
     fig.text(0.665, 0.965, "b", fontsize=9, fontweight="bold", va="top")
-    fig.text(0.03, 0.965, "What the score keeps  (MATH-500, $K$=1024)", fontsize=8, va="top")
-    fig.text(0.63, 0.915, f"{meta['generated']:,} tokens, {meta['retained_generated']:,} kept, correct",
-             fontsize=6.5, va="top", ha="right", color=fs.GREY)
-    fig.text(0.69, 0.965, "What that buys", fontsize=8, va="top")
     panel_a(fig, [0.03, 0.08, 0.60, 0.80], meta, toks, (args.excerpt_start, args.excerpt_end))
     panel_b(fig, [0.745, 0.17, 0.245, 0.68], mem)
     out = Path(args.out)
@@ -270,5 +324,6 @@ if __name__ == "__main__":
     ap.add_argument("--excerpt_start", type=int, default=243)
     ap.add_argument("--excerpt_end", type=int, default=330)
     ap.add_argument("--appendix", action="store_true")
+    ap.add_argument("--panel_a", action="store_true", help="panel (a) alone, 0.6 text width")
     a = ap.parse_args()
-    (make_appendix if a.appendix else make_fig1)(a)
+    (make_appendix if a.appendix else make_fig1a if a.panel_a else make_fig1)(a)
