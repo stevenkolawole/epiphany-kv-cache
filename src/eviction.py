@@ -1786,6 +1786,8 @@ class KVSegHSEviction:
         band_mode: str = "diff",
         query_sim_weight: float = 0.0,
         query_sim_mode: str = "add",
+        query_sim_window: int = 1,
+        query_sim_center: bool = False,
     ):
         self.config = config
         self.band_a_layer = band_a_layer
@@ -1804,6 +1806,12 @@ class KVSegHSEviction:
         assert query_sim_mode in ("add", "replace"), query_sim_mode
         self.query_sim_weight = float(query_sim_weight)
         self.query_sim_mode = query_sim_mode
+        # Upgrades (Steven 09-11): query = mean of the last `query_sim_window`
+        # tokens' hidden states (an observation window) instead of the single
+        # current token; and mean-centre the bank before the cosine so the
+        # shared mean direction of the residual stream does not dominate.
+        self.query_sim_window = max(1, int(query_sim_window))
+        self.query_sim_center = bool(query_sim_center)
         self.window = window
         self.segment_size = segment_size
         self.retain_r = retain_r
@@ -1980,7 +1988,9 @@ class KVSegHSEviction:
         # ── Per-query relevance term (query_sim) ─────────────────────────────
         if self.query_sim_weight > 0 and len(self._hs_bank) > 1:
             bank = torch.stack(self._hs_bank[-num_decode:]).to(device)      # [m, d], m <= num_decode
-            q = bank[-1]
+            if self.query_sim_center:
+                bank = bank - bank.mean(dim=0, keepdim=True)
+            q = bank[-self.query_sim_window:].mean(dim=0)
             sim = (bank @ q) / (bank.norm(dim=1) * q.norm() + 1e-6)
             m = bank.shape[0]
             finite = torch.isfinite(hs_decode[-m:])
