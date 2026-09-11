@@ -15,6 +15,7 @@ OUT=${OUT:?}
 NGPU=${NGPU:-8}
 EXTRA=${EXTRA:-}          # e.g. "--band_mode a_only"; TAGSUF names the variant
 TAGSUF=${TAGSUF:-tau128}
+KS=${KS:-"512 1024 2048 4096"}   # MATH budgets to run
 LOGS=${LOGS:-$OUT/../logs_tau128_$(basename "$OUT")}
 cd "$HOME/kvcache"
 export HF_HOME=$HOME/hf_cache TOKENIZERS_PARALLELISM=false TQDM_DISABLE=1 PYTHONUNBUFFERED=1
@@ -39,7 +40,7 @@ run_cell () {  # gpu tag dataset K nsamp cap
 
 gpu=0
 if [ "$MODE" = math ]; then
-  for K in 512 1024 2048 4096; do
+  for K in $KS; do
     run_cell $((gpu % NGPU)) "kv_seg_hs_${TAGSUF}_K$K" math500 "$K" 100 8192 &
     gpu=$((gpu + 1)); sleep 20
   done

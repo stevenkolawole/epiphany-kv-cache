@@ -326,7 +326,8 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
                   band_a_layer: int = None, band_b_layer: int = None,
                   window: int = None, band_mode: str = None,
                   retain_r: int = None, retain_e: int = None, retain_t: int = None,
-                  segment_size: int = None, refresh_tau: int = None):
+                  segment_size: int = None, refresh_tau: int = None,
+                  query_sim_weight: float = None, query_sim_mode: str = None):
     """Return a fresh eviction object for the given method and cache_size."""
     cfg = EvictionConfig(cache_size=cache_size, keep_recent_k=keep_recent_k)
     if method == "none":
@@ -386,6 +387,8 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
         # test a test of the port rather than of two different policies.
         if refresh_tau is not None: kw["refresh_tau"] = refresh_tau
         if band_mode is not None:   kw["band_mode"] = band_mode
+        if query_sim_weight is not None: kw["query_sim_weight"] = query_sim_weight
+        if query_sim_mode is not None:   kw["query_sim_mode"] = query_sim_mode
         return KVSegHSEviction(cfg, **kw)
     if method.startswith("hs_variance_detrend_v"):
         tail = method[len("hs_variance_detrend_v"):]
@@ -588,6 +591,11 @@ def parse_args():
     p.add_argument("--refresh_tau",    type=int, default=None,
                    help="EpiKV-Seg: evict only every tau decode steps (class default 1, "
                         "the published per-step method). 128 matches the vLLM port.")
+    p.add_argument("--query_sim_weight", type=float, default=None,
+                   help="EpiKV-Seg: weight of the per-query relevance term (cosine between the "
+                        "current token's Band-A hidden state and each cached token's); 0/None = off")
+    p.add_argument("--query_sim_mode", type=str, default=None, choices=[None, "add", "replace"],
+                   help="EpiKV-Seg: 'add' the z-scored relevance to the HS score, or 'replace' it")
     p.add_argument("--keep_recent_k",  type=int, default=128,
                    help="Tokens always kept in recency window (default: 128)")
     p.add_argument("--methods",        nargs="+",
@@ -736,7 +744,9 @@ def main():
                                          retain_e=args.retain_e,
                                          retain_t=args.retain_t,
                                          segment_size=args.segment_size,
-                                         refresh_tau=args.refresh_tau)
+                                         refresh_tau=args.refresh_tau,
+                                         query_sim_weight=args.query_sim_weight,
+                                         query_sim_mode=args.query_sim_mode)
                 try:
                     res = run_one(model, tokenizer, prob, method, eviction,
                                   args.max_new_tokens, device)

@@ -1784,6 +1784,8 @@ class KVSegHSEviction:
         fill_budget: bool = False,
         refresh_tau: int = 1,
         band_mode: str = "diff",
+        query_sim_weight: float = 0.0,
+        query_sim_mode: str = "add",
     ):
         self.config = config
         self.band_a_layer = band_a_layer
@@ -1793,6 +1795,15 @@ class KVSegHSEviction:
         # least as good as the difference; this lets Seg run that way.
         assert band_mode in ("diff", "a_only", "b_only"), band_mode
         self.band_mode = band_mode
+        # Per-query relevance without the attention matrix: cosine similarity
+        # between the CURRENT token's Band-A hidden state and each cached
+        # decode token's Band-A hidden state, z-scored over the cache and
+        # added to (or replacing) the hidden-state score at eviction time.
+        # Reads only hidden states the forward pass already returns; no
+        # attention weights, no kernel change. weight 0 = the unmodified method.
+        assert query_sim_mode in ("add", "replace"), query_sim_mode
+        self.query_sim_weight = float(query_sim_weight)
+        self.query_sim_mode = query_sim_mode
         self.window = window
         self.segment_size = segment_size
         self.retain_r = retain_r
@@ -1832,6 +1843,7 @@ class KVSegHSEviction:
         self._buf_a: List[float] = []
         self._buf_b: List[float] = []
         self._scores: List[float] = []   # per decode token, pruned on eviction
+        self._hs_bank: List[torch.Tensor] = []  # Band-A hidden state per decode token (query_sim only)
 
     def reset(self, prefill_len: int = 0):
         self._prefill_len = prefill_len
@@ -1840,6 +1852,7 @@ class KVSegHSEviction:
         self._buf_a = []
         self._buf_b = []
         self._scores = []
+        self._hs_bank = []
 
     def set_prefill_end(self, hidden_states: Tuple[torch.Tensor, ...]):
         self._prev_hs_a = hidden_states[self.band_a_layer + 1][:, -1, :].detach()
@@ -1928,6 +1941,8 @@ class KVSegHSEviction:
         self._prev_hs_b = hs_b
         self._buf_a.append(diff_a)
         self._buf_b.append(diff_b)
+        if self.query_sim_weight > 0:
+            self._hs_bank.append(hs_a.detach().float().reshape(-1))
         z_a = _rolling_z_score(self._buf_a, self.window)
         z_b = _rolling_z_score(self._buf_b, self.window)
         if self.band_mode == "a_only":
@@ -1961,6 +1976,24 @@ class KVSegHSEviction:
         if len(hs_decode) < num_decode:
             pad = torch.full((num_decode - len(hs_decode),), float('-inf'), device=device)
             hs_decode = torch.cat([pad, hs_decode])
+
+        # ── Per-query relevance term (query_sim) ─────────────────────────────
+        if self.query_sim_weight > 0 and len(self._hs_bank) > 1:
+            bank = torch.stack(self._hs_bank[-num_decode:]).to(device)      # [m, d], m <= num_decode
+            q = bank[-1]
+            sim = (bank @ q) / (bank.norm(dim=1) * q.norm() + 1e-6)
+            m = bank.shape[0]
+            finite = torch.isfinite(hs_decode[-m:])
+            def _z(x):
+                mu = x[finite].mean() if finite.any() else x.mean()
+                sd = x[finite].std() if finite.sum() > 1 else torch.tensor(1.0, device=device)
+                return (x - mu) / (sd + 1e-6)
+            if self.query_sim_mode == "replace":
+                combined = _z(sim)
+            else:
+                combined = _z(hs_decode[-m:]) + self.query_sim_weight * _z(sim)
+            combined = torch.where(finite, combined, torch.full_like(combined, float('-inf')))
+            hs_decode = torch.cat([hs_decode[:-m], combined]) if m < num_decode else combined
 
         # ── Apply per-segment retention budgets using HS scores ───────────────
         keep_mask = torch.zeros(seq_len, dtype=torch.bool, device=device)
@@ -2048,6 +2081,10 @@ class KVSegHSEviction:
         self._scores = [
             s for s, kept in zip(self._scores[-num_decode:], decode_keep) if kept
         ]
+        if self.query_sim_weight > 0:
+            self._hs_bank = [
+                h for h, kept in zip(self._hs_bank[-num_decode:], decode_keep) if kept
+            ]
         return new_past
 
 
