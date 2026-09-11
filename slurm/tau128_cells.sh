@@ -13,6 +13,7 @@ MODEL=${MODEL:?}
 BANDS=${BANDS:-}
 OUT=${OUT:?}
 NGPU=${NGPU:-8}
+GPU0=${GPU0:-0}           # first card to use (cells cycle over GPU0 .. GPU0+NGPU-1)
 EXTRA=${EXTRA:-}          # e.g. "--band_mode a_only"; TAGSUF names the variant
 TAGSUF=${TAGSUF:-tau128}
 KS=${KS:-"512 1024 2048 4096"}   # MATH budgets to run
@@ -41,13 +42,13 @@ run_cell () {  # gpu tag dataset K nsamp cap
 gpu=0
 if [ "$MODE" = math ]; then
   for K in $KS; do
-    run_cell $((gpu % NGPU)) "kv_seg_hs_${TAGSUF}_K$K" math500 "$K" 100 8192 &
+    run_cell $((GPU0 + gpu % NGPU)) "kv_seg_hs_${TAGSUF}_K$K" math500 "$K" 100 8192 &
     gpu=$((gpu + 1)); sleep 20
   done
 else
   for K in 8192 4096; do
     for ds in aime2024 aime2025 aime2026; do
-      run_cell $((gpu % NGPU)) "kv_seg_hs_${TAGSUF}_${ds}_k${K}_s0" "$ds" "$K" 30 16384 &
+      run_cell $((GPU0 + gpu % NGPU)) "kv_seg_hs_${TAGSUF}_${ds}_k${K}_s0" "$ds" "$K" 30 16384 &
       gpu=$((gpu + 1)); sleep 20
     done
   done
