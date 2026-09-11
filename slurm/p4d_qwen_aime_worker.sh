@@ -12,6 +12,8 @@ BANDS=${BANDS:-"--band_a_layer 20 --band_b_layer 24"}   # Qwen bands; set BANDS=
 NSAMP=30
 NGPU=${NGPU:-5}
 GPU0=${GPU0:-3}
+SLOTS=${SLOTS:-2}        # cells per card; two saturate an A100 for this workload
+REQUEUE=${REQUEUE:-1}    # set 0 when another instance is already running (its inflight cells are live)
 OUT=${OUT:-$HOME/results_qwen_aime_logical}
 LOGS=${LOGS:-$HOME/logs_qwen_aime_logical}
 QUEUE=$OUT/queue.txt
@@ -31,8 +33,10 @@ print(f"[preflight] torch={torch.__version__} cuda={ok} n={torch.cuda.device_cou
 sys.exit(0 if ok else 1)
 PREFLIGHT
 
-# Re-queue inflight cells that have no result (killed by a reboot).
-flock "$LOCK" bash -c "
+# Re-queue inflight cells that have no result (killed by a reboot). Only
+# when no other instance is running: a second instance must not steal the
+# first one's live cells.
+[ "$REQUEUE" = 1 ] && flock "$LOCK" bash -c "
   while read -r cell; do
     [ -z \"\$cell\" ] && continue
     IFS=: read -r method impl K ds <<< \"\$cell\"
@@ -79,8 +83,10 @@ worker () {
 }
 
 for gpu in $(seq "$GPU0" $((GPU0 + NGPU - 1))); do
-  worker "$gpu" &
-  sleep 15
+  for slot in $(seq 1 "$SLOTS"); do
+    worker "$gpu" &
+    sleep 15
+  done
 done
 wait
 echo "[p4d] all workers finished $(date -u)"
