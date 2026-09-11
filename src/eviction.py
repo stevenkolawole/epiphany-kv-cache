@@ -1783,10 +1783,16 @@ class KVSegHSEviction:
         value_stat: str = "range",
         fill_budget: bool = False,
         refresh_tau: int = 1,
+        band_mode: str = "diff",
     ):
         self.config = config
         self.band_a_layer = band_a_layer
         self.band_b_layer = band_b_layer
+        # Score = z_a - z_b ("diff", the published form), z_a alone, or -z_b
+        # alone. The band ablation (EXPERIMENTS §24) found Band A alone at
+        # least as good as the difference; this lets Seg run that way.
+        assert band_mode in ("diff", "a_only", "b_only"), band_mode
+        self.band_mode = band_mode
         self.window = window
         self.segment_size = segment_size
         self.retain_r = retain_r
@@ -1922,10 +1928,14 @@ class KVSegHSEviction:
         self._prev_hs_b = hs_b
         self._buf_a.append(diff_a)
         self._buf_b.append(diff_b)
-        self._scores.append(
-            _rolling_z_score(self._buf_a, self.window)
-            - _rolling_z_score(self._buf_b, self.window)
-        )
+        z_a = _rolling_z_score(self._buf_a, self.window)
+        z_b = _rolling_z_score(self._buf_b, self.window)
+        if self.band_mode == "a_only":
+            self._scores.append(z_a)
+        elif self.band_mode == "b_only":
+            self._scores.append(-z_b)
+        else:
+            self._scores.append(z_a - z_b)
 
         # tau-amortised eviction: act only every refresh_tau decode steps. The
         # step counter is len(_scores), which reset() clears per request, so

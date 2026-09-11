@@ -13,6 +13,8 @@ MODEL=${MODEL:?}
 BANDS=${BANDS:-}
 OUT=${OUT:?}
 NGPU=${NGPU:-8}
+EXTRA=${EXTRA:-}          # e.g. "--band_mode a_only"; TAGSUF names the variant
+TAGSUF=${TAGSUF:-tau128}
 LOGS=${LOGS:-$OUT/../logs_tau128_$(basename "$OUT")}
 cd "$HOME/kvcache"
 export HF_HOME=$HOME/hf_cache TOKENIZERS_PARALLELISM=false TQDM_DISABLE=1 PYTHONUNBUFFERED=1
@@ -27,7 +29,7 @@ run_cell () {  # gpu tag dataset K nsamp cap
   CUDA_VISIBLE_DEVICES=$gpu python3 scripts/benchmark.py \
       --model "$MODEL" --dataset "$ds" --methods kv_seg_hs \
       --cache_sizes "$K" --max_new_tokens "$cap" --n_samples "$n" --start_idx 0 \
-      --attn_impl flash_attention_2 --logical_positions --refresh_tau 128 $BANDS \
+      --attn_impl flash_attention_2 --logical_positions --refresh_tau 128 $BANDS $EXTRA \
       --output "$OUT/$tag.json" > "$LOGS/$tag.log" 2>&1
   local rc=$?
   local errs; errs=$(grep -c ERROR "$LOGS/$tag.log" 2>/dev/null || echo 0)
@@ -38,13 +40,13 @@ run_cell () {  # gpu tag dataset K nsamp cap
 gpu=0
 if [ "$MODE" = math ]; then
   for K in 512 1024 2048 4096; do
-    run_cell $((gpu % NGPU)) "kv_seg_hs_tau128_K$K" math500 "$K" 100 8192 &
+    run_cell $((gpu % NGPU)) "kv_seg_hs_${TAGSUF}_K$K" math500 "$K" 100 8192 &
     gpu=$((gpu + 1)); sleep 20
   done
 else
   for K in 8192 4096; do
     for ds in aime2024 aime2025 aime2026; do
-      run_cell $((gpu % NGPU)) "kv_seg_hs_tau128_${ds}_k${K}_s0" "$ds" "$K" 30 16384 &
+      run_cell $((gpu % NGPU)) "kv_seg_hs_${TAGSUF}_${ds}_k${K}_s0" "$ds" "$K" 30 16384 &
       gpu=$((gpu + 1)); sleep 20
     done
   done

@@ -385,6 +385,7 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
         # only compact at a tau boundary; that is what makes the agreement
         # test a test of the port rather than of two different policies.
         if refresh_tau is not None: kw["refresh_tau"] = refresh_tau
+        if band_mode is not None:   kw["band_mode"] = band_mode
         return KVSegHSEviction(cfg, **kw)
     if method.startswith("hs_variance_detrend_v"):
         tail = method[len("hs_variance_detrend_v"):]
