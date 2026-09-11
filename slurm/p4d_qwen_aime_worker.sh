@@ -7,14 +7,13 @@
 # reboot loses nothing but the partial run.
 #   NGPU=5 GPU0=3 bash p4d_qwen_aime_worker.sh
 set -u
-MODEL=deepseek-ai/DeepSeek-R1-Distill-Qwen-7B
-BAND_A=20
-BAND_B=24
+MODEL=${MODEL:-deepseek-ai/DeepSeek-R1-Distill-Qwen-7B}
+BANDS=${BANDS:-"--band_a_layer 20 --band_b_layer 24"}   # Qwen bands; set BANDS="" for Llama
 NSAMP=30
 NGPU=${NGPU:-5}
 GPU0=${GPU0:-3}
-OUT=$HOME/results_qwen_aime_logical
-LOGS=$HOME/logs_qwen_aime_logical
+OUT=${OUT:-$HOME/results_qwen_aime_logical}
+LOGS=${LOGS:-$HOME/logs_qwen_aime_logical}
 QUEUE=$OUT/queue.txt
 INFLIGHT=$OUT/inflight.txt
 LOCK=$OUT/queue.lock
@@ -58,7 +57,7 @@ worker () {
     if [ -f "$OUT/$tag.json" ]; then finish_cell "$cell"; echo "[p4d] skip $tag"; continue; fi
     local extra=""
     if [ "$impl" = "flash_attention_2" ] && [ "$method" != "none" ]; then
-      extra="--band_a_layer $BAND_A --band_b_layer $BAND_B"
+      extra="$BANDS"
     fi
     echo "[p4d] gpu=$gpu start $tag $(date -u)"
     # shellcheck disable=SC2086
