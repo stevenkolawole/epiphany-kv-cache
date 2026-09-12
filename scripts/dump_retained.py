@@ -61,9 +61,11 @@ def main():
     dev = "cuda"
     needs_attn = args.method == "h2o"
     impl = args.attn_impl or ("eager" if needs_attn else "flash_attention_2")
-    tok = AutoTokenizer.from_pretrained(args.model)
+    import os
+    cache = os.environ.get("HF_HOME")   # the harness caches models at $HF_HOME/models--..., not under hub/
+    tok = AutoTokenizer.from_pretrained(args.model, cache_dir=cache)
     model = AutoModelForCausalLM.from_pretrained(
-        args.model, torch_dtype=torch.bfloat16, attn_implementation=impl
+        args.model, torch_dtype=torch.bfloat16, attn_implementation=impl, cache_dir=cache
     ).to(dev).eval()
 
     problems = bm.load_problems(args.dataset, n_samples=args.problem_idx + 1, start_idx=0)
