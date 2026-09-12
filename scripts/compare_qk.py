@@ -19,7 +19,7 @@ def load(f):
     return K, j["results"][m][K]["per_problem"]
 
 
-for f in sorted(glob.glob(str(R / "qk_p4d" / "kv_seg_hs_tau128_qk_*.json"))):
+for f in sorted(glob.glob(str(R / "qk_p4d" / "kv_seg_hs*_tau128_*.json"))):
     K, pp = load(f)
     model = "qwen" if "qwen" in f else "llama"
     ref = load(R / f"{model}_logical" / f"kv_seg_hs_tau128_K{K}.json")[1]
