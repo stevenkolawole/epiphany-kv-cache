@@ -35,8 +35,9 @@ def find(tag):
 
 for f in sorted(glob.glob(os.path.join(d, "kv_seg_hs_tau128*.json"))):
     tag = os.path.basename(f)[:-5]
-    variant = "tau128_aonly" if "_aonly" in tag else "tau128"
-    rest = tag.replace(f"kv_seg_hs_{variant}", "kv_seg_hs")     # every-step Seg cell
+    import re
+    # strip the variant suffix (tau128, tau128_aonly, tau128_qsim_<x>) to find the every-step Seg partner
+    rest = re.sub(r"kv_seg_hs_tau128(?:_aonly|_qsim_[a-z0-9]+)?(?=_K|_aime)", "kv_seg_hs", tag)
     base = find(rest)
     none_tag = rest.replace("kv_seg_hs", "none")
     if "_K" in none_tag:                                         # MATH grids: none run once at K=1024
