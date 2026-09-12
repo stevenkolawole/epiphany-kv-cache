@@ -97,6 +97,12 @@ def main():
     # own _scores list is pruned on eviction (it keeps only survivors), so the
     # evicted tokens' scores would be lost without capturing them here.
     scores_at_time = []
+    # Generated-token index at which each eviction fired. The figure's
+    # "after the last eviction" class must come from this, not from the last
+    # evicted position: under tau=128 a late eviction can drop only old tokens,
+    # which makes the last evicted position an underestimate of the last
+    # eviction time.
+    eviction_steps = []
     with torch.no_grad():
         out = model(prompt_ids, use_cache=True, output_hidden_states=True,
                     output_attentions=needs_attn)
@@ -126,6 +132,7 @@ def main():
             scores_at_time.append(float(sc[-1]) if sc else float("nan"))
             after = new_legacy[0][0].shape[2]
             if after < before:
+                eviction_steps.append(step)
                 # Recover which slots survived: KVSegHSEviction keeps prefill,
                 # a recency tail, and scored survivors. Re-derive the mask from
                 # the policy's own last decision so the report matches exactly.
@@ -142,7 +149,8 @@ def main():
     print(f"PROBLEM: {prob['problem'][:300]}")
     print(f"GROUND TRUTH: {prob.get('ground_truth') or prob.get('answer')}")
     print(f"generated={len(generated)} tokens, prefill={prefill_len}, K={args.cache_size}, "
-          f"retained_generated={sum(1 for p in kept if p >= prefill_len)}")
+          f"retained_generated={sum(1 for p in kept if p >= prefill_len)}, "
+          f"evictions={len(eviction_steps)}, last_eviction_step={eviction_steps[-1] if eviction_steps else None}")
     print("legend: [tok] retained by score | <tok> retained by recency window | tok evicted")
     print("-" * 80)
     pieces = []
@@ -173,6 +181,8 @@ def main():
             "cache_size": args.cache_size, "keep_recent": args.keep_recent_k,
             "prefill_len": prefill_len, "generated": len(generated),
             "retained_generated": sum(1 for p in kept if p >= prefill_len),
+            "refresh_tau": args.refresh_tau, "logical_positions": bool(args.logical_positions),
+            "eviction_steps": eviction_steps,
             "tokens": rows,
         }, indent=1))
         print(f"wrote {args.json_out}", file=sys.stderr)

@@ -48,8 +48,8 @@ MEM_FALLBACK = {
 
 def load_trace(path):
     d = json.load(open(path))
-    toks = next(v for v in d.values() if isinstance(v, list))
-    meta = {k: v for k, v in d.items() if not isinstance(v, list)}
+    toks = d["tokens"] if "tokens" in d else next(v for v in d.values() if isinstance(v, list))
+    meta = {k: v for k, v in d.items() if k != "tokens" and not (isinstance(v, list) and v is toks)}
     return meta, toks
 
 
@@ -91,17 +91,64 @@ def text_width(s, size, fp):
     return w
 
 
-def mark_after_last_eviction(toks):
+def mark_after_last_eviction(toks, meta=None):
     """Tokens generated after the last eviction were never scored against a
     full cache: the cache did not exceed the budget again before the trace
     ended. Colouring them "kept by score" would overstate the score's role,
-    so they get their own class. The last evicted position bounds the last
-    compaction from below; everything after it that is not in the recency
-    window is marked `unpressured`."""
-    last_evicted = max((i for i, t in enumerate(toks) if not t["kept"]), default=-1)
+    so they get their own class. Dumps made with eviction_steps recorded use
+    the step of the last eviction; older dumps fall back to the last evicted
+    position, which bounds it from below (under tau=128 a late eviction can
+    drop only old tokens, so the fallback can overstate this class)."""
+    steps = (meta or {}).get("eviction_steps")
+    if steps:
+        # Tokens inside the recency window at the last eviction were protected
+        # there, not scored, so the never-scored class starts keep_recent
+        # tokens before the last eviction step.
+        keep_recent = min(int(meta.get("keep_recent", 128)), int(meta.get("cache_size", 1024)) // 4)
+        last = steps[-1] - keep_recent
+    else:
+        last = max((i for i, t in enumerate(toks) if not t["kept"]), default=-1)
     for i, t in enumerate(toks):
-        t["unpressured"] = bool(t["kept"] and not t.get("recency") and i > last_evicted)
+        t["unpressured"] = bool(t["kept"] and not t.get("recency") and i > last)
     return toks
+
+
+def layout_words(toks, width_pt, size, fp):
+    """Same wrapping as draw_words, but returns the lines as lists of
+    (token, x, lead, width) so a long trace can be rendered page by page."""
+    lines, cur, x = [], [], 0.0
+    space = text_width(" ", size, fp)
+    for t in toks:
+        s = t["text"].replace("\n", " ")
+        s_stripped = s.strip()
+        if not s_stripped:
+            x += space * 0.6
+            continue
+        w = text_width(s_stripped, size, fp)
+        lead = space if s.startswith(" ") and x > 0 else 0.0
+        if x + lead + w > width_pt and x > 0:
+            lines.append(cur)
+            cur, x, lead = [], 0.0, 0.0
+        cur.append((t, s_stripped, x + lead, w))
+        x += lead + w
+    if cur:
+        lines.append(cur)
+    return lines
+
+
+def draw_lines(ax, lines, x0, y0, size, fp, line_h, kept_face, rec_face, unp_face="#e4eefb"):
+    for li, line in enumerate(lines):
+        y = y0 - li * line_h
+        for t, s, x, w in line:
+            if t["kept"]:
+                face = rec_face if t.get("recency") else (unp_face if t.get("unpressured") else kept_face)
+                ax.add_patch(Rectangle((x0 + x - 0.6, y - 0.28 * size), w + 1.2, 1.15 * size,
+                                       facecolor=face, edgecolor="none", zorder=1))
+                col = fs.INK if not t.get("unpressured") else "#4a5a6a"
+            else:
+                col = "#9a9a9a"
+            ax.text(x0 + x, y, s, fontsize=size, color=col, va="baseline", ha="left", zorder=2,
+                    fontproperties=fp)
 
 
 def draw_words(ax, toks, x0, y0, width_pt, size, fp, line_h, kept_face, rec_face,
@@ -243,7 +290,7 @@ def panel_a_only(fig, rect, meta, toks, excerpt):
     ax_b = fig.add_axes([L, B + 0.72 * H, W, 0.13 * H])
     ax_b.set_xlim(0, n)
     ax_b.set_ylim(0, 1)
-    mark_after_last_eviction(toks)
+    mark_after_last_eviction(toks, meta)
     KEPT = "#0b3a8c"   # deep blue: scored and kept
     PALE = "#cfdff5"   # pale blue: never scored against a full cache
     colors = [fs.AMBER if t.get("recency") else (PALE if t.get("unpressured") else
@@ -252,7 +299,8 @@ def panel_a_only(fig, rect, meta, toks, excerpt):
     ax_b.set_yticks([])
     for s in ("left", "top", "right"):
         ax_b.spines[s].set_visible(False)
-    ax_b.set_xticks([0, 250, 500, 750, 1000, 1250])
+    from matplotlib.ticker import MaxNLocator
+    ax_b.xaxis.set_major_locator(MaxNLocator(nbins=6, integer=True, steps=[1, 2, 2.5, 5, 10]))
     ax_b.tick_params(axis="x", labelsize=7, length=2, pad=1)
     e0, e1 = excerpt
     ax_b.add_patch(Rectangle((e0, -0.12), e1 - e0, 1.24, fill=False, edgecolor=fs.INK, lw=0.8,
@@ -320,29 +368,41 @@ def make_fig1(args):
 
 
 def make_appendix(args):
+    """The whole trace as highlighted text. Traces longer than one page are
+    split over several PDFs: <out>, <out stem>_2.pdf, ... so LaTeX can place
+    each on its own page."""
     meta, toks = load_trace(args.seg)
     fp = FontProperties(family=["DejaVu Sans"])
-    W_in, H_in = fs.TEXT_W, 8.3
-    fig = plt.figure(figsize=(W_in, H_in))
-    ax = fig.add_axes([0, 0, 1, 1])
-    ax.axis("off")
+    W_in, H_in = fs.TEXT_W, args.page_h
     width_pt = W_in * 72 - 8
     h_pt = H_in * 72
-    ax.set_xlim(0, W_in * 72)
-    ax.set_ylim(0, h_pt)
+    size, line_h = args.font, args.font * 1.45
     for t in toks:
         if "end" in t["text"] and "sentence" in t["text"]:
             t["text"] = " <EOS>"
-    mark_after_last_eviction(toks)
-    # One short header line: a long unwrapped line here widened the saved
-    # figure to twice the text width and the trace printed at half size.
-    ax.text(4, h_pt - 10, f"EpiKV-Seg, $K$=1024, MATH-500 problem {meta['problem_idx']}: "
-                          f"{meta['generated']:,} tokens generated, {meta['retained_generated']:,} kept.",
-            fontsize=7.5, va="top", color=fs.INK)
-    draw_words(ax, toks, 4, h_pt - 30, width_pt, 8.4, fp, 12.8, "#9dbdf0", "#f6e3b5")
+    mark_after_last_eviction(toks, meta)
+    lines = layout_words(toks, width_pt, size, fp)
+    per_page = int((h_pt - 34) // line_h)
+    pages = [lines[i:i + per_page] for i in range(0, len(lines), per_page)]
     out = Path(args.out)
-    fig.savefig(out)
-    print("wrote", out)
+    for pi, page in enumerate(pages):
+        fig = plt.figure(figsize=(W_in, H_in))
+        ax = fig.add_axes([0, 0, 1, 1])
+        ax.axis("off")
+        ax.set_xlim(0, W_in * 72)
+        ax.set_ylim(0, h_pt)
+        # One short header line: a long unwrapped line here widened the saved
+        # figure to twice the text width and the trace printed at half size.
+        head = (f"EpiKV-Seg, $K$=1024, MATH-500 problem {meta['problem_idx']}: "
+                f"{meta['generated']:,} tokens generated, {meta['retained_generated']:,} kept.")
+        if len(pages) > 1:
+            head += f"  (page {pi + 1} of {len(pages)})"
+        ax.text(4, h_pt - 10, head, fontsize=7.5, va="top", color=fs.INK)
+        draw_lines(ax, page, 4, h_pt - 30, size, fp, line_h, "#9dbdf0", "#f6e3b5")
+        p = out if pi == 0 else out.with_name(f"{out.stem}_{pi + 1}{out.suffix}")
+        fig.savefig(p)
+        plt.close(fig)
+        print("wrote", p, f"({len(page)} lines)")
 
 
 if __name__ == "__main__":
@@ -354,5 +414,7 @@ if __name__ == "__main__":
     ap.add_argument("--excerpt_end", type=int, default=330)
     ap.add_argument("--appendix", action="store_true")
     ap.add_argument("--panel_a", action="store_true", help="panel (a) alone, 0.6 text width")
+    ap.add_argument("--page_h", type=float, default=8.6, help="appendix page height (in)")
+    ap.add_argument("--font", type=float, default=7.4, help="appendix font size (pt)")
     a = ap.parse_args()
     (make_appendix if a.appendix else make_fig1a if a.panel_a else make_fig1)(a)
