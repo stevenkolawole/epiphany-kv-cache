@@ -43,18 +43,24 @@ LABELLED = {"kv_seg_hs", "raas", "h2o", "r_kv", "hs_variance", "thinkv_faithful"
 
 
 def load(d):
-    """{(method, K): (acc, tok/s)} plus none."""
+    """{(method, K): (acc, tok/s)} plus none. EpiKV-Seg means the shipped
+    tau=128 form (grid files kv_seg_hs_tau128_K*, timing file
+    kv_seg_hs_refresh_tau128_*); the every-step form is keyed
+    kv_seg_hs_tau1 and the Band-A / query-similarity variants are skipped."""
     out = {}
     for f in glob.glob(os.path.join(d, "*.json")):
         stem = os.path.basename(f)[:-5]
-        if "tau128" in stem:
+        if "aonly" in stem or "qsim" in stem or stem.endswith(".ERRORED"):
             continue
         j = json.load(open(f))
         for m, per in j["results"].items():
+            key = m
+            if m == "kv_seg_hs":
+                key = "kv_seg_hs" if "tau128" in stem else "kv_seg_hs_tau1"
             for K, r in per.items():
                 pp = [p for p in r["per_problem"] if p.get("wall_time_s")]
                 tps = sum(p["n_tokens_generated"] for p in pp) / sum(p["wall_time_s"] for p in pp)
-                out[(m, int(K))] = (r["accuracy"] * 100, tps)
+                out[(key, int(K))] = (r["accuracy"] * 100, tps)
     return out
 
 
@@ -70,7 +76,12 @@ def panel(ax, data, timing, title):
             if (m, K) not in data:
                 continue
             acc = data[(m, K)][0]
-            tps = (timing.get((m, K)) or data[(m, K)])[1]
+            # the equal-load timing run is one cell per method at K=8192;
+            # its rate applies to both accuracy budgets
+            t = timing.get((m, 8192))
+            if timing and t is None:
+                continue
+            tps = (t or data[(m, K)])[1]
             pts.append((acc, tps, filled))
         if not pts:
             continue
