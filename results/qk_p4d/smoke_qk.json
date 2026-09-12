@@ -1,0 +1,49 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "dataset": "math500",
+    "n_samples": 2,
+    "max_new_tokens": 2048,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      1024
+    ],
+    "methods": [
+      "kv_seg_hs"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs": {
+      "1024": {
+        "accuracy": 1.0,
+        "n_correct": 2,
+        "n_total": 2,
+        "mean_wall_time_s": 62.6,
+        "mean_peak_gpu_mb": 15644.7,
+        "per_problem": [
+          {
+            "problem": "Convert the point $(0,3)$ in rectangular coordinates to polar coordinates.  Ente",
+            "ground_truth": "\\left( 3, \\frac{\\pi}{2} \\right)",
+            "pred_answer": "(3, \\frac{\\pi}{2})",
+            "correct": true,
+            "n_tokens_generated": 831,
+            "wall_time_s": 35.92,
+            "peak_gpu_mb": 15580.7,
+            "error": null
+          },
+          {
+            "problem": "Define\n\\[p = \\sum_{k = 1}^\\infty \\frac{1}{k^2} \\quad \\text{and} \\quad q = \\sum_{",
+            "ground_truth": "p - q",
+            "pred_answer": "p - q",
+            "correct": true,
+            "n_tokens_generated": 1609,
+            "wall_time_s": 89.28,
+            "peak_gpu_mb": 15708.7,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}
