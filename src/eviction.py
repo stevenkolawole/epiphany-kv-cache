@@ -1788,10 +1788,27 @@ class KVSegHSEviction:
         query_sim_mode: str = "add",
         query_sim_window: int = 1,
         query_sim_center: bool = False,
+        query_mode: str = "hs",
+        query_layer: Optional[int] = None,
     ):
         self.config = config
         self.band_a_layer = band_a_layer
         self.band_b_layer = band_b_layer
+        # query_mode "hs": the cosine stand-in above. "qk": the real thing
+        # without the attention matrix -- at a compaction, project the last
+        # `query_sim_window` tokens' hidden states through the model's own
+        # q_proj (+ RoPE at their logical positions) for the attention layer
+        # that consumes the Band-A hidden state (layer band_a_layer+1 unless
+        # query_layer is given), dot them with the cached keys of that layer,
+        # softmax per query and head, and average: one (w x seq) matrix per
+        # boundary, read from the cache and the forward pass, kernel untouched.
+        # Needs set_model(model) once per run.
+        assert query_mode in ("hs", "qk"), query_mode
+        self.query_mode = query_mode
+        self.query_layer = query_layer
+        self._model = None
+        self._pos_bank: List[int] = []   # logical position of each banked decode token
+        self._step: int = 0
         # Score = z_a - z_b ("diff", the published form), z_a alone, or -z_b
         # alone. The band ablation (EXPERIMENTS §24) found Band A alone at
         # least as good as the difference; this lets Seg run that way.
@@ -1861,10 +1878,46 @@ class KVSegHSEviction:
         self._buf_b = []
         self._scores = []
         self._hs_bank = []
+        self._pos_bank = []
+        self._step = 0
+
+    def set_model(self, model):
+        """Give the policy the model whose q_proj / RoPE the "qk" query mode uses."""
+        self._model = model
 
     def set_prefill_end(self, hidden_states: Tuple[torch.Tensor, ...]):
         self._prev_hs_a = hidden_states[self.band_a_layer + 1][:, -1, :].detach()
         self._prev_hs_b = hidden_states[self.band_b_layer + 1][:, -1, :].detach()
+
+    def _qk_relevance(self, past_key_values, m: int, device) -> torch.Tensor:
+        """Mean attention probability from the last `query_sim_window` decode
+        tokens (queries recomputed from their banked hidden states) to every
+        cache slot at the query layer; returns the last m slots' values."""
+        from transformers.models.llama.modeling_llama import apply_rotary_pos_emb
+        assert self._model is not None, "query_mode='qk' needs set_model(model)"
+        L = self.query_layer if self.query_layer is not None else self.band_a_layer + 1
+        layer = self._model.model.layers[L]
+        attn = layer.self_attn
+        keys = past_key_values[L][0].to(device)                          # (1, kvh, seq, d)
+        _, kvh, seq, d = keys.shape
+        w = min(self.query_sim_window, len(self._hs_bank))
+        hs = torch.stack(self._hs_bank[-w:]).to(device=device, dtype=keys.dtype).unsqueeze(0)
+        x = layer.input_layernorm(hs)                                     # (1, w, hidden)
+        q = attn.q_proj(x)
+        nh = q.shape[-1] // d
+        q = q.view(1, w, nh, d).transpose(1, 2)                           # (1, nh, w, d)
+        pos = torch.tensor([self._pos_bank[-w:]], device=device)
+        cos, sin = self._model.model.rotary_emb(x, pos)
+        q, _ = apply_rotary_pos_emb(q, q, cos, sin)
+        k = keys.repeat_interleave(nh // kvh, dim=1)                      # (1, nh, seq, d)
+        logits = torch.matmul(q, k.transpose(-1, -2)).float() / (d ** 0.5)  # (1, nh, w, seq)
+        slot = torch.arange(seq, device=device)
+        qslot = seq - w + torch.arange(w, device=device)                  # each window query's own slot
+        allowed = slot[None, :] <= qslot[:, None]                         # causal within the cache
+        logits = logits.masked_fill(~allowed[None, None], float("-inf"))
+        probs = torch.softmax(logits, dim=-1)
+        rel = probs.mean(dim=(0, 1, 2))                                   # (seq,)
+        return rel[seq - m:]
 
     def _segment_keyvar(
         self,
@@ -1949,8 +2002,12 @@ class KVSegHSEviction:
         self._prev_hs_b = hs_b
         self._buf_a.append(diff_a)
         self._buf_b.append(diff_b)
+        self._step += 1
         if self.query_sim_weight > 0:
             self._hs_bank.append(hs_a.detach().float().reshape(-1))
+            # logical position of this decode token (the harness embeds decode
+            # token t at prefill_len + t under --logical_positions)
+            self._pos_bank.append(self._prefill_len + self._step - 1)
         z_a = _rolling_z_score(self._buf_a, self.window)
         z_b = _rolling_z_score(self._buf_b, self.window)
         if self.band_mode == "a_only":
@@ -1987,12 +2044,16 @@ class KVSegHSEviction:
 
         # ── Per-query relevance term (query_sim) ─────────────────────────────
         if self.query_sim_weight > 0 and len(self._hs_bank) > 1:
-            bank = torch.stack(self._hs_bank[-num_decode:]).to(device)      # [m, d], m <= num_decode
-            if self.query_sim_center:
-                bank = bank - bank.mean(dim=0, keepdim=True)
-            q = bank[-self.query_sim_window:].mean(dim=0)
-            sim = (bank @ q) / (bank.norm(dim=1) * q.norm() + 1e-6)
-            m = bank.shape[0]
+            m = min(num_decode, len(self._hs_bank))
+            if self.query_mode == "qk":
+                sim = self._qk_relevance(past_key_values, m, device)
+            else:
+                bank = torch.stack(self._hs_bank[-num_decode:]).to(device)      # [m, d], m <= num_decode
+                if self.query_sim_center:
+                    bank = bank - bank.mean(dim=0, keepdim=True)
+                q = bank[-self.query_sim_window:].mean(dim=0)
+                sim = (bank @ q) / (bank.norm(dim=1) * q.norm() + 1e-6)
+                m = bank.shape[0]
             finite = torch.isfinite(hs_decode[-m:])
             def _z(x):
                 mu = x[finite].mean() if finite.any() else x.mean()
@@ -2094,6 +2155,9 @@ class KVSegHSEviction:
         if self.query_sim_weight > 0:
             self._hs_bank = [
                 h for h, kept in zip(self._hs_bank[-num_decode:], decode_keep) if kept
+            ]
+            self._pos_bank = [
+                p for p, kept in zip(self._pos_bank[-num_decode:], decode_keep) if kept
             ]
         return new_past
 

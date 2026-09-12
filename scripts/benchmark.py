@@ -328,7 +328,8 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
                   retain_r: int = None, retain_e: int = None, retain_t: int = None,
                   segment_size: int = None, refresh_tau: int = None,
                   query_sim_weight: float = None, query_sim_mode: str = None,
-                  query_sim_window: int = None, query_sim_center: bool = None):
+                  query_sim_window: int = None, query_sim_center: bool = None,
+                  query_mode: str = None, query_layer: int = None):
     """Return a fresh eviction object for the given method and cache_size."""
     cfg = EvictionConfig(cache_size=cache_size, keep_recent_k=keep_recent_k)
     if method == "none":
@@ -392,6 +393,8 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
         if query_sim_mode is not None:   kw["query_sim_mode"] = query_sim_mode
         if query_sim_window is not None: kw["query_sim_window"] = query_sim_window
         if query_sim_center is not None: kw["query_sim_center"] = query_sim_center
+        if query_mode is not None:       kw["query_mode"] = query_mode
+        if query_layer is not None:      kw["query_layer"] = query_layer
         return KVSegHSEviction(cfg, **kw)
     if method.startswith("hs_variance_detrend_v"):
         tail = method[len("hs_variance_detrend_v"):]
@@ -603,6 +606,12 @@ def parse_args():
                    help="EpiKV-Seg query_sim: average the last W tokens' hidden states as the query (default 1)")
     p.add_argument("--query_sim_center", action="store_true", default=None,
                    help="EpiKV-Seg query_sim: mean-centre the hidden-state bank before the cosine")
+    p.add_argument("--query_mode", type=str, default=None, choices=[None, "hs", "qk"],
+                   help="EpiKV-Seg relevance term: 'hs' cosine of Band-A hidden states (default), "
+                        "'qk' the model's own query (q_proj + RoPE) against the cached keys of the "
+                        "layer after Band A, softmax per query and head, averaged over the last W tokens")
+    p.add_argument("--query_layer", type=int, default=None,
+                   help="EpiKV-Seg qk: attention layer whose keys are scored (default band_a_layer+1)")
     p.add_argument("--keep_recent_k",  type=int, default=128,
                    help="Tokens always kept in recency window (default: 128)")
     p.add_argument("--methods",        nargs="+",
@@ -755,7 +764,11 @@ def main():
                                          query_sim_weight=args.query_sim_weight,
                                          query_sim_mode=args.query_sim_mode,
                                          query_sim_window=args.query_sim_window,
-                                         query_sim_center=args.query_sim_center)
+                                         query_sim_center=args.query_sim_center,
+                                         query_mode=args.query_mode,
+                                         query_layer=args.query_layer)
+                if eviction is not None and hasattr(eviction, "set_model"):
+                    eviction.set_model(model)
                 try:
                     res = run_one(model, tokenizer, prob, method, eviction,
                                   args.max_new_tokens, device)
