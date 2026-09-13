@@ -133,6 +133,10 @@ def _qk_relevance(kv_caches, layer, layer_idx, block_ids, n_phys, block_size, hs
                        "hs_absmean": hs.float().abs().mean(dim=-1).tolist(),
                        "q_norm": q.float().norm(dim=-1).mean(dim=0).tolist(),
                        "k_absmean": keys.float().abs().mean(dim=(1, 2)).tolist()[:16],
+                       # full key vectors at slots 2..5 for layers L-1, L, L+1, transposed to
+                       # (kvh, 4, d) like the harness dump (layer-identity check)
+                       "keys_2to5": {str(l): kv_caches[l][0, blk[2:6], slot[2:6]].float().transpose(0, 1).cpu().tolist()
+                                     for l in (layer_idx - 1, layer_idx, layer_idx + 1)},
                        "rel": rel.float().tolist()}, f)
     return rel.cpu().numpy()
 
@@ -251,6 +255,14 @@ def main():
                                     hs_w, st.alive_logical[-w:])
                 dec = rel[st.prefill_len:]
                 override = (dec - dec.mean()) / (dec.std() + 1e-6)
+                # diagnostic: record the token ids behind the first dumped relevance vector
+                _dump = os.environ.get("EPIKV_REL_DUMP")
+                if _dump and os.path.exists(_dump) and not getattr(main, "_tok_dumped", False):
+                    main._tok_dumped = True
+                    _d = json.load(open(_dump))
+                    _d["token_ids"] = [int(t) for t in ib.token_ids_cpu[i, :P]]
+                    _d["prefill_len"] = int(st.prefill_len)
+                    json.dump(_d, open(_dump, "w"))
             keep = compaction_plan(st, key_stat[st.prefill_len:], args.cache_size,
                                    args.keep_recent, block_size,
                                    scores_override=override, fill_budget=args.fill)

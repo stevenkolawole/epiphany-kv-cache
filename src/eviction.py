@@ -1945,6 +1945,9 @@ class KVSegHSEviction:
                            "hs_absmean": hs[0].float().abs().mean(dim=-1).tolist(),
                            "q_norm": q[0].float().norm(dim=-1).mean(dim=0).tolist(),
                            "k_absmean": keys[0].float().abs().mean(dim=(0, 2)).tolist()[:16],
+                           # full key vectors at slots 2..5 for layers L-1, L, L+1 (layer-identity check)
+                           "keys_2to5": {str(l): past_key_values[l][0][0, :, 2:6, :].float().cpu().tolist()
+                                         for l in (L - 1, L, L + 1)},
                            "rel": rel.float().tolist()}, f)
         return rel[seq - m:]
 
