@@ -1932,6 +1932,20 @@ class KVSegHSEviction:
         logits = logits.masked_fill(~allowed[None, None], float("-inf"))
         probs = torch.softmax(logits, dim=-1)
         rel = probs.mean(dim=(0, 1, 2))                                   # (seq,)
+        # One-shot diagnostic dump of the first relevance computation, for the
+        # harness-vs-vLLM diff (EPIKV_REL_DUMP=<path.json>).
+        import os
+        dump = os.environ.get("EPIKV_REL_DUMP")
+        if dump and not getattr(self, "_rel_dumped", False):
+            import json
+            self._rel_dumped = True
+            with open(dump, "w") as f:
+                json.dump({"impl": "harness", "layer": L, "seq": int(seq), "m": int(m), "w": int(w),
+                           "query_pos": [int(p) for p in self._pos_bank[-w:]],
+                           "hs_absmean": hs[0].float().abs().mean(dim=-1).tolist(),
+                           "q_norm": q[0].float().norm(dim=-1).mean(dim=0).tolist(),
+                           "k_absmean": keys[0].float().abs().mean(dim=(0, 2)).tolist()[:16],
+                           "rel": rel.float().tolist()}, f)
         return rel[seq - m:]
 
     def _segment_keyvar(

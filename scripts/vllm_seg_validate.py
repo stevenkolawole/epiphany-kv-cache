@@ -121,6 +121,19 @@ def _qk_relevance(kv_caches, layer, layer_idx, block_ids, n_phys, block_size, hs
     allowed = s[None, :] <= qslot[:, None]
     logits = logits.masked_fill(~allowed[None], float("-inf"))
     rel = torch.softmax(logits, dim=-1).mean(dim=(0, 1))            # (P,)
+    # One-shot diagnostic dump of the first relevance computation, for the
+    # harness-vs-vLLM diff (EPIKV_REL_DUMP=<path.json>); same fields as
+    # KVSegHSEviction._qk_relevance.
+    dump = os.environ.get("EPIKV_REL_DUMP")
+    if dump and not getattr(_qk_relevance, "_dumped", False):
+        _qk_relevance._dumped = True
+        with open(dump, "w") as f:
+            json.dump({"impl": "vllm", "layer": int(layer_idx), "seq": int(n_phys), "w": int(w),
+                       "query_pos": [int(p) for p in positions],
+                       "hs_absmean": hs.float().abs().mean(dim=-1).tolist(),
+                       "q_norm": q.float().norm(dim=-1).mean(dim=0).tolist(),
+                       "k_absmean": keys.float().abs().mean(dim=(1, 2)).tolist()[:16],
+                       "rel": rel.float().tolist()}, f)
     return rel.cpu().numpy()
 
 
