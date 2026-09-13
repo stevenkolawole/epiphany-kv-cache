@@ -393,7 +393,7 @@ def make_appendix(args):
         ax.set_ylim(0, h_pt)
         # One short header line: a long unwrapped line here widened the saved
         # figure to twice the text width and the trace printed at half size.
-        head = (f"EpiKV-Seg, $K$=1024, MATH-500 problem {meta['problem_idx']}: "
+        head = (f"{args.method_label}, $K$=1024, MATH-500 problem {meta['problem_idx']}: "
                 f"{meta['generated']:,} tokens generated, {meta['retained_generated']:,} kept.")
         if len(pages) > 1:
             head += f"  (page {pi + 1} of {len(pages)})"
@@ -416,5 +416,6 @@ if __name__ == "__main__":
     ap.add_argument("--panel_a", action="store_true", help="panel (a) alone, 0.6 text width")
     ap.add_argument("--page_h", type=float, default=8.6, help="appendix page height (in)")
     ap.add_argument("--font", type=float, default=7.4, help="appendix font size (pt)")
+    ap.add_argument("--method_label", default="EpiKV", help="policy name printed in the appendix figure title")
     a = ap.parse_args()
     (make_appendix if a.appendix else make_fig1a if a.panel_a else make_fig1)(a)
