@@ -366,11 +366,17 @@ def main():
     sp = SamplingParams(max_tokens=args.max_new_tokens, temperature=0)
     records = []
     t0 = time.time()
+    from vllm import TokensPrompt
     for i, prob in enumerate(problems):
-        prompt = tok.apply_chat_template([{"role": "user", "content": prob["problem"]}],
-                                         tokenize=False, add_generation_prompt=True)
+        # Exactly the harness prompt: system instruction ("reason step by step,
+        # boxed answer") + user turn, tokenized by benchmark.build_prompt_ids.
+        # Passing token ids (not a string) stops vLLM from adding a second BOS
+        # of its own. Before 2026-09-13 the port sent a string without the
+        # system prompt, so every earlier port number was generated from a
+        # different prompt than the harness.
+        prompt_ids = bm.build_prompt_ids(tok, prob["problem"], "cpu")[0].tolist()
         t1 = time.time()
-        out = llm.generate([prompt], sp, use_tqdm=False)[0]
+        out = llm.generate([TokensPrompt(prompt_token_ids=prompt_ids)], sp, use_tqdm=False)[0]
         text = out.outputs[0].text
         # Same extraction and matching as the HF harness, so agreement is
         # about the eviction path and not about the grader.
