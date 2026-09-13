@@ -55,6 +55,8 @@ def main():
     ap.add_argument("--logical_positions", action="store_true",
                     help="embed post-eviction tokens at their logical position (the corrected convention)")
     ap.add_argument("--fill", action="store_true", help="EpiKV-Seg: spend the budget the tier caps leave")
+    ap.add_argument("--tau_mode", default="pruned", choices=["pruned", "steps"],
+                    help="steps: compact at most every refresh_tau decode steps (the shipped rule)")
     ap.add_argument("--query_mode", default=None, choices=[None, "hs", "qk"],
                     help="EpiKV-Seg relevance term (with --query_sim_weight 1): hs cosine or qk attention logits")
     ap.add_argument("--query_sim_weight", type=float, default=0.0)
@@ -83,7 +85,7 @@ def main():
         ev = DetrendendHSVarianceEviction(cfg, band_a_layer=args.band_a_layer,
                                          band_b_layer=args.band_b_layer)
     else:
-        kw = dict(refresh_tau=args.refresh_tau, fill_budget=args.fill)
+        kw = dict(refresh_tau=args.refresh_tau, fill_budget=args.fill, tau_mode=args.tau_mode)
         if args.query_mode is not None:
             kw.update(query_mode=args.query_mode, query_sim_weight=args.query_sim_weight,
                       query_sim_mode=args.query_sim_mode, query_sim_window=args.query_sim_window)
