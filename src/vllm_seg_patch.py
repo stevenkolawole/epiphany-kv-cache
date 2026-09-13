@@ -122,28 +122,39 @@ def compaction_plan(
     cache_size: int,
     keep_recent: int,
     block_size: int,
+    scores_override: Optional[np.ndarray] = None,
+    fill_budget: bool = False,
 ) -> Optional[np.ndarray]:
     """Decide the physical positions that survive, or None if nothing to do.
 
     Scores are held in logical order; the planner reasons in logical positions;
     we translate back to physical slots via alive_logical. Prefill is always
     kept, so its physical and logical positions coincide.
+
+    scores_override: a score per current physical decode slot that replaces
+    the hidden-state scores (the query-relevance term). fill_budget: spend the
+    budget the tier caps leave unspent on the highest-ranked evicted tokens
+    (the shipped configuration since 2026-09-12: with the relevance term the
+    fill helps; with the hidden-state score alone it hurts, Section 18).
     """
     n_phys = len(state.alive_logical)
     if n_phys <= cache_size:
         return None
     # Planner wants scores per decode position for the *current physical* cache.
-    phys_scores = np.array(
-        [state.scores[lp - state.prefill_len] for lp in state.alive_logical[state.prefill_len:]],
-        dtype=np.float32,
-    )
+    if scores_override is not None:
+        phys_scores = np.asarray(scores_override, dtype=np.float32)
+    else:
+        phys_scores = np.array(
+            [state.scores[lp - state.prefill_len] for lp in state.alive_logical[state.prefill_len:]],
+            dtype=np.float32,
+        )
     plan = plan_segment_eviction(
         scores=phys_scores,
         key_stat=key_stat,
         prefill_len=state.prefill_len,
         cache_size=cache_size,
         keep_recent=keep_recent,
-        fill_budget=False,          # Section 18: filling makes it worse
+        fill_budget=fill_budget,
     )
     return plan.keep                # physical positions, sorted
 

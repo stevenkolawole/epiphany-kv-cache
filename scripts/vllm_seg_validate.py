@@ -90,6 +90,40 @@ def _key_variance(kv_caches, block_ids, n_phys, block_size, layers=(10, 21)):
     return (acc / len(layers)).cpu().numpy()
 
 
+def _qk_relevance(kv_caches, layer, layer_idx, block_ids, n_phys, block_size, hs, positions):
+    """Query relevance inside vLLM, the port of KVSegHSEviction._qk_relevance:
+    the last w decode tokens' band-A hidden states (`hs`, (w, hidden), the
+    input of `layer`) go through the layer's own input_layernorm and fused
+    qkv projection (q part), are rotated at their logical `positions` by the
+    layer's rotary module, and are dotted with the layer's cached keys of all
+    n_phys physical slots (post-RoPE, gathered from the paged cache); causal
+    mask, softmax per query and head, mean over queries and heads. Returns one
+    value per physical slot. One (w x n_phys) matrix per compaction; the
+    attention kernel is untouched."""
+    attn = layer.self_attn
+    dev = kv_caches[0].device
+    idx = np.arange(n_phys)
+    blk = torch.as_tensor(np.asarray(block_ids)[idx // block_size], device=dev)
+    slot = torch.as_tensor(idx % block_size, device=dev)
+    keys = kv_caches[layer_idx][0, blk, slot]                       # (P, kvh, d), post-RoPE
+    w = hs.shape[0]
+    x = layer.input_layernorm(hs.to(keys.dtype))
+    qkv, _ = attn.qkv_proj(x)
+    q, k, _v = qkv.split([attn.q_size, attn.kv_size, attn.kv_size], dim=-1)
+    pos = torch.as_tensor(np.asarray(positions), device=dev, dtype=torch.long)
+    q, _k = attn.rotary_emb(pos, q, k)
+    nh, kvh, d = attn.num_heads, attn.num_kv_heads, attn.head_dim
+    q = q.view(w, nh, d).transpose(0, 1).float()                    # (nh, w, d)
+    kr = keys.repeat_interleave(nh // kvh, dim=1).transpose(0, 1).float()  # (nh, P, d)
+    logits = torch.matmul(q, kr.transpose(-1, -2)) * attn.scaling    # (nh, w, P)
+    s = torch.arange(n_phys, device=dev)
+    qslot = n_phys - w + torch.arange(w, device=dev)
+    allowed = s[None, :] <= qslot[:, None]
+    logits = logits.masked_fill(~allowed[None], float("-inf"))
+    rel = torch.softmax(logits, dim=-1).mean(dim=(0, 1))            # (P,)
+    return rel.cpu().numpy()
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="deepseek-ai/DeepSeek-R1-Distill-Llama-8B")
@@ -105,6 +139,12 @@ def main():
     ap.add_argument("--out", default=str(Path.home() / "vllm_seg_validate.json"))
     ap.add_argument("--gpu_util", type=float, default=0.6,
                     help="vLLM gpu_memory_utilization; lower it to co-locate a second engine")
+    ap.add_argument("--query_mode", choices=["hs", "qk"], default="hs",
+                    help="hs: rank by the hidden-state score (tiering only); qk: rank by query relevance "
+                         "from the cached keys (the shipped configuration since 2026-09-12)")
+    ap.add_argument("--query_layer", type=int, default=None, help="layer whose keys are scored (default band_a+1)")
+    ap.add_argument("--query_window", type=int, default=8, help="number of most recent queries averaged")
+    ap.add_argument("--fill", action="store_true", help="spend the budget the tier caps leave unspent")
     args = ap.parse_args()
 
     from vllm import LLM, SamplingParams
@@ -185,8 +225,22 @@ def main():
             old_ids = [b.block_id for b in old_blocks]
             key_stat = _key_variance(runner.kv_caches, old_ids, P, block_size,
                                      layers=(args.band_a, args.band_b))
+            override = None
+            if args.query_mode == "qk" and n_dec > 0:
+                qL = args.query_layer if args.query_layer is not None else args.band_a + 1
+                w = min(args.query_window, n_dec, tracker.HBANK)
+                trow = tracker._row(rid)
+                ns = int(tracker.nscore[trow])
+                bank_idx = torch.tensor([(ns - w + j) % tracker.HBANK for j in range(w)],
+                                        device=tracker.hbank.device)
+                hs_w = tracker.hbank[trow].index_select(0, bank_idx)   # (w, hidden), chronological
+                rel = _qk_relevance(runner.kv_caches, layers[qL], qL, old_ids, P, block_size,
+                                    hs_w, st.alive_logical[-w:])
+                dec = rel[st.prefill_len:]
+                override = (dec - dec.mean()) / (dec.std() + 1e-6)
             keep = compaction_plan(st, key_stat[st.prefill_len:], args.cache_size,
-                                   args.keep_recent, block_size)
+                                   args.keep_recent, block_size,
+                                   scores_override=override, fill_budget=args.fill)
             if keep is None:
                 st.steps_since_refresh = 0
                 continue
@@ -319,6 +373,8 @@ def main():
                         "cache_size": args.cache_size, "keep_recent": args.keep_recent,
                         "tau": args.tau, "max_new_tokens": args.max_new_tokens,
                         "band": [args.band_a, args.band_b], "block_size": block_size,
+                        "query_mode": args.query_mode, "query_window": args.query_window,
+                        "fill": args.fill,
                         "vllm_runner_path": path, "wall_s": round(time.time() - t0)},
                "accuracy": (sum(acc) / len(acc)) if acc else None,
                "per_problem": records}
