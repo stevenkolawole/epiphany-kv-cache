@@ -1790,10 +1790,24 @@ class KVSegHSEviction:
         query_sim_center: bool = False,
         query_mode: str = "hs",
         query_layer: Optional[int] = None,
+        tau_mode: str = "pruned",
     ):
         self.config = config
         self.band_a_layer = band_a_layer
         self.band_b_layer = band_b_layer
+        # How the tau boundary is counted. "pruned" (the grids up to 2026-09-12):
+        # fire when len(_scores) % tau == 0, where _scores is pruned at every
+        # compaction, so after a compaction the next boundary comes when the
+        # survivor count reaches the next multiple of tau. Without the fill the
+        # cache refills for hundreds of steps before it is over budget again,
+        # so this compacts every few hundred tokens; WITH the fill the cache is
+        # at the budget after every compaction and the rule fires every few
+        # steps (problem 1: 1,083 compactions in 4,144 tokens). "steps": fire
+        # when at least tau steps have passed since the last compaction, the
+        # vLLM port's rule and the paper's description.
+        assert tau_mode in ("pruned", "steps"), tau_mode
+        self.tau_mode = tau_mode
+        self._since_compaction: int = 0
         # query_mode "hs": the cosine stand-in above. "qk": the real thing
         # without the attention matrix -- at a compaction, project the last
         # `query_sim_window` tokens' hidden states through the model's own
@@ -1880,6 +1894,7 @@ class KVSegHSEviction:
         self._hs_bank = []
         self._pos_bank = []
         self._step = 0
+        self._since_compaction = 0
 
     def set_model(self, model):
         """Give the policy the model whose q_proj / RoPE the "qk" query mode uses."""
@@ -2020,11 +2035,16 @@ class KVSegHSEviction:
         # tau-amortised eviction: act only every refresh_tau decode steps. The
         # step counter is len(_scores), which reset() clears per request, so
         # no extra state. refresh_tau=1 is the published per-step method.
-        if len(self._scores) % self.refresh_tau != 0:
+        self._since_compaction += 1
+        if self.tau_mode == "steps":
+            if self._since_compaction < self.refresh_tau:
+                return past_key_values
+        elif len(self._scores) % self.refresh_tau != 0:
             return past_key_values
 
         if seq_len <= self.config.cache_size:
             return past_key_values
+        self._since_compaction = 0
 
         keep_recent = min(self.config.keep_recent_k, self.config.cache_size // 4)
         classify_len = seq_len - keep_recent

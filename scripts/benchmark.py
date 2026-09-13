@@ -329,7 +329,7 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
                   segment_size: int = None, refresh_tau: int = None,
                   query_sim_weight: float = None, query_sim_mode: str = None,
                   query_sim_window: int = None, query_sim_center: bool = None,
-                  query_mode: str = None, query_layer: int = None):
+                  query_mode: str = None, query_layer: int = None, tau_mode: str = None):
     """Return a fresh eviction object for the given method and cache_size."""
     cfg = EvictionConfig(cache_size=cache_size, keep_recent_k=keep_recent_k)
     if method == "none":
@@ -395,6 +395,7 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
         if query_sim_center is not None: kw["query_sim_center"] = query_sim_center
         if query_mode is not None:       kw["query_mode"] = query_mode
         if query_layer is not None:      kw["query_layer"] = query_layer
+        if tau_mode is not None:         kw["tau_mode"] = tau_mode
         return KVSegHSEviction(cfg, **kw)
     if method.startswith("hs_variance_detrend_v"):
         tail = method[len("hs_variance_detrend_v"):]
@@ -612,6 +613,10 @@ def parse_args():
                         "layer after Band A, softmax per query and head, averaged over the last W tokens")
     p.add_argument("--query_layer", type=int, default=None,
                    help="EpiKV-Seg qk: attention layer whose keys are scored (default band_a_layer+1)")
+    p.add_argument("--tau_mode", type=str, default=None, choices=[None, "pruned", "steps"],
+                   help="EpiKV-Seg: how the tau boundary is counted; 'pruned' = multiples of tau on the "
+                        "pruned score list (the 2026-09 grids), 'steps' = steps since the last compaction "
+                        "(the vLLM port's rule)")
     p.add_argument("--keep_recent_k",  type=int, default=128,
                    help="Tokens always kept in recency window (default: 128)")
     p.add_argument("--methods",        nargs="+",
@@ -766,7 +771,8 @@ def main():
                                          query_sim_window=args.query_sim_window,
                                          query_sim_center=args.query_sim_center,
                                          query_mode=args.query_mode,
-                                         query_layer=args.query_layer)
+                                         query_layer=args.query_layer,
+                                         tau_mode=args.tau_mode)
                 if eviction is not None and hasattr(eviction, "set_model"):
                     eviction.set_model(model)
                 try:
