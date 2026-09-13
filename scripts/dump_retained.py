@@ -54,6 +54,12 @@ def main():
                     help="EpiKV-Seg: evict every tau decode steps (128 = the shipped / vLLM setting)")
     ap.add_argument("--logical_positions", action="store_true",
                     help="embed post-eviction tokens at their logical position (the corrected convention)")
+    ap.add_argument("--fill", action="store_true", help="EpiKV-Seg: spend the budget the tier caps leave")
+    ap.add_argument("--query_mode", default=None, choices=[None, "hs", "qk"],
+                    help="EpiKV-Seg relevance term (with --query_sim_weight 1): hs cosine or qk attention logits")
+    ap.add_argument("--query_sim_weight", type=float, default=0.0)
+    ap.add_argument("--query_sim_mode", default="add", choices=["add", "replace"])
+    ap.add_argument("--query_sim_window", type=int, default=8)
     args = ap.parse_args()
 
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -77,8 +83,12 @@ def main():
         ev = DetrendendHSVarianceEviction(cfg, band_a_layer=args.band_a_layer,
                                          band_b_layer=args.band_b_layer)
     else:
-        ev = KVSegHSEviction(cfg, band_a_layer=args.band_a_layer, band_b_layer=args.band_b_layer,
-                             refresh_tau=args.refresh_tau)
+        kw = dict(refresh_tau=args.refresh_tau, fill_budget=args.fill)
+        if args.query_mode is not None:
+            kw.update(query_mode=args.query_mode, query_sim_weight=args.query_sim_weight,
+                      query_sim_mode=args.query_sim_mode, query_sim_window=args.query_sim_window)
+        ev = KVSegHSEviction(cfg, band_a_layer=args.band_a_layer, band_b_layer=args.band_b_layer, **kw)
+        ev.set_model(model)
 
     prompt_ids = bm.build_prompt_ids(tok, prob["problem"], dev)
     prefill_len = prompt_ids.shape[1]
