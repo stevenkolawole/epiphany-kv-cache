@@ -31,6 +31,7 @@ KS_AIME = [4096, 8192]
 
 # (file tag, label, FA2)
 MAIN = [("none", "none$^{\\star}$", True),
+        ("epikv_q", "\\methodq~(ours)", True),
         ("kv_seg_hs_tau128", "\\methodseg~(ours)", True),
         ("lag_kv", "Lag-KV", True),
         ("r_kv", "R-KV", False),
@@ -50,9 +51,25 @@ FAMILY = [("kv_seg_hs_tau128", "\\methodseg~($\\tau{=}128$)", True),
 AIME_TAG = {"kv_seg_hs_tau128": "kv_seg_hs_tau128", "kv_seg_hs": "kv_seg_hs"}
 
 
+WIN = R / "win"
+WIN_MODEL = {"llama_logical": "llama", "qwen_logical": "qwen",
+             "aime_pool_logical": "llama", "qwen_aime_pool_logical": "qwen"}
+# EpiKV-Seg-Q = Seg + query relevance (q.K, replace, window 8) + budget fill,
+# at the TRUE tau=128 rule (--tau_mode steps); files in results/win.
+Q_TAG = "kv_seg_hs_fill_tau128steps_qk_w8rep"
+
+
 def math_cells(d, tag):
     """{K: [correct bools by problem]} for one method in a MATH grid dir."""
     out = {}
+    if tag == "epikv_q":
+        for K in KS_MATH:
+            f = WIN / f"{Q_TAG}_K{K}_{WIN_MODEL[d]}.json"
+            if f.exists():
+                j = json.load(open(f))
+                meth = next(iter(j["results"]))
+                out[K] = [bool(p["correct"]) for p in j["results"][meth][str(K)]["per_problem"]]
+        return out
     if tag == "none":
         f = R / d / "none_K1024.json"
         if f.exists():
@@ -73,8 +90,10 @@ def math_cells(d, tag):
 def aime_cells(d, tag):
     """{K: {problem key: correct}} pooled over the three years."""
     out = {}
-    for f in glob.glob(str(R / d / f"{tag}_aime*_k*_s0.json")):
-        m = re.search(r"_aime(\d{4})_k(\d+)_s0\.json$", f)
+    files = (glob.glob(str(WIN / f"{Q_TAG}_aime*_k*_s0_{WIN_MODEL[d]}.json")) if tag == "epikv_q"
+             else glob.glob(str(R / d / f"{tag}_aime*_k*_s0.json")))
+    for f in files:
+        m = re.search(r"_aime(\d{4})_k(\d+)_s0(?:_(?:llama|qwen))?\.json$", f)
         if not m:
             continue
         year, K = m.group(1), int(m.group(2))
