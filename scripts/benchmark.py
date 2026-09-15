@@ -713,9 +713,10 @@ def main():
 
     # ── Sweep ─────────────────────────────────────────────────────────────────
     def _is_complete(entry: dict) -> bool:
-        """A result is complete only if at least one problem ran without error."""
+        """A result is complete only if at least one problem ran without error
+        and the entry is not a per-problem checkpoint of a run still in flight."""
         pp = entry.get("per_problem", [])
-        return len(pp) > 0 and any(r.get("n_tokens_generated", 0) > 0 for r in pp)
+        return (not entry.get("partial")) and len(pp) > 0 and any(r.get("n_tokens_generated", 0) > 0 for r in pp)
 
     for method in args.methods:
         for cache_size in args.cache_sizes:
@@ -751,11 +752,19 @@ def main():
                 print(f"  Method: {method:15s}  Cache size: {cache_size}")
                 print(f"{'='*60}")
 
-            per_problem = []
-            n_correct = 0
+            # Resume from a per-problem checkpoint of an interrupted run (greedy decoding is
+            # deterministic per problem, so the completed prefix is reused verbatim).
+            prev = results.get(method, {}).get(key, {})
+            per_problem = list(prev.get("per_problem", [])) if prev.get("partial") else []
+            n_correct = sum(1 for r in per_problem if r.get("correct"))
+            skip = len(per_problem)
+            if skip:
+                print(f"  Resuming {method} @ cache={cache_size} from problem {skip}")
 
             desc = "none@unlimited" if method == "none" else f"{method}@{cache_size}"
             for i, prob in enumerate(tqdm(problems, desc=desc)):
+                if i < skip:
+                    continue
                 eviction = make_eviction(method, cache_size, args.keep_recent_k,
                                          band_a_layer=args.band_a_layer,
                                          band_b_layer=args.band_b_layer,
@@ -809,6 +818,10 @@ def main():
                     "peak_gpu_mb":        res.get("peak_gpu_mb"),
                     "error":              res.get("error"),
                 })
+                # Per-problem checkpoint: a crash or OOM loses at most one problem.
+                results.setdefault(method, {})[key] = {"partial": True, "n_total": len(problems),
+                                                       "per_problem": per_problem}
+                _save()
 
             accuracy = n_correct / len(problems) if problems else 0.0
             print(f"  Accuracy: {n_correct}/{len(problems)} = {accuracy:.1%}")
