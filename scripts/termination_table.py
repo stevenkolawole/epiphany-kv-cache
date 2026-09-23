@@ -33,6 +33,12 @@ def recs(tag, K, model, d):
         f = R / d / "none_K1024.json"
     else:
         f = R / d / f"{tag}_K{K}.json"
+        if tag == "kv_seg_hs_tau128":      # steps-rule rerun of the first shard, when complete
+            g = N500 / f"{tag}_K{K}_s0_{model}.json"
+            if g.exists():
+                jg = json.load(open(g)); eg = jg["results"][next(iter(jg["results"]))][str(K)]
+                if not eg.get("partial") and len(eg["per_problem"]) == 100:
+                    f = g
     j = json.load(open(f))
     m = next(iter(j["results"]))
     pp = list(j["results"][m][next(iter(j["results"][m]))]["per_problem"])

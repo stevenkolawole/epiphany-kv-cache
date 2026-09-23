@@ -79,6 +79,16 @@ def math_cells(d, tag):
         return out
     for K in KS_MATH:
         f = R / d / f"{tag}_K{K}.json"
+        # The Seg row's first shard was rerun under the steps rule (--tau_mode steps), the rule of
+        # shards 100-499 and of the EpiKV row; the rerun replaces the earlier pruned-rule file when
+        # it is complete (results/math_n500_logical/<tag>_K<K>_s0_<model>.json).
+        if tag == "kv_seg_hs_tau128":
+            g = R / "math_n500_logical" / f"{tag}_K{K}_s0_{WIN_MODEL[d]}.json"
+            if g.exists():
+                jg = json.load(open(g))
+                eg = jg["results"][next(iter(jg["results"]))][str(K)]
+                if not eg.get("partial") and len(eg["per_problem"]) == 100:
+                    f = g
         if not f.exists():
             continue
         j = json.load(open(f))
