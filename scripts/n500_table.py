@@ -1,0 +1,91 @@
+#!/usr/bin/env python3
+"""MATH-500 at n=500: the paper's Table 2 cells (problems 0-99, results/
+llama_logical, qwen_logical, win) stacked with the four p4d shards per
+cell (problems 100-499, results/math_n500_logical), same protocol. Five
+of the 500 items have no boxed answer, so every cell has n=495.
+
+  --pairs   paired wins/losses and exact McNemar p vs EpiKV per column
+  --levels  also print the per-100 shard accuracies
+  --latex   LaTeX rows
+"""
+import argparse
+import json
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from acc_tables import MAIN, KS_MATH, MATH_DIRS, math_cells, pair  # noqa: E402
+
+R = Path(__file__).resolve().parent.parent / "results"
+N500 = R / "math_n500_logical"
+SHARDS = [100, 200, 300, 400]
+SHORT = {"none": "none", "epikv_q": "EpiKV", "kv_seg_hs_tau128": "Seg", "lag_kv": "Lag-KV",
+         "r_kv": "R-KV", "thinkv_faithful": "ThinKV", "raas": "RaaS", "longflow": "LongFlow",
+         "h2o": "H2O"}
+
+
+def shard(tag, K, S, model):
+    f = N500 / f"{tag}_K{K}_s{S}_{model}.json"
+    j = json.load(open(f))
+    m = next(iter(j["results"])); e = j["results"][m][next(iter(j["results"][m]))]
+    assert not e.get("partial"), f
+    pp = [bool(p["correct"]) for p in e["per_problem"]]
+    assert len(pp) == (95 if S == 400 else 100), (f, len(pp))  # 5 items lack a boxed answer
+    return pp
+
+
+def cells(model_dir, model, tag):
+    """{K: [500 bools]}; 'none' has one K=1024 run reused for every column."""
+    base = math_cells(model_dir, tag)
+    out = {}
+    for K in KS_MATH:
+        Kf = 1024 if tag == "none" else K
+        v = list(base[K])
+        assert len(v) == 100, (tag, K, len(v))
+        for S in SHARDS:
+            v += shard(tag, Kf, S, model)
+        out[K] = v
+    return out
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--pairs", action="store_true")
+    ap.add_argument("--levels", action="store_true")
+    ap.add_argument("--latex", action="store_true")
+    a = ap.parse_args()
+    for label, d in MATH_DIRS.items():
+        model = "llama" if "llama" in d else "qwen"
+        grid = {tag: cells(d, model, tag) for tag, _, _ in MAIN}
+        n = len(grid["none"][KS_MATH[0]])
+        print(f"\n### {label}, MATH-500, n={n} (accuracy %)\n")
+        if a.latex:
+            for tag, tex, _ in MAIN:
+                print(tex + " & " + " & ".join(f"{100*sum(grid[tag][K])/n:.1f}" for K in KS_MATH) + " \\\\")
+        else:
+            print("| method | " + " | ".join(f"K={K}" for K in KS_MATH) + " |")
+            print("|---|" + "---|" * len(KS_MATH))
+            for tag, _, _ in MAIN:
+                print(f"| {SHORT[tag]} | " + " | ".join(f"{100*sum(grid[tag][K])/n:.1f}" for K in KS_MATH) + " |")
+        if a.levels:
+            print(f"\nper-100 shards (0-99 | 100-199 | 200-299 | 300-399 | 400-499):")
+            for tag, _, _ in MAIN:
+                row = []
+                for K in KS_MATH:
+                    v = grid[tag][K]
+                    row.append("/".join(str(sum(v[i:i+100])) for i in range(0, n, 100)))
+                print(f"  {SHORT[tag]:9s} " + "   ".join(f"K{K}: {r}" for K, r in zip(KS_MATH, row)))
+        if a.pairs:
+            print("\npaired vs EpiKV (wins-losses for EpiKV, exact McNemar p):")
+            for tag, _, _ in MAIN:
+                if tag == "epikv_q":
+                    continue
+                cols = []
+                for K in KS_MATH:
+                    w, l, p = pair(grid["epikv_q"][K], grid[tag][K])
+                    cols.append(f"K{K}: {w:2d}-{l:2d} p={p:.3f}")
+                print(f"  {SHORT[tag]:9s} " + "   ".join(cols))
+
+
+if __name__ == "__main__":
+    main()
