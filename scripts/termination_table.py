@@ -67,6 +67,7 @@ def main():
         print(f"% termination accounting at K={K}; columns per model: errors, cap hits, terminated wrong")
         for label in models:
             print("% " + decomposition(data[label], K))
+            print("% " + decomposition(data[label], K, "raas", "none", "RaaS", "none"))
         for tag, tex in ROWS:
             cells = []
             for label in models:
@@ -87,17 +88,18 @@ def main():
         print()
         for label in models:
             print(decomposition(data[label], K))
+            print(decomposition(data[label], K, "raas", "none", "RaaS", "none"))
 
 
-def decomposition(d, K):
-    """EpiKV's paired wins/losses over the query-blind Seg, split by whether the loser hit the cap."""
-    e, s = d["epikv_q"], d["kv_seg_hs_tau128"]
+def decomposition(d, K, a="epikv_q", b="kv_seg_hs_tau128", na="EpiKV", nb="Seg"):
+    """Paired wins/losses of policy a over policy b, split by whether the loser hit the cap."""
+    e, s = d[a], d[b]
     wins = [(x, y) for x, y in zip(e, s) if x["correct"] and not y["correct"]]
     losses = [(x, y) for x, y in zip(e, s) if y["correct"] and not x["correct"]]
     wc = sum(y["n_tokens_generated"] >= CAP for x, y in wins)
     lc = sum(x["n_tokens_generated"] >= CAP for x, y in losses)
-    return (f"EpiKV over Seg at K={K}: {len(wins)} wins, of which {wc} were Seg cap hits; "
-            f"{len(losses)} losses, of which {lc} are EpiKV cap hits")
+    return (f"{na} over {nb} at K={K}: {len(wins)} wins, of which {wc} were {nb} cap hits; "
+            f"{len(losses)} losses, of which {lc} are {na} cap hits")
 
 
 if __name__ == "__main__":
