@@ -885,9 +885,11 @@ class LagKVKeyVarianceEviction:
     Score per token = mean_heads(std_head_dim(norm_k[t, :]))
     where norm_k is normalized by the preceding chunk's [min, max] per channel.
 
-    Causal adaptation of LagKV (Xu et al., arxiv:2504.04704): the paper uses
-    the *next* partition as reference (look-ahead, valid at prefill only).
-    We use the *previous* partition instead — causally valid during decode.
+    Budgeted, causal use of LagKV's normalization (arxiv:2504.04704). LagKV
+    normalizes each partition against the *next* one, keeps a fixed share of
+    every partition per head and never revisits a compressed partition, so its
+    cache grows with the sequence (its Sec. 2.2, Eqs. 12-13). Here the *previous*
+    chunk is the reference and the whole cache is re-ranked against one budget.
 
     Scores recomputed from current cache state each call (stateless).
     No extra forward pass — reads already-cached key tensors.
@@ -990,8 +992,9 @@ class LagKVEviction:
     decode.  Score per token = lag_key_std[t] + lag_val_std[t], where both K and V
     are normalized against the previous chunk's per-channel [min, max].
 
-    The paper uses the *next* partition as reference (only valid at prefill).
-    We use the *previous* partition (causal; valid during decode).
+    LagKV normalizes against the *next* partition and keeps a fixed share of
+    each partition (its cache grows with the sequence); here the *previous*
+    chunk is the reference and the whole cache is re-ranked against one budget.
 
     Ablation hierarchy:
         KVKeyVarianceEviction     → raw key var (no normalization)
