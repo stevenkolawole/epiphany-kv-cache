@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Figure for EpiKV 4.5: decode throughput and peak KV per request against
-concurrency, EpiKV-Seg eviction inside vLLM vs. the same engine without
+concurrency, EpiKV^-Q eviction inside vLLM vs. the same engine without
 eviction. Reads results/vllm_port/tp/tp_B<B>_K<K>.json.
 
     python scripts/plot_vllm_tp.py --out ../EpiKV-overleaf/figures/vllm_tp.pdf
@@ -44,7 +44,7 @@ def main():
     ax.plot([45, 75], [190, 190], color=fs.GREY, lw=1.2); ax.plot([58], [190], marker="o", color=fs.GREY, ms=3.5)
     ax.text(90, 190, "no eviction", color=fs.GREY, fontsize=6.8, va="center")
     ax.plot([45, 75], [125, 125], color=fs.BLUE, lw=1.4); ax.plot([58], [125], marker="s", color=fs.BLUE, ms=3.5)
-    ax.text(90, 125, "EpiKV-Seg, $K$=1024", color=fs.BLUE, fontsize=6.8, va="center")
+    ax.text(90, 125, r"EpiKV$^{-\mathrm{Q}}$, $K$ = 1024", color=fs.BLUE, fontsize=6.8, va="center")
     ax.set_xlim(0.7, 1700)
     if 256 in none and 256 in seg:
         ax.annotate("KV pool full:\ncapped engine ahead", xy=(256, seg[256]["tokens_per_s"]),
@@ -66,7 +66,7 @@ def main():
     bx.set_xticks(ticks)
     bx.set_xticklabels([str(b) for b in ticks])
     bx.text(1.2, 3850, "no eviction", color=fs.GREY, fontsize=7, va="top")
-    bx.text(1.2, 1150, "EpiKV-Seg: $K$ + one block", color=fs.BLUE, fontsize=7, va="bottom")
+    bx.text(1.2, 1150, r"EpiKV$^{-\mathrm{Q}}$: $K$ + one block", color=fs.BLUE, fontsize=7, va="bottom")
     if 1024 in none:
         bx.text(1.2, 2700, "past 256 requests both\nengines are pool-bound", color=fs.GREY, fontsize=6.5,
                 ha="left", va="top")

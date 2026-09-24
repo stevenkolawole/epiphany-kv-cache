@@ -33,7 +33,7 @@ def main():
     for K, (ls, mk) in styles.items():
         ys = [d["eviction_batch"][K][str(n)] for n in xs]
         ax.plot(xs, ys, ls=ls, marker=mk, ms=3, lw=1.2, color=fs.BLUE)
-        ax.annotate(f"eviction, $K{{=}}{int(K):,}$", (xs[0], ys[0]), xytext=(4, 4), textcoords="offset points",
+        ax.annotate(f"eviction, $K$ = {int(K):,}", (xs[0], ys[0]), xytext=(4, 4), textcoords="offset points",
                     ha="left", color=fs.BLUE, fontsize=7)
     # the one number: the gap at 32k tokens
     n0 = 32768
