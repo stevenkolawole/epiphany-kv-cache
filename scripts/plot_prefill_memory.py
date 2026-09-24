@@ -28,7 +28,9 @@ def main():
     fs.use()
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots(figsize=(fs.TEXT_W * 0.35, 1.55))
-    series = {"eager_attn": (fs.RED, "o", "attention\n(eager)"), "flash": (fs.BLUE, "s", "EpiKV (FlashAttention)")}
+    # "flash" is a FlashAttention-2 forward pass that returns the hidden states, which is what EpiKV reads;
+    # "eager_attn" returns the attention weights, which is what an attention-based policy reads.
+    series = {"eager_attn": (fs.RED, "o", "attention-based\nscoring"), "flash": (fs.BLUE, "s", "EpiKV")}
     for mode, (c, mk, label) in series.items():
         rows = sorted(res[mode].values(), key=lambda r: r["seq_len"])
         ok = [r for r in rows if not r["oom"]]
