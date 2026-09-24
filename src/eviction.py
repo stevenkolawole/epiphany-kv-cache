@@ -29,6 +29,7 @@ HybridSegmentHSEviction    — ThinKV segment type classification (key-perspecti
                               + detrended HS Band A−B score for within-segment token ranking
 """
 
+import random
 import torch
 import torch.nn.functional as F
 from typing import Tuple, Optional, List
@@ -2961,3 +2962,56 @@ if __name__ == "__main__":
     assert retained <= config.cache_size
 
     print("\nAll assertions passed.")
+
+
+class RandomEviction:
+    """
+    Random eviction: the control for every scored policy. Each decode token draws one
+    uniform score when it is generated and the policy keeps the top-K scores, so the
+    retained set is a uniform random subset of the decode tokens that never
+    re-randomizes (a frozen random score, the counterpart of the frozen hidden-state
+    score). The prefill and the recency window are kept as in the hidden-state and
+    KV families (Appendix app:policies). Reads nothing from the model, so it runs on
+    any kernel. Seeded per sequence, so a configuration is reproducible.
+    """
+
+    def __init__(self, config: EvictionConfig, seed: int = 0):
+        self.config = config
+        self.seed = seed
+        self._prefill_len: int = 0
+        self._scores: List[float] = []
+        self._rng = random.Random(seed)
+
+    def reset(self, prefill_len: int = 0):
+        self._prefill_len = prefill_len
+        self._scores = []
+        self._rng = random.Random(self.seed)
+
+    def evict_past_key_values(self, past_key_values: Tuple) -> Tuple:
+        seq_len = past_key_values[0][0].shape[2]
+        device = past_key_values[0][0].device
+        prefill_len = min(self._prefill_len, seq_len)
+        self._scores.append(self._rng.random())
+        if seq_len <= self.config.cache_size:
+            return past_key_values
+        num_decode = seq_len - prefill_len
+        keep_recent = min(self.config.keep_recent_k, self.config.cache_size // 4)
+        decode_budget = max(self.config.cache_size - prefill_len, 0)
+        keep_mask = torch.zeros(seq_len, dtype=torch.bool, device=device)
+        keep_mask[:prefill_len] = True
+        if decode_budget > 0 and num_decode > 0:
+            scores = torch.tensor(self._scores[-num_decode:], device=device, dtype=torch.float32)
+            if len(scores) < num_decode:
+                pad = torch.full((num_decode - len(scores),), float('-inf'), device=device)
+                scores = torch.cat([pad, scores])
+            scores[-keep_recent:] = float('inf')
+            n_keep = min(decode_budget, num_decode)
+            _, keep_idx = torch.topk(scores, n_keep)
+            keep_mask[prefill_len + keep_idx] = True
+        new_past = tuple(
+            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
+            for k, v in past_key_values
+        )
+        decode_keep = keep_mask[prefill_len:prefill_len + num_decode].tolist()
+        self._scores = [s for s, kept in zip(self._scores[-num_decode:], decode_keep) if kept]
+        return new_past

@@ -2,8 +2,9 @@
 """
 bench_prefill_memory.py
 
-The memory figure for the paper: peak GPU memory of a single forward pass as a
-function of context length, comparing the two scoring regimes.
+The memory figure for the paper: peak GPU memory and wall time of a single forward pass
+(prefill) as a function of context length, comparing the two scoring regimes. Time is the
+median of three passes after one warm-up pass.
 
   eager_attn : attn_implementation="eager", output_attentions=True
                — what any attention-based eviction method (H2O/ThinKV/RaaS) must
@@ -67,18 +68,27 @@ def measure(model, vocab_size: int, batch: int, seq_len: int, mode: str, device)
     input_ids = torch.randint(0, vocab_size, (batch, seq_len), device=device)
     want_attn = mode == "eager_attn"
     try:
+        import time
+        times = []
         with torch.no_grad():
-            model(
-                input_ids=input_ids,
-                use_cache=False,
-                output_attentions=want_attn,
-                output_hidden_states=not want_attn,
-            )
-        torch.cuda.synchronize(device)
+            for rep in range(4):                      # one warm-up pass, then three timed passes
+                torch.cuda.synchronize(device)
+                t0 = time.perf_counter()
+                model(
+                    input_ids=input_ids,
+                    use_cache=False,
+                    output_attentions=want_attn,
+                    output_hidden_states=not want_attn,
+                    logits_to_keep=1,   # a real prefill keeps the last token's logits only
+                )
+                torch.cuda.synchronize(device)
+                if rep:
+                    times.append(time.perf_counter() - t0)
         peak_mb = torch.cuda.max_memory_allocated(device) / 1024 ** 2
-        result = {"peak_gpu_mb": round(peak_mb, 1), "oom": False}
+        times.sort()
+        result = {"peak_gpu_mb": round(peak_mb, 1), "oom": False, "prefill_s": round(times[1], 4), "prefill_s_all": [round(t, 4) for t in times]}
     except torch.cuda.OutOfMemoryError:
-        result = {"peak_gpu_mb": None, "oom": True}
+        result = {"peak_gpu_mb": None, "oom": True, "prefill_s": None}
     finally:
         del input_ids
         torch.cuda.empty_cache()
