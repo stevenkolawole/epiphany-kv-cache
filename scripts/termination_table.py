@@ -79,6 +79,8 @@ def main():
             for label in models:
                 n, e, c, t = account(data[label][tag])
                 cells += [str(e), str(c), str(t)]
+            if tag == "epikv_q":   # our row: pale signature tint (bible D5, D38)
+                print("\\rowcolor{epirow}")
             print(tex + " & " + " & ".join(cells) + " \\\\")
     else:
         print(f"\n### Termination accounting at K={K} (n = {len(data[models[0]]['none'])})\n")

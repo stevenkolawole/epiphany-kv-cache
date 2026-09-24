@@ -98,6 +98,8 @@ def main():
                         if all(sig):
                             cell += "$^{\\dagger}$"
                     row.append(cell)
+            if tag == "epikv_q":   # our row carries the pale signature tint in every main table (bible D5, D38)
+                print("\\rowcolor{epirow}")
             print(f"{tex} & {mark} & " + " & ".join(row) + " \\\\")
             if tag == "lag_kv":
                 print("\\midrule")
