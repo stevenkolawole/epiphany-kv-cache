@@ -115,6 +115,10 @@ def main():
     # which makes the last evicted position an underestimate of the last
     # eviction time.
     eviction_steps = []
+    # Step at which each position left the cache (None = still cached at the end).
+    # Lets a reader ask whether a block was gone before the model re-derived it,
+    # which the final mask alone cannot answer.
+    evicted_at = {}
     with torch.no_grad():
         out = model(prompt_ids, use_cache=True, output_hidden_states=True,
                     output_attentions=needs_attn)
@@ -149,6 +153,9 @@ def main():
                 # a recency tail, and scored survivors. Re-derive the mask from
                 # the policy's own last decision so the report matches exactly.
                 keep = ev.last_keep_mask.cpu().tolist()
+                for pos, k in zip(alive, keep):
+                    if not k:
+                        evicted_at[pos] = step
                 alive = [pos for pos, k in zip(alive, keep) if k]
                 past = type(past).from_legacy_cache(new_legacy) if hasattr(past, "from_legacy_cache") else new_legacy
                 if hasattr(past, "_seen_tokens"):
@@ -186,6 +193,7 @@ def main():
                 "i": i, "pos": pos, "text": tok.decode([tid]),
                 "score": scores_at_time[i] if i < len(scores_at_time) else None,
                 "kept": pos in kept, "recency": pos >= tail_start,
+                "evicted_at": evicted_at.get(pos),
             })
         Path(args.json_out).write_text(json.dumps({
             "method": args.method, "problem_idx": args.problem_idx,
