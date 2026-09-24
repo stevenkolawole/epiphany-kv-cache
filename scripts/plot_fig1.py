@@ -67,6 +67,9 @@ def load_mem(path):
     return MEM_FALLBACK
 
 
+# token states (bible D24): kept by score, never ranked against a full cache, recency window, evicted
+STATE_COLOURS = (fs.BLUE_MID, fs.BLUE_LIGHT, fs.GREY_LIGHT, "#F4F5F6")
+
 _MEASURE = {}
 
 
@@ -136,23 +139,23 @@ def layout_words(toks, width_pt, size, fp):
     return lines
 
 
-def draw_lines(ax, lines, x0, y0, size, fp, line_h, kept_face, rec_face, unp_face="#e4eefb"):
+def draw_lines(ax, lines, x0, y0, size, fp, line_h, kept_face, rec_face, unp_face=None):
     for li, line in enumerate(lines):
         y = y0 - li * line_h
         for t, s, x, w in line:
             if t["kept"]:
-                face = rec_face if t.get("recency") else (unp_face if t.get("unpressured") else kept_face)
+                face = rec_face if t.get("recency") else ((unp_face or STATE_COLOURS[1]) if t.get("unpressured") else kept_face)
                 ax.add_patch(Rectangle((x0 + x - 0.6, y - 0.28 * size), w + 1.2, 1.15 * size,
                                        facecolor=face, edgecolor="none", zorder=1))
-                col = fs.INK if not t.get("unpressured") else "#4a5a6a"
+                col = fs.INK
             else:
-                col = "#9a9a9a"
+                col = fs.GREY_MID
             ax.text(x0 + x, y, s, fontsize=size, color=col, va="baseline", ha="left", zorder=2,
                     fontproperties=fp)
 
 
 def draw_words(ax, toks, x0, y0, width_pt, size, fp, line_h, kept_face, rec_face,
-               max_lines=None, unp_face="#e4eefb"):
+               max_lines=None, unp_face=None):
     """Lay tokens out as highlighted words in axes points; returns lines used."""
     x, line = 0.0, 0
     space = text_width(" ", size, fp)
@@ -172,12 +175,12 @@ def draw_words(ax, toks, x0, y0, width_pt, size, fp, line_h, kept_face, rec_face
                 return line
         y = y0 - line * line_h
         if t["kept"]:
-            face = rec_face if t.get("recency") else (unp_face if t.get("unpressured") else kept_face)
+            face = rec_face if t.get("recency") else ((unp_face or STATE_COLOURS[1]) if t.get("unpressured") else kept_face)
             ax.add_patch(Rectangle((x0 + x + lead - 0.6, y - 0.28 * size), w + 1.2, 1.15 * size,
                                    facecolor=face, edgecolor="none", zorder=1))
-            col = fs.INK if not t.get("unpressured") else "#4a5a6a"
+            col = fs.INK
         else:
-            col = "#9a9a9a"
+            col = fs.GREY_MID
         ax.text(x0 + x + lead, y, s_stripped, fontsize=size, color=col, va="baseline",
                 ha="left", zorder=2, fontproperties=fp)
         x += lead + w
@@ -188,7 +191,7 @@ def panel_a(fig, rect, meta, toks, excerpt):
     """rect = [left, bottom, width, height] in figure fraction."""
     L, B, W, H = rect
     n = len(toks)
-    fp = FontProperties(family=["DejaVu Sans"])
+    fp = FontProperties(family=["Nimbus Roman"])
     # --- score strip ------------------------------------------------------
     ax_s = fig.add_axes([L, B + 0.72 * H, W, 0.20 * H])
     sc = [t["score"] if t["score"] is not None and not math.isnan(t["score"]) else 0.0 for t in toks]
@@ -286,16 +289,16 @@ def panel_a_only(fig, rect, meta, toks, excerpt):
     showing the words. No titles; the caption carries them."""
     L, B, W, H = rect
     n = len(toks)
-    fp = FontProperties(family=["DejaVu Sans"])
+    fp = FontProperties(family=["Nimbus Roman"])
     ax_b = fig.add_axes([L, B + 0.72 * H, W, 0.13 * H])
     ax_b.set_xlim(0, n)
     ax_b.set_ylim(0, 1)
     mark_after_last_eviction(toks, meta)
-    KEPT = "#0b3a8c"   # deep blue: scored and kept
-    PALE = "#cfdff5"   # pale blue: never scored against a full cache
-    colors = [fs.AMBER if t.get("recency") else (PALE if t.get("unpressured") else
-              (KEPT if t["kept"] else fs.GREY_LIGHT)) for t in toks]
+    KEPT, PALE, REC, EVIC = STATE_COLOURS
+    colors = [REC if t.get("recency") else (PALE if t.get("unpressured") else
+              (KEPT if t["kept"] else EVIC)) for t in toks]
     ax_b.bar(range(n), [1] * n, width=1.0, color=colors, linewidth=0)
+    ax_b.add_patch(Rectangle((0, 0), n, 1, fill=False, edgecolor=fs.GREY_MID, lw=0.4, zorder=4))
     ax_b.set_yticks([])
     for s in ("left", "top", "right"):
         ax_b.spines[s].set_visible(False)
@@ -305,14 +308,14 @@ def panel_a_only(fig, rect, meta, toks, excerpt):
     e0, e1 = excerpt
     ax_b.add_patch(Rectangle((e0, -0.12), e1 - e0, 1.24, fill=False, edgecolor=fs.INK, lw=0.8,
                              zorder=5, clip_on=False))
-    ax_b.text(0, 1.25, "kept by score", color=KEPT, fontsize=7.2, va="bottom",
-              transform=ax_b.transAxes)
-    ax_b.text(0.235, 1.25, "evicted", color="#8a8a8a", fontsize=7.2, va="bottom",
-              transform=ax_b.transAxes)
-    ax_b.text(0.385, 1.25, "after the last eviction", color="#5b7aa6", fontsize=7.2, va="bottom",
-              transform=ax_b.transAxes)
-    ax_b.text(0.80, 1.25, "recency", color=fs.AMBER, fontsize=7.2, va="bottom",
-              transform=ax_b.transAxes)
+    # key: a swatch in the state's colour, the label in ink (bible D-3: no pale coloured text)
+    for x, lab, col in ((0.0, "kept by score", KEPT), (0.25, "never ranked", PALE),
+                        (0.50, "recency window", REC), (0.785, "evicted", EVIC)):
+        ax_b.add_patch(Rectangle((x, 1.30), 0.022, 0.55, transform=ax_b.transAxes, facecolor=col,
+                                 edgecolor=fs.GREY_MID, lw=0.3, clip_on=False))
+        ax_b.text(x + 0.032, 1.28, lab, color=fs.INK, fontsize=7, va="bottom", transform=ax_b.transAxes)
+    ax_b.set_xlabel("generated token", fontsize=7, labelpad=1)
+    ax_b.xaxis.set_label_coords(0.2, -0.55)
     ax_w = fig.add_axes([L, B, W, 0.50 * H])
     ax_w.axis("off")
     fig_w_in, fig_h_in = fig.get_size_inches()
@@ -322,7 +325,7 @@ def panel_a_only(fig, rect, meta, toks, excerpt):
     ax_w.set_ylim(0, h_pt)
     size, line_h = 7.0, 10.2
     used = draw_words(ax_w, toks[e0:e1], 5, h_pt - 11, width_pt - 4, size, fp, line_h,
-                      "#9dbdf0", "#f6e3b5", max_lines=int((h_pt - 6) // line_h))
+                      KEPT, REC, max_lines=int((h_pt - 6) // line_h), unp_face=PALE)
     # Frame hugs the text: its bottom sits one half-line under the last line.
     box_bottom = h_pt - 11 - (used - 1) * line_h - 0.6 * line_h
     ax_w.add_patch(Rectangle((0.5, box_bottom), width_pt + 4, h_pt - 0.5 - box_bottom,
@@ -372,7 +375,7 @@ def make_appendix(args):
     split over several PDFs: <out>, <out stem>_2.pdf, ... so LaTeX can place
     each on its own page."""
     meta, toks = load_trace(args.seg)
-    fp = FontProperties(family=["DejaVu Sans"])
+    fp = FontProperties(family=["Nimbus Roman"])
     W_in, H_in = fs.TEXT_W, args.page_h
     width_pt = W_in * 72 - 8
     h_pt = H_in * 72
@@ -398,7 +401,7 @@ def make_appendix(args):
         if len(pages) > 1:
             head += f"  (page {pi + 1} of {len(pages)})"
         ax.text(4, h_pt - 10, head, fontsize=7.5, va="top", color=fs.INK)
-        draw_lines(ax, page, 4, h_pt - 30, size, fp, line_h, "#9dbdf0", "#f6e3b5")
+        draw_lines(ax, page, 4, h_pt - 30, size, fp, line_h, STATE_COLOURS[0], STATE_COLOURS[2])
         p = out if pi == 0 else out.with_name(f"{out.stem}_{pi + 1}{out.suffix}")
         fig.savefig(p)
         plt.close(fig)

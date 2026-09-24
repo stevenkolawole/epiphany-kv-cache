@@ -21,13 +21,22 @@ import matplotlib.pyplot as plt
 TEXT_W = 5.5          # ICLR text width, inches
 HALF_W = 2.65
 
-BLUE = "#1f5fbf"      # ours
-BLUE_LIGHT = "#cfe0f7"
-RED = "#c8412b"       # attention-based / baseline
-RED_LIGHT = "#f4cfc8"
-AMBER = "#d9950a"     # recency window / secondary
-GREY = "#8c8c8c"
-GREY_LIGHT = "#d9d9d9"
+# Palette "Oxford" (reports/viz_study/notes_color.md; bible D24-D27). One hue per meaning:
+# EpiKV = ink blue (dark for text, mid for lines, light/pale for fills); failure (loops, OOM) =
+# vermilion; model internals and baselines = cool greys; reference (no eviction) = near-black dashed.
+BLUE = "#095792"      # EpiKV line
+BLUE_DARK = "#0A3F6E" # EpiKV text
+BLUE_MID = "#81A3CF"  # EpiKV secondary (recency window, variants)
+BLUE_LIGHT = "#CCDFF7"  # EpiKV fill
+RED = "#C85138"       # failure only: loops, OOM (never a method colour)
+RED_LIGHT = "#FDDFD7"
+AMBER = BLUE_MID      # retired as a hue; kept as an alias so old scripts stay consistent
+GREY_DARK = "#43474B"
+GREY = "#6B7076"
+GREY_MID = "#92969B"
+GREY_LIGHT = "#D5D7DB"
+BAND_A = "#F2EFCC"
+BAND_B = "#D3C7C0"
 INK = "#222222"
 
 

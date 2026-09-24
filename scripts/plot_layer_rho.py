@@ -70,8 +70,7 @@ def main():
         figstyle.use()
         import matplotlib.pyplot as plt
         fig, ax = plt.subplots(figsize=(figstyle.TEXT_W * 0.39, 1.38))
-        shade = "#EBEBEB"
-        for lo, hi in (BAND_A, BAND_B):
+        for (lo, hi), shade in ((BAND_A, figstyle.BAND_A), (BAND_B, figstyle.BAND_B)):
             ax.axvspan(lo - 0.5, hi + 0.5, color=shade, lw=0, zorder=0)
         ax.axhline(0, color=figstyle.GREY, lw=0.5, zorder=1)
         xs = list(range(32))
@@ -80,7 +79,7 @@ def main():
         ax.plot(xs, eg, color=figstyle.GREY, lw=1.0, ls=(0, (3, 1.5)), zorder=2, label="eager")
         ax.plot(xs, fa, color=figstyle.INK, lw=1.2, zorder=3, label="FlashAttention")
         for l in (10, 21):  # the two layers s(t) reads
-            ax.plot([l], [rho(data["math500"], l)], "o", ms=3.6, color=figstyle.INK, zorder=4)
+            ax.plot([l], [rho(data["math500"], l)], "o", ms=3.8, color=figstyle.BLUE, zorder=4)
         ax.text(sum(BAND_A) / 2, 0.215, "Band A", ha="center", va="bottom", fontsize=7, color=figstyle.INK)
         ax.text(sum(BAND_B) / 2, 0.215, "Band B", ha="center", va="bottom", fontsize=7, color=figstyle.INK)
         ax.set_xlim(-0.5, 31.5)

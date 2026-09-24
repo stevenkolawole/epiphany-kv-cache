@@ -30,8 +30,10 @@ def main():
     fig, ax = plt.subplots(figsize=(fs.TEXT_W * 0.35, 1.55))
     # "flash" is a FlashAttention-2 forward pass that returns the hidden states, which is what EpiKV reads;
     # "eager_attn" returns the attention weights, which is what an attention-based policy reads.
-    series = {"eager_attn": (fs.RED, "o", "attention-based\nscoring"), "flash": (fs.BLUE, "s", "EpiKV")}
-    for mode, (c, mk, label) in series.items():
+    # Palette D-3: our method in the signature blue, the baseline in grey, failure (OOM) in vermilion only.
+    series = {"eager_attn": (fs.GREY_DARK, "o", "attention-based\nscoring", fs.GREY_DARK),
+              "flash": (fs.BLUE, "s", "EpiKV", fs.BLUE_DARK)}
+    for mode, (c, mk, label, tc) in series.items():
         rows = sorted(res[mode].values(), key=lambda r: r["seq_len"])
         ok = [r for r in rows if not r["oom"]]
         xs = [r["seq_len"] for r in ok]
@@ -39,16 +41,16 @@ def main():
         ax.plot(xs, ys, marker=mk, ms=2.6, lw=1.2, color=c)
         oom = [r["seq_len"] for r in rows if r["oom"]]
         if oom:
-            ax.scatter([min(oom)], [gpu], marker="x", s=28, color=c, lw=1.2, zorder=5, clip_on=False)
+            ax.scatter([min(oom)], [gpu], marker="x", s=26, color=fs.RED, lw=1.2, zorder=5, clip_on=False)
             ax.annotate("OOM", (min(oom), gpu), xytext=(0, 3), textcoords="offset points", ha="center",
-                        va="bottom", fontsize=6.5, color=c)
+                        va="bottom", fontsize=6.5, color=fs.RED)
         if mode == "flash":      # under the flat part of the curve, clear of both lines
             ax.annotate(label, (2 ** 13, 19), xytext=(2, -4), textcoords="offset points", ha="center", va="top",
-                        fontsize=6.5, color=c)
-        else:                    # above the last measured point, to its left
-            ax.annotate(label, (xs[-1], ys[-1]), xytext=(-3, 4), textcoords="offset points", ha="right", va="bottom",
-                        fontsize=6.5, color=c)
-    ax.axhline(gpu, color=fs.GREY, ls=":", lw=0.7)
+                        fontsize=6.5, color=tc)
+        else:                    # in the empty region above the flat start, left of the rising curve
+            ax.text(2 ** 9.05, 55, label, ha="left", va="bottom", fontsize=6.5, color=tc, linespacing=1.0)
+    ax.axhline(gpu, color=fs.INK, ls=(0, (2, 2)), lw=0.6)
+    ax.text(2 ** 13.4, gpu - 2.5, "80 GB GPU", ha="left", va="top", fontsize=6.2, color=fs.INK)
     ax.set_xscale("log", base=2)
     ax.set_xticks([2 ** k for k in (10, 12, 14, 16)])
     ax.set_xticklabels([f"$2^{{{k}}}$" for k in (10, 12, 14, 16)])
