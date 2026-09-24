@@ -69,7 +69,7 @@ def main():
     if a.figure and a.wrap:
         figstyle.use()
         import matplotlib.pyplot as plt
-        fig, ax = plt.subplots(figsize=(figstyle.TEXT_W * 0.42, 1.62))
+        fig, ax = plt.subplots(figsize=(figstyle.TEXT_W * 0.39, 1.38))
         shade = "#EBEBEB"
         for lo, hi in (BAND_A, BAND_B):
             ax.axvspan(lo - 0.5, hi + 0.5, color=shade, lw=0, zorder=0)
