@@ -48,6 +48,7 @@ def main():
     ap.add_argument("--figure", type=Path)
     ap.add_argument("--perlayer", action="store_true")
     ap.add_argument("--attn", action="store_true")
+    ap.add_argument("--compact", action="store_true", help="half-width version for a wrapped figure")
     a = ap.parse_args()
     data = {k: load(k) for k, _ in SETS}
     if a.perlayer:
@@ -65,7 +66,7 @@ def main():
     if a.figure:
         figstyle.use()
         import matplotlib.pyplot as plt
-        fig, ax = plt.subplots(figsize=(figstyle.TEXT_W * 0.85, 2.6))
+        fig, ax = plt.subplots(figsize=(figstyle.TEXT_W * (0.46 if a.compact else 0.85), 2.25 if a.compact else 2.6))
         ax.axvspan(BAND_A[0] - 0.5, BAND_A[1] + 0.5, color=figstyle.BLUE_LIGHT, alpha=0.5, lw=0)
         ax.axvspan(BAND_B[0] - 0.5, BAND_B[1] + 0.5, color=figstyle.RED_LIGHT, alpha=0.5, lw=0)
         ax.axhline(0, color=figstyle.GREY, lw=0.6)
@@ -76,14 +77,20 @@ def main():
             c, ls, mk = style[k]
             ys = [rho(data[k], l) for l in xs]
             ax.plot(xs, ys, color=c, ls=ls, marker=mk, ms=2.5, lw=1.1, label=name)
-        ax.text(sum(BAND_A) / 2, 0.27, "Band A", color=figstyle.BLUE, ha="center", fontsize=8)
-        ax.text(sum(BAND_B) / 2, 0.27, "Band B", color=figstyle.RED, ha="center", fontsize=8)
+        ax.text(sum(BAND_A) / 2, 0.27, "Band A", color=figstyle.BLUE, ha="center", fontsize=7 if a.compact else 8)
+        ax.text(sum(BAND_B) / 2, 0.27, "Band B", color=figstyle.RED, ha="center", fontsize=7 if a.compact else 8)
         ax.set_xlabel("layer")
         ax.set_ylabel(r"Spearman $\rho$ with importance")
         ax.set_xlim(-0.5, 31.5)
         ax.set_ylim(-0.3, 0.32)
-        ax.legend(ncol=4, loc="upper center", bbox_to_anchor=(0.5, -0.22), fontsize=7,
-                  columnspacing=1.2, handletextpad=0.5)
+        if a.compact:
+            ax.set_ylabel(r"$\rho$ with importance")
+            ax.set_xticks([0, 7, 13, 18, 25, 31])
+            ax.legend(ncol=2, loc="upper center", bbox_to_anchor=(0.5, -0.24), fontsize=6.5,
+                      columnspacing=0.8, handletextpad=0.4, handlelength=1.6)
+        else:
+            ax.legend(ncol=4, loc="upper center", bbox_to_anchor=(0.5, -0.22), fontsize=7,
+                      columnspacing=1.2, handletextpad=0.5)
         a.figure.parent.mkdir(parents=True, exist_ok=True)
         fig.savefig(a.figure)
         print("wrote", a.figure, file=sys.stderr)
