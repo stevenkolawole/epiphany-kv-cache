@@ -8,7 +8,7 @@ Per layer l the value is Spearman rho of hs_l2_diff_l{l}_rolling64 with the coun
 importance labels (EOS filler).  Also prints the cumulative-attention comparison rows
 (tab:attnsignal): h2o_attn and attn_entropy against the deployed band layers, eager datasets only.
 
-  python scripts/plot_layer_rho.py --figure ../EpiKV-overleaf/figures/layer_rho.pdf
+  python scripts/plot_layer_rho.py --wrap --figure ../EpiKV-overleaf/figures/layer_rho.pdf
   python scripts/plot_layer_rho.py --perlayer > ../EpiKV-overleaf/tables/tab_perlayer_rows.tex
   python scripts/plot_layer_rho.py --attn     > ../EpiKV-overleaf/tables/tab_attnsignal_rows.tex
 """
@@ -74,10 +74,10 @@ def main():
             ax.axvspan(lo - 0.5, hi + 0.5, color=shade, lw=0, zorder=0)
         ax.axhline(0, color=figstyle.GREY, lw=0.5, zorder=1)
         xs = list(range(32))
+        # MATH-500 traces under FlashAttention only (Steven, Sep 24): the eager traces are a separate
+        # generation, and beside this line they read as a kernel effect; both are in tab:perlayer
         fa = [rho(data["math500"], l) for l in xs]
-        eg = [rho(data["math500_eager"], l) for l in xs]
-        ax.plot(xs, eg, color=figstyle.GREY, lw=1.0, ls=(0, (3, 1.5)), zorder=2, label="eager")
-        ax.plot(xs, fa, color=figstyle.INK, lw=1.2, zorder=3, label="FlashAttention")
+        ax.plot(xs, fa, color=figstyle.INK, lw=1.2, zorder=3)
         for l in (10, 21):  # the two layers s(t) reads
             ax.plot([l], [rho(data["math500"], l)], "o", ms=3.8, color=figstyle.BLUE, zorder=4)
         ax.text(sum(BAND_A) / 2, 0.215, "Band A", ha="center", va="bottom", fontsize=7, color=figstyle.INK)
@@ -89,9 +89,6 @@ def main():
         ax.set_xticks([0, 7, 13, 18, 25, 31])
         ax.set_xlabel("layer", labelpad=1)
         ax.set_ylabel(r"Spearman $\rho$", labelpad=1)
-        h, lab = ax.get_legend_handles_labels()
-        ax.legend(h[::-1], lab[::-1], loc="lower left", bbox_to_anchor=(-0.02, 1.0), ncol=2, fontsize=6.5, handlelength=1.8,
-                  borderaxespad=0.1, columnspacing=1.0, handletextpad=0.4)
         a.figure.parent.mkdir(parents=True, exist_ok=True)
         fig.savefig(a.figure)
         print("wrote", a.figure, file=sys.stderr)
