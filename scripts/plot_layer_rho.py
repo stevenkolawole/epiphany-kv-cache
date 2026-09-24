@@ -49,6 +49,9 @@ def main():
     ap.add_argument("--perlayer", action="store_true")
     ap.add_argument("--attn", action="store_true")
     ap.add_argument("--compact", action="store_true", help="half-width version for a wrapped figure")
+    ap.add_argument("--wrap", action="store_true",
+                    help="the main-text wrapped figure: MATH-500 only (the configurations the per-layer claim rests on), "
+                         "0.42 text width, neutral band shading, the two deployed layers marked")
     a = ap.parse_args()
     data = {k: load(k) for k, _ in SETS}
     if a.perlayer:
@@ -63,6 +66,37 @@ def main():
                 continue
             d = data[k]
             print(name.replace(" (eager)", "") + " & " + " & ".join(fmt(v) for v in (d["h2o_attn"], d["attn_entropy"], rho(d, 10), rho(d, 21), d["kv_key_var_rolling64"])) + " \\\\")
+    if a.figure and a.wrap:
+        figstyle.use()
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots(figsize=(figstyle.TEXT_W * 0.42, 1.62))
+        shade = "#EBEBEB"
+        for lo, hi in (BAND_A, BAND_B):
+            ax.axvspan(lo - 0.5, hi + 0.5, color=shade, lw=0, zorder=0)
+        ax.axhline(0, color=figstyle.GREY, lw=0.5, zorder=1)
+        xs = list(range(32))
+        fa = [rho(data["math500"], l) for l in xs]
+        eg = [rho(data["math500_eager"], l) for l in xs]
+        ax.plot(xs, eg, color=figstyle.GREY, lw=1.0, ls=(0, (3, 1.5)), zorder=2, label="eager")
+        ax.plot(xs, fa, color=figstyle.INK, lw=1.2, zorder=3, label="FlashAttention")
+        for l in (10, 21):  # the two layers s(t) reads
+            ax.plot([l], [rho(data["math500"], l)], "o", ms=3.6, color=figstyle.INK, zorder=4)
+        ax.text(sum(BAND_A) / 2, 0.215, "Band A", ha="center", va="bottom", fontsize=7, color=figstyle.INK)
+        ax.text(sum(BAND_B) / 2, 0.215, "Band B", ha="center", va="bottom", fontsize=7, color=figstyle.INK)
+        ax.set_xlim(-0.5, 31.5)
+        ax.set_ylim(-0.29, 0.27)
+        ax.set_yticks([-0.2, 0, 0.2])
+        ax.set_yticklabels(["$-$0.2", "0", "0.2"])
+        ax.set_xticks([0, 7, 13, 18, 25, 31])
+        ax.set_xlabel("layer", labelpad=1)
+        ax.set_ylabel(r"Spearman $\rho$", labelpad=1)
+        h, lab = ax.get_legend_handles_labels()
+        ax.legend(h[::-1], lab[::-1], loc="lower left", bbox_to_anchor=(-0.02, 1.0), ncol=2, fontsize=6.5, handlelength=1.8,
+                  borderaxespad=0.1, columnspacing=1.0, handletextpad=0.4)
+        a.figure.parent.mkdir(parents=True, exist_ok=True)
+        fig.savefig(a.figure)
+        print("wrote", a.figure, file=sys.stderr)
+        return
     if a.figure:
         figstyle.use()
         import matplotlib.pyplot as plt

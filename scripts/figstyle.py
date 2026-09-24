@@ -4,7 +4,8 @@ Rules, in order of how often they were broken before this file existed:
 
 1. Size the figure at the width it will be printed at, and never scale it in
    LaTeX. ICLR text width is 5.5 in; a half-width panel is 2.65 in. Fonts are
-   then real point sizes: 8 pt body, 7 pt ticks, 9 pt panel titles.
+   then real point sizes: 8 pt body, 7 pt ticks, 9 pt panel titles, in the
+   paper's own Times (Nimbus Roman), never a sans default.
 2. One accent per concept, greys for everything else. Ours is blue; the
    attention-based comparison is red; recency/secondary is amber.
 3. Direct labels on the data instead of a legend wherever there is room.
@@ -32,8 +33,10 @@ INK = "#222222"
 
 def use():
     plt.rcParams.update({
-        "font.family": "sans-serif",
-        "font.sans-serif": ["Helvetica", "Arial", "DejaVu Sans"],
+        # Body font of the paper (LaTeX `times` = URW Nimbus Roman), maths in STIX (bible D0c, X21).
+        "font.family": "serif",
+        "font.serif": ["Nimbus Roman", "TeX Gyre Termes", "Times", "DejaVu Serif"],
+        "mathtext.fontset": "stix",
         "font.size": 8,
         "axes.titlesize": 9,
         "axes.labelsize": 8,
