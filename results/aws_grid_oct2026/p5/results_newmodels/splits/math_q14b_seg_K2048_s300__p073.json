@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      2048
+    ],
+    "methods": [
+      "kv_seg_hs"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs": {
+      "2048": {
+        "accuracy": 0.8,
+        "n_correct": 8,
+        "n_total": 10,
+        "mean_wall_time_s": 210.72,
+        "mean_peak_gpu_mb": 28991.7,
+        "per_problem": [
+          {
+            "problem": "Determine the coordinates of the point $P$ on the line $y=-x+6$ such that $P$ is",
+            "ground_truth": "(8,-2)",
+            "pred_answer": "(8, -2)",
+            "correct": true,
+            "n_tokens_generated": 2843,
+            "wall_time_s": 118.56,
+            "peak_gpu_mb": 29061.3,
+            "error": null
+          },
+          {
+            "problem": "The superfactorial $n\\$$ is defined as $n\\$ = \\underbrace{ n!^{{n!}^{{\\cdot}^{{\\",
+            "ground_truth": "6",
+            "pred_answer": "6",
+            "correct": true,
+            "n_tokens_generated": 6304,
+            "wall_time_s": 270.73,
+            "peak_gpu_mb": 29061.0,
+            "error": null
+          },
+          {
+            "problem": "For how many two-digit primes is the sum of the digits equal to 8?",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 2585,
+            "wall_time_s": 110.78,
+            "peak_gpu_mb": 29020.0,
+            "error": null
+          },
+          {
+            "problem": "The data in the table below shows the percent of bus riders in a survey of Centr",
+            "ground_truth": "12",
+            "pred_answer": "12",
+            "correct": true,
+            "n_tokens_generated": 8659,
+            "wall_time_s": 355.35,
+            "peak_gpu_mb": 29096.5,
+            "error": null
+          },
+          {
+            "problem": "Solve\n\\[\\frac{|x^2 - 81|}{x^2 - 36x} < 0.\\]",
+            "ground_truth": "(0,9) \\cup (9,36)",
+            "pred_answer": "(0, 9) \\cup (9, 36)",
+            "correct": true,
+            "n_tokens_generated": 4565,
+            "wall_time_s": 186.32,
+            "peak_gpu_mb": 29034.1,
+            "error": null
+          },
+          {
+            "problem": "Two numbers, $x$ and $y$ are selected at random from the interval $(0,3)$.  What",
+            "ground_truth": "\\frac{1}{2}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 662.07,
+            "peak_gpu_mb": 29058.9,
+            "error": null
+          },
+          {
+            "problem": "A rectangular field is enclosed in an athletic track, as shown below.  The track",
+            "ground_truth": "\\frac{20000}{\\pi}",
+            "pred_answer": "\\dfrac{20000}{\\pi}",
+            "correct": true,
+            "n_tokens_generated": 3693,
+            "wall_time_s": 146.06,
+            "peak_gpu_mb": 29080.4,
+            "error": null
+          },
+          {
+            "problem": "For what values of $x$ is it true that $x^2 - 5x - 4 \\le 10$? Express your answe",
+            "ground_truth": "x \\in [-2,7]",
+            "pred_answer": "[-2, 7]",
+            "correct": false,
+            "n_tokens_generated": 1977,
+            "wall_time_s": 78.88,
+            "peak_gpu_mb": 28890.2,
+            "error": null
+          },
+          {
+            "problem": "Simplify the following expression in $x$: $$19x + 1 - 4x - 81.$$",
+            "ground_truth": "15x - 80",
+            "pred_answer": "15x - 80",
+            "correct": true,
+            "n_tokens_generated": 924,
+            "wall_time_s": 35.82,
+            "peak_gpu_mb": 28547.9,
+            "error": null
+          },
+          {
+            "problem": "Kathy needs money for her trip to Europe. If she has 300 US dollars in the bank ",
+            "ground_truth": "22",
+            "pred_answer": "22",
+            "correct": true,
+            "n_tokens_generated": 3601,
+            "wall_time_s": 142.67,
+            "peak_gpu_mb": 29066.8,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

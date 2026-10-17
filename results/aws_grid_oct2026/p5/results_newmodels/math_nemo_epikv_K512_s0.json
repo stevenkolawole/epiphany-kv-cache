@@ -1,0 +1,86 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "math500",
+    "n_samples": 100,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "512": {
+        "partial": true,
+        "n_total": 100,
+        "per_problem": [
+          {
+            "problem": "Convert the point $(0,3)$ in rectangular coordinates to polar coordinates.  Ente",
+            "ground_truth": "\\left( 3, \\frac{\\pi}{2} \\right)",
+            "pred_answer": "\\left(3, \\frac{\\pi}{2}\\right)",
+            "correct": true,
+            "n_tokens_generated": 977,
+            "wall_time_s": 60.01,
+            "peak_gpu_mb": 15598.0,
+            "error": null
+          },
+          {
+            "problem": "Define\n\\[p = \\sum_{k = 1}^\\infty \\frac{1}{k^2} \\quad \\text{and} \\quad q = \\sum_{",
+            "ground_truth": "p - q",
+            "pred_answer": "p - q",
+            "correct": true,
+            "n_tokens_generated": 3486,
+            "wall_time_s": 200.83,
+            "peak_gpu_mb": 15605.1,
+            "error": null
+          },
+          {
+            "problem": "If $f(x) = \\frac{3x-2}{x-2}$, what is the value of $f(-2) +f(-1)+f(0)$? Express ",
+            "ground_truth": "\\frac{14}{3}",
+            "pred_answer": "\\dfrac{14}{3}",
+            "correct": true,
+            "n_tokens_generated": 1343,
+            "wall_time_s": 180.89,
+            "peak_gpu_mb": 15598.0,
+            "error": null
+          },
+          {
+            "problem": "How many positive whole-number divisors does 196 have?",
+            "ground_truth": "9",
+            "pred_answer": "9",
+            "correct": true,
+            "n_tokens_generated": 1337,
+            "wall_time_s": 158.22,
+            "peak_gpu_mb": 15594.2,
+            "error": null
+          },
+          {
+            "problem": "The results of a cross-country team's training run are graphed below. Which stud",
+            "ground_truth": "\\text{Evelyn}",
+            "pred_answer": "Evelyn",
+            "correct": true,
+            "n_tokens_generated": 5439,
+            "wall_time_s": 622.7,
+            "peak_gpu_mb": 15628.8,
+            "error": null
+          },
+          {
+            "problem": "A regular hexagon can be divided into six equilateral triangles. If the perimete",
+            "ground_truth": "42",
+            "pred_answer": "42",
+            "correct": true,
+            "n_tokens_generated": 1111,
+            "wall_time_s": 128.51,
+            "peak_gpu_mb": 15597.3,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

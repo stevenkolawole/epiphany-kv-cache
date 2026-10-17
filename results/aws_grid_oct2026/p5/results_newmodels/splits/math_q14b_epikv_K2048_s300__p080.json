@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      2048
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "2048": {
+        "accuracy": 0.7,
+        "n_correct": 7,
+        "n_total": 10,
+        "mean_wall_time_s": 165.61,
+        "mean_peak_gpu_mb": 29060.2,
+        "per_problem": [
+          {
+            "problem": "For what values of $x$ is it true that $x^2 - 5x - 4 \\le 10$? Express your answe",
+            "ground_truth": "x \\in [-2,7]",
+            "pred_answer": "[-2, 7]",
+            "correct": false,
+            "n_tokens_generated": 1977,
+            "wall_time_s": 78.32,
+            "peak_gpu_mb": 28890.2,
+            "error": null
+          },
+          {
+            "problem": "Simplify the following expression in $x$: $$19x + 1 - 4x - 81.$$",
+            "ground_truth": "15x - 80",
+            "pred_answer": "15x - 80",
+            "correct": true,
+            "n_tokens_generated": 924,
+            "wall_time_s": 36.01,
+            "peak_gpu_mb": 28547.9,
+            "error": null
+          },
+          {
+            "problem": "Kathy needs money for her trip to Europe. If she has 300 US dollars in the bank ",
+            "ground_truth": "22",
+            "pred_answer": "22",
+            "correct": true,
+            "n_tokens_generated": 6324,
+            "wall_time_s": 253.28,
+            "peak_gpu_mb": 29287.3,
+            "error": null
+          },
+          {
+            "problem": "How many integers are in the solution set of $|x-2|\\leq5.6$ ?",
+            "ground_truth": "11",
+            "pred_answer": "11",
+            "correct": true,
+            "n_tokens_generated": 2063,
+            "wall_time_s": 81.45,
+            "peak_gpu_mb": 29231.6,
+            "error": null
+          },
+          {
+            "problem": "If $f(x)=5x^2+3x+4$, what is the value of $f(-2)$?",
+            "ground_truth": "18",
+            "pred_answer": "18",
+            "correct": true,
+            "n_tokens_generated": 1200,
+            "wall_time_s": 47.32,
+            "peak_gpu_mb": 28633.4,
+            "error": null
+          },
+          {
+            "problem": "What is the smallest real number $x$ in the domain of the function $$g(x) = \\sqr",
+            "ground_truth": "\\frac{11}{2}",
+            "pred_answer": "\\dfrac{11}{2}",
+            "correct": true,
+            "n_tokens_generated": 2442,
+            "wall_time_s": 97.14,
+            "peak_gpu_mb": 29279.1,
+            "error": null
+          },
+          {
+            "problem": "The smallest distance between the origin and a point on the graph of $y=\\frac{1}",
+            "ground_truth": "12",
+            "pred_answer": "12",
+            "correct": true,
+            "n_tokens_generated": 4047,
+            "wall_time_s": 162.09,
+            "peak_gpu_mb": 29287.5,
+            "error": null
+          },
+          {
+            "problem": "Let $f$ be defined by  \\[f(x) = \\left\\{\n\\begin{array}{cl}\n3-x & \\text{ if } x \\l",
+            "ground_truth": "0",
+            "pred_answer": "0",
+            "correct": true,
+            "n_tokens_generated": 4210,
+            "wall_time_s": 169.16,
+            "peak_gpu_mb": 29288.1,
+            "error": null
+          },
+          {
+            "problem": "The distances from a point $P$ to five of the vertices of a regular octahedron a",
+            "ground_truth": "\\sqrt{66}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 661.41,
+            "peak_gpu_mb": 29316.0,
+            "error": null
+          },
+          {
+            "problem": "It's a well-known physics formula that force equals mass times acceleration.  Je",
+            "ground_truth": "\\frac 34",
+            "pred_answer": "\\dfrac{3}{4}",
+            "correct": false,
+            "n_tokens_generated": 1771,
+            "wall_time_s": 69.92,
+            "peak_gpu_mb": 28840.7,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

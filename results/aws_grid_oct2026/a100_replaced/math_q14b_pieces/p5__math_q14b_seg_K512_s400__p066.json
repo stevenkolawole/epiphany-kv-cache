@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "kv_seg_hs"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs": {
+      "512": {
+        "accuracy": 0.8,
+        "n_correct": 8,
+        "n_total": 10,
+        "mean_wall_time_s": 289.25,
+        "mean_peak_gpu_mb": 28440.3,
+        "per_problem": [
+          {
+            "problem": "A class of 30 students recently took a test.  If 20 students scored 80, 8 studen",
+            "ground_truth": "84",
+            "pred_answer": "84",
+            "correct": true,
+            "n_tokens_generated": 1279,
+            "wall_time_s": 70.93,
+            "peak_gpu_mb": 28423.3,
+            "error": null
+          },
+          {
+            "problem": "At 50 miles per hour, how far would a car travel in $2\\frac{3}{4}$ hours? Expres",
+            "ground_truth": "137 \\frac{1}{2}",
+            "pred_answer": "137\\frac{1}{2}",
+            "correct": true,
+            "n_tokens_generated": 1397,
+            "wall_time_s": 76.05,
+            "peak_gpu_mb": 28420.9,
+            "error": null
+          },
+          {
+            "problem": "Below is a magic square, meaning that the sum of the numbers in each row, in eac",
+            "ground_truth": "7",
+            "pred_answer": "7",
+            "correct": true,
+            "n_tokens_generated": 3426,
+            "wall_time_s": 186.41,
+            "peak_gpu_mb": 28514.0,
+            "error": null
+          },
+          {
+            "problem": "Find the value of $\\log_2{3} \\cdot \\log_3{4} \\cdot \\log_4{5} \\cdot \\log_5{6} \\cd",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 1935,
+            "wall_time_s": 106.44,
+            "peak_gpu_mb": 28427.7,
+            "error": null
+          },
+          {
+            "problem": "When rolling a certain unfair six-sided die with faces numbered 1, 2, 3, 4, 5, a",
+            "ground_truth": "29",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 897.22,
+            "peak_gpu_mb": 28484.7,
+            "error": null
+          },
+          {
+            "problem": "Jim and Martha are standing together at the corner of a rectangular field. Jim w",
+            "ground_truth": "200",
+            "pred_answer": "200",
+            "correct": true,
+            "n_tokens_generated": 1627,
+            "wall_time_s": 89.51,
+            "peak_gpu_mb": 28429.4,
+            "error": null
+          },
+          {
+            "problem": "The two-digit number $``B6,''$ where $B$ is the tens digit, is the square of a p",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 3813,
+            "wall_time_s": 209.58,
+            "peak_gpu_mb": 28422.4,
+            "error": null
+          },
+          {
+            "problem": "Find the sum of all complex solutions of the equation\n\\[\\frac{1}{x^2 - 1} + \\fra",
+            "ground_truth": "\\frac{2}{1005}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 905.39,
+            "peak_gpu_mb": 28431.9,
+            "error": null
+          },
+          {
+            "problem": "There are finitely many primes $p$ for which the congruence $$8x\\equiv 1\\pmod{p}",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 1948,
+            "wall_time_s": 107.35,
+            "peak_gpu_mb": 28420.4,
+            "error": null
+          },
+          {
+            "problem": "Let $\\omega$ be a complex number such that $\\omega^3 = 1.$  Find all possible va",
+            "ground_truth": "1",
+            "pred_answer": "1",
+            "correct": true,
+            "n_tokens_generated": 4410,
+            "wall_time_s": 243.66,
+            "peak_gpu_mb": 28428.8,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

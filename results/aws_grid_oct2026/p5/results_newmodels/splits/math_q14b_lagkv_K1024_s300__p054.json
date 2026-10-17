@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      1024
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "1024": {
+        "accuracy": 0.2,
+        "n_correct": 2,
+        "n_total": 10,
+        "mean_wall_time_s": 539.72,
+        "mean_peak_gpu_mb": 28699.5,
+        "per_problem": [
+          {
+            "problem": "I have a deck of $54$ cards, and I deal all of the cards to $x$ players, with ea",
+            "ground_truth": "4",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 740.94,
+            "peak_gpu_mb": 28698.1,
+            "error": null
+          },
+          {
+            "problem": "Determine if the graph of the equation below is a parabola, circle, ellipse, hyp",
+            "ground_truth": "\\text{ellipse}",
+            "pred_answer": "\\text{ellipse}",
+            "correct": true,
+            "n_tokens_generated": 2007,
+            "wall_time_s": 85.03,
+            "peak_gpu_mb": 28696.5,
+            "error": null
+          },
+          {
+            "problem": "Suppose that $x,$ $y,$ and $z$ satisfy the equations\n\\begin{align*}\nxyz &= 4, \\\\",
+            "ground_truth": "6",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 743.66,
+            "peak_gpu_mb": 28703.0,
+            "error": null
+          },
+          {
+            "problem": "The following line is parameterized, so that its direction vector is of the form",
+            "ground_truth": "\\frac{7}{4}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 742.88,
+            "peak_gpu_mb": 28723.4,
+            "error": null
+          },
+          {
+            "problem": "An equilateral triangle is inscribed in the parabola $x^2 = 8y,$ such that one o",
+            "ground_truth": "16 \\sqrt{3}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 744.17,
+            "peak_gpu_mb": 28696.1,
+            "error": null
+          },
+          {
+            "problem": "Two candidates, Dan and Donald, run for class president. Two other candidates, F",
+            "ground_truth": "\\frac14",
+            "pred_answer": "\\dfrac{1}{4}",
+            "correct": false,
+            "n_tokens_generated": 2083,
+            "wall_time_s": 88.19,
+            "peak_gpu_mb": 28697.0,
+            "error": null
+          },
+          {
+            "problem": "Three plus the reciprocal of a number equals 7 divided by that number.  What is ",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 1111,
+            "wall_time_s": 43.57,
+            "peak_gpu_mb": 28691.2,
+            "error": null
+          },
+          {
+            "problem": "If each point of the circle $x^2 + y^2 = 25$ is reflected in the point $(4,1),$ ",
+            "ground_truth": "(1,-16,-4,43)",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 743.55,
+            "peak_gpu_mb": 28699.2,
+            "error": null
+          },
+          {
+            "problem": "If $a$ and $b$ are positive integers such that $\\gcd(a,b)=210$, $\\mathop{\\text{l",
+            "ground_truth": "8",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 752.11,
+            "peak_gpu_mb": 28696.7,
+            "error": null
+          },
+          {
+            "problem": "Find the modulo $7$ remainder of the sum $1+3+5+7+9+\\dots+195+197+199.$",
+            "ground_truth": "4",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 713.09,
+            "peak_gpu_mb": 28693.4,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

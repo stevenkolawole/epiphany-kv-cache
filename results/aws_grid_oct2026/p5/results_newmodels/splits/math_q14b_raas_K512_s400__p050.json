@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "raas"
+    ],
+    "attn_impl": "eager"
+  },
+  "results": {
+    "raas": {
+      "512": {
+        "accuracy": 0.6,
+        "n_correct": 6,
+        "n_total": 10,
+        "mean_wall_time_s": 321.9,
+        "mean_peak_gpu_mb": 28475.9,
+        "per_problem": [
+          {
+            "problem": "In how many ways can  5 students be selected from a group of 6 students?",
+            "ground_truth": "6",
+            "pred_answer": "6",
+            "correct": true,
+            "n_tokens_generated": 1265,
+            "wall_time_s": 64.0,
+            "peak_gpu_mb": 28468.0,
+            "error": null
+          },
+          {
+            "problem": "Find all the integer roots of\n\\[x^4 + 5x^3 + 9x^2 - x - 14 = 0.\\]Enter all the i",
+            "ground_truth": "-2,1",
+            "pred_answer": "-2, 1",
+            "correct": true,
+            "n_tokens_generated": 6086,
+            "wall_time_s": 321.27,
+            "peak_gpu_mb": 28471.9,
+            "error": null
+          },
+          {
+            "problem": "Determine the remainder of 54 (mod 6).",
+            "ground_truth": "0",
+            "pred_answer": "0",
+            "correct": true,
+            "n_tokens_generated": 1420,
+            "wall_time_s": 72.59,
+            "peak_gpu_mb": 28467.1,
+            "error": null
+          },
+          {
+            "problem": "Each week, between 30 and 50 students show up for an archery class run by Betty ",
+            "ground_truth": "41",
+            "pred_answer": "41",
+            "correct": true,
+            "n_tokens_generated": 6325,
+            "wall_time_s": 302.73,
+            "peak_gpu_mb": 28482.1,
+            "error": null
+          },
+          {
+            "problem": "Fake gold bricks are made by covering concrete cubes with gold paint, so the cos",
+            "ground_truth": "\\$18.90",
+            "pred_answer": "18.90",
+            "correct": false,
+            "n_tokens_generated": 2693,
+            "wall_time_s": 130.3,
+            "peak_gpu_mb": 28477.4,
+            "error": null
+          },
+          {
+            "problem": "In the diagram below, we have $\\overline{ST}\\parallel\\overline{QR}$, $\\angle P= ",
+            "ground_truth": "75^\\circ",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 769.97,
+            "peak_gpu_mb": 28490.3,
+            "error": null
+          },
+          {
+            "problem": "Let \\[f(n) = \\left\\{\n\\begin{array}{cl}\n\\lfloor n \\rfloor & \\text{ if }n \\geq 4, ",
+            "ground_truth": "12",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 735.65,
+            "peak_gpu_mb": 28480.3,
+            "error": null
+          },
+          {
+            "problem": "Linda, Sherry, June, and Connie walked around their neighborhoods selling girl s",
+            "ground_truth": "59",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 677.69,
+            "peak_gpu_mb": 28481.4,
+            "error": null
+          },
+          {
+            "problem": "For how many values of $x$ is the expression $\\frac{x-5}{x^2-9}$  not defined?",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 1190,
+            "wall_time_s": 42.31,
+            "peak_gpu_mb": 28469.2,
+            "error": null
+          },
+          {
+            "problem": "If $\\log_6 (x-y) + \\log_6 (x+y) = 2$ and $\\log_y 5x = 2$, then find $x$.",
+            "ground_truth": "9",
+            "pred_answer": "9",
+            "correct": true,
+            "n_tokens_generated": 2882,
+            "wall_time_s": 102.5,
+            "peak_gpu_mb": 28471.0,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

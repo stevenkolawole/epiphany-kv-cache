@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      1024
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "1024": {
+        "accuracy": 0.8,
+        "n_correct": 8,
+        "n_total": 10,
+        "mean_wall_time_s": 281.0,
+        "mean_peak_gpu_mb": 28775.9,
+        "per_problem": [
+          {
+            "problem": "When rolling a certain unfair six-sided die with faces numbered 1, 2, 3, 4, 5, a",
+            "ground_truth": "29",
+            "pred_answer": "29",
+            "correct": true,
+            "n_tokens_generated": 13682,
+            "wall_time_s": 530.53,
+            "peak_gpu_mb": 28788.0,
+            "error": null
+          },
+          {
+            "problem": "Jim and Martha are standing together at the corner of a rectangular field. Jim w",
+            "ground_truth": "200",
+            "pred_answer": "200",
+            "correct": true,
+            "n_tokens_generated": 1423,
+            "wall_time_s": 56.38,
+            "peak_gpu_mb": 28772.9,
+            "error": null
+          },
+          {
+            "problem": "The two-digit number $``B6,''$ where $B$ is the tens digit, is the square of a p",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 2887,
+            "wall_time_s": 114.96,
+            "peak_gpu_mb": 28771.6,
+            "error": null
+          },
+          {
+            "problem": "Find the sum of all complex solutions of the equation\n\\[\\frac{1}{x^2 - 1} + \\fra",
+            "ground_truth": "\\frac{2}{1005}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 648.6,
+            "peak_gpu_mb": 28776.6,
+            "error": null
+          },
+          {
+            "problem": "There are finitely many primes $p$ for which the congruence $$8x\\equiv 1\\pmod{p}",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 2817,
+            "wall_time_s": 111.85,
+            "peak_gpu_mb": 28770.5,
+            "error": null
+          },
+          {
+            "problem": "Let $\\omega$ be a complex number such that $\\omega^3 = 1.$  Find all possible va",
+            "ground_truth": "1",
+            "pred_answer": "1",
+            "correct": true,
+            "n_tokens_generated": 4837,
+            "wall_time_s": 190.13,
+            "peak_gpu_mb": 28774.6,
+            "error": null
+          },
+          {
+            "problem": "Let $n$ be a positive integer.  Simplify the expression\n\\[\\frac{(2^4 + \\frac{1}{",
+            "ground_truth": "8n^2 + 4n + 1",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 653.71,
+            "peak_gpu_mb": 28780.4,
+            "error": null
+          },
+          {
+            "problem": "If $\\frac{a}{b}$ is the probability that the reciprocal of a randomly selected p",
+            "ground_truth": "202",
+            "pred_answer": "202",
+            "correct": true,
+            "n_tokens_generated": 4215,
+            "wall_time_s": 166.47,
+            "peak_gpu_mb": 28775.7,
+            "error": null
+          },
+          {
+            "problem": "The area of triangle $ABC$ is equal to $a^2 - (b - c)^2,$ where $a,$ $b,$ and $c",
+            "ground_truth": "\\frac{8}{15}",
+            "pred_answer": "\\dfrac{8}{15}",
+            "correct": true,
+            "n_tokens_generated": 3857,
+            "wall_time_s": 149.92,
+            "peak_gpu_mb": 28775.1,
+            "error": null
+          },
+          {
+            "problem": "Solve\n\\[\\sqrt{x + \\sqrt{3x + 6}} + \\sqrt{x - \\sqrt{3x + 6}} = 6.\\]",
+            "ground_truth": "10",
+            "pred_answer": "10",
+            "correct": true,
+            "n_tokens_generated": 4746,
+            "wall_time_s": 187.4,
+            "peak_gpu_mb": 28773.2,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

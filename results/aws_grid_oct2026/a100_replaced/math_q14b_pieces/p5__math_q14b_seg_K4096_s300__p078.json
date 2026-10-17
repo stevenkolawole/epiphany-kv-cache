@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "kv_seg_hs"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs": {
+      "4096": {
+        "accuracy": 0.9,
+        "n_correct": 9,
+        "n_total": 10,
+        "mean_wall_time_s": 193.27,
+        "mean_peak_gpu_mb": 29275.0,
+        "per_problem": [
+          {
+            "problem": "Two numbers, $x$ and $y$ are selected at random from the interval $(0,3)$.  What",
+            "ground_truth": "\\frac{1}{2}",
+            "pred_answer": "\\dfrac{1}{2}",
+            "correct": true,
+            "n_tokens_generated": 8807,
+            "wall_time_s": 473.13,
+            "peak_gpu_mb": 29801.7,
+            "error": null
+          },
+          {
+            "problem": "A rectangular field is enclosed in an athletic track, as shown below.  The track",
+            "ground_truth": "\\frac{20000}{\\pi}",
+            "pred_answer": "\\frac{20000}{\\pi}",
+            "correct": true,
+            "n_tokens_generated": 4177,
+            "wall_time_s": 224.06,
+            "peak_gpu_mb": 29829.2,
+            "error": null
+          },
+          {
+            "problem": "For what values of $x$ is it true that $x^2 - 5x - 4 \\le 10$? Express your answe",
+            "ground_truth": "x \\in [-2,7]",
+            "pred_answer": "[-2, 7]",
+            "correct": false,
+            "n_tokens_generated": 1937,
+            "wall_time_s": 104.22,
+            "peak_gpu_mb": 28865.7,
+            "error": null
+          },
+          {
+            "problem": "Simplify the following expression in $x$: $$19x + 1 - 4x - 81.$$",
+            "ground_truth": "15x - 80",
+            "pred_answer": "15x - 80",
+            "correct": true,
+            "n_tokens_generated": 1035,
+            "wall_time_s": 55.24,
+            "peak_gpu_mb": 28562.0,
+            "error": null
+          },
+          {
+            "problem": "Kathy needs money for her trip to Europe. If she has 300 US dollars in the bank ",
+            "ground_truth": "22",
+            "pred_answer": "22",
+            "correct": true,
+            "n_tokens_generated": 4567,
+            "wall_time_s": 245.18,
+            "peak_gpu_mb": 29811.4,
+            "error": null
+          },
+          {
+            "problem": "How many integers are in the solution set of $|x-2|\\leq5.6$ ?",
+            "ground_truth": "11",
+            "pred_answer": "11",
+            "correct": true,
+            "n_tokens_generated": 2562,
+            "wall_time_s": 137.52,
+            "peak_gpu_mb": 29051.4,
+            "error": null
+          },
+          {
+            "problem": "If $f(x)=5x^2+3x+4$, what is the value of $f(-2)$?",
+            "ground_truth": "18",
+            "pred_answer": "18",
+            "correct": true,
+            "n_tokens_generated": 1200,
+            "wall_time_s": 64.81,
+            "peak_gpu_mb": 28609.6,
+            "error": null
+          },
+          {
+            "problem": "What is the smallest real number $x$ in the domain of the function $$g(x) = \\sqr",
+            "ground_truth": "\\frac{11}{2}",
+            "pred_answer": "\\dfrac{11}{2}",
+            "correct": true,
+            "n_tokens_generated": 2016,
+            "wall_time_s": 107.75,
+            "peak_gpu_mb": 28877.5,
+            "error": null
+          },
+          {
+            "problem": "The smallest distance between the origin and a point on the graph of $y=\\frac{1}",
+            "ground_truth": "12",
+            "pred_answer": "12",
+            "correct": true,
+            "n_tokens_generated": 5701,
+            "wall_time_s": 307.79,
+            "peak_gpu_mb": 29811.7,
+            "error": null
+          },
+          {
+            "problem": "Let $f$ be defined by  \\[f(x) = \\left\\{\n\\begin{array}{cl}\n3-x & \\text{ if } x \\l",
+            "ground_truth": "0",
+            "pred_answer": "0",
+            "correct": true,
+            "n_tokens_generated": 3914,
+            "wall_time_s": 213.02,
+            "peak_gpu_mb": 29530.2,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

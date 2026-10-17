@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "raas"
+    ],
+    "attn_impl": "eager"
+  },
+  "results": {
+    "raas": {
+      "4096": {
+        "accuracy": 0.9,
+        "n_correct": 9,
+        "n_total": 10,
+        "mean_wall_time_s": 364.63,
+        "mean_peak_gpu_mb": 29633.5,
+        "per_problem": [
+          {
+            "problem": "Find the number of ordered pairs $(a,b)$ of integers such that $|a + bi| \\le 5.$",
+            "ground_truth": "81",
+            "pred_answer": "81",
+            "correct": true,
+            "n_tokens_generated": 5847,
+            "wall_time_s": 303.52,
+            "peak_gpu_mb": 30223.4,
+            "error": null
+          },
+          {
+            "problem": "The expression $$1 + 2 + 3 - 4 + 5 + 6$$is equivalent to 13. If we add parenthes",
+            "ground_truth": "-9",
+            "pred_answer": "-9",
+            "correct": true,
+            "n_tokens_generated": 11850,
+            "wall_time_s": 609.93,
+            "peak_gpu_mb": 30243.4,
+            "error": null
+          },
+          {
+            "problem": "Let $f(x)$ be an odd function, and let $g(x)$ be an even function.  Is $f(f(g(f(",
+            "ground_truth": "\\text{even}",
+            "pred_answer": "even",
+            "correct": true,
+            "n_tokens_generated": 7695,
+            "wall_time_s": 448.05,
+            "peak_gpu_mb": 30227.8,
+            "error": null
+          },
+          {
+            "problem": "Solve for $x$: $\\frac{x}2 + \\frac{x}3 = 5$",
+            "ground_truth": "6",
+            "pred_answer": "6",
+            "correct": true,
+            "n_tokens_generated": 1603,
+            "wall_time_s": 78.98,
+            "peak_gpu_mb": 28763.4,
+            "error": null
+          },
+          {
+            "problem": "Daniel works at an electronics store, and he claims that the popularity of a tel",
+            "ground_truth": "9",
+            "pred_answer": "9",
+            "correct": true,
+            "n_tokens_generated": 1547,
+            "wall_time_s": 83.42,
+            "peak_gpu_mb": 28771.6,
+            "error": null
+          },
+          {
+            "problem": "In the diagram, $D$ and $E$ are the midpoints of $\\overline{AB}$ and $\\overline{",
+            "ground_truth": "8",
+            "pred_answer": "8",
+            "correct": true,
+            "n_tokens_generated": 14973,
+            "wall_time_s": 953.96,
+            "peak_gpu_mb": 30258.4,
+            "error": null
+          },
+          {
+            "problem": "If $|x+5|-|3x-6|=0$, find the largest possible value of $x$. Express your answer",
+            "ground_truth": "\\frac{11}{2}",
+            "pred_answer": "\\dfrac{11}{2}",
+            "correct": true,
+            "n_tokens_generated": 3720,
+            "wall_time_s": 196.97,
+            "peak_gpu_mb": 29477.6,
+            "error": null
+          },
+          {
+            "problem": "Evaluate $\\lceil (3.6)^2 \\rceil - ( \\lceil 3.6 \\rceil ) ^2$.",
+            "ground_truth": "-3",
+            "pred_answer": "-3",
+            "correct": true,
+            "n_tokens_generated": 2390,
+            "wall_time_s": 113.52,
+            "peak_gpu_mb": 29034.2,
+            "error": null
+          },
+          {
+            "problem": "Let $F(z)=\\frac{z+i}{z-i}$ for all complex numbers $z\\not= i,$ and let $z_n=F(z_",
+            "ground_truth": "1+274i",
+            "pred_answer": "1 + 274i",
+            "correct": true,
+            "n_tokens_generated": 13042,
+            "wall_time_s": 731.32,
+            "peak_gpu_mb": 30230.9,
+            "error": null
+          },
+          {
+            "problem": "Express $555_{10}$ in base $5$.",
+            "ground_truth": "4210_{5}",
+            "pred_answer": "4210",
+            "correct": false,
+            "n_tokens_generated": 2627,
+            "wall_time_s": 126.61,
+            "peak_gpu_mb": 29104.3,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

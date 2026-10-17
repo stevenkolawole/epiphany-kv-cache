@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "512": {
+        "accuracy": 0.2,
+        "n_correct": 2,
+        "n_total": 10,
+        "mean_wall_time_s": 590.24,
+        "mean_peak_gpu_mb": 28465.0,
+        "per_problem": [
+          {
+            "problem": "Determine the remainder of 54 (mod 6).",
+            "ground_truth": "0",
+            "pred_answer": "0",
+            "correct": true,
+            "n_tokens_generated": 5911,
+            "wall_time_s": 245.31,
+            "peak_gpu_mb": 28455.5,
+            "error": null
+          },
+          {
+            "problem": "Each week, between 30 and 50 students show up for an archery class run by Betty ",
+            "ground_truth": "41",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 683.23,
+            "peak_gpu_mb": 28470.5,
+            "error": null
+          },
+          {
+            "problem": "Fake gold bricks are made by covering concrete cubes with gold paint, so the cos",
+            "ground_truth": "\\$18.90",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 676.51,
+            "peak_gpu_mb": 28465.9,
+            "error": null
+          },
+          {
+            "problem": "In the diagram below, we have $\\overline{ST}\\parallel\\overline{QR}$, $\\angle P= ",
+            "ground_truth": "75^\\circ",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 679.02,
+            "peak_gpu_mb": 28478.8,
+            "error": null
+          },
+          {
+            "problem": "Let \\[f(n) = \\left\\{\n\\begin{array}{cl}\n\\lfloor n \\rfloor & \\text{ if }n \\geq 4, ",
+            "ground_truth": "12",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 676.71,
+            "peak_gpu_mb": 28468.8,
+            "error": null
+          },
+          {
+            "problem": "Linda, Sherry, June, and Connie walked around their neighborhoods selling girl s",
+            "ground_truth": "59",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 682.86,
+            "peak_gpu_mb": 28469.9,
+            "error": null
+          },
+          {
+            "problem": "For how many values of $x$ is the expression $\\frac{x-5}{x^2-9}$  not defined?",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 3108,
+            "wall_time_s": 127.57,
+            "peak_gpu_mb": 28457.7,
+            "error": null
+          },
+          {
+            "problem": "If $\\log_6 (x-y) + \\log_6 (x+y) = 2$ and $\\log_y 5x = 2$, then find $x$.",
+            "ground_truth": "9",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 671.76,
+            "peak_gpu_mb": 28459.4,
+            "error": null
+          },
+          {
+            "problem": "When the positive integers with exactly three positive divisors are listed in as",
+            "ground_truth": "121",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 725.64,
+            "peak_gpu_mb": 28457.1,
+            "error": null
+          },
+          {
+            "problem": "If $re^{i \\theta}$ is a root of\n\\[z^8 - z^7 + z^6 - z^5 + z^4 - z^3 + z^2 - z + ",
+            "ground_truth": "8 \\pi",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 733.75,
+            "peak_gpu_mb": 28466.5,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

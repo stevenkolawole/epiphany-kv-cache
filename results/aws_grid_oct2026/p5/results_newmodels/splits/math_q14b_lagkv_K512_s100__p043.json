@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "512": {
+        "accuracy": 0.1,
+        "n_correct": 1,
+        "n_total": 10,
+        "mean_wall_time_s": 652.71,
+        "mean_peak_gpu_mb": 28468.4,
+        "per_problem": [
+          {
+            "problem": "A curve is parameterized by\n\\[(x,y) = (t^3 + 7, -3t^2 - 6t - 5).\\]Find the point",
+            "ground_truth": "(15,-29)",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 695.49,
+            "peak_gpu_mb": 28461.2,
+            "error": null
+          },
+          {
+            "problem": "Let $z$ be a complex number such that\n\\[z + \\frac{1}{z} = \\frac{1 + \\sqrt{5}}{2}",
+            "ground_truth": "-2",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 697.19,
+            "peak_gpu_mb": 28462.6,
+            "error": null
+          },
+          {
+            "problem": "Let $x,$ $y,$ and $z$ be positive real numbers such that $xyz = 2.$  Find the mi",
+            "ground_truth": "16",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 696.4,
+            "peak_gpu_mb": 28461.0,
+            "error": null
+          },
+          {
+            "problem": "Solve the following equation for $x$: \\[ \\ \\frac{2}{3} = \\frac{4}{x-5}.\\]",
+            "ground_truth": "11",
+            "pred_answer": "11",
+            "correct": true,
+            "n_tokens_generated": 3696,
+            "wall_time_s": 155.63,
+            "peak_gpu_mb": 28458.4,
+            "error": null
+          },
+          {
+            "problem": "If Rosa's age is divided by 2, 3, 4, or 6, the remainder is 1. If her age is div",
+            "ground_truth": "49",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 697.1,
+            "peak_gpu_mb": 28462.6,
+            "error": null
+          },
+          {
+            "problem": "For every positive integer $n$, let $\\text{mod}_5 (n)$ be the remainder obtained",
+            "ground_truth": "1",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 701.03,
+            "peak_gpu_mb": 28488.5,
+            "error": null
+          },
+          {
+            "problem": "Let $x_1,$ $x_2,$ $x_3,$ $y_1,$ $y_2,$ and $y_3$ be real numbers such that\n\\begi",
+            "ground_truth": "144",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 704.64,
+            "peak_gpu_mb": 28480.7,
+            "error": null
+          },
+          {
+            "problem": "The medians $AD$, $BE$, and $CF$ of triangle $ABC$ intersect at the centroid $G$",
+            "ground_truth": "8",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 707.63,
+            "peak_gpu_mb": 28466.2,
+            "error": null
+          },
+          {
+            "problem": "A set of three points is chosen randomly from the grid shown. Each three-point s",
+            "ground_truth": "\\frac{2}{21}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 717.12,
+            "peak_gpu_mb": 28467.1,
+            "error": null
+          },
+          {
+            "problem": "A gecko is in a room that is 12 feet long, 10 feet wide and 8 feet tall. The gec",
+            "ground_truth": "2\\sqrt{113}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 754.9,
+            "peak_gpu_mb": 28476.0,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

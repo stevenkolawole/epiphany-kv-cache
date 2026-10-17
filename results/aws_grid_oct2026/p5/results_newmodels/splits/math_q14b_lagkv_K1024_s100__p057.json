@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      1024
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "1024": {
+        "accuracy": 0.4,
+        "n_correct": 4,
+        "n_total": 10,
+        "mean_wall_time_s": 488.19,
+        "mean_peak_gpu_mb": 28708.3,
+        "per_problem": [
+          {
+            "problem": "The quadratic $x^2+(2.6)x+3.6$ can be written in the form $(x+b)^2+c$, where $b$",
+            "ground_truth": "3.21",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 726.75,
+            "peak_gpu_mb": 28695.9,
+            "error": null
+          },
+          {
+            "problem": "The product of two consecutive positive even integers is 288. What is the greate",
+            "ground_truth": "18",
+            "pred_answer": "18",
+            "correct": true,
+            "n_tokens_generated": 5539,
+            "wall_time_s": 241.93,
+            "peak_gpu_mb": 28691.5,
+            "error": null
+          },
+          {
+            "problem": "Evaluate $\\log_264$.",
+            "ground_truth": "6",
+            "pred_answer": "6",
+            "correct": true,
+            "n_tokens_generated": 1261,
+            "wall_time_s": 49.78,
+            "peak_gpu_mb": 28689.2,
+            "error": null
+          },
+          {
+            "problem": "What is the probability that a randomly selected integer in the set $$\\{1,2,3,\\l",
+            "ground_truth": "\\dfrac{17}{50}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 733.9,
+            "peak_gpu_mb": 28695.9,
+            "error": null
+          },
+          {
+            "problem": "If $-6\\leq a \\leq -2$ and $3 \\leq b \\leq 5$, what is the greatest possible value",
+            "ground_truth": "-\\frac{35}{9}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 742.46,
+            "peak_gpu_mb": 28699.0,
+            "error": null
+          },
+          {
+            "problem": "Simplify $\\tan 100^\\circ + 4 \\sin 100^\\circ.$",
+            "ground_truth": "-\\sqrt{3}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 742.2,
+            "peak_gpu_mb": 28691.4,
+            "error": null
+          },
+          {
+            "problem": "A bookcase has 3 shelves with a total of 24 books. The top shelf has 8 mystery b",
+            "ground_truth": "\\frac{4}{9}",
+            "pred_answer": "\\dfrac{4}{9}",
+            "correct": true,
+            "n_tokens_generated": 2654,
+            "wall_time_s": 114.15,
+            "peak_gpu_mb": 28699.7,
+            "error": null
+          },
+          {
+            "problem": "A square and a regular heptagon  are coplanar and share a common side $\\overline",
+            "ground_truth": "\\frac{270}7\\text{ degrees}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 744.71,
+            "peak_gpu_mb": 28719.8,
+            "error": null
+          },
+          {
+            "problem": "The volume of a cone is given by the formula $V = \\frac{1}{3}Bh$, where $B$ is t",
+            "ground_truth": "65",
+            "pred_answer": "65",
+            "correct": true,
+            "n_tokens_generated": 968,
+            "wall_time_s": 37.43,
+            "peak_gpu_mb": 28700.0,
+            "error": null
+          },
+          {
+            "problem": "There is a total of 70 squares of three sizes whose vertices are points on this ",
+            "ground_truth": "19",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 748.59,
+            "peak_gpu_mb": 28801.1,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

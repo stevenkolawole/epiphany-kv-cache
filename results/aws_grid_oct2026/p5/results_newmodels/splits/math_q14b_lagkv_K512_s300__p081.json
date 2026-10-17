@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "512": {
+        "accuracy": 0.2,
+        "n_correct": 2,
+        "n_total": 10,
+        "mean_wall_time_s": 618.34,
+        "mean_peak_gpu_mb": 28466.5,
+        "per_problem": [
+          {
+            "problem": "Simplify the following expression in $x$: $$19x + 1 - 4x - 81.$$",
+            "ground_truth": "15x - 80",
+            "pred_answer": "15x - 80",
+            "correct": true,
+            "n_tokens_generated": 1055,
+            "wall_time_s": 43.71,
+            "peak_gpu_mb": 28457.4,
+            "error": null
+          },
+          {
+            "problem": "Kathy needs money for her trip to Europe. If she has 300 US dollars in the bank ",
+            "ground_truth": "22",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 705.41,
+            "peak_gpu_mb": 28466.0,
+            "error": null
+          },
+          {
+            "problem": "How many integers are in the solution set of $|x-2|\\leq5.6$ ?",
+            "ground_truth": "11",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 703.54,
+            "peak_gpu_mb": 28456.9,
+            "error": null
+          },
+          {
+            "problem": "If $f(x)=5x^2+3x+4$, what is the value of $f(-2)$?",
+            "ground_truth": "18",
+            "pred_answer": "18",
+            "correct": true,
+            "n_tokens_generated": 10745,
+            "wall_time_s": 463.57,
+            "peak_gpu_mb": 28457.6,
+            "error": null
+          },
+          {
+            "problem": "What is the smallest real number $x$ in the domain of the function $$g(x) = \\sqr",
+            "ground_truth": "\\frac{11}{2}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 705.29,
+            "peak_gpu_mb": 28459.4,
+            "error": null
+          },
+          {
+            "problem": "The smallest distance between the origin and a point on the graph of $y=\\frac{1}",
+            "ground_truth": "12",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 705.46,
+            "peak_gpu_mb": 28466.2,
+            "error": null
+          },
+          {
+            "problem": "Let $f$ be defined by  \\[f(x) = \\left\\{\n\\begin{array}{cl}\n3-x & \\text{ if } x \\l",
+            "ground_truth": "0",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 712.14,
+            "peak_gpu_mb": 28466.9,
+            "error": null
+          },
+          {
+            "problem": "The distances from a point $P$ to five of the vertices of a regular octahedron a",
+            "ground_truth": "\\sqrt{66}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 713.65,
+            "peak_gpu_mb": 28496.9,
+            "error": null
+          },
+          {
+            "problem": "It's a well-known physics formula that force equals mass times acceleration.  Je",
+            "ground_truth": "\\frac 34",
+            "pred_answer": "\\dfrac{3}{4}",
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 715.38,
+            "peak_gpu_mb": 28466.3,
+            "error": null
+          },
+          {
+            "problem": "Consider the function $z(x,y)$ describing the paraboloid\n\\[z = (2x - y)^2 - 2y^2",
+            "ground_truth": "-\\frac{3}{8}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 715.27,
+            "peak_gpu_mb": 28471.3,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

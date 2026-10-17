@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "512": {
+        "accuracy": 0.4,
+        "n_correct": 4,
+        "n_total": 10,
+        "mean_wall_time_s": 589.24,
+        "mean_peak_gpu_mb": 28467.3,
+        "per_problem": [
+          {
+            "problem": "In the diagram, what is the area of the shaded triangle? [asy]\nfill((0,0)--(2,3)",
+            "ground_truth": "15\\mbox{ cm}^2",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 696.07,
+            "peak_gpu_mb": 28482.6,
+            "error": null
+          },
+          {
+            "problem": "The square root of $t$ is greater than $2$ and less than $3.5$. How many integer",
+            "ground_truth": "8",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 695.52,
+            "peak_gpu_mb": 28458.7,
+            "error": null
+          },
+          {
+            "problem": "Evaluate $\\lceil{\\sqrt{20}}\\rceil^2$.",
+            "ground_truth": "25",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 694.89,
+            "peak_gpu_mb": 28456.0,
+            "error": null
+          },
+          {
+            "problem": "Let $a,$ $b,$ $c,$ and $d$ be positive real numbers such that $a + b + c + d = 1",
+            "ground_truth": "27648",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 695.62,
+            "peak_gpu_mb": 28461.3,
+            "error": null
+          },
+          {
+            "problem": "A class of 30 students recently took a test.  If 20 students scored 80, 8 studen",
+            "ground_truth": "84",
+            "pred_answer": "84",
+            "correct": true,
+            "n_tokens_generated": 1268,
+            "wall_time_s": 51.7,
+            "peak_gpu_mb": 28462.1,
+            "error": null
+          },
+          {
+            "problem": "At 50 miles per hour, how far would a car travel in $2\\frac{3}{4}$ hours? Expres",
+            "ground_truth": "137 \\frac{1}{2}",
+            "pred_answer": "137\\frac{1}{2}",
+            "correct": true,
+            "n_tokens_generated": 5400,
+            "wall_time_s": 227.82,
+            "peak_gpu_mb": 28458.8,
+            "error": null
+          },
+          {
+            "problem": "Below is a magic square, meaning that the sum of the numbers in each row, in eac",
+            "ground_truth": "7",
+            "pred_answer": "7",
+            "correct": true,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 696.74,
+            "peak_gpu_mb": 28489.8,
+            "error": null
+          },
+          {
+            "problem": "Find the value of $\\log_2{3} \\cdot \\log_3{4} \\cdot \\log_4{5} \\cdot \\log_5{6} \\cd",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 695.56,
+            "peak_gpu_mb": 28462.4,
+            "error": null
+          },
+          {
+            "problem": "When rolling a certain unfair six-sided die with faces numbered 1, 2, 3, 4, 5, a",
+            "ground_truth": "29",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 713.65,
+            "peak_gpu_mb": 28478.4,
+            "error": null
+          },
+          {
+            "problem": "Jim and Martha are standing together at the corner of a rectangular field. Jim w",
+            "ground_truth": "200",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 724.87,
+            "peak_gpu_mb": 28463.4,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

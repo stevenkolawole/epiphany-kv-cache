@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      2048
+    ],
+    "methods": [
+      "kv_seg_hs"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs": {
+      "2048": {
+        "accuracy": 0.9,
+        "n_correct": 9,
+        "n_total": 10,
+        "mean_wall_time_s": 162.93,
+        "mean_peak_gpu_mb": 28953.7,
+        "per_problem": [
+          {
+            "problem": "Find the modulo $7$ remainder of the sum $1+3+5+7+9+\\dots+195+197+199.$",
+            "ground_truth": "4",
+            "pred_answer": "4",
+            "correct": true,
+            "n_tokens_generated": 3346,
+            "wall_time_s": 134.38,
+            "peak_gpu_mb": 29055.6,
+            "error": null
+          },
+          {
+            "problem": "Suppose that $f$ is a function and $f^{-1}$ is the inverse of $f$.  If $f(1)=2$,",
+            "ground_truth": "1",
+            "pred_answer": "1",
+            "correct": true,
+            "n_tokens_generated": 1514,
+            "wall_time_s": 60.44,
+            "peak_gpu_mb": 28746.9,
+            "error": null
+          },
+          {
+            "problem": "Two sides of a triangle are each $8$ units long. If the third side has a whole n",
+            "ground_truth": "31",
+            "pred_answer": "31",
+            "correct": true,
+            "n_tokens_generated": 2371,
+            "wall_time_s": 94.74,
+            "peak_gpu_mb": 29031.0,
+            "error": null
+          },
+          {
+            "problem": "What is the number of square centimeters in the area of this trapezoid?\n\n[asy]\nd",
+            "ground_truth": "21",
+            "pred_answer": "21",
+            "correct": true,
+            "n_tokens_generated": 3328,
+            "wall_time_s": 133.58,
+            "peak_gpu_mb": 29077.5,
+            "error": null
+          },
+          {
+            "problem": "Find the dot product of $\\begin{pmatrix} -2 \\\\ 0 \\\\ 7 \\end{pmatrix}$ and $\\begin",
+            "ground_truth": "-41",
+            "pred_answer": "-41",
+            "correct": true,
+            "n_tokens_generated": 1866,
+            "wall_time_s": 74.61,
+            "peak_gpu_mb": 28855.8,
+            "error": null
+          },
+          {
+            "problem": "Let $a,$ $b,$ $c$ be real numbers such that\n\\[|ax^2 + bx + c| \\le 1\\]for all $0 ",
+            "ground_truth": "17",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 656.54,
+            "peak_gpu_mb": 29061.8,
+            "error": null
+          },
+          {
+            "problem": "In the diagram, $AD=BD=CD$ and $\\angle BCA = 40^\\circ.$ What is the measure of $",
+            "ground_truth": "90^\\circ",
+            "pred_answer": "90^\\circ",
+            "correct": true,
+            "n_tokens_generated": 5723,
+            "wall_time_s": 228.94,
+            "peak_gpu_mb": 29098.3,
+            "error": null
+          },
+          {
+            "problem": "William Sydney Porter tried to perform the calculation $\\frac{-3+4i}{1+2i}$. How",
+            "ground_truth": "1+2i",
+            "pred_answer": "1 + 2i",
+            "correct": true,
+            "n_tokens_generated": 2981,
+            "wall_time_s": 118.81,
+            "peak_gpu_mb": 29035.4,
+            "error": null
+          },
+          {
+            "problem": "What is the difference between the positive square root of 64 and the cube root ",
+            "ground_truth": "4",
+            "pred_answer": "4",
+            "correct": true,
+            "n_tokens_generated": 927,
+            "wall_time_s": 36.54,
+            "peak_gpu_mb": 28547.5,
+            "error": null
+          },
+          {
+            "problem": "If $A$ is the sum of the positive divisors of $500$, what is the sum of the dist",
+            "ground_truth": "25",
+            "pred_answer": "25",
+            "correct": true,
+            "n_tokens_generated": 2284,
+            "wall_time_s": 90.67,
+            "peak_gpu_mb": 29026.7,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

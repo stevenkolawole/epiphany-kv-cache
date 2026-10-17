@@ -36,6 +36,28 @@ from typing import Tuple, Optional, List
 from dataclasses import dataclass, field
 
 
+
+def _gather_kept(past_key_values, keep_mask):
+    """Apply a boolean keep mask to every layer's K and V.
+
+    Equivalent to ``(k[:, :, keep_mask, :].contiguous(), v[...])`` per layer, which is
+    what every policy here used to do. Boolean-mask indexing has to learn its output
+    size from the GPU, so it blocked the CPU twice per layer per eviction: 2L host syncs
+    per decode step for the per-step policies (RaaS, H2O, LongFlow, ...), measured at
+    67% of a RaaS process's time on Qwen3-14B (py-spy, 2026-10-06). Turning the mask
+    into indices once costs one sync; ``index_select`` then gathers the same positions
+    in the same order, so the result is bit-identical.
+    """
+    idx = {}
+    out = []
+    for k, v in past_key_values:
+        d = k.device
+        if d not in idx:
+            idx[d] = keep_mask.to(d).nonzero().squeeze(1)
+        i = idx[d]
+        out.append((k.index_select(2, i), v.index_select(2, i)))
+    return tuple(out)
+
 @dataclass
 class EvictionConfig:
     """Configuration for KV cache eviction."""
@@ -127,10 +149,7 @@ class H2OEviction:
         # For the retained-vs-evicted exhibit (scripts/dump_retained.py), which
         # draws H2O beside EpiKV-Seg on the same trace. Not used by the policy.
         self.last_keep_mask = keep_mask
-        new_past = tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        new_past = _gather_kept(past_key_values, keep_mask)
         # Prune cumulative buffer to match evicted cache.
         self._cumulative_attn = self._cumulative_attn[keep_mask]
         return new_past
@@ -302,10 +321,7 @@ class ThinKVEviction:
                 keep_mask[seg_start + top_idx] = True
                 remaining_budget -= n_keep
 
-        new_past = tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        new_past = _gather_kept(past_key_values, keep_mask)
         return new_past
 
 
@@ -503,10 +519,7 @@ class RaaSEviction:
         # For the retained-vs-evicted exhibit (scripts/dump_retained.py), which
         # draws H2O beside EpiKV-Seg on the same trace. Not used by the policy.
         self.last_keep_mask = keep_mask
-        new_past = tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        new_past = _gather_kept(past_key_values, keep_mask)
         # Align LRU buffer to the surviving decode tokens.
         decode_keep = keep_mask[prefill_len:prefill_len + num_decode]
         self._lru_timestamps = self._lru_timestamps[:num_decode][decode_keep]
@@ -651,10 +664,7 @@ class HSVarianceEviction:
             _, keep_idx = torch.topk(scores, n_keep)
             keep_mask[prefill_len + keep_idx] = True
 
-        new_past = tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        new_past = _gather_kept(past_key_values, keep_mask)
 
         # Prune _scores to surviving decode tokens so alignment holds next step.
         decode_keep = keep_mask[prefill_len:prefill_len + num_decode].tolist()
@@ -756,10 +766,7 @@ class KVValVarianceEviction:
             _, keep_idx = torch.topk(scores, n_keep)
             keep_mask[prefill_len + keep_idx] = True
 
-        new_past = tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        new_past = _gather_kept(past_key_values, keep_mask)
 
         decode_keep = keep_mask[prefill_len:prefill_len + num_decode].tolist()
         self._scores = [s for s, kept in zip(self._scores[-num_decode:], decode_keep) if kept]
@@ -863,10 +870,7 @@ class KVKeyVarianceEviction:
             _, keep_idx = torch.topk(scores, n_keep)
             keep_mask[prefill_len + keep_idx] = True
 
-        new_past = tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        new_past = _gather_kept(past_key_values, keep_mask)
 
         decode_keep = keep_mask[prefill_len:prefill_len + num_decode].tolist()
         self._scores = [s for s, kept in zip(self._scores[-num_decode:], decode_keep) if kept]
@@ -978,10 +982,7 @@ class LagKVKeyVarianceEviction:
             _, keep_idx = torch.topk(decode_scores, n_keep)
             keep_mask[prefill_len + keep_idx] = True
 
-        return tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        return _gather_kept(past_key_values, keep_mask)
 
 
 class LagKVEviction:
@@ -1084,10 +1085,7 @@ class LagKVEviction:
             _, keep_idx = torch.topk(decode_scores, n_keep)
             keep_mask[prefill_len + keep_idx] = True
 
-        return tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        return _gather_kept(past_key_values, keep_mask)
 
 
 def _rolling_z_score(buf: List[float], window: int, eps: float = 1e-6) -> float:
@@ -1274,10 +1272,7 @@ class DetrendendHSVarianceEviction:
             _, keep_idx = torch.topk(scores, n_keep)
             keep_mask[prefill_len + keep_idx] = True
 
-        new_past = tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        new_past = _gather_kept(past_key_values, keep_mask)
         decode_keep = keep_mask[prefill_len:prefill_len + num_decode].tolist()
         self._scores = [s for s, kept in zip(self._scores[-num_decode:], decode_keep) if kept]
         return new_past
@@ -1400,10 +1395,7 @@ class BandAdaptiveHSEviction:
             _, keep_idx = torch.topk(scores, n_keep)
             keep_mask[prefill_len + keep_idx] = True
 
-        new_past = tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        new_past = _gather_kept(past_key_values, keep_mask)
         decode_keep = keep_mask[prefill_len:prefill_len + num_decode].tolist()
         self._scores = [s for s, kept in zip(self._scores[-num_decode:], decode_keep) if kept]
         return new_past
@@ -1534,10 +1526,7 @@ class AttentionHSProductEviction:
             _, keep_idx = torch.topk(combined, n_keep)
             keep_mask[prefill_len + keep_idx] = True
 
-        new_past = tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        new_past = _gather_kept(past_key_values, keep_mask)
         self._cumulative_attn = self._cumulative_attn[keep_mask]
         decode_keep = keep_mask[prefill_len:prefill_len + num_decode].tolist()
         self._scores_hs = [
@@ -1728,10 +1717,7 @@ class HybridSegmentHSEviction:
                 keep_mask[decode_start + top_idx] = True
                 remaining_budget -= n_keep
 
-        new_past = tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        new_past = _gather_kept(past_key_values, keep_mask)
         decode_keep = keep_mask[prefill_len:prefill_len + num_decode].tolist()
         self._scores = [
             s for s, kept in zip(self._scores[-num_decode:], decode_keep) if kept
@@ -1924,7 +1910,12 @@ class KVSegHSEviction:
         x = layer.input_layernorm(hs)                                     # (1, w, hidden)
         q = attn.q_proj(x)
         nh = q.shape[-1] // d
-        q = q.view(1, w, nh, d).transpose(1, 2)                           # (1, nh, w, d)
+        q = q.view(1, w, nh, d)
+        # Qwen3-style per-head query norm sits between the projection and RoPE;
+        # apply it where the model has one so the recomputed query is the model's.
+        if getattr(attn, "q_norm", None) is not None:
+            q = attn.q_norm(q)
+        q = q.transpose(1, 2)                                             # (1, nh, w, d)
         pos = torch.tensor([self._pos_bank[-w:]], device=device)
         cos, sin = self._model.model.rotary_emb(x, pos)
         q, _ = apply_rotary_pos_emb(q, q, cos, sin)
@@ -2185,10 +2176,7 @@ class KVSegHSEviction:
                 keep_mask[idx_in] = True
 
         self.last_keep_mask = keep_mask
-        new_past = tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        new_past = _gather_kept(past_key_values, keep_mask)
         decode_keep = keep_mask[prefill_len:prefill_len + num_decode].tolist()
         self._scores = [
             s for s, kept in zip(self._scores[-num_decode:], decode_keep) if kept
@@ -2321,10 +2309,7 @@ class RKVEviction:
         keep_mask = torch.zeros(seq_len, dtype=torch.bool, device=device)
         keep_mask[keep_idx] = True
 
-        new_past = tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        new_past = _gather_kept(past_key_values, keep_mask)
         # Prune stored observation rows to surviving positions.
         self._obs = [r[keep_mask[:len(r)].cpu() if r.device.type == 'cpu' else keep_mask[:len(r)]]
                      for r in self._obs]
@@ -2391,10 +2376,7 @@ class LongFlowEviction:
         keep_mask = torch.zeros(seq_len, dtype=torch.bool, device=device)
         keep_mask[keep_idx] = True
 
-        new_past = tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        new_past = _gather_kept(past_key_values, keep_mask)
         return new_past
 
 
@@ -2780,10 +2762,7 @@ class KVSegmentHSEviction:
                 keep_mask[decode_start + top_idx] = True
                 remaining_budget -= n_keep
 
-        new_past = tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        new_past = _gather_kept(past_key_values, keep_mask)
         decode_keep = keep_mask[prefill_len:prefill_len + num_decode].tolist()
         self._scores = [
             s for s, kept in zip(self._scores[-num_decode:], decode_keep) if kept
@@ -3011,10 +2990,7 @@ class RandomEviction:
             n_keep = min(decode_budget, num_decode)
             _, keep_idx = torch.topk(scores, n_keep)
             keep_mask[prefill_len + keep_idx] = True
-        new_past = tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        new_past = _gather_kept(past_key_values, keep_mask)
         decode_keep = keep_mask[prefill_len:prefill_len + num_decode].tolist()
         self._scores = [s for s, kept in zip(self._scores[-num_decode:], decode_keep) if kept]
         return new_past

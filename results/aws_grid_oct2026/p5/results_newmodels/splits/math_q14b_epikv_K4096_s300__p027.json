@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "4096": {
+        "accuracy": 0.9,
+        "n_correct": 9,
+        "n_total": 10,
+        "mean_wall_time_s": 148.25,
+        "mean_peak_gpu_mb": 29489.5,
+        "per_problem": [
+          {
+            "problem": "A Senate committee has 8 Republicans and 6 Democrats.  In how many ways can we f",
+            "ground_truth": "1940",
+            "pred_answer": "1940",
+            "correct": true,
+            "n_tokens_generated": 3006,
+            "wall_time_s": 118.15,
+            "peak_gpu_mb": 29229.8,
+            "error": null
+          },
+          {
+            "problem": "Simplify the following expression to a simplified fraction: $$\\sqrt{\\dfrac{\\dfra",
+            "ground_truth": "\\frac{13}{6}",
+            "pred_answer": "\\dfrac{13}{6}",
+            "correct": true,
+            "n_tokens_generated": 2428,
+            "wall_time_s": 95.16,
+            "peak_gpu_mb": 29061.6,
+            "error": null
+          },
+          {
+            "problem": "Let $x,$ $y,$ and $z$ be positive real numbers such that $xyz(x + y + z) = 1.$  ",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 6750,
+            "wall_time_s": 273.86,
+            "peak_gpu_mb": 30302.9,
+            "error": null
+          },
+          {
+            "problem": "If\n\\[\\sqrt[3]{2} = a + \\cfrac{1}{b + \\cfrac{1}{c + \\cfrac{1}{d + \\dotsb}}},\\]whe",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 6986,
+            "wall_time_s": 283.97,
+            "peak_gpu_mb": 30305.6,
+            "error": null
+          },
+          {
+            "problem": "If $a+b=8$, $b+c=-3$, and $a+c= -5$, what is the value of the product $abc$?",
+            "ground_truth": "-120",
+            "pred_answer": "-120",
+            "correct": true,
+            "n_tokens_generated": 2492,
+            "wall_time_s": 96.9,
+            "peak_gpu_mb": 29059.7,
+            "error": null
+          },
+          {
+            "problem": "The Fibonacci sequence is the sequence 1, 1, 2, 3, 5, $\\ldots$ where each term i",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 4355,
+            "wall_time_s": 173.46,
+            "peak_gpu_mb": 30304.2,
+            "error": null
+          },
+          {
+            "problem": "What is the value of $513^2 - 487^2$?",
+            "ground_truth": "26000",
+            "pred_answer": "26000",
+            "correct": true,
+            "n_tokens_generated": 1856,
+            "wall_time_s": 72.84,
+            "peak_gpu_mb": 28839.8,
+            "error": null
+          },
+          {
+            "problem": "The product of three consecutive integers is 120. That product divided by the me",
+            "ground_truth": "6",
+            "pred_answer": "6",
+            "correct": true,
+            "n_tokens_generated": 3157,
+            "wall_time_s": 123.78,
+            "peak_gpu_mb": 29280.0,
+            "error": null
+          },
+          {
+            "problem": "What is the base six equivalent of $999_{10}$?",
+            "ground_truth": "4343_6",
+            "pred_answer": "4343",
+            "correct": false,
+            "n_tokens_generated": 3100,
+            "wall_time_s": 122.73,
+            "peak_gpu_mb": 29251.2,
+            "error": null
+          },
+          {
+            "problem": "The parabola with equation $y=ax^2+bx+c$ and vertex $(h,k)$ is reflected about t",
+            "ground_truth": "2k",
+            "pred_answer": "2k",
+            "correct": true,
+            "n_tokens_generated": 3055,
+            "wall_time_s": 121.64,
+            "peak_gpu_mb": 29259.7,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "512": {
+        "accuracy": 0.4,
+        "n_correct": 4,
+        "n_total": 10,
+        "mean_wall_time_s": 499.44,
+        "mean_peak_gpu_mb": 28462.2,
+        "per_problem": [
+          {
+            "problem": "Riproarin' Ringo was roping a recalcitrant dogie. Ringo decided to give the dogi",
+            "ground_truth": "16",
+            "pred_answer": "16",
+            "correct": true,
+            "n_tokens_generated": 8034,
+            "wall_time_s": 346.04,
+            "peak_gpu_mb": 28461.9,
+            "error": null
+          },
+          {
+            "problem": "Compute $99^2+99+1$ in your head.",
+            "ground_truth": "9901",
+            "pred_answer": "9901",
+            "correct": true,
+            "n_tokens_generated": 6616,
+            "wall_time_s": 283.89,
+            "peak_gpu_mb": 28456.0,
+            "error": null
+          },
+          {
+            "problem": "In a class of 50 students, 28 participate in MATHCOUNTS, 21 participate in scien",
+            "ground_truth": "5",
+            "pred_answer": "5",
+            "correct": true,
+            "n_tokens_generated": 2732,
+            "wall_time_s": 116.35,
+            "peak_gpu_mb": 28461.2,
+            "error": null
+          },
+          {
+            "problem": "The polynomial $x^3 - 3x^2 + 4x - 1$ is a factor of $x^9 + px^6 + qx^3 + r.$  En",
+            "ground_truth": "(6,31,-1)",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 698.62,
+            "peak_gpu_mb": 28461.3,
+            "error": null
+          },
+          {
+            "problem": "For some real numbers $a$ and $b$, the equation \\[\n8x^3 + 4ax^2 + 2bx + a = 0\n\\]",
+            "ground_truth": "-256",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 696.11,
+            "peak_gpu_mb": 28464.3,
+            "error": null
+          },
+          {
+            "problem": "Find the smallest positive real number $C$ for which\n\\[\\left\\| \\begin{pmatrix} 2",
+            "ground_truth": "4",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 695.04,
+            "peak_gpu_mb": 28469.9,
+            "error": null
+          },
+          {
+            "problem": "Let\n\\[x^8 + 3x^4 - 4 = p_1(x) p_2(x) \\dotsm p_k(x),\\]where each non-constant pol",
+            "ground_truth": "10",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 700.7,
+            "peak_gpu_mb": 28467.4,
+            "error": null
+          },
+          {
+            "problem": "There exist constants $a$, $b$, $c$, and $d$ such that\n\\[(\\sin x)^7 = a \\sin 7x ",
+            "ground_truth": "\\frac{35}{64}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 698.88,
+            "peak_gpu_mb": 28463.7,
+            "error": null
+          },
+          {
+            "problem": "What is $1^{(2^{235423523})}$?",
+            "ground_truth": "1",
+            "pred_answer": "1",
+            "correct": true,
+            "n_tokens_generated": 1424,
+            "wall_time_s": 58.61,
+            "peak_gpu_mb": 28456.6,
+            "error": null
+          },
+          {
+            "problem": "Expand and simplify completely: \\begin{align*}\nx\\left(x(1+x)+2x\\right)-3(x^2-x+2",
+            "ground_truth": "x^3+3x-6",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 700.14,
+            "peak_gpu_mb": 28459.4,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

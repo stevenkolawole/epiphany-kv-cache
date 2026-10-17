@@ -1,0 +1,61 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "dataset": "gpqa",
+    "n_samples": 1,
+    "max_new_tokens": 3000,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      2048
+    ],
+    "methods": [
+      "none",
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "none": {
+      "2048": {
+        "accuracy": 0.0,
+        "n_correct": 0,
+        "n_total": 1,
+        "mean_wall_time_s": 221.78,
+        "mean_peak_gpu_mb": 15765.7,
+        "per_problem": [
+          {
+            "problem": "Two quantum states with energies E1 and E2 have a lifetime of 10^-9 sec and 10^-",
+            "ground_truth": "D",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 3000,
+            "wall_time_s": 221.78,
+            "peak_gpu_mb": 15765.7,
+            "error": null
+          }
+        ]
+      }
+    },
+    "kv_seg_hs_fill": {
+      "2048": {
+        "accuracy": 0.0,
+        "n_correct": 0,
+        "n_total": 1,
+        "mean_wall_time_s": 85.25,
+        "mean_peak_gpu_mb": 16221.3,
+        "per_problem": [
+          {
+            "problem": "Two quantum states with energies E1 and E2 have a lifetime of 10^-9 sec and 10^-",
+            "ground_truth": "D",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 3000,
+            "wall_time_s": 85.25,
+            "peak_gpu_mb": 16221.3,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

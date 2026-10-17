@@ -15,6 +15,28 @@ import torch.nn.functional as F
 from eviction import EvictionConfig
 
 
+
+def _gather_kept(past_key_values, keep_mask):
+    """Apply a boolean keep mask to every layer's K and V.
+
+    Equivalent to ``(k[:, :, keep_mask, :].contiguous(), v[...])`` per layer, which is
+    what every policy here used to do. Boolean-mask indexing has to learn its output
+    size from the GPU, so it blocked the CPU twice per layer per eviction: 2L host syncs
+    per decode step for the per-step policies (RaaS, H2O, LongFlow, ...), measured at
+    67% of a RaaS process's time on Qwen3-14B (py-spy, 2026-10-06). Turning the mask
+    into indices once costs one sync; ``index_select`` then gathers the same positions
+    in the same order, so the result is bit-identical.
+    """
+    idx = {}
+    out = []
+    for k, v in past_key_values:
+        d = k.device
+        if d not in idx:
+            idx[d] = keep_mask.to(d).nonzero().squeeze(1)
+        i = idx[d]
+        out.append((k.index_select(2, i), v.index_select(2, i)))
+    return tuple(out)
+
 class KVSegHSEviction:
     """
     kv_seg_hs: FA2-compatible segment hybrid (Phase 2C).
@@ -202,10 +224,7 @@ class KVSegHSEviction:
                 keep_mask[decode_start + top_idx] = True
                 remaining_budget -= n_keep
 
-        new_past = tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        new_past = _gather_kept(past_key_values, keep_mask)
         decode_keep = keep_mask[prefill_len:prefill_len + num_decode].tolist()
         self._scores = [
             s for s, kept in zip(self._scores[-num_decode:], decode_keep) if kept
@@ -330,10 +349,7 @@ class RKVEviction:
         keep_mask = torch.zeros(seq_len, dtype=torch.bool, device=device)
         keep_mask[keep_idx] = True
 
-        new_past = tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        new_past = _gather_kept(past_key_values, keep_mask)
         # Prune stored observation rows to surviving positions.
         self._obs = [r[keep_mask[:len(r)].cpu() if r.device.type == 'cpu' else keep_mask[:len(r)]]
                      for r in self._obs]
@@ -399,10 +415,7 @@ class LongFlowEviction:
         keep_mask = torch.zeros(seq_len, dtype=torch.bool, device=device)
         keep_mask[keep_idx] = True
 
-        new_past = tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        new_past = _gather_kept(past_key_values, keep_mask)
         return new_past
 
 
@@ -790,10 +803,7 @@ class KVSegmentHSEviction:
                 keep_mask[decode_start + top_idx] = True
                 remaining_budget -= n_keep
 
-        new_past = tuple(
-            (k[:, :, keep_mask.to(k.device), :].contiguous(), v[:, :, keep_mask.to(k.device), :].contiguous())
-            for k, v in past_key_values
-        )
+        new_past = _gather_kept(past_key_values, keep_mask)
         decode_keep = keep_mask[prefill_len:prefill_len + num_decode].tolist()
         self._scores = [
             s for s, kept in zip(self._scores[-num_decode:], decode_keep) if kept

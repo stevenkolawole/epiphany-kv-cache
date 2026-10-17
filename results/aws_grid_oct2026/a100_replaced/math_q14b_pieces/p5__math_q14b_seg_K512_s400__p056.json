@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "kv_seg_hs"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs": {
+      "512": {
+        "accuracy": 0.7,
+        "n_correct": 7,
+        "n_total": 10,
+        "mean_wall_time_s": 413.05,
+        "mean_peak_gpu_mb": 28434.1,
+        "per_problem": [
+          {
+            "problem": "Let \\[f(n) = \\left\\{\n\\begin{array}{cl}\n\\lfloor n \\rfloor & \\text{ if }n \\geq 4, ",
+            "ground_truth": "12",
+            "pred_answer": "12",
+            "correct": true,
+            "n_tokens_generated": 12820,
+            "wall_time_s": 718.22,
+            "peak_gpu_mb": 28435.0,
+            "error": null
+          },
+          {
+            "problem": "Linda, Sherry, June, and Connie walked around their neighborhoods selling girl s",
+            "ground_truth": "59",
+            "pred_answer": "59",
+            "correct": true,
+            "n_tokens_generated": 12476,
+            "wall_time_s": 698.07,
+            "peak_gpu_mb": 28446.7,
+            "error": null
+          },
+          {
+            "problem": "For how many values of $x$ is the expression $\\frac{x-5}{x^2-9}$  not defined?",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 1126,
+            "wall_time_s": 62.11,
+            "peak_gpu_mb": 28418.9,
+            "error": null
+          },
+          {
+            "problem": "If $\\log_6 (x-y) + \\log_6 (x+y) = 2$ and $\\log_y 5x = 2$, then find $x$.",
+            "ground_truth": "9",
+            "pred_answer": "9",
+            "correct": true,
+            "n_tokens_generated": 2193,
+            "wall_time_s": 122.42,
+            "peak_gpu_mb": 28422.1,
+            "error": null
+          },
+          {
+            "problem": "When the positive integers with exactly three positive divisors are listed in as",
+            "ground_truth": "121",
+            "pred_answer": "121",
+            "correct": true,
+            "n_tokens_generated": 1932,
+            "wall_time_s": 108.12,
+            "peak_gpu_mb": 28417.7,
+            "error": null
+          },
+          {
+            "problem": "If $re^{i \\theta}$ is a root of\n\\[z^8 - z^7 + z^6 - z^5 + z^4 - z^3 + z^2 - z + ",
+            "ground_truth": "8 \\pi",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 920.27,
+            "peak_gpu_mb": 28433.0,
+            "error": null
+          },
+          {
+            "problem": "In the diagram, what is the area of the shaded triangle? [asy]\nfill((0,0)--(2,3)",
+            "ground_truth": "15\\mbox{ cm}^2",
+            "pred_answer": "15",
+            "correct": false,
+            "n_tokens_generated": 6992,
+            "wall_time_s": 391.14,
+            "peak_gpu_mb": 28505.7,
+            "error": null
+          },
+          {
+            "problem": "The square root of $t$ is greater than $2$ and less than $3.5$. How many integer",
+            "ground_truth": "8",
+            "pred_answer": "8",
+            "correct": true,
+            "n_tokens_generated": 1238,
+            "wall_time_s": 69.06,
+            "peak_gpu_mb": 28420.6,
+            "error": null
+          },
+          {
+            "problem": "Evaluate $\\lceil{\\sqrt{20}}\\rceil^2$.",
+            "ground_truth": "25",
+            "pred_answer": "25",
+            "correct": true,
+            "n_tokens_generated": 2045,
+            "wall_time_s": 115.3,
+            "peak_gpu_mb": 28415.7,
+            "error": null
+          },
+          {
+            "problem": "Let $a,$ $b,$ $c,$ and $d$ be positive real numbers such that $a + b + c + d = 1",
+            "ground_truth": "27648",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 925.76,
+            "peak_gpu_mb": 28425.6,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

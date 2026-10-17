@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "math500",
+    "n_samples": 100,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      1024
+    ],
+    "methods": [
+      "none"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "none": {
+      "1024": {
+        "partial": true,
+        "n_total": 100,
+        "per_problem": [
+          {
+            "problem": "Suppose that $ABCD$ is a trapezoid in which $\\overline{AD}|| \\overline{BC}$.  Gi",
+            "ground_truth": "28",
+            "pred_answer": "28",
+            "correct": true,
+            "n_tokens_generated": 10382,
+            "wall_time_s": 1072.02,
+            "peak_gpu_mb": 16694.7,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

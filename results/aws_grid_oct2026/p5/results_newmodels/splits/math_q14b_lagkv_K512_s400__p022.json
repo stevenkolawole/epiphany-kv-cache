@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "512": {
+        "accuracy": 0.3,
+        "n_correct": 3,
+        "n_total": 10,
+        "mean_wall_time_s": 595.19,
+        "mean_peak_gpu_mb": 28460.0,
+        "per_problem": [
+          {
+            "problem": "Three pencils and a jumbo eraser cost $\\$1.24$. Five pencils and a jumbo eraser ",
+            "ground_truth": "29",
+            "pred_answer": "29",
+            "correct": true,
+            "n_tokens_generated": 4694,
+            "wall_time_s": 198.84,
+            "peak_gpu_mb": 28461.0,
+            "error": null
+          },
+          {
+            "problem": "Let $a,$ $b,$ $c,$ $d$ be positive real numbers such that $a + b + c + d = 1.$  ",
+            "ground_truth": "64",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 696.77,
+            "peak_gpu_mb": 28464.9,
+            "error": null
+          },
+          {
+            "problem": "Let $a$ and $b$ be positive real numbers such that $ab^2 = 5.$  Find the minimum",
+            "ground_truth": "50",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 696.85,
+            "peak_gpu_mb": 28459.3,
+            "error": null
+          },
+          {
+            "problem": "What is $\\frac{9}{2}$ expressed as a decimal?",
+            "ground_truth": "4.5",
+            "pred_answer": "4.5",
+            "correct": true,
+            "n_tokens_generated": 879,
+            "wall_time_s": 35.42,
+            "peak_gpu_mb": 28455.7,
+            "error": null
+          },
+          {
+            "problem": "Let\n\\[f(x) = (\\arccos x)^2 + (\\arcsin x)^2.\\]Find the range of $f(x).$  All func",
+            "ground_truth": "\\left[ \\frac{\\pi^2}{8}, \\frac{5 \\pi^2}{4} \\right]",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 701.45,
+            "peak_gpu_mb": 28459.8,
+            "error": null
+          },
+          {
+            "problem": "If\n\\[f(n + 1) = (-1)^{n + 1} n - 2f(n)\\]for $n \\ge 1,$ and $f(1) = f(1986),$ com",
+            "ground_truth": "331",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 701.74,
+            "peak_gpu_mb": 28465.7,
+            "error": null
+          },
+          {
+            "problem": "Convert $\\frac{57}{160}$ to a terminating decimal.",
+            "ground_truth": ".35625",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 699.89,
+            "peak_gpu_mb": 28456.0,
+            "error": null
+          },
+          {
+            "problem": "In a certain isosceles right triangle, the altitude to the hypotenuse has length",
+            "ground_truth": "32",
+            "pred_answer": "32",
+            "correct": true,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 730.3,
+            "peak_gpu_mb": 28459.1,
+            "error": null
+          },
+          {
+            "problem": "What is the domain of the real-valued function $f(x)=\\frac{2x-7}{\\sqrt{x^2-5x+6}",
+            "ground_truth": "(-\\infty, 2) \\cup (3, \\infty)",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 737.71,
+            "peak_gpu_mb": 28459.0,
+            "error": null
+          },
+          {
+            "problem": "$n$ fair 6-sided dice are simultaneously rolled. The probability that exactly tw",
+            "ground_truth": "4",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 752.95,
+            "peak_gpu_mb": 28459.9,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

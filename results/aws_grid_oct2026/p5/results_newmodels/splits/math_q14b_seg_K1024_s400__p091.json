@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 4,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      1024
+    ],
+    "methods": [
+      "kv_seg_hs"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs": {
+      "1024": {
+        "accuracy": 0.5,
+        "n_correct": 2,
+        "n_total": 4,
+        "mean_wall_time_s": 267.75,
+        "mean_peak_gpu_mb": 28641.2,
+        "per_problem": [
+          {
+            "problem": "Let $z = 1+i$ and $w = \\dfrac{3z+1}{5z+7}$. Find $|w|$.",
+            "ground_truth": "\\frac{5}{13}",
+            "pred_answer": "\\frac{5}{13}",
+            "correct": true,
+            "n_tokens_generated": 1745,
+            "wall_time_s": 70.4,
+            "peak_gpu_mb": 28629.7,
+            "error": null
+          },
+          {
+            "problem": "An equiangular octagon has four sides of length $1$ and four sides of length $\\f",
+            "ground_truth": "\\frac{7}{2}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 653.69,
+            "peak_gpu_mb": 28643.7,
+            "error": null
+          },
+          {
+            "problem": "A sequence $(a_n)$ is defined as follows:\n\\[a_{i + 1} = \\frac{1}{1 - a_i}\\]for $",
+            "ground_truth": "-1",
+            "pred_answer": "0",
+            "correct": false,
+            "n_tokens_generated": 6015,
+            "wall_time_s": 242.63,
+            "peak_gpu_mb": 28645.8,
+            "error": null
+          },
+          {
+            "problem": "Altitudes $\\overline{AD}$ and $\\overline{BE}$ of $\\triangle ABC$ intersect at $H",
+            "ground_truth": "106^\\circ",
+            "pred_answer": "106^\\circ",
+            "correct": true,
+            "n_tokens_generated": 2587,
+            "wall_time_s": 104.27,
+            "peak_gpu_mb": 28645.8,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

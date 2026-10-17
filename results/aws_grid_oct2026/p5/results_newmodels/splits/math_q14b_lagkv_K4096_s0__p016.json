@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "4096": {
+        "accuracy": 0.7,
+        "n_correct": 7,
+        "n_total": 10,
+        "mean_wall_time_s": 287.79,
+        "mean_peak_gpu_mb": 29598.8,
+        "per_problem": [
+          {
+            "problem": "Compute: $1-2+3-4+5- \\dots +99-100$.",
+            "ground_truth": "-50",
+            "pred_answer": "-50",
+            "correct": true,
+            "n_tokens_generated": 3199,
+            "wall_time_s": 127.59,
+            "peak_gpu_mb": 29276.7,
+            "error": null
+          },
+          {
+            "problem": "Below is the graph of $y = a \\sin (bx + c) + d$ for some positive constants $a,$",
+            "ground_truth": "\\pi",
+            "pred_answer": "\\pi",
+            "correct": true,
+            "n_tokens_generated": 4220,
+            "wall_time_s": 175.19,
+            "peak_gpu_mb": 30166.8,
+            "error": null
+          },
+          {
+            "problem": "$\\overline{BC}$ is parallel to the segment through $A$, and $AB = BC$. What is t",
+            "ground_truth": "28",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 870.71,
+            "peak_gpu_mb": 30157.4,
+            "error": null
+          },
+          {
+            "problem": "Let $a$ be a positive real number such that all the roots of\n\\[x^3 + ax^2 + ax +",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 5861,
+            "wall_time_s": 270.78,
+            "peak_gpu_mb": 30141.3,
+            "error": null
+          },
+          {
+            "problem": "Evaluate $(1+2i)6-3i$.",
+            "ground_truth": "6+9i",
+            "pred_answer": "6 + 9i",
+            "correct": true,
+            "n_tokens_generated": 1338,
+            "wall_time_s": 52.75,
+            "peak_gpu_mb": 28637.5,
+            "error": null
+          },
+          {
+            "problem": "Find the greatest integer less than $(\\sqrt{7} + \\sqrt{5})^6.$  (Do not use a ca",
+            "ground_truth": "13535",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 872.88,
+            "peak_gpu_mb": 30138.4,
+            "error": null
+          },
+          {
+            "problem": "Denali and Nate work for a dog walking business and are paid for each dog they w",
+            "ground_truth": "5",
+            "pred_answer": "5",
+            "correct": true,
+            "n_tokens_generated": 2152,
+            "wall_time_s": 85.46,
+            "peak_gpu_mb": 28945.9,
+            "error": null
+          },
+          {
+            "problem": "Find all values of $x$ that satisfy the equation $x = \\!\\sqrt{11-2x} + 4$.",
+            "ground_truth": "x=5",
+            "pred_answer": "5",
+            "correct": true,
+            "n_tokens_generated": 2421,
+            "wall_time_s": 97.1,
+            "peak_gpu_mb": 29010.1,
+            "error": null
+          },
+          {
+            "problem": "A worker receives an annual wage of $\\$20{,}000$, which he always deposits into ",
+            "ground_truth": "10",
+            "pred_answer": "10",
+            "correct": true,
+            "n_tokens_generated": 3536,
+            "wall_time_s": 143.04,
+            "peak_gpu_mb": 29367.4,
+            "error": null
+          },
+          {
+            "problem": "The function $f$ satisfies the functional equation\n\\[f(x) + f(y) = f(x + y) - xy",
+            "ground_truth": "1,-2",
+            "pred_answer": "1",
+            "correct": false,
+            "n_tokens_generated": 4352,
+            "wall_time_s": 182.45,
+            "peak_gpu_mb": 30146.2,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "4096": {
+        "accuracy": 0.9,
+        "n_correct": 9,
+        "n_total": 10,
+        "mean_wall_time_s": 148.83,
+        "mean_peak_gpu_mb": 29463.1,
+        "per_problem": [
+          {
+            "problem": "The following line is parameterized, so that its direction vector is of the form",
+            "ground_truth": "\\frac{7}{4}",
+            "pred_answer": "\\dfrac{7}{4}",
+            "correct": true,
+            "n_tokens_generated": 2749,
+            "wall_time_s": 110.72,
+            "peak_gpu_mb": 29233.5,
+            "error": null
+          },
+          {
+            "problem": "An equilateral triangle is inscribed in the parabola $x^2 = 8y,$ such that one o",
+            "ground_truth": "16 \\sqrt{3}",
+            "pred_answer": "16\\sqrt{3}",
+            "correct": true,
+            "n_tokens_generated": 6279,
+            "wall_time_s": 257.43,
+            "peak_gpu_mb": 30302.6,
+            "error": null
+          },
+          {
+            "problem": "Two candidates, Dan and Donald, run for class president. Two other candidates, F",
+            "ground_truth": "\\frac14",
+            "pred_answer": "\\dfrac{1}{4}",
+            "correct": false,
+            "n_tokens_generated": 2371,
+            "wall_time_s": 94.42,
+            "peak_gpu_mb": 29061.4,
+            "error": null
+          },
+          {
+            "problem": "Three plus the reciprocal of a number equals 7 divided by that number.  What is ",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 1111,
+            "wall_time_s": 44.05,
+            "peak_gpu_mb": 28592.9,
+            "error": null
+          },
+          {
+            "problem": "If each point of the circle $x^2 + y^2 = 25$ is reflected in the point $(4,1),$ ",
+            "ground_truth": "(1,-16,-4,43)",
+            "pred_answer": "(1, -16, -4, 43)",
+            "correct": true,
+            "n_tokens_generated": 3689,
+            "wall_time_s": 149.69,
+            "peak_gpu_mb": 29473.1,
+            "error": null
+          },
+          {
+            "problem": "If $a$ and $b$ are positive integers such that $\\gcd(a,b)=210$, $\\mathop{\\text{l",
+            "ground_truth": "8",
+            "pred_answer": "8",
+            "correct": true,
+            "n_tokens_generated": 8581,
+            "wall_time_s": 352.99,
+            "peak_gpu_mb": 30303.1,
+            "error": null
+          },
+          {
+            "problem": "Find the modulo $7$ remainder of the sum $1+3+5+7+9+\\dots+195+197+199.$",
+            "ground_truth": "4",
+            "pred_answer": "4",
+            "correct": true,
+            "n_tokens_generated": 3947,
+            "wall_time_s": 154.93,
+            "peak_gpu_mb": 29541.5,
+            "error": null
+          },
+          {
+            "problem": "Suppose that $f$ is a function and $f^{-1}$ is the inverse of $f$.  If $f(1)=2$,",
+            "ground_truth": "1",
+            "pred_answer": "1",
+            "correct": true,
+            "n_tokens_generated": 1514,
+            "wall_time_s": 60.17,
+            "peak_gpu_mb": 28746.9,
+            "error": null
+          },
+          {
+            "problem": "Two sides of a triangle are each $8$ units long. If the third side has a whole n",
+            "ground_truth": "31",
+            "pred_answer": "31",
+            "correct": true,
+            "n_tokens_generated": 2438,
+            "wall_time_s": 97.44,
+            "peak_gpu_mb": 29059.4,
+            "error": null
+          },
+          {
+            "problem": "What is the number of square centimeters in the area of this trapezoid?\n\n[asy]\nd",
+            "ground_truth": "21",
+            "pred_answer": "21",
+            "correct": true,
+            "n_tokens_generated": 4093,
+            "wall_time_s": 166.47,
+            "peak_gpu_mb": 30316.9,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

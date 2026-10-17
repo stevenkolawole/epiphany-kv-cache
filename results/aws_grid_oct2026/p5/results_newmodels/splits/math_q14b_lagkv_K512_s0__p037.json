@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "512": {
+        "accuracy": 0.4,
+        "n_correct": 4,
+        "n_total": 10,
+        "mean_wall_time_s": 554.22,
+        "mean_peak_gpu_mb": 28461.8,
+        "per_problem": [
+          {
+            "problem": "A regular pentagon is rotated counterclockwise about its center. What is the min",
+            "ground_truth": "72",
+            "pred_answer": "72",
+            "correct": true,
+            "n_tokens_generated": 15003,
+            "wall_time_s": 647.04,
+            "peak_gpu_mb": 28458.8,
+            "error": null
+          },
+          {
+            "problem": "If a snack-size tin of peaches has $40$ calories and is $2\\%$ of a person's dail",
+            "ground_truth": "2000",
+            "pred_answer": "2000",
+            "correct": true,
+            "n_tokens_generated": 2444,
+            "wall_time_s": 103.9,
+            "peak_gpu_mb": 28460.1,
+            "error": null
+          },
+          {
+            "problem": "What is the result when the greatest common factor of 6432 and 132 is increased ",
+            "ground_truth": "23",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 704.26,
+            "peak_gpu_mb": 28457.7,
+            "error": null
+          },
+          {
+            "problem": "A regular octagon has the same perimeter as the regular hexagon shown here with ",
+            "ground_truth": "12",
+            "pred_answer": "12",
+            "correct": true,
+            "n_tokens_generated": 3687,
+            "wall_time_s": 155.89,
+            "peak_gpu_mb": 28470.9,
+            "error": null
+          },
+          {
+            "problem": "The coordinates of a parallelogram are (5, 3), (6, 8), (7, 4) and $(x, y)$ and $",
+            "ground_truth": "17",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 696.41,
+            "peak_gpu_mb": 28461.3,
+            "error": null
+          },
+          {
+            "problem": "The solution to $-4 < 2(x - 1) < 8$ is expressed in the form $a < x < b$. Find t",
+            "ground_truth": "4",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 697.12,
+            "peak_gpu_mb": 28459.6,
+            "error": null
+          },
+          {
+            "problem": "For $0 \\le x \\le 40$ and $0 \\le y \\le 50,$ find the minimum value of\n\\[\\sqrt{x^2",
+            "ground_truth": "70 \\sqrt{2}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 699.97,
+            "peak_gpu_mb": 28466.8,
+            "error": null
+          },
+          {
+            "problem": "Bill walks $\\frac{1}{2}$ mile south, then $\\frac{3}{4}$ mile east, and finally $",
+            "ground_truth": "1.25",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 701.59,
+            "peak_gpu_mb": 28463.5,
+            "error": null
+          },
+          {
+            "problem": "In right triangle $ABC$ with $\\angle B = 90^\\circ$, we have $\\sin A = 2\\cos A$. ",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 10164,
+            "wall_time_s": 434.3,
+            "peak_gpu_mb": 28459.3,
+            "error": null
+          },
+          {
+            "problem": "What is the smallest positive integer $n$ such that all the roots of $z^4 + z^2 ",
+            "ground_truth": "6",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 701.71,
+            "peak_gpu_mb": 28460.4,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

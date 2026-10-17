@@ -1,0 +1,89 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 6,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      1024
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "1024": {
+        "accuracy": 0.16666666666666666,
+        "n_correct": 1,
+        "n_total": 6,
+        "mean_wall_time_s": 618.98,
+        "mean_peak_gpu_mb": 28697.0,
+        "per_problem": [
+          {
+            "problem": "Navin from Mauritius, Luka from Croatia, and Ian from Botswana are chatting in t",
+            "ground_truth": "\\text{Navin}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 718.64,
+            "peak_gpu_mb": 28706.4,
+            "error": null
+          },
+          {
+            "problem": "Add 313.9 to 12.6. Express the result as a decimal.",
+            "ground_truth": "326.5",
+            "pred_answer": "326.5",
+            "correct": true,
+            "n_tokens_generated": 1215,
+            "wall_time_s": 47.61,
+            "peak_gpu_mb": 28691.2,
+            "error": null
+          },
+          {
+            "problem": "In the circle with center $Q$, radii $AQ$ and $BQ$ form a right angle. The two s",
+            "ground_truth": "\\frac{14}{3}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 731.04,
+            "peak_gpu_mb": 28699.0,
+            "error": null
+          },
+          {
+            "problem": "Let $z$ be a complex number such that $|z| = 1.$  Find the maximum value of\n\\[|1",
+            "ground_truth": "\\frac{13}{4}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 738.14,
+            "peak_gpu_mb": 28694.7,
+            "error": null
+          },
+          {
+            "problem": "A $90^\\circ$ rotation around $-4 - 5i$ in the clockwise direction is applied to ",
+            "ground_truth": "1 - 12i",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 739.44,
+            "peak_gpu_mb": 28694.4,
+            "error": null
+          },
+          {
+            "problem": "How many of the same digits are found in the base 7 and base 8 representations o",
+            "ground_truth": "3",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 739.03,
+            "peak_gpu_mb": 28696.2,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

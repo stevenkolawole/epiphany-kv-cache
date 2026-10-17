@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "512": {
+        "accuracy": 0.5,
+        "n_correct": 5,
+        "n_total": 10,
+        "mean_wall_time_s": 464.96,
+        "mean_peak_gpu_mb": 28483.1,
+        "per_problem": [
+          {
+            "problem": "A bookcase has 3 shelves with a total of 24 books. The top shelf has 8 mystery b",
+            "ground_truth": "\\frac{4}{9}",
+            "pred_answer": "\\dfrac{4}{9}",
+            "correct": true,
+            "n_tokens_generated": 1620,
+            "wall_time_s": 67.95,
+            "peak_gpu_mb": 28465.2,
+            "error": null
+          },
+          {
+            "problem": "A square and a regular heptagon  are coplanar and share a common side $\\overline",
+            "ground_truth": "\\frac{270}7\\text{ degrees}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 699.07,
+            "peak_gpu_mb": 28485.4,
+            "error": null
+          },
+          {
+            "problem": "The volume of a cone is given by the formula $V = \\frac{1}{3}Bh$, where $B$ is t",
+            "ground_truth": "65",
+            "pred_answer": "65",
+            "correct": true,
+            "n_tokens_generated": 3643,
+            "wall_time_s": 154.05,
+            "peak_gpu_mb": 28465.5,
+            "error": null
+          },
+          {
+            "problem": "There is a total of 70 squares of three sizes whose vertices are points on this ",
+            "ground_truth": "19",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 654.31,
+            "peak_gpu_mb": 28657.4,
+            "error": null
+          },
+          {
+            "problem": "What is the number of square units in the area of a triangle whose sides measure",
+            "ground_truth": "12",
+            "pred_answer": "12",
+            "correct": true,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 697.33,
+            "peak_gpu_mb": 28457.6,
+            "error": null
+          },
+          {
+            "problem": "Find the product of the $y$-coordinates of all the distinct solutions $(x,y)$ fo",
+            "ground_truth": "1736",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 697.16,
+            "peak_gpu_mb": 28460.2,
+            "error": null
+          },
+          {
+            "problem": "Louis and Jack are sharing a pie.  Louis eats $\\frac{1}{5}$ of the pie, and Jack",
+            "ground_truth": "\\frac{13}{15}",
+            "pred_answer": "\\dfrac{13}{15}",
+            "correct": true,
+            "n_tokens_generated": 2366,
+            "wall_time_s": 99.75,
+            "peak_gpu_mb": 28461.2,
+            "error": null
+          },
+          {
+            "problem": "If the fourth term of an arithmetic sequence is $200$ and the eighth term is $50",
+            "ground_truth": "350",
+            "pred_answer": "350",
+            "correct": true,
+            "n_tokens_generated": 4043,
+            "wall_time_s": 171.69,
+            "peak_gpu_mb": 28458.2,
+            "error": null
+          },
+          {
+            "problem": "Consider the geometric series $4+\\frac{12}{a}+\\frac{36}{a^2}+\\cdots$. If the sum",
+            "ground_truth": "4",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 704.69,
+            "peak_gpu_mb": 28462.1,
+            "error": null
+          },
+          {
+            "problem": "How many $y$-intercepts does the graph of the parabola $x = y^2 - 4y - 1$ have?",
+            "ground_truth": "2",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 703.64,
+            "peak_gpu_mb": 28458.5,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

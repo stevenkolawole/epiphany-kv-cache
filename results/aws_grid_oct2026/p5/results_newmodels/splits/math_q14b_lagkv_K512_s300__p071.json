@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "512": {
+        "accuracy": 0.1,
+        "n_correct": 1,
+        "n_total": 10,
+        "mean_wall_time_s": 635.17,
+        "mean_peak_gpu_mb": 28465.0,
+        "per_problem": [
+          {
+            "problem": "What is the difference between the positive square root of 64 and the cube root ",
+            "ground_truth": "4",
+            "pred_answer": "4",
+            "correct": true,
+            "n_tokens_generated": 1246,
+            "wall_time_s": 51.27,
+            "peak_gpu_mb": 28456.9,
+            "error": null
+          },
+          {
+            "problem": "If $A$ is the sum of the positive divisors of $500$, what is the sum of the dist",
+            "ground_truth": "25",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 691.67,
+            "peak_gpu_mb": 28458.7,
+            "error": null
+          },
+          {
+            "problem": "Determine the coordinates of the point $P$ on the line $y=-x+6$ such that $P$ is",
+            "ground_truth": "(8,-2)",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 691.72,
+            "peak_gpu_mb": 28465.1,
+            "error": null
+          },
+          {
+            "problem": "The superfactorial $n\\$$ is defined as $n\\$ = \\underbrace{ n!^{{n!}^{{\\cdot}^{{\\",
+            "ground_truth": "6",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 690.02,
+            "peak_gpu_mb": 28463.4,
+            "error": null
+          },
+          {
+            "problem": "For how many two-digit primes is the sum of the digits equal to 8?",
+            "ground_truth": "3",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 687.36,
+            "peak_gpu_mb": 28456.2,
+            "error": null
+          },
+          {
+            "problem": "The data in the table below shows the percent of bus riders in a survey of Centr",
+            "ground_truth": "12",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 687.05,
+            "peak_gpu_mb": 28490.5,
+            "error": null
+          },
+          {
+            "problem": "Solve\n\\[\\frac{|x^2 - 81|}{x^2 - 36x} < 0.\\]",
+            "ground_truth": "(0,9) \\cup (9,36)",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 694.01,
+            "peak_gpu_mb": 28458.2,
+            "error": null
+          },
+          {
+            "problem": "Two numbers, $x$ and $y$ are selected at random from the interval $(0,3)$.  What",
+            "ground_truth": "\\frac{1}{2}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 709.56,
+            "peak_gpu_mb": 28460.9,
+            "error": null
+          },
+          {
+            "problem": "A rectangular field is enclosed in an athletic track, as shown below.  The track",
+            "ground_truth": "\\frac{20000}{\\pi}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 710.86,
+            "peak_gpu_mb": 28480.9,
+            "error": null
+          },
+          {
+            "problem": "For what values of $x$ is it true that $x^2 - 5x - 4 \\le 10$? Express your answe",
+            "ground_truth": "x \\in [-2,7]",
+            "pred_answer": "[-2, 7]",
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 738.19,
+            "peak_gpu_mb": 28459.1,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

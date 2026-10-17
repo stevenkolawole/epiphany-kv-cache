@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "raas"
+    ],
+    "attn_impl": "eager"
+  },
+  "results": {
+    "raas": {
+      "512": {
+        "accuracy": 0.4,
+        "n_correct": 4,
+        "n_total": 10,
+        "mean_wall_time_s": 391.66,
+        "mean_peak_gpu_mb": 28493.6,
+        "per_problem": [
+          {
+            "problem": "If $f(x)=5x^2+3x+4$, what is the value of $f(-2)$?",
+            "ground_truth": "18",
+            "pred_answer": "18",
+            "correct": true,
+            "n_tokens_generated": 1684,
+            "wall_time_s": 75.0,
+            "peak_gpu_mb": 28469.1,
+            "error": null
+          },
+          {
+            "problem": "What is the smallest real number $x$ in the domain of the function $$g(x) = \\sqr",
+            "ground_truth": "\\frac{11}{2}",
+            "pred_answer": "\\frac{11}{2}",
+            "correct": true,
+            "n_tokens_generated": 2005,
+            "wall_time_s": 88.82,
+            "peak_gpu_mb": 28471.0,
+            "error": null
+          },
+          {
+            "problem": "The smallest distance between the origin and a point on the graph of $y=\\frac{1}",
+            "ground_truth": "12",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 738.35,
+            "peak_gpu_mb": 28477.7,
+            "error": null
+          },
+          {
+            "problem": "Let $f$ be defined by  \\[f(x) = \\left\\{\n\\begin{array}{cl}\n3-x & \\text{ if } x \\l",
+            "ground_truth": "0",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 734.42,
+            "peak_gpu_mb": 28478.5,
+            "error": null
+          },
+          {
+            "problem": "The distances from a point $P$ to five of the vertices of a regular octahedron a",
+            "ground_truth": "\\sqrt{66}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 735.57,
+            "peak_gpu_mb": 28626.1,
+            "error": null
+          },
+          {
+            "problem": "It's a well-known physics formula that force equals mass times acceleration.  Je",
+            "ground_truth": "\\frac 34",
+            "pred_answer": "\\frac{3}{4}",
+            "correct": false,
+            "n_tokens_generated": 1524,
+            "wall_time_s": 67.16,
+            "peak_gpu_mb": 28477.8,
+            "error": null
+          },
+          {
+            "problem": "Consider the function $z(x,y)$ describing the paraboloid\n\\[z = (2x - y)^2 - 2y^2",
+            "ground_truth": "-\\frac{3}{8}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 735.81,
+            "peak_gpu_mb": 28482.8,
+            "error": null
+          },
+          {
+            "problem": "If $a = 8$, what is the value of $\\left(16\\sqrt[3]{a^2}\\right)^{\\frac 13}$?",
+            "ground_truth": "4",
+            "pred_answer": "4",
+            "correct": true,
+            "n_tokens_generated": 1833,
+            "wall_time_s": 80.1,
+            "peak_gpu_mb": 28470.5,
+            "error": null
+          },
+          {
+            "problem": "Quadrilateral $ABCD$ is a square with area 16 square inches. The figure represen",
+            "ground_truth": "2",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 607.51,
+            "peak_gpu_mb": 28512.8,
+            "error": null
+          },
+          {
+            "problem": "If $3x + 2(1 + x) = 17$, what is the value of $6x + 5$?",
+            "ground_truth": "23",
+            "pred_answer": "23",
+            "correct": true,
+            "n_tokens_generated": 1575,
+            "wall_time_s": 53.89,
+            "peak_gpu_mb": 28469.7,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

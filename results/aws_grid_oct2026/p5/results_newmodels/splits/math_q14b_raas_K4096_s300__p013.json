@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "raas"
+    ],
+    "attn_impl": "eager"
+  },
+  "results": {
+    "raas": {
+      "4096": {
+        "accuracy": 0.7,
+        "n_correct": 7,
+        "n_total": 10,
+        "mean_wall_time_s": 289.83,
+        "mean_peak_gpu_mb": 29428.9,
+        "per_problem": [
+          {
+            "problem": "The expression $10x^2-x-24$ can be written as $(Ax-8)(Bx+3),$ where $A$ and $B$ ",
+            "ground_truth": "12",
+            "pred_answer": "12",
+            "correct": true,
+            "n_tokens_generated": 2830,
+            "wall_time_s": 132.73,
+            "peak_gpu_mb": 29193.9,
+            "error": null
+          },
+          {
+            "problem": "Let $a,$ $b,$ and $c$ be distinct real numbers.  Find the degree of the polynomi",
+            "ground_truth": "0",
+            "pred_answer": "0",
+            "correct": true,
+            "n_tokens_generated": 7348,
+            "wall_time_s": 377.02,
+            "peak_gpu_mb": 30234.0,
+            "error": null
+          },
+          {
+            "problem": "Write the expression \\[\\frac{4+6a}{5}-\\frac{1+3a}{4}\\] as a single fraction.",
+            "ground_truth": "\\frac{11+9a}{20}",
+            "pred_answer": "\\dfrac{9a + 11}{20}",
+            "correct": false,
+            "n_tokens_generated": 1842,
+            "wall_time_s": 91.73,
+            "peak_gpu_mb": 28852.0,
+            "error": null
+          },
+          {
+            "problem": "In the equation $|x-4| -10 = 2$, what is the product of all possible values of $",
+            "ground_truth": "-128",
+            "pred_answer": "-128",
+            "correct": true,
+            "n_tokens_generated": 1653,
+            "wall_time_s": 84.72,
+            "peak_gpu_mb": 28786.1,
+            "error": null
+          },
+          {
+            "problem": "In the diagram below, we have $\\sin \\angle RPQ = \\frac{7}{25}$.  What is $\\cos \\",
+            "ground_truth": "-\\frac{24}{25}",
+            "pred_answer": "-\\dfrac{24}{25}",
+            "correct": true,
+            "n_tokens_generated": 5732,
+            "wall_time_s": 345.22,
+            "peak_gpu_mb": 30238.7,
+            "error": null
+          },
+          {
+            "problem": "A robot moving forward at a constant speed takes 2.5 hours to travel 1 kilometer",
+            "ground_truth": "10",
+            "pred_answer": "10",
+            "correct": true,
+            "n_tokens_generated": 1839,
+            "wall_time_s": 102.98,
+            "peak_gpu_mb": 28868.0,
+            "error": null
+          },
+          {
+            "problem": "Let $f(x) = x - 3$ and $q(x) = bx +1$.  If $f(q(1)) = -3$, what is $b$?",
+            "ground_truth": "-1",
+            "pred_answer": "-1",
+            "correct": true,
+            "n_tokens_generated": 1103,
+            "wall_time_s": 56.9,
+            "peak_gpu_mb": 28613.9,
+            "error": null
+          },
+          {
+            "problem": "Four points, $A$, $B$, $C$, and $D$, are chosen randomly and independently on th",
+            "ground_truth": "\\frac{1}{3}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1063.65,
+            "peak_gpu_mb": 30226.2,
+            "error": null
+          },
+          {
+            "problem": "In the diagram, two circles, each with center $D$, have radii of $1$ and $2$. Th",
+            "ground_truth": "120",
+            "pred_answer": "150",
+            "correct": false,
+            "n_tokens_generated": 11254,
+            "wall_time_s": 554.18,
+            "peak_gpu_mb": 30262.3,
+            "error": null
+          },
+          {
+            "problem": "A cylindrical beaker is 8 cm high and has a radius of 3 cm. How many such beaker",
+            "ground_truth": "4",
+            "pred_answer": "4",
+            "correct": true,
+            "n_tokens_generated": 2319,
+            "wall_time_s": 89.22,
+            "peak_gpu_mb": 29014.1,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

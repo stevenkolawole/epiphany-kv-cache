@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "4096": {
+        "accuracy": 0.9,
+        "n_correct": 9,
+        "n_total": 10,
+        "mean_wall_time_s": 188.21,
+        "mean_peak_gpu_mb": 29530.8,
+        "per_problem": [
+          {
+            "problem": "Find the dot product of $\\begin{pmatrix} -2 \\\\ 0 \\\\ 7 \\end{pmatrix}$ and $\\begin",
+            "ground_truth": "-41",
+            "pred_answer": "-41",
+            "correct": true,
+            "n_tokens_generated": 1866,
+            "wall_time_s": 73.41,
+            "peak_gpu_mb": 28855.8,
+            "error": null
+          },
+          {
+            "problem": "Let $a,$ $b,$ $c$ be real numbers such that\n\\[|ax^2 + bx + c| \\le 1\\]for all $0 ",
+            "ground_truth": "17",
+            "pred_answer": "17",
+            "correct": true,
+            "n_tokens_generated": 13402,
+            "wall_time_s": 555.41,
+            "peak_gpu_mb": 30304.2,
+            "error": null
+          },
+          {
+            "problem": "In the diagram, $AD=BD=CD$ and $\\angle BCA = 40^\\circ.$ What is the measure of $",
+            "ground_truth": "90^\\circ",
+            "pred_answer": "90",
+            "correct": false,
+            "n_tokens_generated": 6220,
+            "wall_time_s": 254.37,
+            "peak_gpu_mb": 30329.3,
+            "error": null
+          },
+          {
+            "problem": "William Sydney Porter tried to perform the calculation $\\frac{-3+4i}{1+2i}$. How",
+            "ground_truth": "1+2i",
+            "pred_answer": "1 + 2i",
+            "correct": true,
+            "n_tokens_generated": 3187,
+            "wall_time_s": 124.38,
+            "peak_gpu_mb": 29346.3,
+            "error": null
+          },
+          {
+            "problem": "What is the difference between the positive square root of 64 and the cube root ",
+            "ground_truth": "4",
+            "pred_answer": "4",
+            "correct": true,
+            "n_tokens_generated": 927,
+            "wall_time_s": 35.47,
+            "peak_gpu_mb": 28547.5,
+            "error": null
+          },
+          {
+            "problem": "If $A$ is the sum of the positive divisors of $500$, what is the sum of the dist",
+            "ground_truth": "25",
+            "pred_answer": "25",
+            "correct": true,
+            "n_tokens_generated": 2286,
+            "wall_time_s": 88.62,
+            "peak_gpu_mb": 28988.8,
+            "error": null
+          },
+          {
+            "problem": "Determine the coordinates of the point $P$ on the line $y=-x+6$ such that $P$ is",
+            "ground_truth": "(8,-2)",
+            "pred_answer": "(8, -2)",
+            "correct": true,
+            "n_tokens_generated": 2913,
+            "wall_time_s": 114.04,
+            "peak_gpu_mb": 29216.3,
+            "error": null
+          },
+          {
+            "problem": "The superfactorial $n\\$$ is defined as $n\\$ = \\underbrace{ n!^{{n!}^{{\\cdot}^{{\\",
+            "ground_truth": "6",
+            "pred_answer": "6",
+            "correct": true,
+            "n_tokens_generated": 7113,
+            "wall_time_s": 288.81,
+            "peak_gpu_mb": 30305.3,
+            "error": null
+          },
+          {
+            "problem": "For how many two-digit primes is the sum of the digits equal to 8?",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 2602,
+            "wall_time_s": 102.61,
+            "peak_gpu_mb": 29086.2,
+            "error": null
+          },
+          {
+            "problem": "The data in the table below shows the percent of bus riders in a survey of Centr",
+            "ground_truth": "12",
+            "pred_answer": "12",
+            "correct": true,
+            "n_tokens_generated": 6028,
+            "wall_time_s": 244.98,
+            "peak_gpu_mb": 30328.6,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

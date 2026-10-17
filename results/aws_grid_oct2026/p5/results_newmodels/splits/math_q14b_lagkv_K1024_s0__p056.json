@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      1024
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "1024": {
+        "accuracy": 0.4,
+        "n_correct": 4,
+        "n_total": 10,
+        "mean_wall_time_s": 471.39,
+        "mean_peak_gpu_mb": 28696.5,
+        "per_problem": [
+          {
+            "problem": "The sum of the first $N$ positive odd numbers is 121. What is the value of $N$?",
+            "ground_truth": "11",
+            "pred_answer": "11",
+            "correct": true,
+            "n_tokens_generated": 1971,
+            "wall_time_s": 82.47,
+            "peak_gpu_mb": 28692.0,
+            "error": null
+          },
+          {
+            "problem": "Riproarin' Ringo was roping a recalcitrant dogie. Ringo decided to give the dogi",
+            "ground_truth": "16",
+            "pred_answer": "16",
+            "correct": true,
+            "n_tokens_generated": 3622,
+            "wall_time_s": 156.89,
+            "peak_gpu_mb": 28696.4,
+            "error": null
+          },
+          {
+            "problem": "Compute $99^2+99+1$ in your head.",
+            "ground_truth": "9901",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 667.85,
+            "peak_gpu_mb": 28690.5,
+            "error": null
+          },
+          {
+            "problem": "In a class of 50 students, 28 participate in MATHCOUNTS, 21 participate in scien",
+            "ground_truth": "5",
+            "pred_answer": "5",
+            "correct": true,
+            "n_tokens_generated": 1385,
+            "wall_time_s": 56.28,
+            "peak_gpu_mb": 28695.6,
+            "error": null
+          },
+          {
+            "problem": "The polynomial $x^3 - 3x^2 + 4x - 1$ is a factor of $x^9 + px^6 + qx^3 + r.$  En",
+            "ground_truth": "(6,31,-1)",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 736.03,
+            "peak_gpu_mb": 28695.8,
+            "error": null
+          },
+          {
+            "problem": "For some real numbers $a$ and $b$, the equation \\[\n8x^3 + 4ax^2 + 2bx + a = 0\n\\]",
+            "ground_truth": "-256",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 736.5,
+            "peak_gpu_mb": 28698.7,
+            "error": null
+          },
+          {
+            "problem": "Find the smallest positive real number $C$ for which\n\\[\\left\\| \\begin{pmatrix} 2",
+            "ground_truth": "4",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 742.77,
+            "peak_gpu_mb": 28704.4,
+            "error": null
+          },
+          {
+            "problem": "Let\n\\[x^8 + 3x^4 - 4 = p_1(x) p_2(x) \\dotsm p_k(x),\\]where each non-constant pol",
+            "ground_truth": "10",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 742.73,
+            "peak_gpu_mb": 28701.9,
+            "error": null
+          },
+          {
+            "problem": "There exist constants $a$, $b$, $c$, and $d$ such that\n\\[(\\sin x)^7 = a \\sin 7x ",
+            "ground_truth": "\\frac{35}{64}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 742.14,
+            "peak_gpu_mb": 28698.1,
+            "error": null
+          },
+          {
+            "problem": "What is $1^{(2^{235423523})}$?",
+            "ground_truth": "1",
+            "pred_answer": "1",
+            "correct": true,
+            "n_tokens_generated": 1261,
+            "wall_time_s": 50.27,
+            "peak_gpu_mb": 28691.1,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

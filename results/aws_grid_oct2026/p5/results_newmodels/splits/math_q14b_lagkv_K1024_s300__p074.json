@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      1024
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "1024": {
+        "accuracy": 0.1,
+        "n_correct": 1,
+        "n_total": 10,
+        "mean_wall_time_s": 557.77,
+        "mean_peak_gpu_mb": 28683.2,
+        "per_problem": [
+          {
+            "problem": "The superfactorial $n\\$$ is defined as $n\\$ = \\underbrace{ n!^{{n!}^{{\\cdot}^{{\\",
+            "ground_truth": "6",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 732.43,
+            "peak_gpu_mb": 28697.8,
+            "error": null
+          },
+          {
+            "problem": "For how many two-digit primes is the sum of the digits equal to 8?",
+            "ground_truth": "3",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 722.24,
+            "peak_gpu_mb": 28690.6,
+            "error": null
+          },
+          {
+            "problem": "The data in the table below shows the percent of bus riders in a survey of Centr",
+            "ground_truth": "12",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 633.88,
+            "peak_gpu_mb": 28725.0,
+            "error": null
+          },
+          {
+            "problem": "Solve\n\\[\\frac{|x^2 - 81|}{x^2 - 36x} < 0.\\]",
+            "ground_truth": "(0,9) \\cup (9,36)",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 639.24,
+            "peak_gpu_mb": 28692.6,
+            "error": null
+          },
+          {
+            "problem": "Two numbers, $x$ and $y$ are selected at random from the interval $(0,3)$.  What",
+            "ground_truth": "\\frac{1}{2}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 642.17,
+            "peak_gpu_mb": 28695.3,
+            "error": null
+          },
+          {
+            "problem": "A rectangular field is enclosed in an athletic track, as shown below.  The track",
+            "ground_truth": "\\frac{20000}{\\pi}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 649.54,
+            "peak_gpu_mb": 28715.3,
+            "error": null
+          },
+          {
+            "problem": "For what values of $x$ is it true that $x^2 - 5x - 4 \\le 10$? Express your answe",
+            "ground_truth": "x \\in [-2,7]",
+            "pred_answer": "[-2, 7]",
+            "correct": false,
+            "n_tokens_generated": 2049,
+            "wall_time_s": 77.84,
+            "peak_gpu_mb": 28693.6,
+            "error": null
+          },
+          {
+            "problem": "Simplify the following expression in $x$: $$19x + 1 - 4x - 81.$$",
+            "ground_truth": "15x - 80",
+            "pred_answer": "15x - 80",
+            "correct": true,
+            "n_tokens_generated": 924,
+            "wall_time_s": 33.41,
+            "peak_gpu_mb": 28529.5,
+            "error": null
+          },
+          {
+            "problem": "Kathy needs money for her trip to Europe. If she has 300 US dollars in the bank ",
+            "ground_truth": "22",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 702.36,
+            "peak_gpu_mb": 28700.5,
+            "error": null
+          },
+          {
+            "problem": "How many integers are in the solution set of $|x-2|\\leq5.6$ ?",
+            "ground_truth": "11",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 744.63,
+            "peak_gpu_mb": 28691.4,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      2048
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "2048": {
+        "accuracy": 0.5,
+        "n_correct": 5,
+        "n_total": 10,
+        "mean_wall_time_s": 399.86,
+        "mean_peak_gpu_mb": 29125.2,
+        "per_problem": [
+          {
+            "problem": "A set of three points is chosen randomly from the grid shown. Each three-point s",
+            "ground_truth": "\\frac{2}{21}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 796.41,
+            "peak_gpu_mb": 29183.6,
+            "error": null
+          },
+          {
+            "problem": "A gecko is in a room that is 12 feet long, 10 feet wide and 8 feet tall. The gec",
+            "ground_truth": "2\\sqrt{113}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 797.17,
+            "peak_gpu_mb": 29192.5,
+            "error": null
+          },
+          {
+            "problem": "A point $(x,y)$ is randomly selected such that $0 \\le x \\le 8$ and $0 \\le y \\le ",
+            "ground_truth": "\\frac{1}{4}",
+            "pred_answer": "\\dfrac{1}{4}",
+            "correct": true,
+            "n_tokens_generated": 5700,
+            "wall_time_s": 263.01,
+            "peak_gpu_mb": 29178.4,
+            "error": null
+          },
+          {
+            "problem": "Two runners, $A$ and $B,$ start at a point $O$ on a linear track, and start runn",
+            "ground_truth": "30^\\circ",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 806.67,
+            "peak_gpu_mb": 29200.3,
+            "error": null
+          },
+          {
+            "problem": "Compute $a+b+c,$ given that $a,$ $b,$ and $c$ are the roots of \\[\\frac{1}{x} + 5",
+            "ground_truth": "\\frac65",
+            "pred_answer": "\\dfrac{6}{5}",
+            "correct": false,
+            "n_tokens_generated": 2126,
+            "wall_time_s": 83.1,
+            "peak_gpu_mb": 29177.0,
+            "error": null
+          },
+          {
+            "problem": "What is the sum of all of the multiples of 7 between 100 and 200?",
+            "ground_truth": "2107",
+            "pred_answer": "2107",
+            "correct": true,
+            "n_tokens_generated": 3805,
+            "wall_time_s": 167.23,
+            "peak_gpu_mb": 29173.5,
+            "error": null
+          },
+          {
+            "problem": "The quadratic $x^2+(2.6)x+3.6$ can be written in the form $(x+b)^2+c$, where $b$",
+            "ground_truth": "3.21",
+            "pred_answer": "3.21",
+            "correct": true,
+            "n_tokens_generated": 2917,
+            "wall_time_s": 122.87,
+            "peak_gpu_mb": 29177.9,
+            "error": null
+          },
+          {
+            "problem": "The product of two consecutive positive even integers is 288. What is the greate",
+            "ground_truth": "18",
+            "pred_answer": "18",
+            "correct": true,
+            "n_tokens_generated": 2834,
+            "wall_time_s": 118.34,
+            "peak_gpu_mb": 29173.4,
+            "error": null
+          },
+          {
+            "problem": "Evaluate $\\log_264$.",
+            "ground_truth": "6",
+            "pred_answer": "6",
+            "correct": true,
+            "n_tokens_generated": 1281,
+            "wall_time_s": 48.63,
+            "peak_gpu_mb": 28617.9,
+            "error": null
+          },
+          {
+            "problem": "What is the probability that a randomly selected integer in the set $$\\{1,2,3,\\l",
+            "ground_truth": "\\dfrac{17}{50}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 795.18,
+            "peak_gpu_mb": 29177.9,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

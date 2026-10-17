@@ -1,0 +1,119 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 9,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      2048
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "2048": {
+        "accuracy": 0.6666666666666666,
+        "n_correct": 6,
+        "n_total": 9,
+        "mean_wall_time_s": 292.15,
+        "mean_peak_gpu_mb": 29026.6,
+        "per_problem": [
+          {
+            "problem": "Find the maximum value of\n\\[\\frac{x - y}{x^4 + y^4 + 6}\\]over all real numbers $",
+            "ground_truth": "\\frac{1}{4}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 796.79,
+            "peak_gpu_mb": 29175.6,
+            "error": null
+          },
+          {
+            "problem": "Let $p(x)$ be a monic polynomial of degree 4.  Three of the roots of $p(x)$ are ",
+            "ground_truth": "24",
+            "pred_answer": "24",
+            "correct": true,
+            "n_tokens_generated": 2955,
+            "wall_time_s": 125.29,
+            "peak_gpu_mb": 29177.5,
+            "error": null
+          },
+          {
+            "problem": "$441+2(21)(19)+361=x$. Solve for $x$.",
+            "ground_truth": "1600",
+            "pred_answer": "1600",
+            "correct": true,
+            "n_tokens_generated": 1584,
+            "wall_time_s": 60.91,
+            "peak_gpu_mb": 28742.8,
+            "error": null
+          },
+          {
+            "problem": "If $x^3$ is a positive factor of $10!,$ how many possible integer values of $x$ ",
+            "ground_truth": "6",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 802.65,
+            "peak_gpu_mb": 29180.1,
+            "error": null
+          },
+          {
+            "problem": "In how many ways can 6 girls and 2 boys sit in a row if the 2 boys insist on sit",
+            "ground_truth": "10,\\!080",
+            "pred_answer": "10080",
+            "correct": false,
+            "n_tokens_generated": 1838,
+            "wall_time_s": 70.91,
+            "peak_gpu_mb": 28801.8,
+            "error": null
+          },
+          {
+            "problem": "The arithmetic mean of 7, 2, $x$ and 10 is 9. What is the value of $x$?",
+            "ground_truth": "17",
+            "pred_answer": "17",
+            "correct": true,
+            "n_tokens_generated": 1264,
+            "wall_time_s": 48.96,
+            "peak_gpu_mb": 28622.9,
+            "error": null
+          },
+          {
+            "problem": "If 4 daps = 7 yaps, and 5 yaps = 3 baps, how many daps equal 42 baps?",
+            "ground_truth": "40",
+            "pred_answer": "40",
+            "correct": true,
+            "n_tokens_generated": 6221,
+            "wall_time_s": 293.23,
+            "peak_gpu_mb": 29175.1,
+            "error": null
+          },
+          {
+            "problem": "A group of $N$ students, where $N < 50$, is on a field trip. If their teacher pu",
+            "ground_truth": "66",
+            "pred_answer": "66",
+            "correct": true,
+            "n_tokens_generated": 3105,
+            "wall_time_s": 136.13,
+            "peak_gpu_mb": 29181.4,
+            "error": null
+          },
+          {
+            "problem": "Alice and Bob are playing a game. Alice starts first. On Alice's turn, she flips",
+            "ground_truth": "\\frac{2}{3}",
+            "pred_answer": "\\dfrac{2}{3}",
+            "correct": true,
+            "n_tokens_generated": 6139,
+            "wall_time_s": 294.48,
+            "peak_gpu_mb": 29182.1,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

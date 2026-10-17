@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "kv_seg_hs"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs": {
+      "4096": {
+        "accuracy": 0.7,
+        "n_correct": 7,
+        "n_total": 10,
+        "mean_wall_time_s": 244.17,
+        "mean_peak_gpu_mb": 29385.6,
+        "per_problem": [
+          {
+            "problem": "The expression $$1 + 2 + 3 - 4 + 5 + 6$$is equivalent to 13. If we add parenthes",
+            "ground_truth": "-9",
+            "pred_answer": "-9",
+            "correct": true,
+            "n_tokens_generated": 13014,
+            "wall_time_s": 524.36,
+            "peak_gpu_mb": 29847.0,
+            "error": null
+          },
+          {
+            "problem": "Let $f(x)$ be an odd function, and let $g(x)$ be an even function.  Is $f(f(g(f(",
+            "ground_truth": "\\text{even}",
+            "pred_answer": "even",
+            "correct": true,
+            "n_tokens_generated": 6538,
+            "wall_time_s": 254.22,
+            "peak_gpu_mb": 29818.6,
+            "error": null
+          },
+          {
+            "problem": "Solve for $x$: $\\frac{x}2 + \\frac{x}3 = 5$",
+            "ground_truth": "6",
+            "pred_answer": "6",
+            "correct": true,
+            "n_tokens_generated": 1374,
+            "wall_time_s": 50.24,
+            "peak_gpu_mb": 28693.2,
+            "error": null
+          },
+          {
+            "problem": "Daniel works at an electronics store, and he claims that the popularity of a tel",
+            "ground_truth": "9",
+            "pred_answer": "9",
+            "correct": true,
+            "n_tokens_generated": 1431,
+            "wall_time_s": 52.27,
+            "peak_gpu_mb": 28722.6,
+            "error": null
+          },
+          {
+            "problem": "In the diagram, $D$ and $E$ are the midpoints of $\\overline{AB}$ and $\\overline{",
+            "ground_truth": "8",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 596.15,
+            "peak_gpu_mb": 29882.3,
+            "error": null
+          },
+          {
+            "problem": "If $|x+5|-|3x-6|=0$, find the largest possible value of $x$. Express your answer",
+            "ground_truth": "\\frac{11}{2}",
+            "pred_answer": "\\dfrac{11}{2}",
+            "correct": true,
+            "n_tokens_generated": 2564,
+            "wall_time_s": 92.51,
+            "peak_gpu_mb": 29080.6,
+            "error": null
+          },
+          {
+            "problem": "Evaluate $\\lceil (3.6)^2 \\rceil - ( \\lceil 3.6 \\rceil ) ^2$.",
+            "ground_truth": "-3",
+            "pred_answer": "-3",
+            "correct": true,
+            "n_tokens_generated": 2436,
+            "wall_time_s": 87.88,
+            "peak_gpu_mb": 29058.1,
+            "error": null
+          },
+          {
+            "problem": "Let $F(z)=\\frac{z+i}{z-i}$ for all complex numbers $z\\not= i,$ and let $z_n=F(z_",
+            "ground_truth": "1+274i",
+            "pred_answer": "1 + 274i",
+            "correct": true,
+            "n_tokens_generated": 12025,
+            "wall_time_s": 436.19,
+            "peak_gpu_mb": 29824.9,
+            "error": null
+          },
+          {
+            "problem": "Express $555_{10}$ in base $5$.",
+            "ground_truth": "4210_{5}",
+            "pred_answer": "4210",
+            "correct": false,
+            "n_tokens_generated": 2677,
+            "wall_time_s": 96.95,
+            "peak_gpu_mb": 29109.7,
+            "error": null
+          },
+          {
+            "problem": "Suzanne walks four miles every third day. What is the fewest number of miles she",
+            "ground_truth": "36",
+            "pred_answer": "4",
+            "correct": false,
+            "n_tokens_generated": 6916,
+            "wall_time_s": 250.93,
+            "peak_gpu_mb": 29818.9,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

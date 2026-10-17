@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "math500",
+    "n_samples": 100,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "512": {
+        "partial": true,
+        "n_total": 100,
+        "per_problem": [
+          {
+            "problem": "The equation\n\\[x^{10}+(13x-1)^{10}=0\\,\\]has 10 complex roots $r_1,$ $\\overline{r",
+            "ground_truth": "850",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 3625.74,
+            "peak_gpu_mb": 15575.6,
+            "error": null
+          },
+          {
+            "problem": "Factor the expression $ab+5b+2a+10$.",
+            "ground_truth": "(a+5)(b+2)",
+            "pred_answer": "(a + 5)(b + 2)",
+            "correct": true,
+            "n_tokens_generated": 1425,
+            "wall_time_s": 261.86,
+            "peak_gpu_mb": 15554.0,
+            "error": null
+          },
+          {
+            "problem": "Let $\\lambda$ be a constant, $0 \\le \\lambda \\le 4,$ and let $f : [0,1] \\to [0,1]",
+            "ground_truth": "(3,4]",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 3574.3,
+            "peak_gpu_mb": 15565.5,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "512": {
+        "accuracy": 0.1,
+        "n_correct": 1,
+        "n_total": 10,
+        "mean_wall_time_s": 719.56,
+        "mean_peak_gpu_mb": 28464.0,
+        "per_problem": [
+          {
+            "problem": "Let $F_1 = (10,2)$ and $F_ 2= (-16,2).$  Then the set of points $P$ such that\n\\[",
+            "ground_truth": "16",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 690.58,
+            "peak_gpu_mb": 28471.6,
+            "error": null
+          },
+          {
+            "problem": "How many zeroes are at the end of $42!$ (42 factorial)?  (Reminder: The number $",
+            "ground_truth": "9",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 711.05,
+            "peak_gpu_mb": 28464.4,
+            "error": null
+          },
+          {
+            "problem": "Let $(a_1, a_2, \\dots, a_n)$ be a sequence of positive real numbers, such that\n\\",
+            "ground_truth": "64",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 701.3,
+            "peak_gpu_mb": 28469.3,
+            "error": null
+          },
+          {
+            "problem": "Express the quotient $413_5 \\div 2_5$ in base 5.",
+            "ground_truth": "204_5",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 701.13,
+            "peak_gpu_mb": 28456.8,
+            "error": null
+          },
+          {
+            "problem": "Bob and Alice each have a bag that contains one ball of each of the colors,  blu",
+            "ground_truth": "\\frac{1}{3}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 701.85,
+            "peak_gpu_mb": 28466.2,
+            "error": null
+          },
+          {
+            "problem": "Find the maximum value of\n\\[f(x,y) = x \\sqrt{1 - y^2} + y \\sqrt{1 - x^2},\\]where",
+            "ground_truth": "1",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 716.81,
+            "peak_gpu_mb": 28461.3,
+            "error": null
+          },
+          {
+            "problem": "Let $n$ be a positive integer.  What is the greatest possible value of $\\gcd(n +",
+            "ground_truth": "13",
+            "pred_answer": "13",
+            "correct": true,
+            "n_tokens_generated": 16073,
+            "wall_time_s": 721.3,
+            "peak_gpu_mb": 28458.5,
+            "error": null
+          },
+          {
+            "problem": "Zach has three bags and a bunch of pencils to be placed into the bags. He is tol",
+            "ground_truth": "2",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 745.65,
+            "peak_gpu_mb": 28462.9,
+            "error": null
+          },
+          {
+            "problem": "A Senate committee has 5 Democrats, 5 Republicans, and 1 Independent.  In how ma",
+            "ground_truth": "28800",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 757.3,
+            "peak_gpu_mb": 28462.9,
+            "error": null
+          },
+          {
+            "problem": "The points $O,$ $A,$ and $B$ satisfy $\\overrightarrow{OA} = \\begin{pmatrix} 1 \\\\",
+            "ground_truth": "3 \\sqrt{5}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 748.63,
+            "peak_gpu_mb": 28465.9,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

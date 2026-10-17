@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "512": {
+        "accuracy": 0.2,
+        "n_correct": 2,
+        "n_total": 10,
+        "mean_wall_time_s": 658.21,
+        "mean_peak_gpu_mb": 28463.8,
+        "per_problem": [
+          {
+            "problem": "If $m$ and $n$ are integers such that $3m + 4n = 100$, what is the smallest poss",
+            "ground_truth": "3",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 703.27,
+            "peak_gpu_mb": 28460.1,
+            "error": null
+          },
+          {
+            "problem": "Convert $\\frac{21}{2^2 \\cdot 5^7}$ to a terminating decimal.",
+            "ground_truth": ".0000672",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 705.05,
+            "peak_gpu_mb": 28456.9,
+            "error": null
+          },
+          {
+            "problem": "In the diagram, four circles of radius 1 with centres $P$, $Q$, $R$, and $S$ are",
+            "ground_truth": "30^\\circ",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 709.06,
+            "peak_gpu_mb": 28492.7,
+            "error": null
+          },
+          {
+            "problem": "What is the positive square root of the product $10 \\times 15 \\times 24$?",
+            "ground_truth": "60",
+            "pred_answer": "60",
+            "correct": true,
+            "n_tokens_generated": 14718,
+            "wall_time_s": 634.22,
+            "peak_gpu_mb": 28457.3,
+            "error": null
+          },
+          {
+            "problem": "Find the equation of the plane containing the points $(0,-1,-1),$ $(-4,4,4),$ an",
+            "ground_truth": "5x - 7y + 11z + 4 = 0",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 706.69,
+            "peak_gpu_mb": 28469.3,
+            "error": null
+          },
+          {
+            "problem": "How many positive two-digit integers are factors of both 100 and 150?",
+            "ground_truth": "3",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 712.55,
+            "peak_gpu_mb": 28456.6,
+            "error": null
+          },
+          {
+            "problem": "Two-thirds of the students at Baker Middle School take music. There are 834 stud",
+            "ground_truth": "1251",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 712.84,
+            "peak_gpu_mb": 28458.7,
+            "error": null
+          },
+          {
+            "problem": "If we write $\\sqrt{2}+\\frac{1}{\\sqrt{2}} + \\sqrt{3} + \\frac{1}{\\sqrt{3}}$ in the",
+            "ground_truth": "23",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 716.26,
+            "peak_gpu_mb": 28468.0,
+            "error": null
+          },
+          {
+            "problem": "Let $a,$ $b,$ and $c$ be positive real numbers.  Find the set of all possible va",
+            "ground_truth": "(2,\\infty)",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 714.53,
+            "peak_gpu_mb": 28461.9,
+            "error": null
+          },
+          {
+            "problem": "Find $k$, if ${(3^k)}^6=3^6$.",
+            "ground_truth": "1",
+            "pred_answer": "1",
+            "correct": true,
+            "n_tokens_generated": 6044,
+            "wall_time_s": 267.61,
+            "peak_gpu_mb": 28456.2,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

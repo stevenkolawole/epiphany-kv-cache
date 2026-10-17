@@ -1,0 +1,101 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "math500",
+    "n_samples": 3,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      1024
+    ],
+    "methods": [
+      "none",
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "none": {
+      "1024": {
+        "accuracy": 1.0,
+        "n_correct": 3,
+        "n_total": 3,
+        "mean_wall_time_s": 612.43,
+        "mean_peak_gpu_mb": 16447.8,
+        "per_problem": [
+          {
+            "problem": "Convert the point $(0,3)$ in rectangular coordinates to polar coordinates.  Ente",
+            "ground_truth": "\\left( 3, \\frac{\\pi}{2} \\right)",
+            "pred_answer": "(3, \\frac{\\pi}{2})",
+            "correct": true,
+            "n_tokens_generated": 1917,
+            "wall_time_s": 219.53,
+            "peak_gpu_mb": 15958.2,
+            "error": null
+          },
+          {
+            "problem": "Define\n\\[p = \\sum_{k = 1}^\\infty \\frac{1}{k^2} \\quad \\text{and} \\quad q = \\sum_{",
+            "ground_truth": "p - q",
+            "pred_answer": "p - q",
+            "correct": true,
+            "n_tokens_generated": 12080,
+            "wall_time_s": 1402.72,
+            "peak_gpu_mb": 17427.1,
+            "error": null
+          },
+          {
+            "problem": "If $f(x) = \\frac{3x-2}{x-2}$, what is the value of $f(-2) +f(-1)+f(0)$? Express ",
+            "ground_truth": "\\frac{14}{3}",
+            "pred_answer": "\\dfrac{14}{3}",
+            "correct": true,
+            "n_tokens_generated": 1881,
+            "wall_time_s": 215.05,
+            "peak_gpu_mb": 15958.2,
+            "error": null
+          }
+        ]
+      }
+    },
+    "kv_seg_hs_fill": {
+      "1024": {
+        "accuracy": 1.0,
+        "n_correct": 3,
+        "n_total": 3,
+        "mean_wall_time_s": 377.0,
+        "mean_peak_gpu_mb": 16170.2,
+        "per_problem": [
+          {
+            "problem": "Convert the point $(0,3)$ in rectangular coordinates to polar coordinates.  Ente",
+            "ground_truth": "\\left( 3, \\frac{\\pi}{2} \\right)",
+            "pred_answer": "(3, \\frac{\\pi}{2})",
+            "correct": true,
+            "n_tokens_generated": 1846,
+            "wall_time_s": 226.38,
+            "peak_gpu_mb": 16166.9,
+            "error": null
+          },
+          {
+            "problem": "Define\n\\[p = \\sum_{k = 1}^\\infty \\frac{1}{k^2} \\quad \\text{and} \\quad q = \\sum_{",
+            "ground_truth": "p - q",
+            "pred_answer": "p - q",
+            "correct": true,
+            "n_tokens_generated": 5574,
+            "wall_time_s": 680.73,
+            "peak_gpu_mb": 16176.8,
+            "error": null
+          },
+          {
+            "problem": "If $f(x) = \\frac{3x-2}{x-2}$, what is the value of $f(-2) +f(-1)+f(0)$? Express ",
+            "ground_truth": "\\frac{14}{3}",
+            "pred_answer": "\\dfrac{14}{3}",
+            "correct": true,
+            "n_tokens_generated": 1905,
+            "wall_time_s": 223.89,
+            "peak_gpu_mb": 16166.9,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 100,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "raas"
+    ],
+    "attn_impl": "eager"
+  },
+  "results": {
+    "raas": {
+      "4096": {
+        "partial": true,
+        "n_total": 100,
+        "per_problem": [
+          {
+            "problem": "The equation\n\\[x^{10}+(13x-1)^{10}=0\\,\\]has 10 complex roots $r_1,$ $\\overline{r",
+            "ground_truth": "850",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 903.65,
+            "peak_gpu_mb": 30249.3,
+            "error": null
+          },
+          {
+            "problem": "Factor the expression $ab+5b+2a+10$.",
+            "ground_truth": "(a+5)(b+2)",
+            "pred_answer": "(a + 5)(b + 2)",
+            "correct": true,
+            "n_tokens_generated": 932,
+            "wall_time_s": 39.02,
+            "peak_gpu_mb": 28547.9,
+            "error": null
+          },
+          {
+            "problem": "Let $\\lambda$ be a constant, $0 \\le \\lambda \\le 4,$ and let $f : [0,1] \\to [0,1]",
+            "ground_truth": "(3,4]",
+            "pred_answer": "(3, 4]",
+            "correct": true,
+            "n_tokens_generated": 13374,
+            "wall_time_s": 750.82,
+            "peak_gpu_mb": 30236.1,
+            "error": null
+          },
+          {
+            "problem": "The graphs of $x^2 + y^2 + 6x - 24y + 72 = 0$ and $x^2 - y^2 + 6x + 16y - 46 = 0",
+            "ground_truth": "40",
+            "pred_answer": "40",
+            "correct": true,
+            "n_tokens_generated": 7620,
+            "wall_time_s": 421.15,
+            "peak_gpu_mb": 30232.0,
+            "error": null
+          },
+          {
+            "problem": "For the eight counties listed below, what was the median number of students in $",
+            "ground_truth": "29",
+            "pred_answer": "29",
+            "correct": true,
+            "n_tokens_generated": 2018,
+            "wall_time_s": 98.22,
+            "peak_gpu_mb": 29048.3,
+            "error": null
+          },
+          {
+            "problem": "At what value of $y$ is there a horizontal asymptote for the graph of the equati",
+            "ground_truth": "\\frac43",
+            "pred_answer": "\\dfrac{4}{3}",
+            "correct": false,
+            "n_tokens_generated": 2784,
+            "wall_time_s": 142.27,
+            "peak_gpu_mb": 29177.0,
+            "error": null
+          },
+          {
+            "problem": "How many elements are in the intersection of the set of all the prime numbers le",
+            "ground_truth": "9",
+            "pred_answer": "9",
+            "correct": true,
+            "n_tokens_generated": 1961,
+            "wall_time_s": 98.19,
+            "peak_gpu_mb": 28894.8,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

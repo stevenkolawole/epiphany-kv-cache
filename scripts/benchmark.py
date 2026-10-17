@@ -68,6 +68,46 @@ from typing import Dict, List, Optional, Tuple
 import torch
 from tqdm import tqdm
 
+
+# ── One host-device sync per layer per decode step, removed (2026-10-06) ──────────
+# transformers' flash-attention wrapper (4.57) calls _is_packed_sequence(position_ids, bs)
+# and tests the CUDA bool it returns in a Python `elif`, which blocks the CPU on the GPU
+# once per layer per step whenever position_ids is passed -- which it always is under
+# --logical_positions. py-spy put 42-46% of a Qwen3-14B process on that line. This
+# harness decodes one sequence with one contiguous run of positions, for which the check
+# is always False, so returning False takes the same branch and runs the same kernels:
+# outputs are unchanged. The original is still evaluated and asserted on the first calls
+# of a process, so a caller that ever passed packed positions would fail loudly.
+# EPIKV_KEEP_PACKED_CHECK=1 restores the original behaviour.
+def _install_packed_check_bypass():
+    if os.environ.get("EPIKV_KEEP_PACKED_CHECK") == "1":
+        return
+    try:
+        import transformers.modeling_flash_attention_utils as _fau
+    except Exception:
+        return
+    orig = getattr(_fau, "_is_packed_sequence", None)
+    if orig is None:
+        return
+    seen = {"n": 0}
+
+    def _not_packed(position_ids, batch_size):
+        if position_ids is None:
+            return False
+        if batch_size != 1:
+            return orig(position_ids, batch_size)
+        if seen["n"] < 4:
+            seen["n"] += 1
+            assert not bool(orig(position_ids, batch_size)), \
+                "packed position_ids in a single-sequence harness; unset the bypass"
+        return False
+
+    _fau._is_packed_sequence = _not_packed
+
+
+_install_packed_check_bypass()
+
+
 # ── Path setup ────────────────────────────────────────────────────────────────
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -201,6 +241,12 @@ def extract_boxed(text: str) -> Optional[str]:
 def answers_match(pred: Optional[str], gt: str) -> bool:
     if pred is None:
         return False
+    # Multiple-choice ground truth (GPQA): the answer is one letter. Accept
+    # "\\boxed{D}", "\\boxed{(D)}" or "\\boxed{D) 10^-4 eV}" by reading the
+    # first standalone A-D in the boxed text.
+    if len(gt.strip()) == 1 and gt.strip().upper() in "ABCD":
+        m = re.search(r"\b([A-Da-d])\b", pred)
+        return bool(m) and m.group(1).upper() == gt.strip().upper()
 
     def norm(s: str) -> str:
         s = s.strip()
@@ -265,6 +311,22 @@ def load_problems(dataset: str, n_samples: int, start_idx: int = 0) -> List[Dict
             {"problem": str(item[pcol]).strip(), "ground_truth": str(item[acol]).strip()}
             for item in ds
         ][:start_idx + n_samples]
+    elif dataset == "gpqa":
+        # GPQA-Diamond (198 questions) as four-way multiple choice. The mirror
+        # hendrydong/gpqa_diamond_mc is ungated (the original Idavidrein/gpqa is
+        # gated) and already embeds the lettered options plus a "\\boxed{A}"
+        # instruction in the problem text; the solution is "\\boxed{<letter>}".
+        # Option order is the mirror's and is identical for every policy.
+        ds = load_dataset("hendrydong/gpqa_diamond_mc", split="test", cache_dir=_hf_cache())
+        problems = []
+        for item in ds:
+            ans = extract_boxed(item["solution"])
+            if ans and ans.strip().upper() in ("A", "B", "C", "D"):
+                problems.append({"problem": item["problem"].strip(),
+                                 "ground_truth": ans.strip().upper(),
+                                 "domain": item.get("domain", "")})
+        if len(problems) != 198:
+            raise RuntimeError(f"gpqa: expected 198 problems, got {len(problems)}")
     elif dataset == "gsm8k":
         ds = load_dataset("openai/gsm8k", "main", split="test", cache_dir=_hf_cache())
         _re = re.compile(r"####\s*(-?[\d,]+)")
@@ -567,12 +629,14 @@ def parse_args():
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--model",          default="deepseek-ai/deepseek-r1-distill-llama-8b")
     p.add_argument("--dataset",
-                   choices=["math500", "aime2024", "aime2025", "aime2026", "gsm8k"],
+                   choices=["math500", "aime2024", "aime2025", "aime2026", "gsm8k", "gpqa"],
                    default="math500")
     p.add_argument("--n_samples",      type=int, default=50)
     p.add_argument("--start_idx",      type=int, default=0,
                    help="First problem index; with --n_samples defines a shard [start, start+n).")
     p.add_argument("--max_new_tokens", type=int, default=8192)
+    p.add_argument("--system_prompt", type=str, default=None,
+                   help="Override the system prompt (e.g. 'detailed thinking on' for Nemotron reasoning mode)")
     p.add_argument("--cache_sizes",    type=int, nargs="+",
                    default=[512, 1024, 2048, 4096],
                    help="KV cache budgets in tokens to sweep over")
@@ -645,6 +709,9 @@ def parse_args():
 def main():
     args = parse_args()
     global LOGICAL_POSITIONS
+    global _SYSTEM_PROMPT
+    if getattr(args, "system_prompt", None) is not None:
+        _SYSTEM_PROMPT = args.system_prompt
     LOGICAL_POSITIONS = bool(getattr(args, "logical_positions", False))
     if LOGICAL_POSITIONS:
         print("  Positional convention: LOGICAL (prompt_len + step)")

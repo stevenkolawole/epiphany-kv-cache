@@ -1,0 +1,99 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 7,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "raas"
+    ],
+    "attn_impl": "eager"
+  },
+  "results": {
+    "raas": {
+      "4096": {
+        "accuracy": 0.8571428571428571,
+        "n_correct": 6,
+        "n_total": 7,
+        "mean_wall_time_s": 350.28,
+        "mean_peak_gpu_mb": 29608.3,
+        "per_problem": [
+          {
+            "problem": "If $3x + 2(1 + x) = 17$, what is the value of $6x + 5$?",
+            "ground_truth": "23",
+            "pred_answer": "23",
+            "correct": true,
+            "n_tokens_generated": 1498,
+            "wall_time_s": 76.37,
+            "peak_gpu_mb": 28737.1,
+            "error": null
+          },
+          {
+            "problem": "Navin from Mauritius, Luka from Croatia, and Ian from Botswana are chatting in t",
+            "ground_truth": "\\text{Navin}",
+            "pred_answer": "Navin",
+            "correct": true,
+            "n_tokens_generated": 4838,
+            "wall_time_s": 261.83,
+            "peak_gpu_mb": 30237.9,
+            "error": null
+          },
+          {
+            "problem": "Add 313.9 to 12.6. Express the result as a decimal.",
+            "ground_truth": "326.5",
+            "pred_answer": "326.5",
+            "correct": true,
+            "n_tokens_generated": 1112,
+            "wall_time_s": 55.96,
+            "peak_gpu_mb": 28609.6,
+            "error": null
+          },
+          {
+            "problem": "In the circle with center $Q$, radii $AQ$ and $BQ$ form a right angle. The two s",
+            "ground_truth": "\\frac{14}{3}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1062.98,
+            "peak_gpu_mb": 30230.6,
+            "error": null
+          },
+          {
+            "problem": "Let $z$ be a complex number such that $|z| = 1.$  Find the maximum value of\n\\[|1",
+            "ground_truth": "\\frac{13}{4}",
+            "pred_answer": "\\dfrac{13}{4}",
+            "correct": true,
+            "n_tokens_generated": 9467,
+            "wall_time_s": 582.74,
+            "peak_gpu_mb": 30226.2,
+            "error": null
+          },
+          {
+            "problem": "A $90^\\circ$ rotation around $-4 - 5i$ in the clockwise direction is applied to ",
+            "ground_truth": "1 - 12i",
+            "pred_answer": "1 - 12i",
+            "correct": true,
+            "n_tokens_generated": 2246,
+            "wall_time_s": 91.23,
+            "peak_gpu_mb": 28989.0,
+            "error": null
+          },
+          {
+            "problem": "How many of the same digits are found in the base 7 and base 8 representations o",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 6816,
+            "wall_time_s": 320.87,
+            "peak_gpu_mb": 30227.8,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

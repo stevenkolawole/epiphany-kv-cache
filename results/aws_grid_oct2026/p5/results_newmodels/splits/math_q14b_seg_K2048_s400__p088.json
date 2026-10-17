@@ -1,0 +1,99 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 7,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      2048
+    ],
+    "methods": [
+      "kv_seg_hs"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs": {
+      "2048": {
+        "accuracy": 0.5714285714285714,
+        "n_correct": 4,
+        "n_total": 7,
+        "mean_wall_time_s": 316.15,
+        "mean_peak_gpu_mb": 29051.5,
+        "per_problem": [
+          {
+            "problem": "The number $(\\sqrt{2}+\\sqrt{3})^3$ can be written in the form $a\\sqrt{2} + b\\sqr",
+            "ground_truth": "20",
+            "pred_answer": "20",
+            "correct": true,
+            "n_tokens_generated": 9270,
+            "wall_time_s": 367.56,
+            "peak_gpu_mb": 29062.4,
+            "error": null
+          },
+          {
+            "problem": "Let $S$ be the set of points $(a,b)$ with $0 \\le a,$ $b \\le 1$ such that the equ",
+            "ground_truth": "\\frac{1}{4}",
+            "pred_answer": "\\frac{1}{2}",
+            "correct": false,
+            "n_tokens_generated": 16371,
+            "wall_time_s": 647.35,
+            "peak_gpu_mb": 29063.3,
+            "error": null
+          },
+          {
+            "problem": "What is the domain of the function $f(x) = \\frac{2-x}{\\log(2-\\log(x-2))}$, where",
+            "ground_truth": "(2,12) \\cup (12,102)",
+            "pred_answer": "(2, 12) \\cup (12, 102)",
+            "correct": true,
+            "n_tokens_generated": 3084,
+            "wall_time_s": 113.89,
+            "peak_gpu_mb": 29030.9,
+            "error": null
+          },
+          {
+            "problem": "Let $z = 1+i$ and $w = \\dfrac{3z+1}{5z+7}$. Find $|w|$.",
+            "ground_truth": "\\frac{5}{13}",
+            "pred_answer": "\\frac{5}{13}",
+            "correct": true,
+            "n_tokens_generated": 2045,
+            "wall_time_s": 74.26,
+            "peak_gpu_mb": 29052.3,
+            "error": null
+          },
+          {
+            "problem": "An equiangular octagon has four sides of length $1$ and four sides of length $\\f",
+            "ground_truth": "\\frac{7}{2}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 609.97,
+            "peak_gpu_mb": 29059.4,
+            "error": null
+          },
+          {
+            "problem": "A sequence $(a_n)$ is defined as follows:\n\\[a_{i + 1} = \\frac{1}{1 - a_i}\\]for $",
+            "ground_truth": "-1",
+            "pred_answer": "-1",
+            "correct": true,
+            "n_tokens_generated": 4664,
+            "wall_time_s": 191.29,
+            "peak_gpu_mb": 29032.7,
+            "error": null
+          },
+          {
+            "problem": "Altitudes $\\overline{AD}$ and $\\overline{BE}$ of $\\triangle ABC$ intersect at $H",
+            "ground_truth": "106^\\circ",
+            "pred_answer": "106",
+            "correct": false,
+            "n_tokens_generated": 5047,
+            "wall_time_s": 208.72,
+            "peak_gpu_mb": 29059.4,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

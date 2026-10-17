@@ -1,0 +1,121 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "math500",
+    "n_samples": 4,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      1024
+    ],
+    "methods": [
+      "none",
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "none": {
+      "1024": {
+        "accuracy": 1.0,
+        "n_correct": 4,
+        "n_total": 4,
+        "mean_wall_time_s": 250.93,
+        "mean_peak_gpu_mb": 15746.3,
+        "per_problem": [
+          {
+            "problem": "Convert the point $(0,3)$ in rectangular coordinates to polar coordinates.  Ente",
+            "ground_truth": "\\left( 3, \\frac{\\pi}{2} \\right)",
+            "pred_answer": "(3, \\frac{\\pi}{2})",
+            "correct": true,
+            "n_tokens_generated": 1100,
+            "wall_time_s": 98.14,
+            "peak_gpu_mb": 15509.0,
+            "error": null
+          },
+          {
+            "problem": "Define\n\\[p = \\sum_{k = 1}^\\infty \\frac{1}{k^2} \\quad \\text{and} \\quad q = \\sum_{",
+            "ground_truth": "p - q",
+            "pred_answer": "p - q",
+            "correct": true,
+            "n_tokens_generated": 7577,
+            "wall_time_s": 658.12,
+            "peak_gpu_mb": 16379.3,
+            "error": null
+          },
+          {
+            "problem": "If $f(x) = \\frac{3x-2}{x-2}$, what is the value of $f(-2) +f(-1)+f(0)$? Express ",
+            "ground_truth": "\\frac{14}{3}",
+            "pred_answer": "\\dfrac{14}{3}",
+            "correct": true,
+            "n_tokens_generated": 1404,
+            "wall_time_s": 120.18,
+            "peak_gpu_mb": 15547.6,
+            "error": null
+          },
+          {
+            "problem": "How many positive whole-number divisors does 196 have?",
+            "ground_truth": "9",
+            "pred_answer": "9",
+            "correct": true,
+            "n_tokens_generated": 1487,
+            "wall_time_s": 127.29,
+            "peak_gpu_mb": 15549.3,
+            "error": null
+          }
+        ]
+      }
+    },
+    "kv_seg_hs_fill": {
+      "1024": {
+        "accuracy": 1.0,
+        "n_correct": 4,
+        "n_total": 4,
+        "mean_wall_time_s": 204.86,
+        "mean_peak_gpu_mb": 15807.0,
+        "per_problem": [
+          {
+            "problem": "Convert the point $(0,3)$ in rectangular coordinates to polar coordinates.  Ente",
+            "ground_truth": "\\left( 3, \\frac{\\pi}{2} \\right)",
+            "pred_answer": "(3, \\frac{\\pi}{2})",
+            "correct": true,
+            "n_tokens_generated": 1100,
+            "wall_time_s": 101.75,
+            "peak_gpu_mb": 15806.3,
+            "error": null
+          },
+          {
+            "problem": "Define\n\\[p = \\sum_{k = 1}^\\infty \\frac{1}{k^2} \\quad \\text{and} \\quad q = \\sum_{",
+            "ground_truth": "p - q",
+            "pred_answer": "p - q",
+            "correct": true,
+            "n_tokens_generated": 4257,
+            "wall_time_s": 407.0,
+            "peak_gpu_mb": 15813.2,
+            "error": null
+          },
+          {
+            "problem": "If $f(x) = \\frac{3x-2}{x-2}$, what is the value of $f(-2) +f(-1)+f(0)$? Express ",
+            "ground_truth": "\\frac{14}{3}",
+            "pred_answer": "\\dfrac{14}{3}",
+            "correct": true,
+            "n_tokens_generated": 1405,
+            "wall_time_s": 147.73,
+            "peak_gpu_mb": 15806.3,
+            "error": null
+          },
+          {
+            "problem": "How many positive whole-number divisors does 196 have?",
+            "ground_truth": "9",
+            "pred_answer": "9",
+            "correct": true,
+            "n_tokens_generated": 1627,
+            "wall_time_s": 162.95,
+            "peak_gpu_mb": 15802.4,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

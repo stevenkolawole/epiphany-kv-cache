@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      1024
+    ],
+    "methods": [
+      "kv_seg_hs"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs": {
+      "1024": {
+        "accuracy": 0.7,
+        "n_correct": 7,
+        "n_total": 10,
+        "mean_wall_time_s": 202.42,
+        "mean_peak_gpu_mb": 28658.5,
+        "per_problem": [
+          {
+            "problem": "If $re^{i \\theta}$ is a root of\n\\[z^8 - z^7 + z^6 - z^5 + z^4 - z^3 + z^2 - z + ",
+            "ground_truth": "8 \\pi",
+            "pred_answer": "6\\pi",
+            "correct": false,
+            "n_tokens_generated": 7795,
+            "wall_time_s": 312.84,
+            "peak_gpu_mb": 28666.6,
+            "error": null
+          },
+          {
+            "problem": "In the diagram, what is the area of the shaded triangle? [asy]\nfill((0,0)--(2,3)",
+            "ground_truth": "15\\mbox{ cm}^2",
+            "pred_answer": "15",
+            "correct": false,
+            "n_tokens_generated": 2434,
+            "wall_time_s": 94.25,
+            "peak_gpu_mb": 28688.1,
+            "error": null
+          },
+          {
+            "problem": "The square root of $t$ is greater than $2$ and less than $3.5$. How many integer",
+            "ground_truth": "8",
+            "pred_answer": "8",
+            "correct": true,
+            "n_tokens_generated": 1982,
+            "wall_time_s": 77.03,
+            "peak_gpu_mb": 28638.4,
+            "error": null
+          },
+          {
+            "problem": "Evaluate $\\lceil{\\sqrt{20}}\\rceil^2$.",
+            "ground_truth": "25",
+            "pred_answer": "25",
+            "correct": true,
+            "n_tokens_generated": 2000,
+            "wall_time_s": 77.22,
+            "peak_gpu_mb": 28633.4,
+            "error": null
+          },
+          {
+            "problem": "Let $a,$ $b,$ $c,$ and $d$ be positive real numbers such that $a + b + c + d = 1",
+            "ground_truth": "27648",
+            "pred_answer": "27648",
+            "correct": true,
+            "n_tokens_generated": 9573,
+            "wall_time_s": 371.01,
+            "peak_gpu_mb": 28643.4,
+            "error": null
+          },
+          {
+            "problem": "A class of 30 students recently took a test.  If 20 students scored 80, 8 studen",
+            "ground_truth": "84",
+            "pred_answer": "84",
+            "correct": true,
+            "n_tokens_generated": 1168,
+            "wall_time_s": 45.11,
+            "peak_gpu_mb": 28644.9,
+            "error": null
+          },
+          {
+            "problem": "At 50 miles per hour, how far would a car travel in $2\\frac{3}{4}$ hours? Expres",
+            "ground_truth": "137 \\frac{1}{2}",
+            "pred_answer": "137\\frac{1}{2}",
+            "correct": true,
+            "n_tokens_generated": 1352,
+            "wall_time_s": 52.46,
+            "peak_gpu_mb": 28638.7,
+            "error": null
+          },
+          {
+            "problem": "Below is a magic square, meaning that the sum of the numbers in each row, in eac",
+            "ground_truth": "7",
+            "pred_answer": "7",
+            "correct": true,
+            "n_tokens_generated": 6474,
+            "wall_time_s": 249.78,
+            "peak_gpu_mb": 28700.7,
+            "error": null
+          },
+          {
+            "problem": "Find the value of $\\log_2{3} \\cdot \\log_3{4} \\cdot \\log_4{5} \\cdot \\log_5{6} \\cd",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 4657,
+            "wall_time_s": 179.65,
+            "peak_gpu_mb": 28645.5,
+            "error": null
+          },
+          {
+            "problem": "When rolling a certain unfair six-sided die with faces numbered 1, 2, 3, 4, 5, a",
+            "ground_truth": "29",
+            "pred_answer": "19",
+            "correct": false,
+            "n_tokens_generated": 14699,
+            "wall_time_s": 564.83,
+            "peak_gpu_mb": 28685.4,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

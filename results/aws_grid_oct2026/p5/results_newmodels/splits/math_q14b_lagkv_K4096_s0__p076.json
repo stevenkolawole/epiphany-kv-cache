@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 10,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "4096": {
+        "accuracy": 0.8,
+        "n_correct": 8,
+        "n_total": 10,
+        "mean_wall_time_s": 252.5,
+        "mean_peak_gpu_mb": 29202.5,
+        "per_problem": [
+          {
+            "problem": "If $2^8=4^x$, what is the value of $x$?",
+            "ground_truth": "4",
+            "pred_answer": "4",
+            "correct": true,
+            "n_tokens_generated": 1536,
+            "wall_time_s": 58.78,
+            "peak_gpu_mb": 28702.7,
+            "error": null
+          },
+          {
+            "problem": "Let $f(x) = x^3 + 3x^2 + 1.$  There exist real numbers $a \\neq 0$ and $b,$ such ",
+            "ground_truth": "(-2,1)",
+            "pred_answer": "(-2, 1)",
+            "correct": true,
+            "n_tokens_generated": 2777,
+            "wall_time_s": 106.57,
+            "peak_gpu_mb": 29114.1,
+            "error": null
+          },
+          {
+            "problem": "For what value of $x$ is $2^3\\cdot3^x=72$?",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 1413,
+            "wall_time_s": 54.02,
+            "peak_gpu_mb": 28666.2,
+            "error": null
+          },
+          {
+            "problem": "Find the number of integer values of $k$ in the closed interval $[-500,500]$ for",
+            "ground_truth": "501",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 864.22,
+            "peak_gpu_mb": 30141.1,
+            "error": null
+          },
+          {
+            "problem": "Ten treeks weigh as much as three squigs and one goolee. Two treeks and one gool",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 1427,
+            "wall_time_s": 53.96,
+            "peak_gpu_mb": 28682.7,
+            "error": null
+          },
+          {
+            "problem": "Point $A$ lies somewhere within or on the square which has opposite corners at $",
+            "ground_truth": "\\frac{3}{2}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 853.19,
+            "peak_gpu_mb": 30147.5,
+            "error": null
+          },
+          {
+            "problem": "Solve for $x: 3^{2x} + 19 = 10^x$.",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 7012,
+            "wall_time_s": 328.3,
+            "peak_gpu_mb": 30137.5,
+            "error": null
+          },
+          {
+            "problem": "The product of $3t^2+5t+a$ and $4t^2+bt-2$ is $12t^4+26t^3-8t^2-16t+6$. What is ",
+            "ground_truth": "-1",
+            "pred_answer": "-1",
+            "correct": true,
+            "n_tokens_generated": 2648,
+            "wall_time_s": 99.24,
+            "peak_gpu_mb": 29067.7,
+            "error": null
+          },
+          {
+            "problem": "A right cylindrical tank with circular bases is being filled with water at a rat",
+            "ground_truth": "\\sqrt{5}",
+            "pred_answer": "\\sqrt{5}",
+            "correct": true,
+            "n_tokens_generated": 1636,
+            "wall_time_s": 61.34,
+            "peak_gpu_mb": 28753.7,
+            "error": null
+          },
+          {
+            "problem": "You have 5 shirts, 6 pairs of pants, and 8 hats.  How many outfits can you make ",
+            "ground_truth": "240",
+            "pred_answer": "240",
+            "correct": true,
+            "n_tokens_generated": 1215,
+            "wall_time_s": 45.37,
+            "peak_gpu_mb": 28611.5,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}
