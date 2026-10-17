@@ -40,7 +40,7 @@ Greedy outputs diverge across hardware (same-GPU runs are bit-exact), with no
 significant accuracy shift at this n. The H200 reruns then replaced the A100 results,
 so the Qwen3-14B grids are single-hardware. The A100 versions are in a100_replaced/.
 
-## Reporting caveats (found Oct 16)
+## Reporting caveats
 
 - **`seg` is not EpiKV^-Q.** The Oct 3 manifest builder gave every `kv_seg_hs` line the
   query flags (`--query_sim_mode replace --query_mode qk --query_sim_window 8`), so the
