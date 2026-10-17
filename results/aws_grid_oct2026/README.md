@@ -39,3 +39,21 @@ All 32 jobs p4d ran for the Qwen3-14B grids (16 math_q14b pieces, 16 gpqa_q14b c
 Greedy outputs diverge across hardware (same-GPU runs are bit-exact), with no
 significant accuracy shift at this n. The H200 reruns then replaced the A100 results,
 so the Qwen3-14B grids are single-hardware. The A100 versions are in a100_replaced/.
+
+## Reporting caveats (found Oct 16)
+
+- **`seg` is not EpiKV^-Q.** The Oct 3 manifest builder gave every `kv_seg_hs` line the
+  query flags (`--query_sim_mode replace --query_mode qk --query_sim_window 8`), so the
+  `seg` cells of every new grid are EpiKV without fill. The paper's EpiKV^-Q row has no
+  query term and no fill. Do not report this column under that name. For the Qwen3-8B
+  MATH-500 grid (`p5/results_qwen3/`, Sep 28) the flags are unverified; the launch lines
+  are on p5.
+- **Nemotron** runs use the code's default bands (10/21, located on Llama-8B; Nemotron-Nano-8B
+  is Llama-3.1-8B based) and the system prompt "detailed thinking on".
+- **Stale files.** `p5/results_newmodels/` holds 37 incomplete `math_nemo_*` files from
+  before those cells moved to p4d. The complete math_nemo cells are in
+  `p4d_epikv/results_newmodels/`. Select files by completeness (no partial block, no errored
+  problem), never by name.
+- **Shards.** The n500 ablations in `p5/results_n500/` cover MATH-500 shards 100-400
+  (n=395); shard 0 of those configurations is not in this directory.
+- Tables built from these files: `~/workspace/emnlp-26/reports/EPIKV_RESULTS_SINCE_ICLR.md`.
