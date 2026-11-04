@@ -46,8 +46,8 @@ so the Qwen3-14B grids are single-hardware. The A100 versions are in a100_replac
   query flags (`--query_sim_mode replace --query_mode qk --query_sim_window 8`), so the
   `seg` cells of every new grid are EpiKV without fill. The paper's EpiKV^-Q row has no
   query term and no fill. Do not report this column under that name. For the Qwen3-8B
-  MATH-500 grid (`p5/results_qwen3/`, Sep 28) the flags are unverified; the launch lines
-  are on p5.
+  MATH-500 grid (`p5/results_qwen3/`, Sep 28) the flags were unverified; on Nov 4 its cells
+  proved token-identical to the true EpiKV^-Q reruns (`../aws_grid_nov2026/README.md`).
 - **Nemotron** runs use the code's default bands (10/21, located on Llama-8B; Nemotron-Nano-8B
   is Llama-3.1-8B based) and the system prompt "detailed thinking on".
 - **Stale files.** `p5/results_newmodels/` holds 37 incomplete `math_nemo_*` files from
