@@ -2058,7 +2058,8 @@ class KVSegHSEviction:
             return past_key_values
         self._since_compaction = 0
 
-        keep_recent = min(self.config.keep_recent_k, self.config.cache_size // 4)
+        keep_recent = (self.config.keep_recent_k if getattr(self.config, "recent_window_fixed", False)
+                       else min(self.config.keep_recent_k, self.config.cache_size // 4))
         classify_len = seq_len - keep_recent
 
         # ── Segment classification from cached key statistics ─────────────────

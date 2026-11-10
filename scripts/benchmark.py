@@ -707,6 +707,8 @@ def parse_args():
                         "(the vLLM port's rule)")
     p.add_argument("--keep_recent_k",  type=int, default=128,
                    help="Tokens always kept in recency window (default: 128)")
+    p.add_argument("--fixed_recent_window", action="store_true",
+                   help="EpiKV policies keep exactly --keep_recent_k recent tokens instead of min(keep_recent_k, K/4)")
     p.add_argument("--methods",        nargs="+",
                    default=sorted(ALL_METHODS),
                    choices=sorted(ALL_METHODS),
@@ -883,6 +885,8 @@ def main():
                                          query_mode=args.query_mode,
                                          query_layer=args.query_layer,
                                          tau_mode=args.tau_mode)
+                if eviction is not None and args.fixed_recent_window:
+                    eviction.config.recent_window_fixed = True
                 if eviction is not None and hasattr(eviction, "set_model"):
                     eviction.set_model(model)
                 try:
