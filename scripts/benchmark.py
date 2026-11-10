@@ -497,6 +497,22 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
 LOGICAL_POSITIONS = False
 
 
+# Sampling (rebuttal, Nov 10). None = greedy, the paper's protocol; every greedy path is unchanged.
+SAMPLING: Optional[Dict] = None
+
+
+def _pick(logits: torch.Tensor, gen: Optional[torch.Generator]) -> torch.Tensor:
+    """Next token, shape (1, 1). Greedy unless --temperature > 0 (then temperature + nucleus top-p)."""
+    if SAMPLING is None:
+        return logits.argmax().unsqueeze(0).unsqueeze(0)
+    probs = torch.softmax(logits.float() / SAMPLING["temperature"], dim=-1)
+    sp, si = torch.sort(probs, descending=True)
+    keep = (sp.cumsum(-1) - sp) < SAMPLING["top_p"]
+    sp = sp * keep
+    tok = si[torch.multinomial(sp / sp.sum(), 1, generator=gen)]
+    return tok.view(1, 1)
+
+
 def run_one(
     model,
     tokenizer,
@@ -546,7 +562,12 @@ def run_one(
         if isinstance(eviction, _hs_eviction_classes) and need_hs:
             eviction.set_prefill_end(prefill_out.hidden_states)
 
-    next_token = prefill_out.logits[0, -1, :].argmax().unsqueeze(0).unsqueeze(0)  # (1, 1)
+    gen = None
+    if SAMPLING is not None:   # one seeded stream per problem, independent of shard and method order
+        import zlib
+        gen = torch.Generator(device=device)
+        gen.manual_seed(SAMPLING["seed"] * 1_000_003 + zlib.crc32(problem["problem"].encode()))
+    next_token = _pick(prefill_out.logits[0, -1, :], gen)  # (1, 1)
     del prefill_out
     torch.cuda.empty_cache()
 
@@ -601,7 +622,7 @@ def run_one(
                 if not _write_back(cache_obj, _as_legacy_kv(evicted)):
                     cache_obj = _to_model_kv(_as_legacy_kv(evicted))
 
-        next_token = step_out.logits[0, -1, :].argmax().unsqueeze(0).unsqueeze(0)
+        next_token = _pick(step_out.logits[0, -1, :], gen)
         del step_out
         if len(generated_ids) % 512 == 0:
             torch.cuda.empty_cache()
@@ -699,6 +720,10 @@ def parse_args():
                         "(prompt_len + step) instead of the cache's physical length; "
                         "matches the vLLM port's convention. Default off = the "
                         "rewound convention every HF-harness eviction method uses.")
+    p.add_argument("--temperature",    type=float, default=0.0,
+                   help="0 = greedy (paper protocol). >0 samples with --top_p, seeded per problem by --seed.")
+    p.add_argument("--top_p",          type=float, default=0.95)
+    p.add_argument("--seed",           type=int, default=0)
     p.add_argument("--attn_impl",      default="auto",
                    choices=["auto", "eager", "sdpa", "flash_attention_2"],
                    help="Attention implementation override. 'auto' uses eager when any "
@@ -713,6 +738,10 @@ def main():
     if getattr(args, "system_prompt", None) is not None:
         _SYSTEM_PROMPT = args.system_prompt
     LOGICAL_POSITIONS = bool(getattr(args, "logical_positions", False))
+    global SAMPLING
+    if args.temperature > 0:
+        SAMPLING = {"temperature": args.temperature, "top_p": args.top_p, "seed": args.seed}
+        print(f"  Sampling: temperature {args.temperature}, top-p {args.top_p}, seed {args.seed}")
     if LOGICAL_POSITIONS:
         print("  Positional convention: LOGICAL (prompt_len + step)")
 
@@ -774,6 +803,8 @@ def main():
         "methods":        args.methods,
         "attn_impl":      attn_impl,
     }
+    if SAMPLING is not None:
+        meta["sampling"] = SAMPLING
 
     def _save():
         tmp = output_path.with_suffix(".tmp.json")
