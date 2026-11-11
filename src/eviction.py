@@ -878,6 +878,50 @@ class KVKeyVarianceEviction:
         return new_past
 
 
+class KNormEviction:
+    """
+    K-norm (Devoto et al., 2024): keep the cached tokens whose keys have the LOWEST L2 norm, which correlate with high
+    attention. The norm is taken when a token is cached, averaged over layers and KV heads (one keep-mask for the whole
+    cache, as for every policy in this harness), and frozen. Prompt and recency window kept as in the KV family.
+    Reads only the cached keys, so it runs on any kernel.
+    """
+
+    def __init__(self, config: EvictionConfig):
+        self.config = config
+        self._prefill_len: int = 0
+        self._scores: List[float] = []
+
+    def reset(self, prefill_len: int = 0):
+        self._prefill_len = prefill_len
+        self._scores = []
+
+    def evict_past_key_values(self, past_key_values: Tuple) -> Tuple:
+        seq_len = past_key_values[0][0].shape[2]
+        device = past_key_values[0][0].device
+        prefill_len = min(self._prefill_len, seq_len)
+        norm = sum(k[:, :, -1, :].float().norm(dim=-1).mean().item() for k, _ in past_key_values) / len(past_key_values)
+        self._scores.append(-norm)
+        if seq_len <= self.config.cache_size:
+            return past_key_values
+        num_decode = seq_len - prefill_len
+        keep_recent = min(self.config.keep_recent_k, self.config.cache_size // 4)
+        decode_budget = max(self.config.cache_size - prefill_len, 0)
+        keep_mask = torch.zeros(seq_len, dtype=torch.bool, device=device)
+        keep_mask[:prefill_len] = True
+        if decode_budget > 0 and num_decode > 0:
+            scores = torch.tensor(self._scores[-num_decode:], device=device, dtype=torch.float32)
+            if len(scores) < num_decode:
+                pad = torch.full((num_decode - len(scores),), float('-inf'), device=device)
+                scores = torch.cat([pad, scores])
+            scores[-keep_recent:] = float('inf')
+            _, keep_idx = torch.topk(scores, min(decode_budget, num_decode))
+            keep_mask[prefill_len + keep_idx] = True
+        new_past = _gather_kept(past_key_values, keep_mask)
+        decode_keep = keep_mask[prefill_len:prefill_len + num_decode].tolist()
+        self._scores = [s for s, kept in zip(self._scores[-num_decode:], decode_keep) if kept]
+        return new_past
+
+
 class LagKVKeyVarianceEviction:
     """
     Phase 1 proposed: lag-normalized key-variance eviction.

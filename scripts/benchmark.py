@@ -134,6 +134,7 @@ try:
         RKVEviction,
         LongFlowEviction,
         RandomEviction,
+        KNormEviction,
     )
 except ImportError as e:
     sys.exit(f"Cannot import eviction module: {e}")
@@ -378,7 +379,7 @@ HS_ONLY_METHODS   = {"hs_variance", "hs_variance_detrend", "band_adaptive_hs", "
 # Methods that need BOTH attention matrix AND hidden states (eager only).
 BOTH_METHODS      = {"attn_hs_product", "hybrid_seg_hs"}
 # Methods that only read past_key_values (compatible with flash attn).
-KV_METHODS        = {"kv_val", "kv_key", "lag_kv_key", "lag_kv", "random"}
+KV_METHODS        = {"kv_val", "kv_key", "lag_kv_key", "lag_kv", "random", "knorm"}
 
 ATTN_METHODS  = ATTN_ONLY_METHODS | BOTH_METHODS
 HS_METHODS    = HS_ONLY_METHODS | BOTH_METHODS
@@ -427,6 +428,8 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
         return KVKeyVarianceEviction(cfg)
     if method == "random":
         return RandomEviction(cfg)
+    if method == "knorm":
+        return KNormEviction(cfg)
     if method == "lag_kv_key":
         return LagKVKeyVarianceEviction(cfg)
     if method == "lag_kv":
