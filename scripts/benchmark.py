@@ -142,6 +142,9 @@ except ImportError as e:
 try:
     from datasets import load_dataset
     from transformers import AutoModelForCausalLM, AutoTokenizer
+    import transformers as _tfv
+    # transformers < 4.56 (R-KV venv) spells the loading dtype torch_dtype; later versions use dtype.
+    _DTYPE_KW = "dtype" if tuple(int(x) for x in _tfv.__version__.split(".")[:2]) >= (4, 56) else "torch_dtype"
 except ImportError:
     sys.exit("Missing dependencies: pip install datasets transformers")
 
@@ -386,7 +389,10 @@ HS_METHODS    = HS_ONLY_METHODS | BOTH_METHODS
 # DMS (Lancucki et al. 2025, nvidia/Qwen3-8B-DMS-8x): a retrofitted checkpoint with its own paged cache, so it has its
 # own decode loop (run_one_dms) and no eviction object. Compression is a ratio, not a budget.
 DMS_METHODS = {"dms"}
-ALL_METHODS   = {"none"} | DMS_METHODS | ATTN_ONLY_METHODS | HS_ONLY_METHODS | BOTH_METHODS | KV_METHODS
+# R-KV official code (Cai et al., NeurIPS 2025), vendored in third_party/rkv: it patches the HF attention/CausalLM forwards and
+# compresses inside them, so it has its own decode loop (run_one_rkv). Needs transformers < 4.56.
+RKV_METHODS = {"rkv_official"}
+ALL_METHODS   = {"none"} | DMS_METHODS | RKV_METHODS | ATTN_ONLY_METHODS | HS_ONLY_METHODS | BOTH_METHODS | KV_METHODS
 
 
 def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
@@ -399,7 +405,7 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
                   query_mode: str = None, query_layer: int = None, tau_mode: str = None):
     """Return a fresh eviction object for the given method and cache_size."""
     cfg = EvictionConfig(cache_size=cache_size, keep_recent_k=keep_recent_k)
-    if method == "none" or method in DMS_METHODS:
+    if method == "none" or method in DMS_METHODS or method in RKV_METHODS:
         return None
     if method == "h2o":
         return H2OEviction(cfg)
@@ -719,6 +725,56 @@ def run_one_dms(model, tokenizer, problem: Dict, max_new_tokens: int, device: to
     }
 
 
+def run_one_rkv(model, tokenizer, problem: Dict, max_new_tokens: int, device: torch.device) -> Dict:
+    """Greedy decode with R-KV's own patched forward (compression inside attention, every 128 tokens, per layer
+    and KV head). The cache object must persist (R-KV keeps its query window on it), so the harness's legacy-tuple
+    rebuild is not used. Positions are logical (prompt_len + step), which is what transformers' generate() does
+    around R-KV's runner. Records the physical cache length after every step as kv_live."""
+    from transformers import DynamicCache
+    prompt_ids = build_prompt_ids(tokenizer, problem["problem"], device)
+    prompt_len = prompt_ids.shape[1]
+    # per-sample state of the patched model (run_math.py gets this from a fresh generate() call per prompt)
+    if hasattr(model, "length"):
+        del model.length
+    model.config.compression = None
+    model.config.update_kv = True
+    _reset_gpu_peak()
+    t0 = time.perf_counter()
+    cache = DynamicCache()
+    with torch.no_grad():
+        out = model(input_ids=prompt_ids, past_key_values=cache, use_cache=True, logits_to_keep=1)
+    lens = [cache.get_seq_length()]
+    next_token = _pick(out.logits[0, -1, :], None)
+    del out
+    generated_ids: List[int] = []
+    eos_id = tokenizer.eos_token_id
+    for step in range(max_new_tokens):
+        token_id = int(next_token[0, 0])
+        generated_ids.append(token_id)
+        if token_id == eos_id:
+            break
+        lp = prompt_len + step
+        with torch.no_grad():
+            step_out = model(input_ids=next_token, past_key_values=cache, use_cache=True,
+                             position_ids=torch.tensor([[lp]], device=device),
+                             cache_position=torch.tensor([lp], device=device))
+        lens.append(cache.get_seq_length())
+        next_token = _pick(step_out.logits[0, -1, :], None)
+        del step_out
+        if len(generated_ids) % 512 == 0:
+            torch.cuda.empty_cache()
+    wall_time_s = time.perf_counter() - t0
+    peak_gpu_mb = _peak_gpu_mb()
+    kv_live = {"total_tokens": prompt_len + len(generated_ids), "mean_all": round(sum(lens) / len(lens), 1),
+               "peak_all": max(lens), "after_prefill": lens[0]}
+    del cache
+    generated_text = tokenizer.decode(generated_ids, skip_special_tokens=True)
+    pred_answer = extract_boxed(generated_text)
+    correct = answers_match(pred_answer, problem["ground_truth"])
+    return {"correct": correct, "pred_answer": pred_answer, "n_tokens_generated": len(generated_ids),
+            "wall_time_s": round(wall_time_s, 2), "peak_gpu_mb": round(peak_gpu_mb, 1), "kv_live": kv_live}
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def parse_args():
@@ -842,17 +898,37 @@ def main():
 
     print(f"Loading model {args.model} ...")
     tokenizer = AutoTokenizer.from_pretrained(args.tokenizer or args.model, cache_dir=_hf_cache())
-    if DMS_METHODS & set(args.methods):
+    if RKV_METHODS & set(args.methods):
+        if set(args.methods) - RKV_METHODS:
+            sys.exit("ERROR: run rkv_official in its own process (it patches transformers classes globally)")
+        import transformers as _tf
+        if _tf.__version__.split(".")[:2] >= ["4", "56"]:
+            sys.exit(f"ERROR: R-KV official code needs transformers < 4.56, found {_tf.__version__}")
+        sys.path.insert(0, str(_REPO_ROOT))
+        from third_party.rkv.monkeypatch import replace_llama, replace_qwen2, replace_qwen3
+        _cc = {"method": "rkv",
+               "method_config": {"budget": args.cache_sizes[0], "window_size": 8, "mix_lambda": 0.1,
+                                 "retain_ratio": 0.2, "retain_direction": "last", "first_tokens": 4},
+               "compression": None, "update_kv": True}
+        _name = args.model.lower()
+        (replace_llama if "llama" in _name else replace_qwen3 if "qwen3" in _name else replace_qwen2)(_cc)
+        model = AutoModelForCausalLM.from_pretrained(
+            args.model, **{_DTYPE_KW: torch.bfloat16}, device_map="auto", attn_implementation=attn_impl,
+            cache_dir=_hf_cache(), use_cache=True)
+        model.config.update({"divide_method": "step_length", "divide_length": 128, "compression_content": "all"})
+        model.newline_token_ids = [tokenizer.encode(x)[-1] for x in ["\n", ".\n", ")\n", "\n\n", ".\n\n", ")\n\n"]]
+        model.after_think_token_ids = [tokenizer.encode("</think>")[-1]]
+    elif DMS_METHODS & set(args.methods):
         if set(args.methods) - DMS_METHODS:
             sys.exit("ERROR: run dms in its own process (different model class)")
         sys.path.insert(0, str(_REPO_ROOT))
         from third_party.dms.modeling_qwen3_dms import Qwen3ForCausalLM  # vendored, reviewed copy (third_party/dms/SOURCE.md)
         model = Qwen3ForCausalLM.from_pretrained(
-            args.model, dtype=torch.bfloat16, device_map="auto", cache_dir=_hf_cache())
+            args.model, **{_DTYPE_KW: torch.bfloat16}, device_map="auto", cache_dir=_hf_cache())
     else:
         model = AutoModelForCausalLM.from_pretrained(
             args.model,
-            dtype=torch.bfloat16,
+            **{_DTYPE_KW: torch.bfloat16},
             device_map="auto",
             attn_implementation=attn_impl,
             cache_dir=_hf_cache(),
@@ -976,7 +1052,11 @@ def main():
                 if eviction is not None and hasattr(eviction, "set_model"):
                     eviction.set_model(model)
                 try:
-                    if method in DMS_METHODS:
+                    if method in RKV_METHODS:
+                        for _l in model.model.layers:   # budget is per sweep point; R-KV's patch fixes it at construction
+                            _l.self_attn.kv_cluster.budget = cache_size
+                        res = run_one_rkv(model, tokenizer, prob, args.max_new_tokens, device)
+                    elif method in DMS_METHODS:
                         res = run_one_dms(model, tokenizer, prob, args.max_new_tokens, device)
                     else:
                         res = run_one(model, tokenizer, prob, method, eviction,
