@@ -382,7 +382,10 @@ KV_METHODS        = {"kv_val", "kv_key", "lag_kv_key", "lag_kv", "random"}
 
 ATTN_METHODS  = ATTN_ONLY_METHODS | BOTH_METHODS
 HS_METHODS    = HS_ONLY_METHODS | BOTH_METHODS
-ALL_METHODS   = {"none"} | ATTN_ONLY_METHODS | HS_ONLY_METHODS | BOTH_METHODS | KV_METHODS
+# DMS (Lancucki et al. 2025, nvidia/Qwen3-8B-DMS-8x): a retrofitted checkpoint with its own paged cache, so it has its
+# own decode loop (run_one_dms) and no eviction object. Compression is a ratio, not a budget.
+DMS_METHODS = {"dms"}
+ALL_METHODS   = {"none"} | DMS_METHODS | ATTN_ONLY_METHODS | HS_ONLY_METHODS | BOTH_METHODS | KV_METHODS
 
 
 def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
@@ -395,7 +398,7 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
                   query_mode: str = None, query_layer: int = None, tau_mode: str = None):
     """Return a fresh eviction object for the given method and cache_size."""
     cfg = EvictionConfig(cache_size=cache_size, keep_recent_k=keep_recent_k)
-    if method == "none":
+    if method == "none" or method in DMS_METHODS:
         return None
     if method == "h2o":
         return H2OEviction(cfg)
@@ -643,6 +646,76 @@ def run_one(
     }
 
 
+def run_one_dms(model, tokenizer, problem: Dict, max_new_tokens: int, device: torch.device) -> Dict:
+    """Greedy decode with the DMS checkpoint's own paged cache (it evicts inside its attention).
+
+    Same prompt, stop rule, extraction and scoring as run_one. Positions are logical by construction: the cache
+    counts every token seen (cumulative_length) and the model derives cache_position from it. After the prefill
+    and after every decode step the per-layer, per-KV-head live entry counts (cache_seq_lengths) are copied into
+    a preallocated GPU tensor (no host sync), so mean and peak occupancy are exact.
+    """
+    prompt_ids = build_prompt_ids(tokenizer, problem["problem"], device)
+    prompt_len = prompt_ids.shape[1]
+    _reset_gpu_peak()
+    t0 = time.perf_counter()
+    with torch.no_grad():
+        out = model(input_ids=prompt_ids, use_cache=True)
+    cache = out.past_key_values
+    n_layers = len(cache.layers)
+    live = torch.zeros(max_new_tokens + 2, n_layers, cache.layers[0].page_batch, dtype=torch.int32, device=device)
+
+    def snap(i):
+        live[i] = torch.stack([l.cache_seq_lengths for l in cache.layers])
+
+    snap(0)
+    n_snap = 1
+    next_token = _pick(out.logits[0, -1, :], None)
+    del out
+    generated_ids: List[int] = []
+    eos_id = tokenizer.eos_token_id
+    for step in range(max_new_tokens):
+        token_id = int(next_token[0, 0])
+        generated_ids.append(token_id)
+        if token_id == eos_id:
+            break
+        with torch.no_grad():
+            step_out = model(input_ids=next_token, past_key_values=cache, use_cache=True)
+        cache = step_out.past_key_values
+        snap(n_snap)
+        n_snap += 1
+        next_token = _pick(step_out.logits[0, -1, :], None)
+        del step_out
+        if len(generated_ids) % 512 == 0:
+            torch.cuda.empty_cache()
+    wall_time_s = time.perf_counter() - t0
+    peak_gpu_mb = _peak_gpu_mb()
+
+    lv = live[:n_snap].float()                        # (snapshots, layers, kv heads)
+    per_layer_mean = lv.mean(dim=(0, 2))              # mean over time and heads
+    per_layer_peak = lv.mean(dim=2).max(dim=0).values # peak over time of the head-mean
+    kv_live = {
+        "n_snapshots":     n_snap,
+        "total_tokens":    prompt_len + len(generated_ids),
+        "mean_all":        round(float(lv.mean()), 1),
+        "peak_all":        round(float(lv.mean(dim=(1, 2)).max()), 1),   # peak over time of the mean over layers+heads
+        "peak_any_head":   int(lv.max()),                                # largest single (layer, head) cache seen
+        "mean_per_layer":  [round(float(x), 1) for x in per_layer_mean],
+        "peak_per_layer":  [round(float(x), 1) for x in per_layer_peak],
+    }
+    del live, lv, cache
+    generated_text = tokenizer.decode(generated_ids, skip_special_tokens=True)
+    pred_answer = extract_boxed(generated_text)
+    correct = answers_match(pred_answer, problem["ground_truth"])
+    return {
+        "correct":            correct,
+        "pred_answer":        pred_answer,
+        "n_tokens_generated": len(generated_ids),
+        "wall_time_s":        round(wall_time_s, 2),
+        "peak_gpu_mb":        round(peak_gpu_mb, 1),
+        "kv_live":            kv_live,
+    }
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def parse_args():
@@ -726,6 +799,8 @@ def parse_args():
                    help="0 = greedy (paper protocol). >0 samples with --top_p, seeded per problem by --seed.")
     p.add_argument("--top_p",          type=float, default=0.95)
     p.add_argument("--seed",           type=int, default=0)
+    p.add_argument("--tokenizer",      default=None,
+                   help="Tokenizer repo (default: --model). The DMS run uses Qwen/Qwen3-8B so the prompt tokens are those of our Qwen3-8B cells.")
     p.add_argument("--attn_impl",      default="auto",
                    choices=["auto", "eager", "sdpa", "flash_attention_2"],
                    help="Attention implementation override. 'auto' uses eager when any "
@@ -763,14 +838,22 @@ def main():
             attn_impl = "eager"
 
     print(f"Loading model {args.model} ...")
-    tokenizer = AutoTokenizer.from_pretrained(args.model, cache_dir=_hf_cache())
-    model = AutoModelForCausalLM.from_pretrained(
-        args.model,
-        dtype=torch.bfloat16,
-        device_map="auto",
-        attn_implementation=attn_impl,
-        cache_dir=_hf_cache(),
-    )
+    tokenizer = AutoTokenizer.from_pretrained(args.tokenizer or args.model, cache_dir=_hf_cache())
+    if DMS_METHODS & set(args.methods):
+        if set(args.methods) - DMS_METHODS:
+            sys.exit("ERROR: run dms in its own process (different model class)")
+        sys.path.insert(0, str(_REPO_ROOT))
+        from third_party.dms.modeling_qwen3_dms import Qwen3ForCausalLM  # vendored, reviewed copy (third_party/dms/SOURCE.md)
+        model = Qwen3ForCausalLM.from_pretrained(
+            args.model, dtype=torch.bfloat16, device_map="auto", cache_dir=_hf_cache())
+    else:
+        model = AutoModelForCausalLM.from_pretrained(
+            args.model,
+            dtype=torch.bfloat16,
+            device_map="auto",
+            attn_implementation=attn_impl,
+            cache_dir=_hf_cache(),
+        )
     model.eval()
     device = next(model.parameters()).device
     print(f"  Model loaded on {device} (attn: {attn_impl})")
@@ -890,8 +973,11 @@ def main():
                 if eviction is not None and hasattr(eviction, "set_model"):
                     eviction.set_model(model)
                 try:
-                    res = run_one(model, tokenizer, prob, method, eviction,
-                                  args.max_new_tokens, device)
+                    if method in DMS_METHODS:
+                        res = run_one_dms(model, tokenizer, prob, args.max_new_tokens, device)
+                    else:
+                        res = run_one(model, tokenizer, prob, method, eviction,
+                                      args.max_new_tokens, device)
                 except Exception as exc:
                     print(f"\n  [ERROR] problem {i}: {exc}", file=sys.stderr)
                     traceback.print_exc(file=sys.stderr)
@@ -922,6 +1008,7 @@ def main():
                     "wall_time_s":        res.get("wall_time_s"),
                     "peak_gpu_mb":        res.get("peak_gpu_mb"),
                     "error":              res.get("error"),
+                    **({"kv_live": res["kv_live"]} if "kv_live" in res else {}),
                 })
                 # Per-problem checkpoint: a crash or OOM loses at most one problem.
                 results.setdefault(method, {})[key] = {"partial": True, "n_total": len(problems),
