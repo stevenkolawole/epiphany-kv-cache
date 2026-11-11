@@ -1,0 +1,349 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "dataset": "math500",
+    "n_samples": 20,
+    "max_new_tokens": 8192,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      1024
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "1024": {
+        "accuracy": 0.7,
+        "n_correct": 14,
+        "n_total": 20,
+        "mean_wall_time_s": 139.95,
+        "mean_peak_gpu_mb": 14700.9,
+        "per_problem": [
+          {
+            "problem": "Three plus the reciprocal of a number equals 7 divided by that number.  What is ",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 1186,
+            "wall_time_s": 48.62,
+            "peak_gpu_mb": 14706.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1228,
+              "mean_all": 626.2,
+              "peak_all": 1151,
+              "after_prefill": 42
+            }
+          },
+          {
+            "problem": "If each point of the circle $x^2 + y^2 = 25$ is reflected in the point $(4,1),$ ",
+            "ground_truth": "(1,-16,-4,43)",
+            "pred_answer": "(1, -16, -4, 43)",
+            "correct": true,
+            "n_tokens_generated": 2908,
+            "wall_time_s": 117.42,
+            "peak_gpu_mb": 14709.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3001,
+              "mean_all": 917.3,
+              "peak_all": 1151,
+              "after_prefill": 93
+            }
+          },
+          {
+            "problem": "If $a$ and $b$ are positive integers such that $\\gcd(a,b)=210$, $\\mathop{\\text{l",
+            "ground_truth": "8",
+            "pred_answer": "8",
+            "correct": true,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 330.63,
+            "peak_gpu_mb": 14709.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8269,
+              "mean_all": 1025.1,
+              "peak_all": 1151,
+              "after_prefill": 77
+            }
+          },
+          {
+            "problem": "Find the modulo $7$ remainder of the sum $1+3+5+7+9+\\dots+195+197+199.$",
+            "ground_truth": "4",
+            "pred_answer": "4",
+            "correct": true,
+            "n_tokens_generated": 2022,
+            "wall_time_s": 81.48,
+            "peak_gpu_mb": 14709.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2078,
+              "mean_all": 824.4,
+              "peak_all": 1151,
+              "after_prefill": 56
+            }
+          },
+          {
+            "problem": "Suppose that $f$ is a function and $f^{-1}$ is the inverse of $f$.  If $f(1)=2$,",
+            "ground_truth": "1",
+            "pred_answer": "1",
+            "correct": true,
+            "n_tokens_generated": 1610,
+            "wall_time_s": 64.86,
+            "peak_gpu_mb": 14706.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1695,
+              "mean_all": 775.4,
+              "peak_all": 1151,
+              "after_prefill": 85
+            }
+          },
+          {
+            "problem": "Two sides of a triangle are each $8$ units long. If the third side has a whole n",
+            "ground_truth": "31",
+            "pred_answer": "31",
+            "correct": true,
+            "n_tokens_generated": 1181,
+            "wall_time_s": 47.5,
+            "peak_gpu_mb": 14706.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1239,
+              "mean_all": 638.5,
+              "peak_all": 1151,
+              "after_prefill": 58
+            }
+          },
+          {
+            "problem": "What is the number of square centimeters in the area of this trapezoid?\n\n[asy]\nd",
+            "ground_truth": "21",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 330.9,
+            "peak_gpu_mb": 14709.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8370,
+              "mean_all": 1037.0,
+              "peak_all": 1151,
+              "after_prefill": 178
+            }
+          },
+          {
+            "problem": "Find the dot product of $\\begin{pmatrix} -2 \\\\ 0 \\\\ 7 \\end{pmatrix}$ and $\\begin",
+            "ground_truth": "-41",
+            "pred_answer": "-41",
+            "correct": true,
+            "n_tokens_generated": 1001,
+            "wall_time_s": 40.29,
+            "peak_gpu_mb": 14675.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1069,
+              "mean_all": 568.0,
+              "peak_all": 1067,
+              "after_prefill": 68
+            }
+          },
+          {
+            "problem": "Let $a,$ $b,$ $c$ be real numbers such that\n\\[|ax^2 + bx + c| \\le 1\\]for all $0 ",
+            "ground_truth": "17",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 330.81,
+            "peak_gpu_mb": 14709.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8277,
+              "mean_all": 1026.1,
+              "peak_all": 1151,
+              "after_prefill": 85
+            }
+          },
+          {
+            "problem": "In the diagram, $AD=BD=CD$ and $\\angle BCA = 40^\\circ.$ What is the measure of $",
+            "ground_truth": "90^\\circ",
+            "pred_answer": "90",
+            "correct": false,
+            "n_tokens_generated": 4400,
+            "wall_time_s": 177.79,
+            "peak_gpu_mb": 14707.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4667,
+              "mean_all": 1010.9,
+              "peak_all": 1151,
+              "after_prefill": 267
+            }
+          },
+          {
+            "problem": "William Sydney Porter tried to perform the calculation $\\frac{-3+4i}{1+2i}$. How",
+            "ground_truth": "1+2i",
+            "pred_answer": "1 + 2i",
+            "correct": true,
+            "n_tokens_generated": 2167,
+            "wall_time_s": 87.49,
+            "peak_gpu_mb": 14709.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2257,
+              "mean_all": 857.7,
+              "peak_all": 1151,
+              "after_prefill": 90
+            }
+          },
+          {
+            "problem": "What is the difference between the positive square root of 64 and the cube root ",
+            "ground_truth": "4",
+            "pred_answer": "4",
+            "correct": true,
+            "n_tokens_generated": 837,
+            "wall_time_s": 33.67,
+            "peak_gpu_mb": 14588.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 880,
+              "mean_all": 461.0,
+              "peak_all": 879,
+              "after_prefill": 43
+            }
+          },
+          {
+            "problem": "If $A$ is the sum of the positive divisors of $500$, what is the sum of the dist",
+            "ground_truth": "25",
+            "pred_answer": "25",
+            "correct": true,
+            "n_tokens_generated": 1486,
+            "wall_time_s": 60.1,
+            "peak_gpu_mb": 14706.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1540,
+              "mean_all": 729.0,
+              "peak_all": 1151,
+              "after_prefill": 54
+            }
+          },
+          {
+            "problem": "Determine the coordinates of the point $P$ on the line $y=-x+6$ such that $P$ is",
+            "ground_truth": "(8,-2)",
+            "pred_answer": "(8, -2)",
+            "correct": true,
+            "n_tokens_generated": 1538,
+            "wall_time_s": 62.29,
+            "peak_gpu_mb": 14706.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1633,
+              "mean_all": 767.2,
+              "peak_all": 1151,
+              "after_prefill": 95
+            }
+          },
+          {
+            "problem": "The superfactorial $n\\$$ is defined as $n\\$ = \\underbrace{ n!^{{n!}^{{\\cdot}^{{\\",
+            "ground_truth": "6",
+            "pred_answer": "6",
+            "correct": true,
+            "n_tokens_generated": 2274,
+            "wall_time_s": 91.89,
+            "peak_gpu_mb": 14709.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2358,
+              "mean_all": 865.9,
+              "peak_all": 1151,
+              "after_prefill": 84
+            }
+          },
+          {
+            "problem": "For how many two-digit primes is the sum of the digits equal to 8?",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 1951,
+            "wall_time_s": 63.42,
+            "peak_gpu_mb": 14709.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1989,
+              "mean_all": 804.9,
+              "peak_all": 1151,
+              "after_prefill": 38
+            }
+          },
+          {
+            "problem": "The data in the table below shows the percent of bus riders in a survey of Centr",
+            "ground_truth": "12",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 257.82,
+            "peak_gpu_mb": 14709.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8450,
+              "mean_all": 1045.7,
+              "peak_all": 1151,
+              "after_prefill": 258
+            }
+          },
+          {
+            "problem": "Solve\n\\[\\frac{|x^2 - 81|}{x^2 - 36x} < 0.\\]",
+            "ground_truth": "(0,9) \\cup (9,36)",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 257.49,
+            "peak_gpu_mb": 14709.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8243,
+              "mean_all": 1021.9,
+              "peak_all": 1151,
+              "after_prefill": 51
+            }
+          },
+          {
+            "problem": "Two numbers, $x$ and $y$ are selected at random from the interval $(0,3)$.  What",
+            "ground_truth": "\\frac{1}{2}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 257.84,
+            "peak_gpu_mb": 14709.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8260,
+              "mean_all": 1024.0,
+              "peak_all": 1151,
+              "after_prefill": 68
+            }
+          },
+          {
+            "problem": "A rectangular field is enclosed in an athletic track, as shown below.  The track",
+            "ground_truth": "\\frac{20000}{\\pi}",
+            "pred_answer": "\\dfrac{20000}{\\pi}",
+            "correct": true,
+            "n_tokens_generated": 1806,
+            "wall_time_s": 56.7,
+            "peak_gpu_mb": 14709.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2002,
+              "mean_all": 867.3,
+              "peak_all": 1151,
+              "after_prefill": 196
+            }
+          }
+        ]
+      }
+    }
+  }
+}
