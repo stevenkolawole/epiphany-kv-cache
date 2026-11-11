@@ -1,0 +1,349 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "dataset": "math500",
+    "n_samples": 20,
+    "max_new_tokens": 8192,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "512": {
+        "accuracy": 0.6,
+        "n_correct": 12,
+        "n_total": 20,
+        "mean_wall_time_s": 129.14,
+        "mean_peak_gpu_mb": 14607.7,
+        "per_problem": [
+          {
+            "problem": "Zach has three bags and a bunch of pencils to be placed into the bags. He is tol",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 1669,
+            "wall_time_s": 53.45,
+            "peak_gpu_mb": 14605.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1750,
+              "mean_all": 502.2,
+              "peak_all": 639,
+              "after_prefill": 81
+            }
+          },
+          {
+            "problem": "A Senate committee has 5 Democrats, 5 Republicans, and 1 Independent.  In how ma",
+            "ground_truth": "28800",
+            "pred_answer": "28800",
+            "correct": true,
+            "n_tokens_generated": 1459,
+            "wall_time_s": 45.56,
+            "peak_gpu_mb": 14605.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1540,
+              "mean_all": 492.8,
+              "peak_all": 639,
+              "after_prefill": 81
+            }
+          },
+          {
+            "problem": "The points $O,$ $A,$ and $B$ satisfy $\\overrightarrow{OA} = \\begin{pmatrix} 1 \\\\",
+            "ground_truth": "3 \\sqrt{5}",
+            "pred_answer": "3\\sqrt{5}",
+            "correct": true,
+            "n_tokens_generated": 1612,
+            "wall_time_s": 50.4,
+            "peak_gpu_mb": 14605.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1712,
+              "mean_all": 505.3,
+              "peak_all": 639,
+              "after_prefill": 100
+            }
+          },
+          {
+            "problem": "A curve is parameterized by\n\\[(x,y) = (t^3 + 7, -3t^2 - 6t - 5).\\]Find the point",
+            "ground_truth": "(15,-29)",
+            "pred_answer": "(15, -29)",
+            "correct": true,
+            "n_tokens_generated": 2129,
+            "wall_time_s": 66.36,
+            "peak_gpu_mb": 14605.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2199,
+              "mean_all": 515.8,
+              "peak_all": 639,
+              "after_prefill": 70
+            }
+          },
+          {
+            "problem": "Let $z$ be a complex number such that\n\\[z + \\frac{1}{z} = \\frac{1 + \\sqrt{5}}{2}",
+            "ground_truth": "-2",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 256.48,
+            "peak_gpu_mb": 14605.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8271,
+              "mean_all": 560.4,
+              "peak_all": 639,
+              "after_prefill": 79
+            }
+          },
+          {
+            "problem": "Let $x,$ $y,$ and $z$ be positive real numbers such that $xyz = 2.$  Find the mi",
+            "ground_truth": "16",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 256.78,
+            "peak_gpu_mb": 14605.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8261,
+              "mean_all": 559.8,
+              "peak_all": 639,
+              "after_prefill": 69
+            }
+          },
+          {
+            "problem": "Solve the following equation for $x$: \\[ \\ \\frac{2}{3} = \\frac{4}{x-5}.\\]",
+            "ground_truth": "11",
+            "pred_answer": "11",
+            "correct": true,
+            "n_tokens_generated": 1689,
+            "wall_time_s": 52.81,
+            "peak_gpu_mb": 14605.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1741,
+              "mean_all": 494.2,
+              "peak_all": 639,
+              "after_prefill": 52
+            }
+          },
+          {
+            "problem": "If Rosa's age is divided by 2, 3, 4, or 6, the remainder is 1. If her age is div",
+            "ground_truth": "49",
+            "pred_answer": "49",
+            "correct": true,
+            "n_tokens_generated": 1548,
+            "wall_time_s": 48.42,
+            "peak_gpu_mb": 14605.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1627,
+              "mean_all": 495.9,
+              "peak_all": 639,
+              "after_prefill": 79
+            }
+          },
+          {
+            "problem": "For every positive integer $n$, let $\\text{mod}_5 (n)$ be the remainder obtained",
+            "ground_truth": "1",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 256.84,
+            "peak_gpu_mb": 14631.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8437,
+              "mean_all": 569.0,
+              "peak_all": 639,
+              "after_prefill": 245
+            }
+          },
+          {
+            "problem": "Let $x_1,$ $x_2,$ $x_3,$ $y_1,$ $y_2,$ and $y_3$ be real numbers such that\n\\begi",
+            "ground_truth": "144",
+            "pred_answer": "144",
+            "correct": true,
+            "n_tokens_generated": 2276,
+            "wall_time_s": 71.31,
+            "peak_gpu_mb": 14613.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2471,
+              "mean_all": 543.7,
+              "peak_all": 639,
+              "after_prefill": 195
+            }
+          },
+          {
+            "problem": "The medians $AD$, $BE$, and $CF$ of triangle $ABC$ intersect at the centroid $G$",
+            "ground_truth": "8",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 257.31,
+            "peak_gpu_mb": 14605.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8294,
+              "mean_all": 561.9,
+              "peak_all": 639,
+              "after_prefill": 102
+            }
+          },
+          {
+            "problem": "A set of three points is chosen randomly from the grid shown. Each three-point s",
+            "ground_truth": "\\frac{2}{21}",
+            "pred_answer": "\\dfrac{2}{21}",
+            "correct": true,
+            "n_tokens_generated": 3286,
+            "wall_time_s": 103.05,
+            "peak_gpu_mb": 14605.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3394,
+              "mean_all": 542.2,
+              "peak_all": 639,
+              "after_prefill": 108
+            }
+          },
+          {
+            "problem": "A gecko is in a room that is 12 feet long, 10 feet wide and 8 feet tall. The gec",
+            "ground_truth": "2\\sqrt{113}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 256.71,
+            "peak_gpu_mb": 14605.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8357,
+              "mean_all": 565.2,
+              "peak_all": 639,
+              "after_prefill": 165
+            }
+          },
+          {
+            "problem": "A point $(x,y)$ is randomly selected such that $0 \\le x \\le 8$ and $0 \\le y \\le ",
+            "ground_truth": "\\frac{1}{4}",
+            "pred_answer": "\\dfrac{1}{4}",
+            "correct": true,
+            "n_tokens_generated": 2014,
+            "wall_time_s": 63.01,
+            "peak_gpu_mb": 14605.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2089,
+              "mean_all": 513.3,
+              "peak_all": 639,
+              "after_prefill": 75
+            }
+          },
+          {
+            "problem": "Two runners, $A$ and $B,$ start at a point $O$ on a linear track, and start runn",
+            "ground_truth": "30^\\circ",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 257.06,
+            "peak_gpu_mb": 14621.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8407,
+              "mean_all": 567.6,
+              "peak_all": 639,
+              "after_prefill": 215
+            }
+          },
+          {
+            "problem": "Compute $a+b+c,$ given that $a,$ $b,$ and $c$ are the roots of \\[\\frac{1}{x} + 5",
+            "ground_truth": "\\frac65",
+            "pred_answer": "\\dfrac{6}{5}",
+            "correct": false,
+            "n_tokens_generated": 1984,
+            "wall_time_s": 62.35,
+            "peak_gpu_mb": 14605.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2051,
+              "mean_all": 511.1,
+              "peak_all": 639,
+              "after_prefill": 67
+            }
+          },
+          {
+            "problem": "What is the sum of all of the multiples of 7 between 100 and 200?",
+            "ground_truth": "2107",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 257.61,
+            "peak_gpu_mb": 14605.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8236,
+              "mean_all": 558.2,
+              "peak_all": 639,
+              "after_prefill": 44
+            }
+          },
+          {
+            "problem": "The quadratic $x^2+(2.6)x+3.6$ can be written in the form $(x+b)^2+c$, where $b$",
+            "ground_truth": "3.21",
+            "pred_answer": "3.21",
+            "correct": true,
+            "n_tokens_generated": 1330,
+            "wall_time_s": 41.65,
+            "peak_gpu_mb": 14605.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1402,
+              "mean_all": 481.2,
+              "peak_all": 639,
+              "after_prefill": 72
+            }
+          },
+          {
+            "problem": "The product of two consecutive positive even integers is 288. What is the greate",
+            "ground_truth": "18",
+            "pred_answer": "18",
+            "correct": true,
+            "n_tokens_generated": 2355,
+            "wall_time_s": 73.84,
+            "peak_gpu_mb": 14605.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2399,
+              "mean_all": 515.6,
+              "peak_all": 639,
+              "after_prefill": 44
+            }
+          },
+          {
+            "problem": "Evaluate $\\log_264$.",
+            "ground_truth": "6",
+            "pred_answer": "6",
+            "correct": true,
+            "n_tokens_generated": 1647,
+            "wall_time_s": 51.73,
+            "peak_gpu_mb": 14605.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1676,
+              "mean_all": 485.5,
+              "peak_all": 639,
+              "after_prefill": 29
+            }
+          }
+        ]
+      }
+    }
+  }
+}
