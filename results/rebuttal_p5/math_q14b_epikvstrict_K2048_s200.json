@@ -1,0 +1,229 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 20,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      1920
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "1920": {
+        "accuracy": 0.75,
+        "n_correct": 15,
+        "n_total": 20,
+        "mean_wall_time_s": 247.44,
+        "mean_peak_gpu_mb": 29142.7,
+        "per_problem": [
+          {
+            "problem": "Find the remainder when $(5x + 9)^{611} + (x + 5)^{11} + (x - 1)^{11} + 3x^2 + 1",
+            "ground_truth": "12",
+            "pred_answer": "12",
+            "correct": true,
+            "n_tokens_generated": 3866,
+            "wall_time_s": 167.22,
+            "peak_gpu_mb": 29217.1,
+            "error": null
+          },
+          {
+            "problem": "Let $a,$ $b,$ $c,$ $d$ be distinct complex numbers such that $|a| = |b| = |c| = ",
+            "ground_truth": "0",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 678.52,
+            "peak_gpu_mb": 29221.2,
+            "error": null
+          },
+          {
+            "problem": "Let $\\mathbf{A}$ be a matrix such that\n\\[\\mathbf{A} \\begin{pmatrix} 3 \\\\ 1 \\\\ 0 ",
+            "ground_truth": "\\begin{pmatrix} -2 \\\\ -14 \\\\ -7 \\end{pmatrix}",
+            "pred_answer": "\\begin{pmatrix} -2 \\\\ -14 \\\\ -7 \\end{pmatrix}",
+            "correct": true,
+            "n_tokens_generated": 3609,
+            "wall_time_s": 138.67,
+            "peak_gpu_mb": 29229.6,
+            "error": null
+          },
+          {
+            "problem": "A line is parameterized by\n\\[\\begin{pmatrix} x \\\\ y \\end{pmatrix} = \\begin{pmatr",
+            "ground_truth": "\\left( \\frac{3}{2}, -13 \\right)",
+            "pred_answer": "\\left( \\dfrac{3}{2}, -13 \\right)",
+            "correct": true,
+            "n_tokens_generated": 1876,
+            "wall_time_s": 71.79,
+            "peak_gpu_mb": 29176.9,
+            "error": null
+          },
+          {
+            "problem": "Mikka wants to order a pizza with two different toppings. He has 8 different top",
+            "ground_truth": "28",
+            "pred_answer": "28",
+            "correct": true,
+            "n_tokens_generated": 1121,
+            "wall_time_s": 42.58,
+            "peak_gpu_mb": 28600.9,
+            "error": null
+          },
+          {
+            "problem": "How many of the first one hundred positive integers are divisible by $3, 4,$ and",
+            "ground_truth": "1",
+            "pred_answer": "1",
+            "correct": true,
+            "n_tokens_generated": 2966,
+            "wall_time_s": 114.13,
+            "peak_gpu_mb": 29212.4,
+            "error": null
+          },
+          {
+            "problem": "When the two-digit integer $``\\text{AB}\"$ is cubed, the value is $912,\\!673$. Wh",
+            "ground_truth": "16",
+            "pred_answer": "16",
+            "correct": true,
+            "n_tokens_generated": 2546,
+            "wall_time_s": 98.01,
+            "peak_gpu_mb": 29214.5,
+            "error": null
+          },
+          {
+            "problem": "Twelve 1 by 1 squares form a rectangle, as shown. What is the total area of the ",
+            "ground_truth": "10",
+            "pred_answer": "6",
+            "correct": false,
+            "n_tokens_generated": 14769,
+            "wall_time_s": 580.86,
+            "peak_gpu_mb": 29237.1,
+            "error": null
+          },
+          {
+            "problem": "Express $5^5\\div5^4-5^3+5^2\\cdot5^1$ as an integer.",
+            "ground_truth": "5",
+            "pred_answer": "5",
+            "correct": true,
+            "n_tokens_generated": 1742,
+            "wall_time_s": 69.32,
+            "peak_gpu_mb": 28805.7,
+            "error": null
+          },
+          {
+            "problem": "Recently, Frank took a one-hundred question aptitude test where each correct ans",
+            "ground_truth": "56",
+            "pred_answer": "56",
+            "correct": true,
+            "n_tokens_generated": 1904,
+            "wall_time_s": 75.84,
+            "peak_gpu_mb": 29173.5,
+            "error": null
+          },
+          {
+            "problem": "Compute\n\\[\\sum_{n = 1}^\\infty \\frac{F_{n + 1}}{F_n F_{n + 2}},\\]where $F_n$ deno",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 5509,
+            "wall_time_s": 222.72,
+            "peak_gpu_mb": 29218.6,
+            "error": null
+          },
+          {
+            "problem": "There are 360 people in my school.  15 take calculus, physics, and chemistry, an",
+            "ground_truth": "110",
+            "pred_answer": "115",
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 663.94,
+            "peak_gpu_mb": 29221.8,
+            "error": null
+          },
+          {
+            "problem": "If $x^2 - x - 1 = 0$, what is the value of $x^3 - 2x + 1$?",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 2547,
+            "wall_time_s": 102.2,
+            "peak_gpu_mb": 29213.7,
+            "error": null
+          },
+          {
+            "problem": "In the land of Ink, the money system is unique. One Trinket is equal to 4 Blinke",
+            "ground_truth": "6",
+            "pred_answer": "6",
+            "correct": true,
+            "n_tokens_generated": 2066,
+            "wall_time_s": 82.65,
+            "peak_gpu_mb": 29216.6,
+            "error": null
+          },
+          {
+            "problem": "What is the smallest positive multiple of 450 whose digits are all zeroes and on",
+            "ground_truth": "11,\\! 111,\\! 111,\\! 100",
+            "pred_answer": "11111111100",
+            "correct": false,
+            "n_tokens_generated": 9073,
+            "wall_time_s": 366.61,
+            "peak_gpu_mb": 29211.9,
+            "error": null
+          },
+          {
+            "problem": "Find the midpoint of the line segment between $(-5,5)$ and $(3,7)$. Express your",
+            "ground_truth": "(-1,6)",
+            "pred_answer": "(-1, 6)",
+            "correct": true,
+            "n_tokens_generated": 1430,
+            "wall_time_s": 56.51,
+            "peak_gpu_mb": 28704.9,
+            "error": null
+          },
+          {
+            "problem": "The wheel shown is spun twice, so that the numbers indicated by the pointer are ",
+            "ground_truth": "\\frac{1}{2}",
+            "pred_answer": "\\dfrac{1}{2}",
+            "correct": true,
+            "n_tokens_generated": 10616,
+            "wall_time_s": 429.48,
+            "peak_gpu_mb": 29315.5,
+            "error": null
+          },
+          {
+            "problem": "Sam is carrying a 2 gallon bucket of milk to his house from the barn, which is 3",
+            "ground_truth": "\\frac{16}{27}",
+            "pred_answer": "\\dfrac{16}{27}",
+            "correct": true,
+            "n_tokens_generated": 2534,
+            "wall_time_s": 101.71,
+            "peak_gpu_mb": 29220.4,
+            "error": null
+          },
+          {
+            "problem": "The product of integers 240 and $k$ is a perfect cube. What is the smallest poss",
+            "ground_truth": "900",
+            "pred_answer": "900",
+            "correct": true,
+            "n_tokens_generated": 5489,
+            "wall_time_s": 221.89,
+            "peak_gpu_mb": 29213.3,
+            "error": null
+          },
+          {
+            "problem": "The area of $\\triangle ABC$ is 6 square centimeters. $\\overline{AB}\\|\\overline{D",
+            "ground_truth": "54",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 664.08,
+            "peak_gpu_mb": 29228.1,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}
