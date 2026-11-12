@@ -1,0 +1,349 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "dataset": "math500",
+    "n_samples": 20,
+    "max_new_tokens": 8192,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "4096": {
+        "accuracy": 0.85,
+        "n_correct": 17,
+        "n_total": 20,
+        "mean_wall_time_s": 108.0,
+        "mean_peak_gpu_mb": 15094.3,
+        "per_problem": [
+          {
+            "problem": "When the positive integers with exactly three positive divisors are listed in as",
+            "ground_truth": "121",
+            "pred_answer": "121",
+            "correct": true,
+            "n_tokens_generated": 3766,
+            "wall_time_s": 119.3,
+            "peak_gpu_mb": 14751.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3810,
+              "mean_all": 1926.5,
+              "peak_all": 3809,
+              "after_prefill": 44
+            }
+          },
+          {
+            "problem": "If $re^{i \\theta}$ is a root of\n\\[z^8 - z^7 + z^6 - z^5 + z^4 - z^3 + z^2 - z + ",
+            "ground_truth": "8 \\pi",
+            "pred_answer": "8\\pi",
+            "correct": true,
+            "n_tokens_generated": 4182,
+            "wall_time_s": 131.87,
+            "peak_gpu_mb": 16085.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4286,
+              "mean_all": 2192.6,
+              "peak_all": 4223,
+              "after_prefill": 104
+            }
+          },
+          {
+            "problem": "In the diagram, what is the area of the shaded triangle? [asy]\nfill((0,0)--(2,3)",
+            "ground_truth": "15\\mbox{ cm}^2",
+            "pred_answer": "15",
+            "correct": false,
+            "n_tokens_generated": 4332,
+            "wall_time_s": 137.09,
+            "peak_gpu_mb": 16085.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4539,
+              "mean_all": 2355.9,
+              "peak_all": 4223,
+              "after_prefill": 207
+            }
+          },
+          {
+            "problem": "The square root of $t$ is greater than $2$ and less than $3.5$. How many integer",
+            "ground_truth": "8",
+            "pred_answer": "8",
+            "correct": true,
+            "n_tokens_generated": 3400,
+            "wall_time_s": 106.78,
+            "peak_gpu_mb": 14731.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3454,
+              "mean_all": 1753.5,
+              "peak_all": 3453,
+              "after_prefill": 54
+            }
+          },
+          {
+            "problem": "Evaluate $\\lceil{\\sqrt{20}}\\rceil^2$.",
+            "ground_truth": "25",
+            "pred_answer": "25",
+            "correct": true,
+            "n_tokens_generated": 1173,
+            "wall_time_s": 36.7,
+            "peak_gpu_mb": 14620.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1210,
+              "mean_all": 623.0,
+              "peak_all": 1209,
+              "after_prefill": 37
+            }
+          },
+          {
+            "problem": "Let $a,$ $b,$ $c,$ and $d$ be positive real numbers such that $a + b + c + d = 1",
+            "ground_truth": "27648",
+            "pred_answer": "27648",
+            "correct": true,
+            "n_tokens_generated": 4030,
+            "wall_time_s": 126.96,
+            "peak_gpu_mb": 16000.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4101,
+              "mean_all": 2085.5,
+              "peak_all": 4099,
+              "after_prefill": 71
+            }
+          },
+          {
+            "problem": "A class of 30 students recently took a test.  If 20 students scored 80, 8 studen",
+            "ground_truth": "84",
+            "pred_answer": "84",
+            "correct": true,
+            "n_tokens_generated": 2012,
+            "wall_time_s": 63.26,
+            "peak_gpu_mb": 14655.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2088,
+              "mean_all": 1081.5,
+              "peak_all": 2087,
+              "after_prefill": 76
+            }
+          },
+          {
+            "problem": "At 50 miles per hour, how far would a car travel in $2\\frac{3}{4}$ hours? Expres",
+            "ground_truth": "137 \\frac{1}{2}",
+            "pred_answer": "137\\frac{1}{2}",
+            "correct": true,
+            "n_tokens_generated": 1709,
+            "wall_time_s": 53.57,
+            "peak_gpu_mb": 14637.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1764,
+              "mean_all": 909.0,
+              "peak_all": 1763,
+              "after_prefill": 55
+            }
+          },
+          {
+            "problem": "Below is a magic square, meaning that the sum of the numbers in each row, in eac",
+            "ground_truth": "7",
+            "pred_answer": "7",
+            "correct": true,
+            "n_tokens_generated": 2091,
+            "wall_time_s": 65.6,
+            "peak_gpu_mb": 14669.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2344,
+              "mean_all": 1298.0,
+              "peak_all": 2343,
+              "after_prefill": 253
+            }
+          },
+          {
+            "problem": "Find the value of $\\log_2{3} \\cdot \\log_3{4} \\cdot \\log_4{5} \\cdot \\log_5{6} \\cd",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 2678,
+            "wall_time_s": 83.95,
+            "peak_gpu_mb": 14692.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2756,
+              "mean_all": 1416.5,
+              "peak_all": 2755,
+              "after_prefill": 78
+            }
+          },
+          {
+            "problem": "When rolling a certain unfair six-sided die with faces numbered 1, 2, 3, 4, 5, a",
+            "ground_truth": "29",
+            "pred_answer": "29",
+            "correct": true,
+            "n_tokens_generated": 3274,
+            "wall_time_s": 102.5,
+            "peak_gpu_mb": 14731.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3454,
+              "mean_all": 1816.5,
+              "peak_all": 3453,
+              "after_prefill": 180
+            }
+          },
+          {
+            "problem": "Jim and Martha are standing together at the corner of a rectangular field. Jim w",
+            "ground_truth": "200",
+            "pred_answer": "200",
+            "correct": true,
+            "n_tokens_generated": 1469,
+            "wall_time_s": 46.03,
+            "peak_gpu_mb": 14627.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1553,
+              "mean_all": 818.0,
+              "peak_all": 1552,
+              "after_prefill": 84
+            }
+          },
+          {
+            "problem": "The two-digit number $``B6,''$ where $B$ is the tens digit, is the square of a p",
+            "ground_truth": "2",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 259.2,
+            "peak_gpu_mb": 16085.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8252,
+              "mean_all": 3133.6,
+              "peak_all": 4223,
+              "after_prefill": 60
+            }
+          },
+          {
+            "problem": "Find the sum of all complex solutions of the equation\n\\[\\frac{1}{x^2 - 1} + \\fra",
+            "ground_truth": "\\frac{2}{1005}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 259.06,
+            "peak_gpu_mb": 16085.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8288,
+              "mean_all": 3151.6,
+              "peak_all": 4223,
+              "after_prefill": 96
+            }
+          },
+          {
+            "problem": "There are finitely many primes $p$ for which the congruence $$8x\\equiv 1\\pmod{p}",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 1026,
+            "wall_time_s": 32.2,
+            "peak_gpu_mb": 14620.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1092,
+              "mean_all": 578.5,
+              "peak_all": 1091,
+              "after_prefill": 66
+            }
+          },
+          {
+            "problem": "Let $\\omega$ be a complex number such that $\\omega^3 = 1.$  Find all possible va",
+            "ground_truth": "1",
+            "pred_answer": "1",
+            "correct": true,
+            "n_tokens_generated": 2775,
+            "wall_time_s": 86.82,
+            "peak_gpu_mb": 14702.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2857,
+              "mean_all": 1469.0,
+              "peak_all": 2856,
+              "after_prefill": 82
+            }
+          },
+          {
+            "problem": "Let $n$ be a positive integer.  Simplify the expression\n\\[\\frac{(2^4 + \\frac{1}{",
+            "ground_truth": "8n^2 + 4n + 1",
+            "pred_answer": "8n^2 + 4n + 1",
+            "correct": true,
+            "n_tokens_generated": 7400,
+            "wall_time_s": 234.38,
+            "peak_gpu_mb": 16085.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 7524,
+              "mean_all": 3058.9,
+              "peak_all": 4223,
+              "after_prefill": 124
+            }
+          },
+          {
+            "problem": "If $\\frac{a}{b}$ is the probability that the reciprocal of a randomly selected p",
+            "ground_truth": "202",
+            "pred_answer": "202",
+            "correct": true,
+            "n_tokens_generated": 1754,
+            "wall_time_s": 54.87,
+            "peak_gpu_mb": 14643.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1829,
+              "mean_all": 951.5,
+              "peak_all": 1828,
+              "after_prefill": 75
+            }
+          },
+          {
+            "problem": "The area of triangle $ABC$ is equal to $a^2 - (b - c)^2,$ where $a,$ $b,$ and $c",
+            "ground_truth": "\\frac{8}{15}",
+            "pred_answer": "\\dfrac{8}{15}",
+            "correct": true,
+            "n_tokens_generated": 3284,
+            "wall_time_s": 102.68,
+            "peak_gpu_mb": 14730.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3355,
+              "mean_all": 1712.5,
+              "peak_all": 3354,
+              "after_prefill": 71
+            }
+          },
+          {
+            "problem": "Solve\n\\[\\sqrt{x + \\sqrt{3x + 6}} + \\sqrt{x - \\sqrt{3x + 6}} = 6.\\]",
+            "ground_truth": "10",
+            "pred_answer": "10",
+            "correct": true,
+            "n_tokens_generated": 1826,
+            "wall_time_s": 57.15,
+            "peak_gpu_mb": 14644.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1883,
+              "mean_all": 969.5,
+              "peak_all": 1882,
+              "after_prefill": 57
+            }
+          }
+        ]
+      }
+    }
+  }
+}

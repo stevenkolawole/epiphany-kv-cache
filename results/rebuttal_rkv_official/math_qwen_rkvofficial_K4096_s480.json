@@ -1,0 +1,269 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "dataset": "math500",
+    "n_samples": 15,
+    "max_new_tokens": 8192,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "4096": {
+        "accuracy": 0.5333333333333333,
+        "n_correct": 8,
+        "n_total": 15,
+        "mean_wall_time_s": 147.33,
+        "mean_peak_gpu_mb": 15418.4,
+        "per_problem": [
+          {
+            "problem": "What is the shortest distance that can be travelled if you start at any point, $",
+            "ground_truth": "13",
+            "pred_answer": "13",
+            "correct": true,
+            "n_tokens_generated": 4083,
+            "wall_time_s": 132.41,
+            "peak_gpu_mb": 16085.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4305,
+              "mean_all": 2260.4,
+              "peak_all": 4223,
+              "after_prefill": 222
+            }
+          },
+          {
+            "problem": "A steel sphere with a 3-inch radius is made by removing metal from the corners o",
+            "ground_truth": "216",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 267.26,
+            "peak_gpu_mb": 16085.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8253,
+              "mean_all": 3134.1,
+              "peak_all": 4223,
+              "after_prefill": 61
+            }
+          },
+          {
+            "problem": "Determine the modulo 4 remainder of the following sum: $$ 1 + 2 + 3 + 4 + 5 + 6 ",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 1808,
+            "wall_time_s": 58.39,
+            "peak_gpu_mb": 14645.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1882,
+              "mean_all": 977.5,
+              "peak_all": 1881,
+              "after_prefill": 74
+            }
+          },
+          {
+            "problem": "A shirt's sale price is marked $\\$14.40$, which is $60\\%$ off the original price",
+            "ground_truth": "\\$36",
+            "pred_answer": "36",
+            "correct": false,
+            "n_tokens_generated": 1439,
+            "wall_time_s": 46.51,
+            "peak_gpu_mb": 14626.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1499,
+              "mean_all": 779.0,
+              "peak_all": 1498,
+              "after_prefill": 60
+            }
+          },
+          {
+            "problem": "Let $f(x)=|x-p|+|x-15|+|x-p-15|,$ where $0 < p < 15.$ Determine the minimum valu",
+            "ground_truth": "15",
+            "pred_answer": "15",
+            "correct": true,
+            "n_tokens_generated": 3137,
+            "wall_time_s": 101.07,
+            "peak_gpu_mb": 14718.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3222,
+              "mean_all": 1653.0,
+              "peak_all": 3221,
+              "after_prefill": 85
+            }
+          },
+          {
+            "problem": "Suppose the polynomial\n$$f(x) = a_nx^n + a_{n-1}x^{n-1} + \\cdots + a_2x^2 + a_1x",
+            "ground_truth": "14",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 266.94,
+            "peak_gpu_mb": 16085.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8306,
+              "mean_all": 3160.6,
+              "peak_all": 4223,
+              "after_prefill": 114
+            }
+          },
+          {
+            "problem": "Tom got a Mr. Potato Head for his birthday. It came with 3 hairstyles, 2 sets of",
+            "ground_truth": "64",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 267.33,
+            "peak_gpu_mb": 16085.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8347,
+              "mean_all": 3180.7,
+              "peak_all": 4223,
+              "after_prefill": 155
+            }
+          },
+          {
+            "problem": "The set of vectors $\\mathbf{v}$ such that\n\\[\\operatorname{proj}_{\\begin{pmatrix}",
+            "ground_truth": "y = -2x",
+            "pred_answer": "y = -2x",
+            "correct": true,
+            "n_tokens_generated": 1272,
+            "wall_time_s": 41.09,
+            "peak_gpu_mb": 14620.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1378,
+              "mean_all": 741.5,
+              "peak_all": 1377,
+              "after_prefill": 106
+            }
+          },
+          {
+            "problem": "The number $(\\sqrt{2}+\\sqrt{3})^3$ can be written in the form $a\\sqrt{2} + b\\sqr",
+            "ground_truth": "20",
+            "pred_answer": "20",
+            "correct": true,
+            "n_tokens_generated": 4193,
+            "wall_time_s": 135.12,
+            "peak_gpu_mb": 16085.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4281,
+              "mean_all": 2182.2,
+              "peak_all": 4223,
+              "after_prefill": 88
+            }
+          },
+          {
+            "problem": "Let $S$ be the set of points $(a,b)$ with $0 \\le a,$ $b \\le 1$ such that the equ",
+            "ground_truth": "\\frac{1}{4}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 267.27,
+            "peak_gpu_mb": 16085.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8285,
+              "mean_all": 3150.1,
+              "peak_all": 4223,
+              "after_prefill": 93
+            }
+          },
+          {
+            "problem": "What is the domain of the function $f(x) = \\frac{2-x}{\\log(2-\\log(x-2))}$, where",
+            "ground_truth": "(2,12) \\cup (12,102)",
+            "pred_answer": "(2, 12) \\cup (12, 102)",
+            "correct": true,
+            "n_tokens_generated": 1547,
+            "wall_time_s": 49.78,
+            "peak_gpu_mb": 14630.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1620,
+              "mean_all": 846.0,
+              "peak_all": 1619,
+              "after_prefill": 73
+            }
+          },
+          {
+            "problem": "Let $z = 1+i$ and $w = \\dfrac{3z+1}{5z+7}$. Find $|w|$.",
+            "ground_truth": "\\frac{5}{13}",
+            "pred_answer": "\\dfrac{5}{13}",
+            "correct": true,
+            "n_tokens_generated": 2170,
+            "wall_time_s": 69.81,
+            "peak_gpu_mb": 14666.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2224,
+              "mean_all": 1138.5,
+              "peak_all": 2223,
+              "after_prefill": 54
+            }
+          },
+          {
+            "problem": "An equiangular octagon has four sides of length $1$ and four sides of length $\\f",
+            "ground_truth": "\\frac{7}{2}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 266.66,
+            "peak_gpu_mb": 16085.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8264,
+              "mean_all": 3139.6,
+              "peak_all": 4223,
+              "after_prefill": 72
+            }
+          },
+          {
+            "problem": "A sequence $(a_n)$ is defined as follows:\n\\[a_{i + 1} = \\frac{1}{1 - a_i}\\]for $",
+            "ground_truth": "-1",
+            "pred_answer": "-1",
+            "correct": true,
+            "n_tokens_generated": 2562,
+            "wall_time_s": 82.54,
+            "peak_gpu_mb": 14686.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2641,
+              "mean_all": 1359.5,
+              "peak_all": 2640,
+              "after_prefill": 79
+            }
+          },
+          {
+            "problem": "Altitudes $\\overline{AD}$ and $\\overline{BE}$ of $\\triangle ABC$ intersect at $H",
+            "ground_truth": "106^\\circ",
+            "pred_answer": "106",
+            "correct": false,
+            "n_tokens_generated": 4878,
+            "wall_time_s": 157.84,
+            "peak_gpu_mb": 16085.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4957,
+              "mean_all": 2452.5,
+              "peak_all": 4223,
+              "after_prefill": 79
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,349 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "dataset": "math500",
+    "n_samples": 20,
+    "max_new_tokens": 8192,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "4096": {
+        "accuracy": 0.85,
+        "n_correct": 17,
+        "n_total": 20,
+        "mean_wall_time_s": 100.93,
+        "mean_peak_gpu_mb": 15001.0,
+        "per_problem": [
+          {
+            "problem": "If we write $\\sqrt{2}+\\frac{1}{\\sqrt{2}} + \\sqrt{3} + \\frac{1}{\\sqrt{3}}$ in the",
+            "ground_truth": "23",
+            "pred_answer": "23",
+            "correct": true,
+            "n_tokens_generated": 1983,
+            "wall_time_s": 81.83,
+            "peak_gpu_mb": 14656.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2097,
+              "mean_all": 1105.0,
+              "peak_all": 2096,
+              "after_prefill": 114
+            }
+          },
+          {
+            "problem": "Let $a,$ $b,$ and $c$ be positive real numbers.  Find the set of all possible va",
+            "ground_truth": "(2,\\infty)",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 338.29,
+            "peak_gpu_mb": 16085.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8267,
+              "mean_all": 3141.1,
+              "peak_all": 4223,
+              "after_prefill": 75
+            }
+          },
+          {
+            "problem": "Find $k$, if ${(3^k)}^6=3^6$.",
+            "ground_truth": "1",
+            "pred_answer": "1",
+            "correct": true,
+            "n_tokens_generated": 1322,
+            "wall_time_s": 54.07,
+            "peak_gpu_mb": 14620.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1360,
+              "mean_all": 698.5,
+              "peak_all": 1359,
+              "after_prefill": 38
+            }
+          },
+          {
+            "problem": "For how many positive integers $n>1$ is it true that $2^{24}$ is a perfect $n^{\\",
+            "ground_truth": "7",
+            "pred_answer": "7",
+            "correct": true,
+            "n_tokens_generated": 1537,
+            "wall_time_s": 62.89,
+            "peak_gpu_mb": 14628.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1592,
+              "mean_all": 823.0,
+              "peak_all": 1591,
+              "after_prefill": 55
+            }
+          },
+          {
+            "problem": "Hillary has eleven coins, all dimes and nickels. In total, the coins are worth 7",
+            "ground_truth": "7",
+            "pred_answer": "7",
+            "correct": true,
+            "n_tokens_generated": 1334,
+            "wall_time_s": 54.69,
+            "peak_gpu_mb": 14620.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1387,
+              "mean_all": 719.5,
+              "peak_all": 1386,
+              "after_prefill": 53
+            }
+          },
+          {
+            "problem": "Find the largest $x$-value at which the graphs of $f(x)=e^{3x^2-|\\lfloor x \\rflo",
+            "ground_truth": "6",
+            "pred_answer": "6",
+            "correct": true,
+            "n_tokens_generated": 4286,
+            "wall_time_s": 175.44,
+            "peak_gpu_mb": 16085.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4530,
+              "mean_all": 2370.5,
+              "peak_all": 4223,
+              "after_prefill": 244
+            }
+          },
+          {
+            "problem": "Five points $A$, $B$, $C$, $D$, and $O$ lie on a flat field.  $A$ is directly no",
+            "ground_truth": "160",
+            "pred_answer": "160",
+            "correct": true,
+            "n_tokens_generated": 3947,
+            "wall_time_s": 161.73,
+            "peak_gpu_mb": 16085.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4428,
+              "mean_all": 2444.9,
+              "peak_all": 4223,
+              "after_prefill": 481
+            }
+          },
+          {
+            "problem": "Paul and Jesse each choose a number at random from the first six primes. What is",
+            "ground_truth": "\\frac{13}{18}",
+            "pred_answer": "\\dfrac{13}{18}",
+            "correct": true,
+            "n_tokens_generated": 1467,
+            "wall_time_s": 60.03,
+            "peak_gpu_mb": 14627.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1518,
+              "mean_all": 784.0,
+              "peak_all": 1517,
+              "after_prefill": 51
+            }
+          },
+          {
+            "problem": "The point $(a, b)$ lies on the line with the equation $3x + 2y = 12.$ When $a = ",
+            "ground_truth": "0",
+            "pred_answer": "0",
+            "correct": true,
+            "n_tokens_generated": 1201,
+            "wall_time_s": 49.14,
+            "peak_gpu_mb": 14620.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1264,
+              "mean_all": 663.0,
+              "peak_all": 1263,
+              "after_prefill": 63
+            }
+          },
+          {
+            "problem": "In $\\triangle PQR$, we have $PQ = QR = 34$ and $PR = 32$.  Find the length of me",
+            "ground_truth": "30",
+            "pred_answer": "30",
+            "correct": true,
+            "n_tokens_generated": 1758,
+            "wall_time_s": 71.9,
+            "peak_gpu_mb": 14643.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1818,
+              "mean_all": 938.5,
+              "peak_all": 1817,
+              "after_prefill": 60
+            }
+          },
+          {
+            "problem": "A polynomial with integer coefficients is of the form\n\\[2x^4 + a_3 x^3 + a_2 x^2",
+            "ground_truth": "4",
+            "pred_answer": "4",
+            "correct": true,
+            "n_tokens_generated": 926,
+            "wall_time_s": 37.93,
+            "peak_gpu_mb": 14595.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1001,
+              "mean_all": 537.5,
+              "peak_all": 1000,
+              "after_prefill": 75
+            }
+          },
+          {
+            "problem": "Find the maximum value of\n\\[\\frac{x - y}{x^4 + y^4 + 6}\\]over all real numbers $",
+            "ground_truth": "\\frac{1}{4}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 271.6,
+            "peak_gpu_mb": 16085.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8249,
+              "mean_all": 3132.1,
+              "peak_all": 4223,
+              "after_prefill": 57
+            }
+          },
+          {
+            "problem": "Let $p(x)$ be a monic polynomial of degree 4.  Three of the roots of $p(x)$ are ",
+            "ground_truth": "24",
+            "pred_answer": "24",
+            "correct": true,
+            "n_tokens_generated": 3025,
+            "wall_time_s": 97.5,
+            "peak_gpu_mb": 14711.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3095,
+              "mean_all": 1582.0,
+              "peak_all": 3094,
+              "after_prefill": 70
+            }
+          },
+          {
+            "problem": "$441+2(21)(19)+361=x$. Solve for $x$.",
+            "ground_truth": "1600",
+            "pred_answer": "1600",
+            "correct": true,
+            "n_tokens_generated": 1493,
+            "wall_time_s": 48.15,
+            "peak_gpu_mb": 14627.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1537,
+              "mean_all": 790.0,
+              "peak_all": 1536,
+              "after_prefill": 44
+            }
+          },
+          {
+            "problem": "If $x^3$ is a positive factor of $10!,$ how many possible integer values of $x$ ",
+            "ground_truth": "6",
+            "pred_answer": "6",
+            "correct": true,
+            "n_tokens_generated": 4918,
+            "wall_time_s": 159.19,
+            "peak_gpu_mb": 16085.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 5004,
+              "mean_all": 2472.4,
+              "peak_all": 4223,
+              "after_prefill": 86
+            }
+          },
+          {
+            "problem": "In how many ways can 6 girls and 2 boys sit in a row if the 2 boys insist on sit",
+            "ground_truth": "10,\\!080",
+            "pred_answer": "10080",
+            "correct": false,
+            "n_tokens_generated": 1206,
+            "wall_time_s": 39.01,
+            "peak_gpu_mb": 14620.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1256,
+              "mean_all": 652.5,
+              "peak_all": 1255,
+              "after_prefill": 50
+            }
+          },
+          {
+            "problem": "The arithmetic mean of 7, 2, $x$ and 10 is 9. What is the value of $x$?",
+            "ground_truth": "17",
+            "pred_answer": "17",
+            "correct": true,
+            "n_tokens_generated": 753,
+            "wall_time_s": 24.3,
+            "peak_gpu_mb": 14584.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 804,
+              "mean_all": 427.0,
+              "peak_all": 803,
+              "after_prefill": 51
+            }
+          },
+          {
+            "problem": "If 4 daps = 7 yaps, and 5 yaps = 3 baps, how many daps equal 42 baps?",
+            "ground_truth": "40",
+            "pred_answer": "40",
+            "correct": true,
+            "n_tokens_generated": 2331,
+            "wall_time_s": 74.95,
+            "peak_gpu_mb": 14672.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2385,
+              "mean_all": 1219.0,
+              "peak_all": 2384,
+              "after_prefill": 54
+            }
+          },
+          {
+            "problem": "A group of $N$ students, where $N < 50$, is on a field trip. If their teacher pu",
+            "ground_truth": "66",
+            "pred_answer": "66",
+            "correct": true,
+            "n_tokens_generated": 1653,
+            "wall_time_s": 53.29,
+            "peak_gpu_mb": 14636.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1748,
+              "mean_all": 921.0,
+              "peak_all": 1747,
+              "after_prefill": 95
+            }
+          },
+          {
+            "problem": "Alice and Bob are playing a game. Alice starts first. On Alice's turn, she flips",
+            "ground_truth": "\\frac{2}{3}",
+            "pred_answer": "\\dfrac{2}{3}",
+            "correct": true,
+            "n_tokens_generated": 3197,
+            "wall_time_s": 102.65,
+            "peak_gpu_mb": 14730.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3296,
+              "mean_all": 1697.0,
+              "peak_all": 3295,
+              "after_prefill": 99
+            }
+          }
+        ]
+      }
+    }
+  }
+}
