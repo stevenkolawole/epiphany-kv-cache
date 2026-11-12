@@ -1,0 +1,349 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "dataset": "math500",
+    "n_samples": 20,
+    "max_new_tokens": 8192,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      2048
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "2048": {
+        "accuracy": 0.6,
+        "n_correct": 12,
+        "n_total": 20,
+        "mean_wall_time_s": 111.82,
+        "mean_peak_gpu_mb": 15924.9,
+        "per_problem": [
+          {
+            "problem": "What is the sum of the digits in the terminating decimal representation of the f",
+            "ground_truth": "14",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 297.67,
+            "peak_gpu_mb": 16297.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8244,
+              "mean_all": 1852.5,
+              "peak_all": 2175,
+              "after_prefill": 52
+            }
+          },
+          {
+            "problem": "Find $\\sin 20^\\circ \\sin 40^\\circ \\sin 60^\\circ \\sin 80^\\circ \\sin 100^\\circ \\si",
+            "ground_truth": "\\frac{9}{256}",
+            "pred_answer": "\\dfrac{9}{256}",
+            "correct": true,
+            "n_tokens_generated": 3022,
+            "wall_time_s": 109.12,
+            "peak_gpu_mb": 16297.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3093,
+              "mean_all": 1422.6,
+              "peak_all": 2175,
+              "after_prefill": 71
+            }
+          },
+          {
+            "problem": "What is the value of $$\n(3x-2)(4x+1)-(3x-2)4x+1\n$$ when $x=4$?",
+            "ground_truth": "11",
+            "pred_answer": "11",
+            "correct": true,
+            "n_tokens_generated": 1095,
+            "wall_time_s": 39.36,
+            "peak_gpu_mb": 15473.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1152,
+              "mean_all": 604.0,
+              "peak_all": 1151,
+              "after_prefill": 57
+            }
+          },
+          {
+            "problem": "How many ways are there to put 5 balls in 2 boxes if the balls are not distingui",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 1609,
+            "wall_time_s": 57.78,
+            "peak_gpu_mb": 15544.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1657,
+              "mean_all": 852.0,
+              "peak_all": 1656,
+              "after_prefill": 48
+            }
+          },
+          {
+            "problem": "For a constant $c,$ in cylindrical coordinates $(r,\\theta,z),$ find the shape de",
+            "ground_truth": "\\text{(C)}",
+            "pred_answer": "C",
+            "correct": false,
+            "n_tokens_generated": 927,
+            "wall_time_s": 33.13,
+            "peak_gpu_mb": 15456.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1009,
+              "mean_all": 545.0,
+              "peak_all": 1008,
+              "after_prefill": 82
+            }
+          },
+          {
+            "problem": "For a point $P,$ let $d_1,$ $d_2$ and $d_3$ represents the distances from $P$ to",
+            "ground_truth": "288 \\pi",
+            "pred_answer": "288\\pi",
+            "correct": true,
+            "n_tokens_generated": 5080,
+            "wall_time_s": 183.67,
+            "peak_gpu_mb": 16297.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 5215,
+              "mean_all": 1726.9,
+              "peak_all": 2175,
+              "after_prefill": 135
+            }
+          },
+          {
+            "problem": "Yann and Camille go to a restaurant.  If there are 10 items on the menu, and eac",
+            "ground_truth": "90",
+            "pred_answer": "90",
+            "correct": true,
+            "n_tokens_generated": 1468,
+            "wall_time_s": 52.55,
+            "peak_gpu_mb": 15527.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1568,
+              "mean_all": 833.5,
+              "peak_all": 1567,
+              "after_prefill": 100
+            }
+          },
+          {
+            "problem": "Given that $a,$ $b,$ $c,$ $d,$ $e$ are real numbers such that\n\\begin{align*}\na +",
+            "ground_truth": "\\frac{16}{5}",
+            "pred_answer": "\\dfrac{16}{5}",
+            "correct": true,
+            "n_tokens_generated": 3388,
+            "wall_time_s": 122.52,
+            "peak_gpu_mb": 16297.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3490,
+              "mean_all": 1515.4,
+              "peak_all": 2175,
+              "after_prefill": 102
+            }
+          },
+          {
+            "problem": "The average of Amy's, Ben's, and Chris's ages is 6. Four years ago,  Chris was t",
+            "ground_truth": "10",
+            "pred_answer": "10",
+            "correct": true,
+            "n_tokens_generated": 2040,
+            "wall_time_s": 73.15,
+            "peak_gpu_mb": 16199.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2125,
+              "mean_all": 1104.5,
+              "peak_all": 2123,
+              "after_prefill": 85
+            }
+          },
+          {
+            "problem": "If $\\omega^{1997} = 1$ and $\\omega \\neq 1,$ then evaluate\n\\[\\frac{1}{1 + \\omega}",
+            "ground_truth": "\\frac{1997}{2}",
+            "pred_answer": "\\dfrac{1997}{2}",
+            "correct": true,
+            "n_tokens_generated": 5571,
+            "wall_time_s": 201.9,
+            "peak_gpu_mb": 16297.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 5658,
+              "mean_all": 1743.6,
+              "peak_all": 2175,
+              "after_prefill": 87
+            }
+          },
+          {
+            "problem": "If $\\mathbf{a}$ and $\\mathbf{b}$ are vectors such that $\\|\\mathbf{a}\\| = 2,$ $\\|",
+            "ground_truth": "30^\\circ",
+            "pred_answer": "30",
+            "correct": false,
+            "n_tokens_generated": 1051,
+            "wall_time_s": 37.69,
+            "peak_gpu_mb": 15476.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1178,
+              "mean_all": 652.0,
+              "peak_all": 1177,
+              "after_prefill": 127
+            }
+          },
+          {
+            "problem": "Let $f$ be the function defined by $f(x) = x^3 - 49x^2 + 623x - 2015,$ and let $",
+            "ground_truth": "34",
+            "pred_answer": "34",
+            "correct": true,
+            "n_tokens_generated": 2881,
+            "wall_time_s": 103.73,
+            "peak_gpu_mb": 16297.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2959,
+              "mean_all": 1393.9,
+              "peak_all": 2175,
+              "after_prefill": 78
+            }
+          },
+          {
+            "problem": "Compute: $0.\\overline{7}-0.\\overline{4}+0.\\overline{2}$. Express your answer as ",
+            "ground_truth": "\\frac 59",
+            "pred_answer": "\\dfrac{5}{9}",
+            "correct": false,
+            "n_tokens_generated": 2002,
+            "wall_time_s": 72.01,
+            "peak_gpu_mb": 16199.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2057,
+              "mean_all": 1055.5,
+              "peak_all": 2055,
+              "after_prefill": 55
+            }
+          },
+          {
+            "problem": "Compute\n\\[\\frac{1}{\\cos^2 10^\\circ} + \\frac{1}{\\sin^2 20^\\circ} + \\frac{1}{\\sin^",
+            "ground_truth": "12",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 296.47,
+            "peak_gpu_mb": 16297.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8262,
+              "mean_all": 1857.0,
+              "peak_all": 2175,
+              "after_prefill": 70
+            }
+          },
+          {
+            "problem": "If $x$, $y$, and $z$ are positive with $xy = 24$, $xz = 48$, and $yz = 72$, then",
+            "ground_truth": "22",
+            "pred_answer": "22",
+            "correct": true,
+            "n_tokens_generated": 1716,
+            "wall_time_s": 61.2,
+            "peak_gpu_mb": 15553.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1779,
+              "mean_all": 920.5,
+              "peak_all": 1778,
+              "after_prefill": 63
+            }
+          },
+          {
+            "problem": "What real values of $x$ are not in the domain of\n\n$f(x)=\\frac{1}{|x^2+3x-4|+|x^2",
+            "ground_truth": "-4",
+            "pred_answer": "-4",
+            "correct": true,
+            "n_tokens_generated": 1278,
+            "wall_time_s": 45.85,
+            "peak_gpu_mb": 15498.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1344,
+              "mean_all": 704.5,
+              "peak_all": 1343,
+              "after_prefill": 66
+            }
+          },
+          {
+            "problem": "The parallelogram bounded by the lines $y=ax+c$, $y=ax+d$, $y=bx+c$, and $y=bx+d",
+            "ground_truth": "16",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 297.36,
+            "peak_gpu_mb": 16297.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8318,
+              "mean_all": 1871.0,
+              "peak_all": 2175,
+              "after_prefill": 126
+            }
+          },
+          {
+            "problem": "In the diagram, $PT$ is parallel to $QR.$ What is the measure of $\\angle PQR$ in",
+            "ground_truth": "116",
+            "pred_answer": "128^\\circ",
+            "correct": false,
+            "n_tokens_generated": 937,
+            "wall_time_s": 33.67,
+            "peak_gpu_mb": 15475.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1167,
+              "mean_all": 698.0,
+              "peak_all": 1166,
+              "after_prefill": 230
+            }
+          },
+          {
+            "problem": "The smallest distance between the origin and a point on the graph of $y=\\frac{1}",
+            "ground_truth": "17",
+            "pred_answer": "17",
+            "correct": true,
+            "n_tokens_generated": 2656,
+            "wall_time_s": 95.67,
+            "peak_gpu_mb": 16296.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2719,
+              "mean_all": 1321.3,
+              "peak_all": 2175,
+              "after_prefill": 63
+            }
+          },
+          {
+            "problem": "An investment of $\\$24,\\!000$ is made in a government bond that will pay $1\\%$ b",
+            "ground_truth": "\\$32,\\!348",
+            "pred_answer": "25140",
+            "correct": false,
+            "n_tokens_generated": 606,
+            "wall_time_s": 21.93,
+            "peak_gpu_mb": 15419.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 699,
+              "mean_all": 395.5,
+              "peak_all": 698,
+              "after_prefill": 93
+            }
+          }
+        ]
+      }
+    }
+  }
+}

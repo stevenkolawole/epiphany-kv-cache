@@ -1,0 +1,349 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "dataset": "math500",
+    "n_samples": 20,
+    "max_new_tokens": 8192,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "4096": {
+        "accuracy": 0.7,
+        "n_correct": 14,
+        "n_total": 20,
+        "mean_wall_time_s": 112.59,
+        "mean_peak_gpu_mb": 16454.8,
+        "per_problem": [
+          {
+            "problem": "Roslyn has ten boxes. Five of the boxes contain pencils, four of the boxes conta",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 1199,
+            "wall_time_s": 41.23,
+            "peak_gpu_mb": 15489.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1260,
+              "mean_all": 660.0,
+              "peak_all": 1259,
+              "after_prefill": 61
+            }
+          },
+          {
+            "problem": "If no one shares an office, in how many ways can 3 people be assigned to 5 diffe",
+            "ground_truth": "60",
+            "pred_answer": "60",
+            "correct": true,
+            "n_tokens_generated": 1423,
+            "wall_time_s": 48.13,
+            "peak_gpu_mb": 15514.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1475,
+              "mean_all": 763.0,
+              "peak_all": 1474,
+              "after_prefill": 52
+            }
+          },
+          {
+            "problem": "What is the remainder of 2004 divided by 12?",
+            "ground_truth": "0",
+            "pred_answer": "0",
+            "correct": true,
+            "n_tokens_generated": 1439,
+            "wall_time_s": 48.67,
+            "peak_gpu_mb": 15514.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1473,
+              "mean_all": 753.0,
+              "peak_all": 1472,
+              "after_prefill": 34
+            }
+          },
+          {
+            "problem": "If $f(x)=\\dfrac{2}{x+1}$, then what is the value of $f^{-1}\\left(\\frac{1}{5}\\rig",
+            "ground_truth": "9",
+            "pred_answer": "9",
+            "correct": true,
+            "n_tokens_generated": 1940,
+            "wall_time_s": 65.66,
+            "peak_gpu_mb": 15586.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1999,
+              "mean_all": 1028.5,
+              "peak_all": 1998,
+              "after_prefill": 59
+            }
+          },
+          {
+            "problem": "A reflection takes $\\begin{pmatrix} 5 \\\\ 0 \\end{pmatrix}$ to $\\begin{pmatrix} 4 ",
+            "ground_truth": "\\begin{pmatrix} 1/5 \\\\ -18/5 \\end{pmatrix}",
+            "pred_answer": "\\begin{pmatrix} \\dfrac{1}{5} \\\\ -\\dfrac{18}{5} \\end{pmatrix}",
+            "correct": false,
+            "n_tokens_generated": 3051,
+            "wall_time_s": 103.29,
+            "peak_gpu_mb": 15725.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3137,
+              "mean_all": 1611.0,
+              "peak_all": 3136,
+              "after_prefill": 86
+            }
+          },
+          {
+            "problem": "The asymptotes of a hyperbola are $y = 2x - 3$ and $y = 17 - 2x.$  Also, the hyp",
+            "ground_truth": "2 \\sqrt{5}",
+            "pred_answer": "2\\sqrt{5}",
+            "correct": true,
+            "n_tokens_generated": 2641,
+            "wall_time_s": 89.42,
+            "peak_gpu_mb": 15673.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2723,
+              "mean_all": 1402.0,
+              "peak_all": 2722,
+              "after_prefill": 82
+            }
+          },
+          {
+            "problem": "Let $N$ be the units digit of the number $21420N$. Which nonzero value of $N$ ma",
+            "ground_truth": "6",
+            "pred_answer": "6",
+            "correct": true,
+            "n_tokens_generated": 1207,
+            "wall_time_s": 40.81,
+            "peak_gpu_mb": 15489.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1260,
+              "mean_all": 656.0,
+              "peak_all": 1259,
+              "after_prefill": 53
+            }
+          },
+          {
+            "problem": "Six witches and ten sorcerers are at an arcane mixer. The witches have decided t",
+            "ground_truth": "60",
+            "pred_answer": "60",
+            "correct": true,
+            "n_tokens_generated": 2866,
+            "wall_time_s": 97.05,
+            "peak_gpu_mb": 15704.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2968,
+              "mean_all": 1534.5,
+              "peak_all": 2967,
+              "after_prefill": 102
+            }
+          },
+          {
+            "problem": "Let $P(x)$ be a quadratic polynomial with real coefficients satisfying $x^2 - 2x",
+            "ground_truth": "406",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 284.11,
+            "peak_gpu_mb": 18469.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8283,
+              "mean_all": 3149.1,
+              "peak_all": 4223,
+              "after_prefill": 91
+            }
+          },
+          {
+            "problem": "Simplify $\\frac{(10r^3)(4r^6)}{8r^4}$.",
+            "ground_truth": "5r^5",
+            "pred_answer": "\\dfrac{5r^5}{8}",
+            "correct": false,
+            "n_tokens_generated": 4234,
+            "wall_time_s": 143.89,
+            "peak_gpu_mb": 18469.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4277,
+              "mean_all": 2157.9,
+              "peak_all": 4223,
+              "after_prefill": 43
+            }
+          },
+          {
+            "problem": "What is the sum of the values of $a$ that satisfy the equation $$(3)5^2-4(5-a)^2",
+            "ground_truth": "10",
+            "pred_answer": "10",
+            "correct": true,
+            "n_tokens_generated": 1357,
+            "wall_time_s": 45.93,
+            "peak_gpu_mb": 15513.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1415,
+              "mean_all": 736.0,
+              "peak_all": 1414,
+              "after_prefill": 58
+            }
+          },
+          {
+            "problem": "What is the remainder when $129^{34}+96^{38}$ is divided by $11$?",
+            "ground_truth": "9",
+            "pred_answer": "9",
+            "correct": true,
+            "n_tokens_generated": 3574,
+            "wall_time_s": 120.86,
+            "peak_gpu_mb": 15786.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3617,
+              "mean_all": 1829.5,
+              "peak_all": 3616,
+              "after_prefill": 43
+            }
+          },
+          {
+            "problem": "Compute $\\sin^3 18^\\circ + \\sin^2 18^\\circ.$",
+            "ground_truth": "\\frac{1}{8}",
+            "pred_answer": "\\frac{1}{8}",
+            "correct": true,
+            "n_tokens_generated": 5092,
+            "wall_time_s": 174.46,
+            "peak_gpu_mb": 18469.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 5132,
+              "mean_all": 2493.0,
+              "peak_all": 4223,
+              "after_prefill": 40
+            }
+          },
+          {
+            "problem": "Let $f(x)$ be the polynomial \\[f(x)=3x^4+5x^2-9x-2.\\] If $g(x)$ is equal to the ",
+            "ground_truth": "-2",
+            "pred_answer": "-2",
+            "correct": true,
+            "n_tokens_generated": 2823,
+            "wall_time_s": 95.61,
+            "peak_gpu_mb": 15696.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2902,
+              "mean_all": 1490.0,
+              "peak_all": 2901,
+              "after_prefill": 79
+            }
+          },
+          {
+            "problem": "What is the shortest distance from the point $(6, 0)$ to the line $y = 2x-2$? Ex",
+            "ground_truth": "2\\sqrt{5}",
+            "pred_answer": "2\\sqrt{5}",
+            "correct": true,
+            "n_tokens_generated": 1288,
+            "wall_time_s": 43.67,
+            "peak_gpu_mb": 15498.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1344,
+              "mean_all": 699.5,
+              "peak_all": 1343,
+              "after_prefill": 56
+            }
+          },
+          {
+            "problem": "There are an infinite number of vectors $\\mathbf{v}$ such that\n\\[\\begin{pmatrix}",
+            "ground_truth": "\\begin{pmatrix} -7 \\\\ 16 \\\\ 5 \\end{pmatrix}",
+            "pred_answer": "\\begin{pmatrix} -15 \\\\ 0 \\\\ 45 \\end{pmatrix}",
+            "correct": false,
+            "n_tokens_generated": 6913,
+            "wall_time_s": 238.6,
+            "peak_gpu_mb": 18469.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 7017,
+              "mean_all": 2969.7,
+              "peak_all": 4223,
+              "after_prefill": 104
+            }
+          },
+          {
+            "problem": "Find the projection of $\\mathbf{a}$ onto $\\mathbf{b} = \\begin{pmatrix} 2 \\\\ 6 \\\\",
+            "ground_truth": "\\begin{pmatrix} 16/49 \\\\ 48/49 \\\\ 24/49 \\end{pmatrix}",
+            "pred_answer": "\\begin{pmatrix} \\dfrac{16}{49} \\\\ \\dfrac{48}{49} \\\\ \\dfrac{24}{49} \\end{pmatrix}",
+            "correct": false,
+            "n_tokens_generated": 1648,
+            "wall_time_s": 55.82,
+            "peak_gpu_mb": 15547.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1726,
+              "mean_all": 901.5,
+              "peak_all": 1725,
+              "after_prefill": 78
+            }
+          },
+          {
+            "problem": "If $\\arccos x + \\arccos 2x + \\arccos 3x = \\pi,$ then $x$ satisfies a cubic polyn",
+            "ground_truth": "27",
+            "pred_answer": "27",
+            "correct": true,
+            "n_tokens_generated": 5070,
+            "wall_time_s": 173.23,
+            "peak_gpu_mb": 18469.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 5196,
+              "mean_all": 2554.7,
+              "peak_all": 4223,
+              "after_prefill": 126
+            }
+          },
+          {
+            "problem": "What is the largest integer less than $2010$ that has a remainder of $5$ when di",
+            "ground_truth": "1440",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 285.65,
+            "peak_gpu_mb": 18469.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8264,
+              "mean_all": 3139.6,
+              "peak_all": 4223,
+              "after_prefill": 72
+            }
+          },
+          {
+            "problem": "The value of $y$ varies inversely as $\\sqrt x$ and when $x=24$, $y=15$. What is ",
+            "ground_truth": "600",
+            "pred_answer": "600",
+            "correct": true,
+            "n_tokens_generated": 1638,
+            "wall_time_s": 55.68,
+            "peak_gpu_mb": 15544.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1697,
+              "mean_all": 877.5,
+              "peak_all": 1696,
+              "after_prefill": 59
+            }
+          }
+        ]
+      }
+    }
+  }
+}
