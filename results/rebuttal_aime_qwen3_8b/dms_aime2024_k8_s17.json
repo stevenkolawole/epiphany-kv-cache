@@ -1,0 +1,122 @@
+{
+  "meta": {
+    "model": "nvidia/Qwen3-8B-DMS-8x",
+    "dataset": "aime2024",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8
+    ],
+    "methods": [
+      "dms"
+    ],
+    "attn_impl": "sdpa"
+  },
+  "results": {
+    "dms": {
+      "8": {
+        "accuracy": 0.0,
+        "n_correct": 0,
+        "n_total": 1,
+        "mean_wall_time_s": 985.04,
+        "mean_peak_gpu_mb": 16345.2,
+        "per_problem": [
+          {
+            "problem": "Find the number of rectangles that can be formed inside a fixed regular dodecago",
+            "ground_truth": "315",
+            "pred_answer": "15",
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 985.04,
+            "peak_gpu_mb": 16345.2,
+            "error": null,
+            "kv_live": {
+              "n_snapshots": 32769,
+              "total_tokens": 32849,
+              "mean_all": 2311.1,
+              "peak_all": 3383.0,
+              "peak_any_head": 32849,
+              "mean_per_layer": [
+                574.6,
+                623.0,
+                862.2,
+                823.7,
+                679.5,
+                737.2,
+                630.5,
+                2848.4,
+                1340.3,
+                2682.4,
+                926.7,
+                1062.8,
+                1756.9,
+                3472.7,
+                1519.7,
+                4118.1,
+                3358.2,
+                4798.3,
+                4147.2,
+                4427.1,
+                7197.7,
+                4701.7,
+                4144.2,
+                2374.9,
+                5128.6,
+                1134.8,
+                2558.2,
+                1918.0,
+                1874.7,
+                3128.8,
+                1038.2,
+                929.8,
+                1368.9,
+                1975.7,
+                1520.2,
+                817.0
+              ],
+              "peak_per_layer": [
+                652.8,
+                743.9,
+                990.8,
+                936.2,
+                750.8,
+                805.1,
+                667.2,
+                5076.1,
+                1771.4,
+                4128.5,
+                1098.1,
+                1376.1,
+                2364.8,
+                4864.9,
+                1960.1,
+                6182.8,
+                5116.4,
+                7352.9,
+                6191.4,
+                7325.1,
+                10968.1,
+                7258.5,
+                6527.4,
+                3471.1,
+                8765.9,
+                1512.5,
+                3459.5,
+                2657.5,
+                2481.1,
+                4442.2,
+                1348.2,
+                1118.6,
+                1844.5,
+                2610.0,
+                2041.0,
+                925.5
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "meta": {
+    "model": "nvidia/Qwen3-8B-DMS-8x",
+    "dataset": "aime2026",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8
+    ],
+    "methods": [
+      "dms"
+    ],
+    "attn_impl": "sdpa"
+  },
+  "results": {
+    "dms": {
+      "8": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 201.78,
+        "mean_peak_gpu_mb": 16001.2,
+        "per_problem": [
+          {
+            "problem": "Find the sum of the $10$th terms of all arithmetic sequences of integers that ha",
+            "ground_truth": "178",
+            "pred_answer": "178",
+            "correct": true,
+            "n_tokens_generated": 6701,
+            "wall_time_s": 201.78,
+            "peak_gpu_mb": 16001.2,
+            "error": null,
+            "kv_live": {
+              "n_snapshots": 6701,
+              "total_tokens": 6770,
+              "mean_all": 944.1,
+              "peak_all": 1296.7,
+              "peak_any_head": 6769,
+              "mean_per_layer": [
+                507.4,
+                520.2,
+                674.9,
+                663.5,
+                584.6,
+                597.5,
+                558.4,
+                979.0,
+                734.4,
+                1039.6,
+                656.7,
+                681.4,
+                905.1,
+                1245.2,
+                763.8,
+                1339.0,
+                1202.3,
+                1471.7,
+                1409.2,
+                1421.3,
+                2073.4,
+                1517.9,
+                1342.0,
+                999.5,
+                1503.9,
+                686.4,
+                1022.0,
+                872.8,
+                819.4,
+                1089.1,
+                654.8,
+                605.7,
+                668.8,
+                845.4,
+                739.4,
+                592.4
+              ],
+              "peak_per_layer": [
+                531.4,
+                555.0,
+                810.5,
+                768.9,
+                652.4,
+                657.8,
+                600.9,
+                1499.2,
+                933.2,
+                1525.1,
+                766.9,
+                809.1,
+                1184.5,
+                1795.6,
+                943.4,
+                2048.5,
+                1738.2,
+                2235.1,
+                2054.2,
+                2215.0,
+                3366.2,
+                2324.8,
+                2050.2,
+                1320.1,
+                2371.9,
+                808.1,
+                1369.5,
+                1210.4,
+                1031.8,
+                1578.4,
+                771.0,
+                667.4,
+                789.6,
+                1098.6,
+                919.1,
+                678.9
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

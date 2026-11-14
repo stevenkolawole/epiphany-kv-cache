@@ -1,0 +1,122 @@
+{
+  "meta": {
+    "model": "nvidia/Qwen3-8B-DMS-8x",
+    "dataset": "aime2025",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8
+    ],
+    "methods": [
+      "dms"
+    ],
+    "attn_impl": "sdpa"
+  },
+  "results": {
+    "dms": {
+      "8": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 133.05,
+        "mean_peak_gpu_mb": 15989.1,
+        "per_problem": [
+          {
+            "problem": "An isosceles trapezoid has an inscribed circle tangent to each of its four sides",
+            "ground_truth": "504",
+            "pred_answer": "504",
+            "correct": true,
+            "n_tokens_generated": 4321,
+            "wall_time_s": 133.05,
+            "peak_gpu_mb": 15989.1,
+            "error": null,
+            "kv_live": {
+              "n_snapshots": 4321,
+              "total_tokens": 4430,
+              "mean_all": 785.6,
+              "peak_all": 1047.3,
+              "peak_any_head": 4429,
+              "mean_per_layer": [
+                506.7,
+                512.3,
+                603.3,
+                624.1,
+                551.8,
+                565.8,
+                547.7,
+                775.9,
+                634.3,
+                830.9,
+                591.9,
+                616.5,
+                766.8,
+                966.8,
+                668.2,
+                1002.2,
+                935.1,
+                1111.5,
+                1046.9,
+                1059.2,
+                1459.1,
+                1155.5,
+                1055.3,
+                832.4,
+                1191.8,
+                631.1,
+                857.6,
+                761.6,
+                731.8,
+                880.6,
+                581.3,
+                569.9,
+                631.1,
+                757.9,
+                706.8,
+                558.6
+              ],
+              "peak_per_layer": [
+                538.1,
+                549.5,
+                720.1,
+                732.9,
+                605.2,
+                623.6,
+                589.9,
+                1108.4,
+                773.2,
+                1164.4,
+                675.9,
+                715.4,
+                990.2,
+                1373.8,
+                807.2,
+                1487.1,
+                1322.1,
+                1672.4,
+                1518.2,
+                1604.0,
+                2334.8,
+                1752.6,
+                1583.1,
+                1079.1,
+                1840.8,
+                740.6,
+                1124.8,
+                1014.5,
+                929.5,
+                1225.4,
+                653.4,
+                625.6,
+                739.6,
+                986.6,
+                874.0,
+                625.6
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

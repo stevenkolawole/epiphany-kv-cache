@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2024",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "4096": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 202.86,
+        "mean_peak_gpu_mb": 17519.8,
+        "per_problem": [
+          {
+            "problem": "Jen enters a lottery by picking $4$ distinct numbers from $S=\\{1,2,3,\\cdots,9,10",
+            "ground_truth": "116",
+            "pred_answer": "116",
+            "correct": true,
+            "n_tokens_generated": 6745,
+            "wall_time_s": 202.86,
+            "peak_gpu_mb": 17519.8,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

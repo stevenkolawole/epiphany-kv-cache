@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2024",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "4096": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 249.96,
+        "mean_peak_gpu_mb": 17516.6,
+        "per_problem": [
+          {
+            "problem": "Alice and Bob play the following game. A stack of $n$ tokens lies before them. T",
+            "ground_truth": "809",
+            "pred_answer": "809",
+            "correct": true,
+            "n_tokens_generated": 8526,
+            "wall_time_s": 249.96,
+            "peak_gpu_mb": 17516.6,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

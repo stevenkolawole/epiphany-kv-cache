@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2024",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "raas"
+    ],
+    "attn_impl": "eager"
+  },
+  "results": {
+    "raas": {
+      "8192": {
+        "accuracy": 0.0,
+        "n_correct": 0,
+        "n_total": 1,
+        "mean_wall_time_s": 1439.82,
+        "mean_peak_gpu_mb": 19253.5,
+        "per_problem": [
+          {
+            "problem": "Define $f(x)=|| x|-\\tfrac{1}{2}|$ and $g(x)=|| x|-\\tfrac{1}{4}|$. Find the numbe",
+            "ground_truth": "385",
+            "pred_answer": "96",
+            "correct": false,
+            "n_tokens_generated": 30455,
+            "wall_time_s": 1439.82,
+            "peak_gpu_mb": 19253.5,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

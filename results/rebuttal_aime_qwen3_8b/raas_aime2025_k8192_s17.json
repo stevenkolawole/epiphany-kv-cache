@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2025",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "raas"
+    ],
+    "attn_impl": "eager"
+  },
+  "results": {
+    "raas": {
+      "8192": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 1044.14,
+        "mean_peak_gpu_mb": 19279.9,
+        "per_problem": [
+          {
+            "problem": "Four unit squares form a $2\\times 2$ grid. Each of the $12$ unit line segments f",
+            "ground_truth": "82",
+            "pred_answer": "82",
+            "correct": true,
+            "n_tokens_generated": 22802,
+            "wall_time_s": 1044.14,
+            "peak_gpu_mb": 19279.9,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

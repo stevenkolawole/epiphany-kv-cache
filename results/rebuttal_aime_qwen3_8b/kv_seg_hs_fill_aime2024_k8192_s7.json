@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2024",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "8192": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 445.54,
+        "mean_peak_gpu_mb": 19341.7,
+        "per_problem": [
+          {
+            "problem": "Find the number of triples of nonnegative integers $(a,b,c)$ satisfying $a + b +",
+            "ground_truth": "601",
+            "pred_answer": "601",
+            "correct": true,
+            "n_tokens_generated": 14297,
+            "wall_time_s": 445.54,
+            "peak_gpu_mb": 19341.7,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

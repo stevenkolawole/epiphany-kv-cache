@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2025",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "raas"
+    ],
+    "attn_impl": "eager"
+  },
+  "results": {
+    "raas": {
+      "4096": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 816.71,
+        "mean_peak_gpu_mb": 17479.2,
+        "per_problem": [
+          {
+            "problem": "From an unlimited supply of $1$-cent coins, $10$-cent coins, and $25$-cent coins",
+            "ground_truth": "610",
+            "pred_answer": "610",
+            "correct": true,
+            "n_tokens_generated": 22097,
+            "wall_time_s": 816.71,
+            "peak_gpu_mb": 17479.2,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

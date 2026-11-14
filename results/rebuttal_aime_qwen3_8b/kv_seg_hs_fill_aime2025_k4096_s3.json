@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2025",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "4096": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 352.67,
+        "mean_peak_gpu_mb": 17513.9,
+        "per_problem": [
+          {
+            "problem": "Find the number of ordered pairs $(x,y)$, where both $x$ and $y$ are integers be",
+            "ground_truth": "117",
+            "pred_answer": "117",
+            "correct": true,
+            "n_tokens_generated": 9736,
+            "wall_time_s": 352.67,
+            "peak_gpu_mb": 17513.9,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

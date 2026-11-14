@@ -1,0 +1,122 @@
+{
+  "meta": {
+    "model": "nvidia/Qwen3-8B-DMS-8x",
+    "dataset": "aime2026",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8
+    ],
+    "methods": [
+      "dms"
+    ],
+    "attn_impl": "sdpa"
+  },
+  "results": {
+    "dms": {
+      "8": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 297.37,
+        "mean_peak_gpu_mb": 16019.2,
+        "per_problem": [
+          {
+            "problem": "Find the sum of all real numbers $r$ such that there is at least one point where",
+            "ground_truth": "50",
+            "pred_answer": "50",
+            "correct": true,
+            "n_tokens_generated": 8275,
+            "wall_time_s": 297.37,
+            "peak_gpu_mb": 16019.2,
+            "error": null,
+            "kv_live": {
+              "n_snapshots": 8275,
+              "total_tokens": 8363,
+              "mean_all": 1078.2,
+              "peak_all": 1560.4,
+              "peak_any_head": 8362,
+              "mean_per_layer": [
+                517.0,
+                532.2,
+                702.2,
+                712.4,
+                590.9,
+                625.8,
+                582.1,
+                1091.8,
+                804.8,
+                1156.3,
+                681.4,
+                729.5,
+                1041.8,
+                1528.4,
+                862.8,
+                1563.6,
+                1387.9,
+                1772.9,
+                1624.1,
+                1644.9,
+                2467.7,
+                1780.7,
+                1583.8,
+                1166.0,
+                1891.8,
+                764.0,
+                1237.2,
+                1021.7,
+                969.3,
+                1271.2,
+                673.6,
+                644.3,
+                707.3,
+                1039.6,
+                829.9,
+                615.4
+              ],
+              "peak_per_layer": [
+                541.6,
+                572.9,
+                848.5,
+                842.1,
+                649.0,
+                700.1,
+                629.2,
+                1710.1,
+                1059.0,
+                1767.6,
+                805.1,
+                887.0,
+                1405.4,
+                2316.6,
+                1131.4,
+                2500.1,
+                2101.9,
+                2829.0,
+                2540.9,
+                2653.1,
+                4219.2,
+                2890.1,
+                2552.1,
+                1658.5,
+                3141.5,
+                956.6,
+                1796.9,
+                1482.6,
+                1344.5,
+                1935.6,
+                806.1,
+                740.6,
+                866.9,
+                1477.8,
+                1097.2,
+                718.4
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

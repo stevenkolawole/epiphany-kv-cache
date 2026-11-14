@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2026",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "8192": {
+        "accuracy": 0.0,
+        "n_correct": 0,
+        "n_total": 1,
+        "mean_wall_time_s": 438.65,
+        "mean_peak_gpu_mb": 19353.4,
+        "per_problem": [
+          {
+            "problem": "Find the number of ordered 7-tuples $(a_1, a_2, a_3, \\ldots, a_7)$ having the fo",
+            "ground_truth": "393",
+            "pred_answer": "243",
+            "correct": false,
+            "n_tokens_generated": 14010,
+            "wall_time_s": 438.65,
+            "peak_gpu_mb": 19353.4,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

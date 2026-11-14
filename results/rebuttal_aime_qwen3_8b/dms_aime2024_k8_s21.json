@@ -1,0 +1,122 @@
+{
+  "meta": {
+    "model": "nvidia/Qwen3-8B-DMS-8x",
+    "dataset": "aime2024",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8
+    ],
+    "methods": [
+      "dms"
+    ],
+    "attn_impl": "sdpa"
+  },
+  "results": {
+    "dms": {
+      "8": {
+        "accuracy": 0.0,
+        "n_correct": 0,
+        "n_total": 1,
+        "mean_wall_time_s": 497.85,
+        "mean_peak_gpu_mb": 16176.7,
+        "per_problem": [
+          {
+            "problem": "Let ABCDEF be a convex equilateral hexagon in which all pairs of opposite sides ",
+            "ground_truth": "80",
+            "pred_answer": "\\dfrac{1200}{7}",
+            "correct": false,
+            "n_tokens_generated": 16259,
+            "wall_time_s": 497.85,
+            "peak_gpu_mb": 16176.7,
+            "error": null,
+            "kv_live": {
+              "n_snapshots": 16259,
+              "total_tokens": 16349,
+              "mean_all": 1556.8,
+              "peak_all": 2446.0,
+              "peak_any_head": 16348,
+              "mean_per_layer": [
+                536.6,
+                567.6,
+                748.3,
+                746.2,
+                623.4,
+                672.5,
+                587.5,
+                1676.7,
+                991.0,
+                1823.9,
+                776.4,
+                855.2,
+                1352.1,
+                2260.1,
+                1102.7,
+                2510.0,
+                2131.3,
+                2891.5,
+                2467.8,
+                2688.8,
+                4373.3,
+                3028.1,
+                2562.9,
+                1603.2,
+                3066.6,
+                898.7,
+                1705.3,
+                1343.6,
+                1339.4,
+                2082.0,
+                753.0,
+                767.3,
+                1131.6,
+                1470.2,
+                1207.3,
+                702.0
+              ],
+              "peak_per_layer": [
+                561.2,
+                617.2,
+                896.4,
+                874.9,
+                693.8,
+                756.8,
+                630.9,
+                2823.1,
+                1346.9,
+                2959.6,
+                949.1,
+                1068.5,
+                1941.4,
+                3758.6,
+                1494.6,
+                4306.0,
+                3476.6,
+                5062.2,
+                4012.8,
+                4706.8,
+                7928.5,
+                5297.1,
+                4397.0,
+                2513.9,
+                5483.9,
+                1197.5,
+                2622.0,
+                2104.8,
+                2028.6,
+                3474.2,
+                894.8,
+                907.0,
+                1554.2,
+                2183.5,
+                1680.0,
+                852.0
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

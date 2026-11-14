@@ -1,0 +1,122 @@
+{
+  "meta": {
+    "model": "nvidia/Qwen3-8B-DMS-8x",
+    "dataset": "aime2024",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8
+    ],
+    "methods": [
+      "dms"
+    ],
+    "attn_impl": "sdpa"
+  },
+  "results": {
+    "dms": {
+      "8": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 325.7,
+        "mean_peak_gpu_mb": 16065.2,
+        "per_problem": [
+          {
+            "problem": "Let $N$ be the greatest four-digit positive integer with the property that whene",
+            "ground_truth": "699",
+            "pred_answer": "699",
+            "correct": true,
+            "n_tokens_generated": 10513,
+            "wall_time_s": 325.7,
+            "peak_gpu_mb": 16065.2,
+            "error": null,
+            "kv_live": {
+              "n_snapshots": 10513,
+              "total_tokens": 10611,
+              "mean_all": 1208.4,
+              "peak_all": 1748.3,
+              "peak_any_head": 10610,
+              "mean_per_layer": [
+                516.5,
+                536.6,
+                707.7,
+                690.6,
+                599.1,
+                627.0,
+                570.1,
+                1268.6,
+                889.2,
+                1285.0,
+                688.3,
+                752.3,
+                1096.1,
+                1764.5,
+                870.3,
+                1810.2,
+                1641.1,
+                2208.8,
+                1933.2,
+                2068.8,
+                3069.9,
+                2182.7,
+                1864.4,
+                1324.2,
+                2262.1,
+                806.6,
+                1277.5,
+                1081.0,
+                984.3,
+                1436.6,
+                697.5,
+                644.1,
+                776.3,
+                1029.6,
+                902.9,
+                639.7
+              ],
+              "peak_per_layer": [
+                536.6,
+                573.0,
+                838.8,
+                795.6,
+                658.8,
+                694.6,
+                606.0,
+                2047.1,
+                1203.9,
+                2013.8,
+                814.8,
+                914.5,
+                1506.1,
+                2649.2,
+                1118.5,
+                2878.0,
+                2457.5,
+                3448.5,
+                2882.9,
+                3310.0,
+                5170.0,
+                3425.1,
+                3025.9,
+                1835.1,
+                3672.5,
+                1010.1,
+                1825.1,
+                1580.2,
+                1300.8,
+                2244.9,
+                843.6,
+                718.9,
+                977.6,
+                1403.0,
+                1182.6,
+                776.1
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

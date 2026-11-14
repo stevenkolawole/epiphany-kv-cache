@@ -1,0 +1,122 @@
+{
+  "meta": {
+    "model": "nvidia/Qwen3-8B-DMS-8x",
+    "dataset": "aime2024",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8
+    ],
+    "methods": [
+      "dms"
+    ],
+    "attn_impl": "sdpa"
+  },
+  "results": {
+    "dms": {
+      "8": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 190.32,
+        "mean_peak_gpu_mb": 16001.2,
+        "per_problem": [
+          {
+            "problem": "Consider the paths of length $16$ that follow the lines from the lower left corn",
+            "ground_truth": "294",
+            "pred_answer": "294",
+            "correct": true,
+            "n_tokens_generated": 6294,
+            "wall_time_s": 190.32,
+            "peak_gpu_mb": 16001.2,
+            "error": null,
+            "kv_live": {
+              "n_snapshots": 6294,
+              "total_tokens": 6376,
+              "mean_all": 934.9,
+              "peak_all": 1318.5,
+              "peak_any_head": 6375,
+              "mean_per_layer": [
+                514.1,
+                524.6,
+                681.8,
+                650.2,
+                588.9,
+                616.4,
+                557.3,
+                942.1,
+                747.7,
+                1027.6,
+                653.0,
+                679.6,
+                878.6,
+                1236.7,
+                783.0,
+                1295.6,
+                1210.1,
+                1480.5,
+                1366.4,
+                1372.3,
+                2011.3,
+                1442.3,
+                1295.1,
+                972.7,
+                1494.0,
+                679.9,
+                1028.2,
+                873.5,
+                836.9,
+                1101.2,
+                629.0,
+                598.2,
+                701.5,
+                838.1,
+                746.4,
+                601.3
+              ],
+              "peak_per_layer": [
+                545.0,
+                564.2,
+                842.9,
+                759.4,
+                660.9,
+                698.9,
+                598.8,
+                1430.4,
+                966.6,
+                1533.1,
+                768.2,
+                826.2,
+                1171.9,
+                1834.4,
+                996.5,
+                2022.0,
+                1799.9,
+                2294.4,
+                2064.8,
+                2184.5,
+                3387.2,
+                2293.1,
+                2045.5,
+                1342.8,
+                2449.2,
+                823.0,
+                1444.1,
+                1219.4,
+                1132.4,
+                1673.2,
+                739.2,
+                674.4,
+                873.0,
+                1141.8,
+                969.0,
+                694.5
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

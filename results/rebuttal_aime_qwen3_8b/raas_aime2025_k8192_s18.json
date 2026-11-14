@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2025",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "raas"
+    ],
+    "attn_impl": "eager"
+  },
+  "results": {
+    "raas": {
+      "8192": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 376.1,
+        "mean_peak_gpu_mb": 19270.1,
+        "per_problem": [
+          {
+            "problem": "The product\n$$\\prod_{k=4}^{63} \\frac{\\log_k \\left(5^{k^2 - 1}\\right)}{\\log_{k+1}",
+            "ground_truth": "106",
+            "pred_answer": "106",
+            "correct": true,
+            "n_tokens_generated": 9787,
+            "wall_time_s": 376.1,
+            "peak_gpu_mb": 19270.1,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

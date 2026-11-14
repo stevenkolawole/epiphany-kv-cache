@@ -1,0 +1,122 @@
+{
+  "meta": {
+    "model": "nvidia/Qwen3-8B-DMS-8x",
+    "dataset": "aime2026",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8
+    ],
+    "methods": [
+      "dms"
+    ],
+    "attn_impl": "sdpa"
+  },
+  "results": {
+    "dms": {
+      "8": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 206.07,
+        "mean_peak_gpu_mb": 15997.2,
+        "per_problem": [
+          {
+            "problem": "An urn contains $n$ marbles. Each marble is either red or blue, and there are at",
+            "ground_truth": "190",
+            "pred_answer": "190",
+            "correct": true,
+            "n_tokens_generated": 6788,
+            "wall_time_s": 206.07,
+            "peak_gpu_mb": 15997.2,
+            "error": null,
+            "kv_live": {
+              "n_snapshots": 6788,
+              "total_tokens": 6904,
+              "mean_all": 955.9,
+              "peak_all": 1283.1,
+              "peak_any_head": 6903,
+              "mean_per_layer": [
+                509.7,
+                523.5,
+                683.3,
+                659.0,
+                586.1,
+                596.4,
+                563.2,
+                982.0,
+                740.5,
+                1053.9,
+                649.6,
+                709.2,
+                941.5,
+                1367.1,
+                782.8,
+                1373.4,
+                1235.6,
+                1554.2,
+                1393.6,
+                1411.6,
+                2013.6,
+                1468.7,
+                1297.2,
+                1015.3,
+                1610.0,
+                699.4,
+                993.8,
+                914.2,
+                835.2,
+                1115.6,
+                613.9,
+                604.0,
+                691.3,
+                880.5,
+                753.7,
+                591.0
+              ],
+              "peak_per_layer": [
+                530.4,
+                556.4,
+                828.4,
+                765.4,
+                642.9,
+                656.4,
+                603.8,
+                1489.8,
+                936.4,
+                1546.6,
+                741.8,
+                844.5,
+                1222.1,
+                1951.5,
+                951.9,
+                2025.9,
+                1735.5,
+                2300.6,
+                1930.4,
+                2110.8,
+                3126.9,
+                2130.0,
+                1916.6,
+                1311.0,
+                2480.9,
+                811.9,
+                1281.0,
+                1248.5,
+                1034.1,
+                1579.0,
+                688.9,
+                653.0,
+                819.5,
+                1145.9,
+                922.6,
+                671.9
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

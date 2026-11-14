@@ -1,0 +1,122 @@
+{
+  "meta": {
+    "model": "nvidia/Qwen3-8B-DMS-8x",
+    "dataset": "aime2024",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8
+    ],
+    "methods": [
+      "dms"
+    ],
+    "attn_impl": "sdpa"
+  },
+  "results": {
+    "dms": {
+      "8": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 163.56,
+        "mean_peak_gpu_mb": 15983.1,
+        "per_problem": [
+          {
+            "problem": "Alice chooses a set $A$ of positive integers. Then Bob lists all finite nonempty",
+            "ground_truth": "55",
+            "pred_answer": "55",
+            "correct": true,
+            "n_tokens_generated": 5292,
+            "wall_time_s": 163.56,
+            "peak_gpu_mb": 15983.1,
+            "error": null,
+            "kv_live": {
+              "n_snapshots": 5292,
+              "total_tokens": 5381,
+              "mean_all": 866.9,
+              "peak_all": 1171.7,
+              "peak_any_head": 5380,
+              "mean_per_layer": [
+                503.6,
+                516.2,
+                642.8,
+                631.7,
+                573.9,
+                599.1,
+                549.7,
+                873.3,
+                712.1,
+                955.4,
+                642.6,
+                673.8,
+                868.9,
+                1133.2,
+                748.8,
+                1177.9,
+                1080.8,
+                1289.6,
+                1205.7,
+                1181.1,
+                1714.9,
+                1277.9,
+                1130.9,
+                947.5,
+                1359.2,
+                672.4,
+                937.8,
+                798.9,
+                797.6,
+                1003.0,
+                609.5,
+                608.3,
+                670.4,
+                820.7,
+                731.4,
+                567.9
+              ],
+              "peak_per_layer": [
+                528.4,
+                552.2,
+                784.1,
+                739.5,
+                641.8,
+                671.5,
+                591.4,
+                1298.5,
+                893.1,
+                1351.8,
+                749.5,
+                803.9,
+                1136.9,
+                1641.4,
+                915.5,
+                1767.4,
+                1520.5,
+                1935.1,
+                1732.9,
+                1804.2,
+                2755.4,
+                1940.9,
+                1694.5,
+                1274.0,
+                2142.5,
+                806.9,
+                1239.1,
+                1051.1,
+                1016.4,
+                1420.0,
+                687.4,
+                678.1,
+                808.5,
+                1059.4,
+                911.2,
+                637.0
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

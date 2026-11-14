@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2025",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "raas"
+    ],
+    "attn_impl": "eager"
+  },
+  "results": {
+    "raas": {
+      "4096": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 246.1,
+        "mean_peak_gpu_mb": 17442.8,
+        "per_problem": [
+          {
+            "problem": "Find the sum of all positive integers $n$ such that $n+2$ divides the product $3",
+            "ground_truth": "49",
+            "pred_answer": "49",
+            "correct": true,
+            "n_tokens_generated": 6757,
+            "wall_time_s": 246.1,
+            "peak_gpu_mb": 17442.8,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

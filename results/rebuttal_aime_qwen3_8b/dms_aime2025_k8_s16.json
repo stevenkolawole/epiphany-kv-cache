@@ -1,0 +1,122 @@
+{
+  "meta": {
+    "model": "nvidia/Qwen3-8B-DMS-8x",
+    "dataset": "aime2025",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8
+    ],
+    "methods": [
+      "dms"
+    ],
+    "attn_impl": "sdpa"
+  },
+  "results": {
+    "dms": {
+      "8": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 204.6,
+        "mean_peak_gpu_mb": 15997.2,
+        "per_problem": [
+          {
+            "problem": "Find the sum of all positive integers $n$ such that $n+2$ divides the product $3",
+            "ground_truth": "49",
+            "pred_answer": "49",
+            "correct": true,
+            "n_tokens_generated": 6649,
+            "wall_time_s": 204.6,
+            "peak_gpu_mb": 15997.2,
+            "error": null,
+            "kv_live": {
+              "n_snapshots": 6649,
+              "total_tokens": 6710,
+              "mean_all": 910.7,
+              "peak_all": 1260.0,
+              "peak_any_head": 6709,
+              "mean_per_layer": [
+                509.5,
+                516.8,
+                666.5,
+                614.4,
+                559.5,
+                572.1,
+                551.3,
+                958.8,
+                742.1,
+                1012.7,
+                625.9,
+                646.7,
+                846.8,
+                1172.7,
+                734.2,
+                1283.0,
+                1143.2,
+                1400.7,
+                1282.0,
+                1360.8,
+                2023.9,
+                1450.9,
+                1333.7,
+                945.2,
+                1495.4,
+                674.1,
+                937.2,
+                887.1,
+                768.2,
+                1082.6,
+                614.5,
+                573.9,
+                643.6,
+                810.8,
+                733.7,
+                610.8
+              ],
+              "peak_per_layer": [
+                534.2,
+                550.2,
+                816.1,
+                698.1,
+                612.5,
+                625.1,
+                594.1,
+                1468.5,
+                968.4,
+                1493.9,
+                718.6,
+                759.1,
+                1096.9,
+                1705.2,
+                895.1,
+                1991.4,
+                1669.8,
+                2163.0,
+                1859.4,
+                2146.4,
+                3394.0,
+                2240.9,
+                2080.2,
+                1250.1,
+                2392.1,
+                798.5,
+                1228.9,
+                1230.5,
+                965.4,
+                1623.4,
+                703.9,
+                626.8,
+                765.8,
+                1054.2,
+                918.9,
+                720.8
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "meta": {
+    "model": "nvidia/Qwen3-8B-DMS-8x",
+    "dataset": "aime2024",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8
+    ],
+    "methods": [
+      "dms"
+    ],
+    "attn_impl": "sdpa"
+  },
+  "results": {
+    "dms": {
+      "8": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 237.72,
+        "mean_peak_gpu_mb": 16081.2,
+        "per_problem": [
+          {
+            "problem": "Alice and Bob play the following game. A stack of $n$ tokens lies before them. T",
+            "ground_truth": "809",
+            "pred_answer": "809",
+            "correct": true,
+            "n_tokens_generated": 6489,
+            "wall_time_s": 237.72,
+            "peak_gpu_mb": 16081.2,
+            "error": null,
+            "kv_live": {
+              "n_snapshots": 6489,
+              "total_tokens": 6615,
+              "mean_all": 965.6,
+              "peak_all": 1351.1,
+              "peak_any_head": 6614,
+              "mean_per_layer": [
+                511.1,
+                520.1,
+                665.0,
+                654.2,
+                587.9,
+                606.5,
+                558.3,
+                975.0,
+                778.6,
+                1010.1,
+                648.2,
+                674.1,
+                883.3,
+                1293.6,
+                767.5,
+                1305.4,
+                1279.6,
+                1576.8,
+                1418.5,
+                1399.4,
+                2156.1,
+                1535.6,
+                1347.3,
+                1008.1,
+                1570.1,
+                727.6,
+                1061.8,
+                922.1,
+                842.6,
+                1168.9,
+                669.3,
+                636.5,
+                739.2,
+                888.7,
+                787.3,
+                588.7
+              ],
+              "peak_per_layer": [
+                531.9,
+                552.9,
+                826.8,
+                764.4,
+                646.1,
+                673.0,
+                592.4,
+                1474.6,
+                1010.6,
+                1486.2,
+                742.9,
+                792.0,
+                1152.8,
+                1905.8,
+                936.4,
+                2039.2,
+                1893.4,
+                2468.2,
+                2108.2,
+                2218.4,
+                3640.9,
+                2433.8,
+                2089.1,
+                1373.9,
+                2519.5,
+                875.0,
+                1471.6,
+                1292.9,
+                1108.5,
+                1759.0,
+                774.6,
+                708.0,
+                912.0,
+                1183.1,
+                1012.6,
+                669.1
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

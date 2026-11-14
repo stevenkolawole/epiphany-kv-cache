@@ -1,0 +1,122 @@
+{
+  "meta": {
+    "model": "nvidia/Qwen3-8B-DMS-8x",
+    "dataset": "aime2024",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8
+    ],
+    "methods": [
+      "dms"
+    ],
+    "attn_impl": "sdpa"
+  },
+  "results": {
+    "dms": {
+      "8": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 165.27,
+        "mean_peak_gpu_mb": 16004.1,
+        "per_problem": [
+          {
+            "problem": "Every morning Aya goes for a $9$-kilometer-long walk and stops at a coffee shop ",
+            "ground_truth": "204",
+            "pred_answer": "204",
+            "correct": true,
+            "n_tokens_generated": 4772,
+            "wall_time_s": 165.27,
+            "peak_gpu_mb": 16004.1,
+            "error": null,
+            "kv_live": {
+              "n_snapshots": 4772,
+              "total_tokens": 4934,
+              "mean_all": 861.1,
+              "peak_all": 1126.3,
+              "peak_any_head": 4933,
+              "mean_per_layer": [
+                506.0,
+                521.8,
+                645.5,
+                649.9,
+                580.8,
+                594.2,
+                558.6,
+                843.5,
+                684.4,
+                908.6,
+                631.7,
+                659.1,
+                864.0,
+                1125.2,
+                720.4,
+                1130.6,
+                1063.1,
+                1258.6,
+                1197.0,
+                1175.3,
+                1673.9,
+                1271.7,
+                1168.4,
+                897.6,
+                1331.0,
+                677.6,
+                934.3,
+                838.5,
+                811.9,
+                1009.0,
+                626.8,
+                612.9,
+                678.8,
+                835.0,
+                734.4,
+                579.1
+              ],
+              "peak_per_layer": [
+                528.4,
+                557.8,
+                780.0,
+                751.5,
+                636.5,
+                652.6,
+                596.2,
+                1208.6,
+                824.4,
+                1258.5,
+                711.8,
+                754.6,
+                1095.0,
+                1547.1,
+                847.4,
+                1631.9,
+                1454.9,
+                1828.1,
+                1636.0,
+                1721.6,
+                2613.6,
+                1828.9,
+                1713.6,
+                1103.2,
+                1995.4,
+                776.5,
+                1188.4,
+                1117.0,
+                1006.2,
+                1389.8,
+                707.1,
+                668.1,
+                789.8,
+                1074.6,
+                899.9,
+                650.6
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

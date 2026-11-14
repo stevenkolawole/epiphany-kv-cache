@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2025",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "raas"
+    ],
+    "attn_impl": "eager"
+  },
+  "results": {
+    "raas": {
+      "8192": {
+        "accuracy": 0.0,
+        "n_correct": 0,
+        "n_total": 1,
+        "mean_wall_time_s": 912.32,
+        "mean_peak_gpu_mb": 19278.5,
+        "per_problem": [
+          {
+            "problem": "Let $A_1 A_2 A_3 \\ldots A_{11}$ be an $11$-sided non-convex simple polygon with ",
+            "ground_truth": "19",
+            "pred_answer": "415",
+            "correct": false,
+            "n_tokens_generated": 20278,
+            "wall_time_s": 912.32,
+            "peak_gpu_mb": 19278.5,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

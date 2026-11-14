@@ -1,0 +1,122 @@
+{
+  "meta": {
+    "model": "nvidia/Qwen3-8B-DMS-8x",
+    "dataset": "aime2024",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8
+    ],
+    "methods": [
+      "dms"
+    ],
+    "attn_impl": "sdpa"
+  },
+  "results": {
+    "dms": {
+      "8": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 283.51,
+        "mean_peak_gpu_mb": 16051.2,
+        "per_problem": [
+          {
+            "problem": "A list of positive integers has the following properties:\n\n\\bullet The sum of th",
+            "ground_truth": "236",
+            "pred_answer": "236",
+            "correct": true,
+            "n_tokens_generated": 9234,
+            "wall_time_s": 283.51,
+            "peak_gpu_mb": 16051.2,
+            "error": null,
+            "kv_live": {
+              "n_snapshots": 9234,
+              "total_tokens": 9333,
+              "mean_all": 1150.2,
+              "peak_all": 1693.1,
+              "peak_any_head": 9332,
+              "mean_per_layer": [
+                520.0,
+                542.5,
+                708.7,
+                681.8,
+                614.5,
+                636.4,
+                585.1,
+                1159.3,
+                849.8,
+                1279.3,
+                702.3,
+                727.5,
+                1078.3,
+                1655.4,
+                890.8,
+                1716.8,
+                1573.6,
+                2048.2,
+                1793.8,
+                1851.3,
+                2928.6,
+                1992.2,
+                1717.3,
+                1219.3,
+                1973.9,
+                743.2,
+                1259.2,
+                1054.1,
+                938.1,
+                1384.8,
+                712.1,
+                626.2,
+                787.4,
+                974.9,
+                838.6,
+                641.4
+              ],
+              "peak_per_layer": [
+                542.0,
+                585.9,
+                861.8,
+                791.5,
+                689.4,
+                712.2,
+                634.9,
+                1837.1,
+                1131.1,
+                1986.5,
+                829.2,
+                880.6,
+                1487.9,
+                2607.4,
+                1158.5,
+                2809.8,
+                2462.8,
+                3361.9,
+                2803.9,
+                3087.2,
+                5142.9,
+                3292.8,
+                2823.1,
+                1739.2,
+                3284.5,
+                901.5,
+                1808.1,
+                1536.0,
+                1250.9,
+                2193.0,
+                856.9,
+                689.4,
+                997.5,
+                1317.5,
+                1088.4,
+                767.1
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

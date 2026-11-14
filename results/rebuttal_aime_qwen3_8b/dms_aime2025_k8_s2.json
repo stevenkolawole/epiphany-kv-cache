@@ -1,0 +1,122 @@
+{
+  "meta": {
+    "model": "nvidia/Qwen3-8B-DMS-8x",
+    "dataset": "aime2025",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8
+    ],
+    "methods": [
+      "dms"
+    ],
+    "attn_impl": "sdpa"
+  },
+  "results": {
+    "dms": {
+      "8": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 290.3,
+        "mean_peak_gpu_mb": 16026.5,
+        "per_problem": [
+          {
+            "problem": "The 9 members of a baseball team went to an ice-cream parlor after their game. E",
+            "ground_truth": "16",
+            "pred_answer": "16",
+            "correct": true,
+            "n_tokens_generated": 9440,
+            "wall_time_s": 290.3,
+            "peak_gpu_mb": 16026.5,
+            "error": null,
+            "kv_live": {
+              "n_snapshots": 9440,
+              "total_tokens": 9579,
+              "mean_all": 1103.9,
+              "peak_all": 1552.4,
+              "peak_any_head": 9578,
+              "mean_per_layer": [
+                524.5,
+                541.2,
+                723.3,
+                706.2,
+                604.0,
+                633.0,
+                579.2,
+                1197.0,
+                852.7,
+                1248.8,
+                712.1,
+                757.5,
+                1056.2,
+                1544.5,
+                864.3,
+                1666.6,
+                1458.3,
+                1748.5,
+                1652.4,
+                1721.7,
+                2581.2,
+                1822.9,
+                1635.4,
+                1155.1,
+                1909.5,
+                753.4,
+                1160.4,
+                1035.8,
+                911.4,
+                1361.5,
+                698.9,
+                658.6,
+                764.3,
+                1011.2,
+                845.4,
+                642.6
+              ],
+              "peak_per_layer": [
+                550.2,
+                579.0,
+                878.9,
+                821.9,
+                667.6,
+                696.4,
+                615.2,
+                1890.9,
+                1111.2,
+                1865.8,
+                826.9,
+                913.2,
+                1407.8,
+                2264.2,
+                1076.1,
+                2625.1,
+                2159.5,
+                2624.6,
+                2429.2,
+                2738.1,
+                4286.5,
+                2829.1,
+                2602.0,
+                1530.9,
+                3069.1,
+                894.1,
+                1559.1,
+                1466.9,
+                1158.2,
+                2048.6,
+                824.6,
+                734.6,
+                930.9,
+                1374.4,
+                1082.9,
+                753.6
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}
