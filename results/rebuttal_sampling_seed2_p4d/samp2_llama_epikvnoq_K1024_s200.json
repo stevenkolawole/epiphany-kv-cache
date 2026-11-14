@@ -1,0 +1,284 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "dataset": "math500",
+    "n_samples": 25,
+    "max_new_tokens": 8192,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      1024
+    ],
+    "methods": [
+      "kv_seg_hs"
+    ],
+    "attn_impl": "flash_attention_2",
+    "sampling": {
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "seed": 2
+    }
+  },
+  "results": {
+    "kv_seg_hs": {
+      "1024": {
+        "accuracy": 0.64,
+        "n_correct": 16,
+        "n_total": 25,
+        "mean_wall_time_s": 126.68,
+        "mean_peak_gpu_mb": 15647.5,
+        "per_problem": [
+          {
+            "problem": "Find the remainder when $(5x + 9)^{611} + (x + 5)^{11} + (x - 1)^{11} + 3x^2 + 1",
+            "ground_truth": "12",
+            "pred_answer": "12",
+            "correct": true,
+            "n_tokens_generated": 1511,
+            "wall_time_s": 56.21,
+            "peak_gpu_mb": 15649.9,
+            "error": null
+          },
+          {
+            "problem": "Let $a,$ $b,$ $c,$ $d$ be distinct complex numbers such that $|a| = |b| = |c| = ",
+            "ground_truth": "0",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 301.07,
+            "peak_gpu_mb": 15674.9,
+            "error": null
+          },
+          {
+            "problem": "Let $\\mathbf{A}$ be a matrix such that\n\\[\\mathbf{A} \\begin{pmatrix} 3 \\\\ 1 \\\\ 0 ",
+            "ground_truth": "\\begin{pmatrix} -2 \\\\ -14 \\\\ -7 \\end{pmatrix}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 300.78,
+            "peak_gpu_mb": 15688.0,
+            "error": null
+          },
+          {
+            "problem": "A line is parameterized by\n\\[\\begin{pmatrix} x \\\\ y \\end{pmatrix} = \\begin{pmatr",
+            "ground_truth": "\\left( \\frac{3}{2}, -13 \\right)",
+            "pred_answer": "\\left( \\dfrac{3}{2}, -13 \\right)",
+            "correct": true,
+            "n_tokens_generated": 1057,
+            "wall_time_s": 38.78,
+            "peak_gpu_mb": 15655.2,
+            "error": null
+          },
+          {
+            "problem": "Mikka wants to order a pizza with two different toppings. He has 8 different top",
+            "ground_truth": "28",
+            "pred_answer": "28",
+            "correct": true,
+            "n_tokens_generated": 923,
+            "wall_time_s": 33.99,
+            "peak_gpu_mb": 15583.1,
+            "error": null
+          },
+          {
+            "problem": "How many of the first one hundred positive integers are divisible by $3, 4,$ and",
+            "ground_truth": "1",
+            "pred_answer": "1",
+            "correct": true,
+            "n_tokens_generated": 1771,
+            "wall_time_s": 65.09,
+            "peak_gpu_mb": 15645.2,
+            "error": null
+          },
+          {
+            "problem": "When the two-digit integer $``\\text{AB}\"$ is cubed, the value is $912,\\!673$. Wh",
+            "ground_truth": "16",
+            "pred_answer": "16",
+            "correct": true,
+            "n_tokens_generated": 2615,
+            "wall_time_s": 96.16,
+            "peak_gpu_mb": 15648.2,
+            "error": null
+          },
+          {
+            "problem": "Twelve 1 by 1 squares form a rectangle, as shown. What is the total area of the ",
+            "ground_truth": "10",
+            "pred_answer": "10",
+            "correct": true,
+            "n_tokens_generated": 558,
+            "wall_time_s": 20.49,
+            "peak_gpu_mb": 15551.6,
+            "error": null
+          },
+          {
+            "problem": "Express $5^5\\div5^4-5^3+5^2\\cdot5^1$ as an integer.",
+            "ground_truth": "5",
+            "pred_answer": "5",
+            "correct": true,
+            "n_tokens_generated": 1514,
+            "wall_time_s": 55.53,
+            "peak_gpu_mb": 15639.7,
+            "error": null
+          },
+          {
+            "problem": "Recently, Frank took a one-hundred question aptitude test where each correct ans",
+            "ground_truth": "56",
+            "pred_answer": "56",
+            "correct": true,
+            "n_tokens_generated": 997,
+            "wall_time_s": 36.42,
+            "peak_gpu_mb": 15648.2,
+            "error": null
+          },
+          {
+            "problem": "Compute\n\\[\\sum_{n = 1}^\\infty \\frac{F_{n + 1}}{F_n F_{n + 2}},\\]where $F_n$ deno",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 3432,
+            "wall_time_s": 125.03,
+            "peak_gpu_mb": 15672.2,
+            "error": null
+          },
+          {
+            "problem": "There are 360 people in my school.  15 take calculus, physics, and chemistry, an",
+            "ground_truth": "110",
+            "pred_answer": "55",
+            "correct": false,
+            "n_tokens_generated": 1935,
+            "wall_time_s": 70.37,
+            "peak_gpu_mb": 15657.2,
+            "error": null
+          },
+          {
+            "problem": "If $x^2 - x - 1 = 0$, what is the value of $x^3 - 2x + 1$?",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 2986,
+            "wall_time_s": 108.66,
+            "peak_gpu_mb": 15644.7,
+            "error": null
+          },
+          {
+            "problem": "In the land of Ink, the money system is unique. One Trinket is equal to 4 Blinke",
+            "ground_truth": "6",
+            "pred_answer": "6",
+            "correct": true,
+            "n_tokens_generated": 504,
+            "wall_time_s": 18.34,
+            "peak_gpu_mb": 15486.8,
+            "error": null
+          },
+          {
+            "problem": "What is the smallest positive multiple of 450 whose digits are all zeroes and on",
+            "ground_truth": "11,\\! 111,\\! 111,\\! 100",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 298.33,
+            "peak_gpu_mb": 15643.9,
+            "error": null
+          },
+          {
+            "problem": "Find the midpoint of the line segment between $(-5,5)$ and $(3,7)$. Express your",
+            "ground_truth": "(-1,6)",
+            "pred_answer": "(-1, 6)",
+            "correct": true,
+            "n_tokens_generated": 1182,
+            "wall_time_s": 43.0,
+            "peak_gpu_mb": 15641.2,
+            "error": null
+          },
+          {
+            "problem": "The wheel shown is spun twice, so that the numbers indicated by the pointer are ",
+            "ground_truth": "\\frac{1}{2}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 297.16,
+            "peak_gpu_mb": 15831.9,
+            "error": null
+          },
+          {
+            "problem": "Sam is carrying a 2 gallon bucket of milk to his house from the barn, which is 3",
+            "ground_truth": "\\frac{16}{27}",
+            "pred_answer": "\\dfrac{16}{27}",
+            "correct": true,
+            "n_tokens_generated": 1935,
+            "wall_time_s": 70.35,
+            "peak_gpu_mb": 15656.9,
+            "error": null
+          },
+          {
+            "problem": "The product of integers 240 and $k$ is a perfect cube. What is the smallest poss",
+            "ground_truth": "900",
+            "pred_answer": "900",
+            "correct": true,
+            "n_tokens_generated": 1765,
+            "wall_time_s": 64.35,
+            "peak_gpu_mb": 15646.4,
+            "error": null
+          },
+          {
+            "problem": "The area of $\\triangle ABC$ is 6 square centimeters. $\\overline{AB}\\|\\overline{D",
+            "ground_truth": "54",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 298.37,
+            "peak_gpu_mb": 15686.5,
+            "error": null
+          },
+          {
+            "problem": "What is the sum of the digits in the terminating decimal representation of the f",
+            "ground_truth": "14",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 298.36,
+            "peak_gpu_mb": 15647.4,
+            "error": null
+          },
+          {
+            "problem": "Find $\\sin 20^\\circ \\sin 40^\\circ \\sin 60^\\circ \\sin 80^\\circ \\sin 100^\\circ \\si",
+            "ground_truth": "\\frac{9}{256}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 298.75,
+            "peak_gpu_mb": 15652.2,
+            "error": null
+          },
+          {
+            "problem": "What is the value of $$\n(3x-2)(4x+1)-(3x-2)4x+1\n$$ when $x=4$?",
+            "ground_truth": "11",
+            "pred_answer": "11",
+            "correct": true,
+            "n_tokens_generated": 1695,
+            "wall_time_s": 61.64,
+            "peak_gpu_mb": 15648.7,
+            "error": null
+          },
+          {
+            "problem": "How many ways are there to put 5 balls in 2 boxes if the balls are not distingui",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 1861,
+            "wall_time_s": 67.74,
+            "peak_gpu_mb": 15639.4,
+            "error": null
+          },
+          {
+            "problem": "For a constant $c,$ in cylindrical coordinates $(r,\\theta,z),$ find the shape de",
+            "ground_truth": "\\text{(C)}",
+            "pred_answer": "C",
+            "correct": false,
+            "n_tokens_generated": 1158,
+            "wall_time_s": 42.09,
+            "peak_gpu_mb": 15647.9,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

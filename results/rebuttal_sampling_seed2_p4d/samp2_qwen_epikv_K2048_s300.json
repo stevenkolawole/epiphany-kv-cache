@@ -1,0 +1,284 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "dataset": "math500",
+    "n_samples": 25,
+    "max_new_tokens": 8192,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      2048
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2",
+    "sampling": {
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "seed": 2
+    }
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "2048": {
+        "accuracy": 0.72,
+        "n_correct": 18,
+        "n_total": 25,
+        "mean_wall_time_s": 132.4,
+        "mean_peak_gpu_mb": 14887.5,
+        "per_problem": [
+          {
+            "problem": "Suppose that $ABCD$ is a trapezoid in which $\\overline{AD}|| \\overline{BC}$.  Gi",
+            "ground_truth": "28",
+            "pred_answer": "28",
+            "correct": true,
+            "n_tokens_generated": 7281,
+            "wall_time_s": 234.1,
+            "peak_gpu_mb": 14952.3,
+            "error": null
+          },
+          {
+            "problem": "Find the minimum value of\n\\[\\frac{(x + 5)(x + 2)}{x + 1}\\]for $x > 0.$",
+            "ground_truth": "9",
+            "pred_answer": "9",
+            "correct": true,
+            "n_tokens_generated": 4329,
+            "wall_time_s": 139.14,
+            "peak_gpu_mb": 14950.5,
+            "error": null
+          },
+          {
+            "problem": "If $\\frac{\\sqrt{2x}}{\\sqrt{3x-1}}=\\frac32$, solve for $x$. Express your answer i",
+            "ground_truth": "\\frac9{19}",
+            "pred_answer": "\\dfrac{9}{19}",
+            "correct": false,
+            "n_tokens_generated": 1482,
+            "wall_time_s": 47.4,
+            "peak_gpu_mb": 14734.2,
+            "error": null
+          },
+          {
+            "problem": "Find the number of quadratic equations of the form $x^2 + ax + b = 0,$ such that",
+            "ground_truth": "6",
+            "pred_answer": "3",
+            "correct": false,
+            "n_tokens_generated": 7670,
+            "wall_time_s": 246.63,
+            "peak_gpu_mb": 14951.1,
+            "error": null
+          },
+          {
+            "problem": "What is the range of the function $y=\\log_2 (\\sqrt{\\sin x})$ for $0^\\circ< x < 1",
+            "ground_truth": "(-\\infty, 0]",
+            "pred_answer": "(-\\infty, 0]",
+            "correct": true,
+            "n_tokens_generated": 4281,
+            "wall_time_s": 137.59,
+            "peak_gpu_mb": 14950.6,
+            "error": null
+          },
+          {
+            "problem": "Let $ABCD$ be a regular tetrahedron with side length 2. The plane parallel to ed",
+            "ground_truth": "1+2\\sqrt{3}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 265.28,
+            "peak_gpu_mb": 14951.3,
+            "error": null
+          },
+          {
+            "problem": "The product of a set of distinct positive integers is 84. What is the least poss",
+            "ground_truth": "14",
+            "pred_answer": "14",
+            "correct": true,
+            "n_tokens_generated": 6752,
+            "wall_time_s": 217.81,
+            "peak_gpu_mb": 14950.1,
+            "error": null
+          },
+          {
+            "problem": "The operation @ is defined as $\\frac{m}{n}@\\frac{p}{q} = (m)(p)\\left(\\frac{q}{n}",
+            "ground_truth": "49",
+            "pred_answer": "49",
+            "correct": true,
+            "n_tokens_generated": 2772,
+            "wall_time_s": 88.72,
+            "peak_gpu_mb": 14952.0,
+            "error": null
+          },
+          {
+            "problem": "If $$1+12+123+1234+12345+123456+1234567+12345678$$is congruent to $n$ modulo 9, ",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 3580,
+            "wall_time_s": 114.67,
+            "peak_gpu_mb": 14951.0,
+            "error": null
+          },
+          {
+            "problem": "Solve\n\\[\\frac{1}{x - 5} > 0.\\]Enter your answer using interval notation.",
+            "ground_truth": "(5,\\infty)",
+            "pred_answer": "(5, \\infty)",
+            "correct": true,
+            "n_tokens_generated": 752,
+            "wall_time_s": 24.07,
+            "peak_gpu_mb": 14638.3,
+            "error": null
+          },
+          {
+            "problem": "Charlie is riding on his unicycle. If the unicycle's wheel has a radius of 9 inc",
+            "ground_truth": "12\\pi",
+            "pred_answer": "12\\pi",
+            "correct": true,
+            "n_tokens_generated": 1434,
+            "wall_time_s": 45.79,
+            "peak_gpu_mb": 14725.2,
+            "error": null
+          },
+          {
+            "problem": "The point $(0,0)$ is reflected over the vertical line $x=1$.  When its image is ",
+            "ground_truth": "(2,4)",
+            "pred_answer": "(2, 4)",
+            "correct": true,
+            "n_tokens_generated": 1460,
+            "wall_time_s": 46.57,
+            "peak_gpu_mb": 14735.3,
+            "error": null
+          },
+          {
+            "problem": "Positive integers $a$, $b$, and $2009$, with $a<b<2009$, form a geometric sequen",
+            "ground_truth": "41",
+            "pred_answer": "41",
+            "correct": true,
+            "n_tokens_generated": 2338,
+            "wall_time_s": 74.66,
+            "peak_gpu_mb": 14949.6,
+            "error": null
+          },
+          {
+            "problem": "The expression $10x^2-x-24$ can be written as $(Ax-8)(Bx+3),$ where $A$ and $B$ ",
+            "ground_truth": "12",
+            "pred_answer": "12",
+            "correct": true,
+            "n_tokens_generated": 3779,
+            "wall_time_s": 121.31,
+            "peak_gpu_mb": 14951.0,
+            "error": null
+          },
+          {
+            "problem": "Let $a,$ $b,$ and $c$ be distinct real numbers.  Find the degree of the polynomi",
+            "ground_truth": "0",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 263.54,
+            "peak_gpu_mb": 14951.8,
+            "error": null
+          },
+          {
+            "problem": "Write the expression \\[\\frac{4+6a}{5}-\\frac{1+3a}{4}\\] as a single fraction.",
+            "ground_truth": "\\frac{11+9a}{20}",
+            "pred_answer": "\\dfrac{9a + 11}{20}",
+            "correct": false,
+            "n_tokens_generated": 1731,
+            "wall_time_s": 55.28,
+            "peak_gpu_mb": 14769.1,
+            "error": null
+          },
+          {
+            "problem": "In the equation $|x-4| -10 = 2$, what is the product of all possible values of $",
+            "ground_truth": "-128",
+            "pred_answer": "-128",
+            "correct": true,
+            "n_tokens_generated": 1949,
+            "wall_time_s": 62.26,
+            "peak_gpu_mb": 14792.1,
+            "error": null
+          },
+          {
+            "problem": "In the diagram below, we have $\\sin \\angle RPQ = \\frac{7}{25}$.  What is $\\cos \\",
+            "ground_truth": "-\\frac{24}{25}",
+            "pred_answer": "-\\dfrac{24}{25}",
+            "correct": true,
+            "n_tokens_generated": 3439,
+            "wall_time_s": 110.28,
+            "peak_gpu_mb": 14953.0,
+            "error": null
+          },
+          {
+            "problem": "A robot moving forward at a constant speed takes 2.5 hours to travel 1 kilometer",
+            "ground_truth": "10",
+            "pred_answer": "10",
+            "correct": true,
+            "n_tokens_generated": 2356,
+            "wall_time_s": 75.38,
+            "peak_gpu_mb": 14951.3,
+            "error": null
+          },
+          {
+            "problem": "Let $f(x) = x - 3$ and $q(x) = bx +1$.  If $f(q(1)) = -3$, what is $b$?",
+            "ground_truth": "-1",
+            "pred_answer": "-1",
+            "correct": true,
+            "n_tokens_generated": 956,
+            "wall_time_s": 30.55,
+            "peak_gpu_mb": 14665.6,
+            "error": null
+          },
+          {
+            "problem": "Four points, $A$, $B$, $C$, and $D$, are chosen randomly and independently on th",
+            "ground_truth": "\\frac{1}{3}",
+            "pred_answer": "\\dfrac{1}{3}",
+            "correct": true,
+            "n_tokens_generated": 5746,
+            "wall_time_s": 184.97,
+            "peak_gpu_mb": 14949.7,
+            "error": null
+          },
+          {
+            "problem": "In the diagram, two circles, each with center $D$, have radii of $1$ and $2$. Th",
+            "ground_truth": "120",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 8192,
+            "wall_time_s": 263.35,
+            "peak_gpu_mb": 14959.2,
+            "error": null
+          },
+          {
+            "problem": "A cylindrical beaker is 8 cm high and has a radius of 3 cm. How many such beaker",
+            "ground_truth": "4",
+            "pred_answer": "4",
+            "correct": true,
+            "n_tokens_generated": 3222,
+            "wall_time_s": 103.37,
+            "peak_gpu_mb": 14949.5,
+            "error": null
+          },
+          {
+            "problem": "Evaluate\n\\[\\sin (\\arcsin 0.4 + \\arcsin 0.5) \\cdot \\sin (\\arcsin 0.5 - \\arcsin 0.",
+            "ground_truth": "\\frac{9}{100}",
+            "pred_answer": "-\\dfrac{9}{100}",
+            "correct": false,
+            "n_tokens_generated": 6984,
+            "wall_time_s": 224.65,
+            "peak_gpu_mb": 14951.0,
+            "error": null
+          },
+          {
+            "problem": "Let $P(x)$ be a monic polynomial of degree 3.  Suppose that $P(x)$ has remainder",
+            "ground_truth": "15",
+            "pred_answer": "15",
+            "correct": true,
+            "n_tokens_generated": 4131,
+            "wall_time_s": 132.53,
+            "peak_gpu_mb": 14951.5,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}
