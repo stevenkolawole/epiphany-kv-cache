@@ -135,6 +135,7 @@ try:
         LongFlowEviction,
         RandomEviction,
         KNormEviction,
+        WindowRuleEviction,
     )
 except ImportError as e:
     sys.exit(f"Cannot import eviction module: {e}")
@@ -378,7 +379,9 @@ VALUE_RESERVE_METHODS = {
     for stat in ("range", "var", "norm")
     for n in (8, 16, 32, 64)
 }
-HS_ONLY_METHODS   = {"hs_variance", "hs_variance_detrend", "band_adaptive_hs", "kv_seg_hs", "kv_seg_hs_fill", "kv_seg_hs_entropy"} | VALUE_RESERVE_METHODS
+# RaaS's and R-KV's rules on EpiKV's recomputed query window (WindowRuleEviction): FA2-compatible, hidden states only.
+WINDOW_RULE_METHODS = {"raas_epikv_window": "raas", "r_kv_epikv_window": "r_kv"}
+HS_ONLY_METHODS   = {"hs_variance", "hs_variance_detrend", "band_adaptive_hs", "kv_seg_hs", "kv_seg_hs_fill", "kv_seg_hs_entropy"} | VALUE_RESERVE_METHODS | set(WINDOW_RULE_METHODS)
 # Methods that need BOTH attention matrix AND hidden states (eager only).
 BOTH_METHODS      = {"attn_hs_product", "hybrid_seg_hs"}
 # Methods that only read past_key_values (compatible with flash attn).
@@ -392,7 +395,11 @@ DMS_METHODS = {"dms"}
 # R-KV official code (Cai et al., NeurIPS 2025), vendored in third_party/rkv: it patches the HF attention/CausalLM forwards and
 # compresses inside them, so it has its own decode loop (run_one_rkv). Needs transformers < 4.56.
 RKV_METHODS = {"rkv_official"}
-ALL_METHODS   = {"none"} | DMS_METHODS | RKV_METHODS | ATTN_ONLY_METHODS | HS_ONLY_METHODS | BOTH_METHODS | KV_METHODS
+# kvpress (NVIDIA, 0.5.5) DecodingPress around SnapKVPress: hooks every attention layer and compresses the cache to
+# target_size every compression_interval decode steps, so it has no eviction object (run_one_kvpress). Needs
+# transformers >= 4.56, < 5.3.
+KVPRESS_METHODS = {"kvpress_snapkv_decoding"}
+ALL_METHODS   = {"none"} | DMS_METHODS | RKV_METHODS | KVPRESS_METHODS | ATTN_ONLY_METHODS | HS_ONLY_METHODS | BOTH_METHODS | KV_METHODS
 
 
 def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
@@ -405,8 +412,14 @@ def make_eviction(method: str, cache_size: int, keep_recent_k: int = 128,
                   query_mode: str = None, query_layer: int = None, tau_mode: str = None):
     """Return a fresh eviction object for the given method and cache_size."""
     cfg = EvictionConfig(cache_size=cache_size, keep_recent_k=keep_recent_k)
-    if method == "none" or method in DMS_METHODS or method in RKV_METHODS:
+    if method == "none" or method in DMS_METHODS or method in RKV_METHODS or method in KVPRESS_METHODS:
         return None
+    if method in WINDOW_RULE_METHODS:
+        kw = {}
+        if band_a_layer is not None: kw["band_a_layer"] = band_a_layer
+        if band_b_layer is not None: kw["band_b_layer"] = band_b_layer
+        if query_layer is not None:  kw["query_layer"] = query_layer
+        return WindowRuleEviction(cfg, WINDOW_RULE_METHODS[method], **kw)
     if method == "h2o":
         return H2OEviction(cfg)
     if method == "thinKV":
@@ -653,6 +666,22 @@ def run_one(
         "wall_time_s":        round(wall_time_s, 2),
         "peak_gpu_mb":        round(peak_gpu_mb, 1),
     }
+
+
+def run_one_kvpress(model, tokenizer, problem: Dict, cache_size: int, max_new_tokens: int,
+                    device: torch.device) -> Dict:
+    """Run run_one with no eviction object inside a kvpress DecodingPress(SnapKVPress) of budget cache_size.
+
+    The press is the one the baseline cost runs measured (results/rebuttal_baseline_costs): SnapKV defaults (window
+    64, kernel 5), compression every 128 decode steps to target_size = cache_size, a 256-state buffer per layer. It
+    is built per problem, so no state crosses problems. It scores and selects per layer and KV head, the prompt
+    included, and always keeps the last 64 positions.
+    """
+    from kvpress import DecodingPress, SnapKVPress
+    press = DecodingPress(base_press=SnapKVPress(), compression_interval=128, target_size=cache_size,
+                          hidden_states_buffer_size=256)
+    with press(model):
+        return run_one(model, tokenizer, problem, "none", None, max_new_tokens, device)
 
 
 def run_one_dms(model, tokenizer, problem: Dict, max_new_tokens: int, device: torch.device) -> Dict:
@@ -1056,6 +1085,8 @@ def main():
                         for _l in model.model.layers:   # budget is per sweep point; R-KV's patch fixes it at construction
                             _l.self_attn.kv_cluster.budget = cache_size
                         res = run_one_rkv(model, tokenizer, prob, args.max_new_tokens, device)
+                    elif method in KVPRESS_METHODS:
+                        res = run_one_kvpress(model, tokenizer, prob, cache_size, args.max_new_tokens, device)
                     elif method in DMS_METHODS:
                         res = run_one_dms(model, tokenizer, prob, args.max_new_tokens, device)
                     else:

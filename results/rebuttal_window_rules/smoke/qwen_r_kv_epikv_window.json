@@ -1,0 +1,79 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "dataset": "math500",
+    "n_samples": 5,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "r_kv_epikv_window"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "r_kv_epikv_window": {
+      "512": {
+        "accuracy": 0.6,
+        "n_correct": 3,
+        "n_total": 5,
+        "mean_wall_time_s": 230.69,
+        "mean_peak_gpu_mb": 14660.7,
+        "per_problem": [
+          {
+            "problem": "Convert the point $(0,3)$ in rectangular coordinates to polar coordinates.  Ente",
+            "ground_truth": "\\left( 3, \\frac{\\pi}{2} \\right)",
+            "pred_answer": "(3, \\frac{\\pi}{2})",
+            "correct": true,
+            "n_tokens_generated": 963,
+            "wall_time_s": 34.68,
+            "peak_gpu_mb": 14643.0,
+            "error": null
+          },
+          {
+            "problem": "Define\n\\[p = \\sum_{k = 1}^\\infty \\frac{1}{k^2} \\quad \\text{and} \\quad q = \\sum_{",
+            "ground_truth": "p - q",
+            "pred_answer": "\\frac{\\pi^2}{6} - \\zeta(3)",
+            "correct": false,
+            "n_tokens_generated": 6893,
+            "wall_time_s": 281.13,
+            "peak_gpu_mb": 14647.3,
+            "error": null
+          },
+          {
+            "problem": "If $f(x) = \\frac{3x-2}{x-2}$, what is the value of $f(-2) +f(-1)+f(0)$? Express ",
+            "ground_truth": "\\frac{14}{3}",
+            "pred_answer": "\\dfrac{14}{3}",
+            "correct": true,
+            "n_tokens_generated": 2500,
+            "wall_time_s": 110.79,
+            "peak_gpu_mb": 14643.0,
+            "error": null
+          },
+          {
+            "problem": "How many positive whole-number divisors does 196 have?",
+            "ground_truth": "9",
+            "pred_answer": "9",
+            "correct": true,
+            "n_tokens_generated": 1354,
+            "wall_time_s": 50.57,
+            "peak_gpu_mb": 14640.7,
+            "error": null
+          },
+          {
+            "problem": "The results of a cross-country team's training run are graphed below. Which stud",
+            "ground_truth": "\\text{Evelyn}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 676.28,
+            "peak_gpu_mb": 14729.7,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

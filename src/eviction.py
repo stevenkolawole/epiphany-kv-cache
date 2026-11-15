@@ -2361,6 +2361,162 @@ class RKVEviction:
         return new_past
 
 
+class WindowRuleEviction(KVSegHSEviction):
+    """
+    A baseline's scoring rule on EpiKV's recomputed query window (rebuttal, submission 50503).
+
+    Everything except the score is EpiKV as shipped (KVSegHSEviction with query_mode "qk",
+    query_sim_window 8, refresh_tau 128 counted in steps): a compaction fires once 128 steps
+    have passed since the last one and the cache exceeds K; the prompt and the last
+    keep_recent tokens are kept; exactly K tokens survive, so the cache peaks at K + 128. At a
+    compaction the 8 most recent decode tokens' queries are recomputed at layer band_a_layer + 1
+    from their stored Band-A hidden states, with the same code path as _qk_relevance, giving an
+    (8, seq) matrix of attention probabilities averaged over heads; EpiKV averages it further
+    over the 8 rows. The rule ranks the slots between the prompt and the recent window and the
+    top K - prompt - recent are kept. EpiKV's segment tiers and fill pass are part of EpiKV's
+    rule and are not used here.
+
+    rule "raas" (RaaS): every decode token carries a timestamp, initially its arrival step.
+        Row j is the query of step t - 7 + j. In row order, each decode token row j can see whose
+        probability is at least the row's median over the decode tokens it can see is stamped
+        t - 7 + j (RaaS stamps the top half of decode-token attention at each step). The newest
+        stamps are kept; ties are broken by EpiKV's relevance (the mean of the 8 rows).
+    rule "r_kv" (R-KV, as adapted in RKVEviction): importance is the mean over the 8 rows of
+        each row max-pooled with kernel 7; redundancy is RKVEviction's (per layer and KV head,
+        softmax over positions of each key's mean cosine similarity to all cached keys, then
+        averaged); score = 0.1 * z(importance) - 0.9 * z(redundancy), each standardised over
+        the whole cache as in RKVEviction. R-KV's 8 observation tokens lie inside the recent
+        window.
+
+    Requires output_hidden_states=True and set_model(model); runs under FlashAttention.
+    """
+
+    def __init__(self, config: EvictionConfig, rule: str, band_a_layer: int = 10,
+                 band_b_layer: int = 21, query_layer: Optional[int] = None,
+                 rkv_kernel: int = 7, rkv_lambda: float = 0.1):
+        assert rule in ("raas", "r_kv"), rule
+        super().__init__(config, band_a_layer=band_a_layer, band_b_layer=band_b_layer,
+                         fill_budget=True, refresh_tau=128, tau_mode="steps",
+                         query_sim_weight=1.0, query_sim_mode="replace",
+                         query_sim_window=8, query_mode="qk", query_layer=query_layer)
+        self.rule = rule
+        self.rkv_kernel = rkv_kernel
+        self.rkv_lambda = rkv_lambda
+        self._stamps: List[int] = []
+
+    def reset(self, prefill_len: int = 0):
+        super().reset(prefill_len)
+        self._stamps = []
+
+    def _window_probs(self, past_key_values, device) -> torch.Tensor:
+        """Return the window's attention probabilities, shape (1, heads, w, seq).
+
+        The computation of _qk_relevance up to its softmax, line for line, so that
+        probs.mean(dim=(0, 1, 2)) is the relevance EpiKV ranks by.
+        """
+        from transformers.models.llama.modeling_llama import apply_rotary_pos_emb
+        assert self._model is not None, "WindowRuleEviction needs set_model(model)"
+        L = self.query_layer if self.query_layer is not None else self.band_a_layer + 1
+        layer = self._model.model.layers[L]
+        attn = layer.self_attn
+        keys = past_key_values[L][0].to(device)
+        _, kvh, seq, d = keys.shape
+        w = min(self.query_sim_window, len(self._hs_bank))
+        hs = torch.stack(self._hs_bank[-w:]).to(device=device, dtype=keys.dtype).unsqueeze(0)
+        x = layer.input_layernorm(hs)
+        q = attn.q_proj(x)
+        nh = q.shape[-1] // d
+        q = q.view(1, w, nh, d)
+        if getattr(attn, "q_norm", None) is not None:
+            q = attn.q_norm(q)
+        q = q.transpose(1, 2)
+        pos = torch.tensor([self._pos_bank[-w:]], device=device)
+        cos, sin = self._model.model.rotary_emb(x, pos)
+        q, _ = apply_rotary_pos_emb(q, q, cos, sin)
+        k = keys.repeat_interleave(nh // kvh, dim=1)
+        logits = torch.matmul(q, k.transpose(-1, -2)).float() / (d ** 0.5)
+        slot = torch.arange(seq, device=device)
+        qslot = seq - w + torch.arange(w, device=device)
+        allowed = slot[None, :] <= qslot[:, None]
+        logits = logits.masked_fill(~allowed[None, None], float("-inf"))
+        return torch.softmax(logits, dim=-1)
+
+    def _raas_rank(self, rows, stamps, prefill_len, lo, hi):
+        """Restamp from the window rows; return candidate offsets, best last."""
+        w, seq = rows.shape
+        for j in range(w):
+            n = seq - w + j + 1 - prefill_len          # decode slots row j can see
+            a = rows[j, prefill_len:prefill_len + n]
+            stamps[:n] = torch.where(a >= a.median(), self._step - (w - 1 - j), stamps[:n])
+        cand_stamp = stamps[lo - prefill_len:hi - prefill_len]
+        order = torch.argsort(rows.mean(dim=0)[lo:hi], stable=True)
+        return order[torch.argsort(cand_stamp[order], stable=True)]
+
+    def _rkv_scores(self, rows, past_key_values, device):
+        pooled = F.max_pool1d(rows.unsqueeze(1), kernel_size=self.rkv_kernel, stride=1,
+                              padding=self.rkv_kernel // 2).squeeze(1)
+        importance = pooled.mean(dim=0)
+        red_layers = []
+        for k, _ in past_key_values:
+            kn = k.float()
+            kn = kn / (kn.norm(dim=-1, keepdim=True) + 1e-8)
+            sbar = ((kn * kn.sum(dim=2, keepdim=True)).sum(dim=-1) - 1.0) / kn.shape[2]
+            red_layers.append(F.softmax(sbar, dim=-1).mean(dim=(0, 1)).to(device))
+        redundancy = torch.stack(red_layers).mean(dim=0)
+
+        def _std(x):
+            return (x - x.mean()) / (x.std() + 1e-8)
+
+        return self.rkv_lambda * _std(importance) - (1.0 - self.rkv_lambda) * _std(redundancy)
+
+    def evict_past_key_values(
+        self,
+        past_key_values: Tuple,
+        hidden_states: Tuple[torch.Tensor, ...],
+    ) -> Tuple:
+        seq_len = past_key_values[0][0].shape[2]
+        device = past_key_values[0][0].device
+        prefill_len = min(self._prefill_len, seq_len)
+
+        self._step += 1
+        hs_a = hidden_states[self.band_a_layer + 1][:, -1, :].detach()
+        self._hs_bank.append(hs_a.float().reshape(-1))
+        self._pos_bank.append(self._prefill_len + self._step - 1)
+        # The window reads only the last w entries, and those always sit in the recent window.
+        del self._hs_bank[:-self.query_sim_window]
+        del self._pos_bank[:-self.query_sim_window]
+        self._stamps.append(self._step)
+
+        self._since_compaction += 1
+        if self._since_compaction < self.refresh_tau or seq_len <= self.config.cache_size:
+            return past_key_values
+        self._since_compaction = 0
+
+        num_decode = seq_len - prefill_len
+        assert len(self._stamps) == num_decode, (len(self._stamps), num_decode)
+        keep_recent = (self.config.keep_recent_k if getattr(self.config, "recent_window_fixed", False)
+                       else min(self.config.keep_recent_k, self.config.cache_size // 4))
+        rows = self._window_probs(past_key_values, device).mean(dim=(0, 1))   # (w, seq)
+
+        keep_mask = torch.zeros(seq_len, dtype=torch.bool, device=device)
+        keep_mask[:prefill_len] = True
+        keep_mask[-keep_recent:] = True
+        lo, hi = prefill_len, seq_len - keep_recent
+        n_keep = min(self.config.cache_size - keep_recent - prefill_len, hi - lo)
+        stamps = torch.tensor(self._stamps, device=device, dtype=torch.long)
+        if self.rule == "raas":
+            order = self._raas_rank(rows, stamps, prefill_len, lo, hi)
+        else:
+            order = torch.argsort(self._rkv_scores(rows, past_key_values, device)[lo:hi], stable=True)
+        if n_keep > 0:
+            keep_mask[lo + order[-n_keep:]] = True
+
+        self.last_keep_mask = keep_mask
+        new_past = _gather_kept(past_key_values, keep_mask)
+        self._stamps = stamps[keep_mask[prefill_len:]].tolist()
+        return new_past
+
+
 class LongFlowEviction:
     """
     LongFlow: attention-output contribution-norm eviction (Su et al. 2026) —
