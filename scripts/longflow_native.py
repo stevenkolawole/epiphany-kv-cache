@@ -71,7 +71,7 @@ def main():
                 shims.append("sliding_window = None")
     print("shims:", shims, flush=True)
 
-    problems = bm.load_problems(args.dataset, args.n_samples, args.start_idx)[args.start_idx:]
+    problems = bm.load_problems(args.dataset, args.n_samples, args.start_idx)  # already sliced to [start_idx, start_idx+n)
     key = str(args.cache_size)
     per_problem = []
     if args.resume and args.output.exists():
