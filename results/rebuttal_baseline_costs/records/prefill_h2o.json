@@ -1,0 +1,116 @@
+{
+ "meta": {
+  "mode": "prefill",
+  "method": "h2o",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "eager",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.55.4",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "prefill",
+   "method": "h2o",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    1024
+   ],
+   "Ls": [
+    1024,
+    2048,
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    1,
+    4,
+    16
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/prefill_h2o.json"
+  },
+  "weights_gb": 14.958,
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "L1024": {
+   "L": 1024,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 120.1108549721539,
+     "peak_gb": 17.39,
+     "transient_gb": 2.299,
+     "cache_len": 1024
+    },
+    {
+     "ms": 121.15753581747413,
+     "peak_gb": 17.39,
+     "transient_gb": 2.299,
+     "cache_len": 1024
+    },
+    {
+     "ms": 121.2493171915412,
+     "peak_gb": 17.39,
+     "transient_gb": 2.299,
+     "cache_len": 1024
+    }
+   ]
+  },
+  "L2048": {
+   "L": 2048,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 280.9360222890973,
+     "peak_gb": 24.318,
+     "transient_gb": 9.228,
+     "cache_len": 2048
+    },
+    {
+     "ms": 284.6847390756011,
+     "peak_gb": 24.318,
+     "transient_gb": 9.103,
+     "cache_len": 2048
+    },
+    {
+     "ms": 283.8313956744969,
+     "peak_gb": 24.318,
+     "transient_gb": 9.103,
+     "cache_len": 2048
+    }
+   ]
+  },
+  "L4096": {
+   "L": 4096,
+   "K": 1024,
+   "oom": "CUDA out of memory. Tried to allocate 2.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 1.23 GiB is free. Including non-PyTorch memory, this process has 38.26 GiB memory in use. Of the alloca"
+  },
+  "L8192": {
+   "L": 8192,
+   "K": 1024,
+   "oom": "CUDA out of memory. Tried to allocate 4.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 1.24 GiB is free. Including non-PyTorch memory, this process has 38.24 GiB memory in use. Of the alloca"
+  },
+  "L16384": {
+   "L": 16384,
+   "K": 1024,
+   "oom": "CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 5.49 GiB is free. Including non-PyTorch memory, this process has 33.99 GiB memory in use. Of the alloc"
+  },
+  "L32768": {
+   "L": 32768,
+   "K": 1024,
+   "oom": "CUDA out of memory. Tried to allocate 64.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 2.99 GiB is free. Including non-PyTorch memory, this process has 36.49 GiB memory in use. Of the alloc"
+  }
+ }
+}

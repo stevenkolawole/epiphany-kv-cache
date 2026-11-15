@@ -1,0 +1,192 @@
+{
+ "meta": {
+  "mode": "prefill",
+  "method": "none",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.57.1",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "prefill",
+   "method": "none",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    1024
+   ],
+   "Ls": [
+    1024,
+    2048,
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    1,
+    4,
+    16
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/prefill_none_kvpressvenv.json"
+  },
+  "weights_gb": 14.958,
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "L1024": {
+   "L": 1024,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 87.15405594557524,
+     "peak_gb": 15.205,
+     "transient_gb": 0.114,
+     "cache_len": 1024
+    },
+    {
+     "ms": 87.52873027697206,
+     "peak_gb": 15.205,
+     "transient_gb": 0.114,
+     "cache_len": 1024
+    },
+    {
+     "ms": 87.6008439809084,
+     "peak_gb": 15.205,
+     "transient_gb": 0.114,
+     "cache_len": 1024
+    }
+   ]
+  },
+  "L2048": {
+   "L": 2048,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 160.40048794820905,
+     "peak_gb": 15.443,
+     "transient_gb": 0.353,
+     "cache_len": 2048
+    },
+    {
+     "ms": 161.12681897357106,
+     "peak_gb": 15.443,
+     "transient_gb": 0.228,
+     "cache_len": 2048
+    },
+    {
+     "ms": 160.9991630539298,
+     "peak_gb": 15.443,
+     "transient_gb": 0.228,
+     "cache_len": 2048
+    }
+   ]
+  },
+  "L4096": {
+   "L": 4096,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 314.6224799565971,
+     "peak_gb": 15.921,
+     "transient_gb": 0.705,
+     "cache_len": 4096
+    },
+    {
+     "ms": 315.781454090029,
+     "peak_gb": 15.921,
+     "transient_gb": 0.455,
+     "cache_len": 4096
+    },
+    {
+     "ms": 315.30559016391635,
+     "peak_gb": 15.921,
+     "transient_gb": 0.455,
+     "cache_len": 4096
+    }
+   ]
+  },
+  "L8192": {
+   "L": 8192,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 654.3572032824159,
+     "peak_gb": 16.876,
+     "transient_gb": 1.41,
+     "cache_len": 8192
+    },
+    {
+     "ms": 653.8151358254254,
+     "peak_gb": 16.876,
+     "transient_gb": 0.91,
+     "cache_len": 8192
+    },
+    {
+     "ms": 654.2864600196481,
+     "peak_gb": 16.876,
+     "transient_gb": 0.91,
+     "cache_len": 8192
+    }
+   ]
+  },
+  "L16384": {
+   "L": 16384,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 1449.021298903972,
+     "peak_gb": 18.786,
+     "transient_gb": 2.82,
+     "cache_len": 16384
+    },
+    {
+     "ms": 1451.5529130585492,
+     "peak_gb": 18.786,
+     "transient_gb": 1.82,
+     "cache_len": 16384
+    },
+    {
+     "ms": 1452.4357770569623,
+     "peak_gb": 18.786,
+     "transient_gb": 1.82,
+     "cache_len": 16384
+    }
+   ]
+  },
+  "L32768": {
+   "L": 32768,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 3527.3332078941166,
+     "peak_gb": 22.607,
+     "transient_gb": 5.641,
+     "cache_len": 32768
+    },
+    {
+     "ms": 3536.8666741997004,
+     "peak_gb": 22.607,
+     "transient_gb": 3.641,
+     "cache_len": 32768
+    },
+    {
+     "ms": 3533.7035739794374,
+     "peak_gb": 22.607,
+     "transient_gb": 3.641,
+     "cache_len": 32768
+    }
+   ]
+  }
+ }
+}

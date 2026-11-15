@@ -1,0 +1,116 @@
+smoke_check_epikv START 02:47:12 --mode check_perseq --method epikv --Ks 512 1024
+smoke_check_epikv END rc=0 02:47:25
+smoke_steady_epikv START 02:47:27 --mode steady --method epikv --Ks 512 --batches 1 2 --windows 2
+smoke_steady_epikv END rc=0 02:47:57
+smoke_steady_rkv START 02:48:00 --mode steady --method rkv --Ks 512 --batches 1 2 --windows 2
+smoke_steady_rkv END rc=0 02:48:30
+smoke_steady_h2o START 02:48:32 --mode steady --method h2o --Ks 512 --batches 1 2 --windows 2
+smoke_steady_h2o END rc=0 02:49:02
+smoke_steady_raas START 02:49:05 --mode steady --method raas --Ks 512 --batches 1 2 --windows 2
+smoke_steady_raas END rc=0 02:49:35
+smoke_steady_snapkv START 02:49:38 --mode steady --method snapkv_decoding --Ks 512 --batches 1 2 --windows 2
+smoke_steady_snapkv END rc=0 02:50:09
+smoke_comp_rkv START 02:50:11 --mode compaction --method rkv --Ls 4096 --Ks 1024 --batches 1 --repeats 1
+smoke_comp_rkv END rc=0 02:50:24
+smoke_comp_epikv START 02:50:27 --mode compaction --method epikv --Ls 4096 --Ks 1024 --batches 1 2 --repeats 1
+smoke_comp_epikv END rc=0 02:50:44
+smoke_comp_snapkv START 02:50:46 --mode compaction --method snapkv_decoding --Ls 4096 --Ks 1024 --batches 1 --repeats 1
+smoke_comp_snapkv END rc=0 02:51:08
+smoke_prefill_rkv START 02:51:11 --mode prefill --method rkv --Ls 1024 2048 --Ks 1024 --repeats 1
+smoke_prefill_rkv END rc=0 02:51:23
+smoke_prefill_snapkv START 02:51:25 --mode prefill --method snapkv_prefill --Ls 2048 --Ks 1024 --repeats 1
+smoke_prefill_snapkv END rc=0 02:51:37
+smoke_cap_epikv START 02:51:39 --mode capacity --method epikv --Ks 512 --max_batch 4
+smoke_cap_epikv END rc=0 02:51:52
+smoke_dms START 02:51:54 --mode dms_decode --method dms --model nvidia/Qwen3-8B-DMS-8x --tokenizer Qwen/Qwen3-8B --batches 1 --steps 256
+smoke_dms END rc=1 02:52:05
+smoke_steady_epikv_q3 START 02:52:07 --mode steady --method epikv --model Qwen/Qwen3-8B --band_a_layer 11 --band_b_layer 24 --Ks 512 --batches 1 2 --windows 2
+smoke_steady_epikv_q3 END rc=0 02:52:45
+SMOKE_ALLDONE
+smoke2_check_epikv START 02:53:40 --mode check_perseq --method epikv --Ks 512 1024 4096
+smoke2_check_epikv END rc=0 02:53:56
+smoke2_check_epikv_noq START 02:53:58 --mode check_perseq --method epikv_noq --Ks 1024
+smoke2_check_epikv_noq END rc=0 02:54:10
+smoke2_dms START 02:54:12 --mode dms_decode --method dms --model nvidia/Qwen3-8B-DMS-8x --tokenizer Qwen/Qwen3-8B --batches 1 2 --steps 256
+smoke2_dms END rc=0 02:55:17
+smoke2_prefill_dms START 02:55:19 --mode prefill --method dms --model nvidia/Qwen3-8B-DMS-8x --tokenizer Qwen/Qwen3-8B --Ls 2048 --repeats 1
+smoke2_prefill_dms END rc=0 02:55:38
+SMOKE2_DONE
+steady_none START 02:56:25 --mode steady --method none
+steady_none END rc=0 03:00:30
+steady_epikv START 03:00:32 --mode steady --method epikv
+steady_epikv END rc=0 03:05:10
+steady_epikv_noq START 03:05:12 --mode steady --method epikv_noq
+steady_epikv_noq END rc=0 03:09:35
+steady_h2o START 03:09:38 --mode steady --method h2o
+steady_h2o END rc=0 03:16:30
+steady_raas START 03:16:32 --mode steady --method raas
+steady_raas END rc=0 03:23:25
+steady_rkv START 03:23:28 --mode steady --method rkv
+steady_rkv END rc=0 03:27:27
+steady_snapkv_decoding START 03:27:29 --mode steady --method snapkv_decoding
+steady_snapkv_decoding END rc=0 03:32:06
+steady_none_kvpressvenv START 03:32:08 --mode steady --method none
+steady_none_kvpressvenv END rc=0 03:36:14
+steady_none_qwen3 START 03:36:16 --mode steady --method none --model Qwen/Qwen3-8B --Ks 512 1024 2048 4096 8192
+steady_none_qwen3 END rc=0 03:43:25
+steady_epikv_qwen3 START 03:43:27 --mode steady --method epikv --model Qwen/Qwen3-8B --band_a_layer 11 --band_b_layer 24
+steady_epikv_qwen3 END rc=0 03:49:31
+dms_decode_dms START 03:49:33 --mode dms_decode --method dms --model nvidia/Qwen3-8B-DMS-8x --tokenizer Qwen/Qwen3-8B --batches 1 4 16 --steps 8192
+dms_decode_dms END rc=0 04:14:41
+compaction_epikv START 04:14:43 --mode compaction --method epikv
+compaction_epikv END rc=0 04:27:41
+compaction_epikv_noq START 04:27:43 --mode compaction --method epikv_noq
+compaction_epikv_noq END rc=0 04:37:11
+compaction_h2o START 04:37:13 --mode compaction --method h2o
+compaction_h2o END rc=0 04:40:31
+compaction_raas START 04:40:33 --mode compaction --method raas
+compaction_raas END rc=0 04:43:49
+compaction_rkv START 04:43:52 --mode compaction --method rkv
+compaction_rkv END rc=0 04:45:32
+compaction_none START 04:45:34 --mode compaction --method none
+compaction_none END rc=0 04:48:14
+compaction_snapkv_decoding START 04:48:16 --mode compaction --method snapkv_decoding
+compaction_snapkv_decoding END rc=0 05:09:25
+capacity_epikv START 05:09:27 --mode capacity --method epikv
+capacity_epikv END rc=0 05:12:11
+capacity_epikv_noq START 05:12:13 --mode capacity --method epikv_noq
+capacity_epikv_noq END rc=0 05:14:05
+capacity_h2o START 05:14:07 --mode capacity --method h2o
+capacity_h2o END rc=0 05:15:41
+capacity_raas START 05:15:43 --mode capacity --method raas
+capacity_raas END rc=0 05:17:20
+capacity_rkv START 05:17:22 --mode capacity --method rkv
+capacity_rkv END rc=0 05:18:33
+capacity_none START 05:18:35 --mode capacity --method none --Ks 4096 8192 16384 32768
+capacity_none END rc=0 05:19:43
+capacity_snapkv_decoding START 05:19:45 --mode capacity --method snapkv_decoding
+capacity_snapkv_decoding END rc=0 05:28:15
+capacity_none_qwen3 START 05:28:17 --mode capacity --method none --model Qwen/Qwen3-8B --Ks 4096 8192 16384 32768
+capacity_none_qwen3 END rc=0 05:29:28
+capacity_epikv_qwen3 START 05:29:30 --mode capacity --method epikv --model Qwen/Qwen3-8B --band_a_layer 11 --band_b_layer 24
+capacity_epikv_qwen3 END rc=0 05:31:00
+prefill_none START 05:31:02 --mode prefill --method none --Ls 1024 2048 4096 8192 16384 32768 --Ks 1024
+prefill_none END rc=0 05:31:35
+prefill_epikv START 05:31:37 --mode prefill --method epikv --Ls 1024 2048 4096 8192 16384 32768 --Ks 1024
+prefill_epikv END rc=0 05:32:10
+prefill_h2o START 05:32:12 --mode prefill --method h2o --Ls 1024 2048 4096 8192 16384 32768 --Ks 1024
+prefill_h2o END rc=0 05:32:27
+prefill_raas START 05:32:29 --mode prefill --method raas --Ls 1024 2048 4096 8192 16384 32768 --Ks 1024
+prefill_raas END rc=0 05:32:44
+prefill_rkv START 05:32:46 --mode prefill --method rkv --Ls 1024 2048 4096 8192 16384 32768 --Ks 1024
+prefill_rkv END rc=0 05:33:07
+prefill_snapkv_prefill START 05:33:09 --mode prefill --method snapkv_prefill --Ls 1024 2048 4096 8192 16384 32768 --Ks 1024
+prefill_snapkv_prefill END rc=0 05:33:43
+prefill_none_kvpressvenv START 05:33:45 --mode prefill --method none --Ls 1024 2048 4096 8192 16384 32768 --Ks 1024
+prefill_none_kvpressvenv END rc=0 05:34:18
+prefill_none_qwen3 START 05:34:20 --mode prefill --method none --model Qwen/Qwen3-8B --Ls 1024 2048 4096 8192 16384 32768 --Ks 1024
+prefill_none_qwen3 END rc=0 05:34:56
+prefill_dms START 05:34:58 --mode prefill --method dms --model nvidia/Qwen3-8B-DMS-8x --tokenizer Qwen/Qwen3-8B --Ls 1024 2048 4096 8192 16384 32768 --Ks 1024
+prefill_dms END rc=0 05:42:16
+GRID_DONE
+steady_rkv START 05:42:30 --mode steady --method rkv
+steady_rkv END rc=0 05:46:29
+FOLLOWUP_DONE
+capacity_fresh_epikv_qwen3 START 05:50:26
+capacity_fresh_epikv_qwen3 END 06:03:04

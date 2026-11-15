@@ -1,0 +1,192 @@
+{
+ "meta": {
+  "mode": "prefill",
+  "method": "none",
+  "model": "Qwen/Qwen3-8B",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.57.1",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "prefill",
+   "method": "none",
+   "model": "Qwen/Qwen3-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    1024
+   ],
+   "Ls": [
+    1024,
+    2048,
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    1,
+    4,
+    16
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/prefill_none_qwen3.json"
+  },
+  "weights_gb": 15.259,
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "L1024": {
+   "L": 1024,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 94.30012898519635,
+     "peak_gb": 15.509,
+     "transient_gb": 0.102,
+     "cache_len": 1024
+    },
+    {
+     "ms": 94.65391421690583,
+     "peak_gb": 15.509,
+     "transient_gb": 0.102,
+     "cache_len": 1024
+    },
+    {
+     "ms": 94.29314685985446,
+     "peak_gb": 15.509,
+     "transient_gb": 0.102,
+     "cache_len": 1024
+    }
+   ]
+  },
+  "L2048": {
+   "L": 2048,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 180.0806438550353,
+     "peak_gb": 15.752,
+     "transient_gb": 0.345,
+     "cache_len": 2048
+    },
+    {
+     "ms": 181.39122799038887,
+     "peak_gb": 15.752,
+     "transient_gb": 0.204,
+     "cache_len": 2048
+    },
+    {
+     "ms": 180.67664001137018,
+     "peak_gb": 15.752,
+     "transient_gb": 0.204,
+     "cache_len": 2048
+    }
+   ]
+  },
+  "L4096": {
+   "L": 4096,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 348.72101014479995,
+     "peak_gb": 16.237,
+     "transient_gb": 0.689,
+     "cache_len": 4096
+    },
+    {
+     "ms": 347.9273705743253,
+     "peak_gb": 16.237,
+     "transient_gb": 0.408,
+     "cache_len": 4096
+    },
+    {
+     "ms": 348.03412668406963,
+     "peak_gb": 16.237,
+     "transient_gb": 0.408,
+     "cache_len": 4096
+    }
+   ]
+  },
+  "L8192": {
+   "L": 8192,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 721.1096961982548,
+     "peak_gb": 17.208,
+     "transient_gb": 1.379,
+     "cache_len": 8192
+    },
+    {
+     "ms": 719.1329570487142,
+     "peak_gb": 17.208,
+     "transient_gb": 0.816,
+     "cache_len": 8192
+    },
+    {
+     "ms": 728.1141430139542,
+     "peak_gb": 17.208,
+     "transient_gb": 0.816,
+     "cache_len": 8192
+    }
+   ]
+  },
+  "L16384": {
+   "L": 16384,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 1594.1978842020035,
+     "peak_gb": 19.15,
+     "transient_gb": 2.758,
+     "cache_len": 16384
+    },
+    {
+     "ms": 1594.6754142642021,
+     "peak_gb": 19.15,
+     "transient_gb": 1.633,
+     "cache_len": 16384
+    },
+    {
+     "ms": 1599.8837240040302,
+     "peak_gb": 19.15,
+     "transient_gb": 1.633,
+     "cache_len": 16384
+    }
+   ]
+  },
+  "L32768": {
+   "L": 32768,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 3896.5953569859266,
+     "peak_gb": 23.033,
+     "transient_gb": 5.516,
+     "cache_len": 32768
+    },
+    {
+     "ms": 3900.6042000837624,
+     "peak_gb": 23.033,
+     "transient_gb": 3.266,
+     "cache_len": 32768
+    },
+    {
+     "ms": 3898.0607790872455,
+     "peak_gb": 23.033,
+     "transient_gb": 3.266,
+     "cache_len": 32768
+    }
+   ]
+  }
+ }
+}

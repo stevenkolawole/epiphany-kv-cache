@@ -1,0 +1,154 @@
+{
+ "meta": {
+  "mode": "prefill",
+  "method": "rkv",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.55.4",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "prefill",
+   "method": "rkv",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    1024
+   ],
+   "Ls": [
+    1024,
+    2048,
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    1,
+    4,
+    16
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/prefill_rkv.json"
+  },
+  "weights_gb": 14.958,
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "L1024": {
+   "L": 1024,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 105.98343517631292,
+     "peak_gb": 15.516,
+     "transient_gb": 0.176,
+     "cache_len": 1024
+    },
+    {
+     "ms": 106.52527073398232,
+     "peak_gb": 15.516,
+     "transient_gb": 0.176,
+     "cache_len": 1024
+    },
+    {
+     "ms": 106.48567695170641,
+     "peak_gb": 15.516,
+     "transient_gb": 0.176,
+     "cache_len": 1024
+    }
+   ]
+  },
+  "L2048": {
+   "L": 2048,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 209.20475106686354,
+     "peak_gb": 16.244,
+     "transient_gb": 0.904,
+     "cache_len": 1024
+    },
+    {
+     "ms": 209.53589165583253,
+     "peak_gb": 16.244,
+     "transient_gb": 0.654,
+     "cache_len": 1024
+    },
+    {
+     "ms": 209.71390279009938,
+     "peak_gb": 16.244,
+     "transient_gb": 0.654,
+     "cache_len": 1024
+    }
+   ]
+  },
+  "L4096": {
+   "L": 4096,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 475.0195569358766,
+     "peak_gb": 18.597,
+     "transient_gb": 3.007,
+     "cache_len": 1024
+    },
+    {
+     "ms": 476.23553592711687,
+     "peak_gb": 18.597,
+     "transient_gb": 2.507,
+     "cache_len": 1024
+    },
+    {
+     "ms": 481.08301777392626,
+     "peak_gb": 18.597,
+     "transient_gb": 2.507,
+     "cache_len": 1024
+    }
+   ]
+  },
+  "L8192": {
+   "L": 8192,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 1270.6373217515647,
+     "peak_gb": 26.889,
+     "transient_gb": 10.798,
+     "cache_len": 1024
+    },
+    {
+     "ms": 1270.8248384296894,
+     "peak_gb": 26.889,
+     "transient_gb": 9.798,
+     "cache_len": 1024
+    },
+    {
+     "ms": 1277.6047200895846,
+     "peak_gb": 26.889,
+     "transient_gb": 9.798,
+     "cache_len": 1024
+    }
+   ]
+  },
+  "L16384": {
+   "L": 16384,
+   "K": 1024,
+   "oom": "CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 954.50 MiB is free. Including non-PyTorch memory, this process has 38.55 GiB memory in use. Of the all"
+  },
+  "L32768": {
+   "L": 32768,
+   "K": 1024,
+   "oom": "CUDA out of memory. Tried to allocate 8.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 5.23 GiB is free. Including non-PyTorch memory, this process has 34.26 GiB memory in use. Of the alloca"
+  }
+ }
+}

@@ -1,0 +1,699 @@
+{
+ "meta": {
+  "mode": "compaction",
+  "method": "rkv",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.55.4",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "compaction",
+   "method": "rkv",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    512,
+    1024,
+    2048,
+    4096
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    1,
+    4,
+    16
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/compaction_rkv.json"
+  },
+  "weights_gb": 14.958,
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "L4096_K512_B1": {
+   "L": 4096,
+   "K": 512,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 218.6777819879353,
+     "fwd_ms": 218.65386981517076,
+     "pol_ms": 0.02391217276453972,
+     "from": 4097,
+     "to": 512,
+     "resident_gb": 15.468,
+     "peak_gb": 17.868,
+     "transient_gb": 2.4
+    },
+    {
+     "ms": 218.66366686299443,
+     "fwd_ms": 218.64057704806328,
+     "pol_ms": 0.02308981493115425,
+     "from": 4097,
+     "to": 512,
+     "resident_gb": 15.468,
+     "peak_gb": 17.868,
+     "transient_gb": 2.4
+    },
+    {
+     "ms": 218.65588007494807,
+     "fwd_ms": 218.6320680193603,
+     "pol_ms": 0.023812055587768555,
+     "from": 4097,
+     "to": 512,
+     "resident_gb": 15.468,
+     "peak_gb": 17.868,
+     "transient_gb": 2.4
+    }
+   ]
+  },
+  "L4096_K512_B4": {
+   "L": 4096,
+   "K": 512,
+   "batch": 4,
+   "repeats": [
+    {
+     "ms": 795.3530848026276,
+     "fwd_ms": 795.3238012269139,
+     "pol_ms": 0.02928357571363449,
+     "from": 4097,
+     "to": 512,
+     "resident_gb": 16.974,
+     "peak_gb": 26.528,
+     "transient_gb": 9.554
+    },
+    {
+     "ms": 795.2901567332447,
+     "fwd_ms": 795.2624536119401,
+     "pol_ms": 0.027703121304512024,
+     "from": 4097,
+     "to": 512,
+     "resident_gb": 16.974,
+     "peak_gb": 26.528,
+     "transient_gb": 9.554
+    },
+    {
+     "ms": 795.2640950679779,
+     "fwd_ms": 795.2391053549945,
+     "pol_ms": 0.024989712983369827,
+     "from": 4097,
+     "to": 512,
+     "resident_gb": 16.974,
+     "peak_gb": 26.528,
+     "transient_gb": 9.554
+    }
+   ]
+  },
+  "L4096_K512_B16": {
+   "L": 4096,
+   "K": 512,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 16.01 GiB. GPU 0 has a total capacity of 39.49 GiB of which 9.32 GiB is free. Including non-PyTorch memory, this process has 30.16 GiB memory in use. Of the alloc",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L4096_K1024_B1": {
+   "L": 4096,
+   "K": 1024,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 219.06708320602775,
+     "fwd_ms": 219.04539223760366,
+     "pol_ms": 0.021690968424081802,
+     "from": 4097,
+     "to": 1024,
+     "resident_gb": 15.468,
+     "peak_gb": 17.868,
+     "transient_gb": 2.4
+    },
+    {
+     "ms": 219.09053390845656,
+     "fwd_ms": 219.0697081387043,
+     "pol_ms": 0.020825769752264023,
+     "from": 4097,
+     "to": 1024,
+     "resident_gb": 15.468,
+     "peak_gb": 17.868,
+     "transient_gb": 2.4
+    },
+    {
+     "ms": 219.0523431636393,
+     "fwd_ms": 219.0318927168846,
+     "pol_ms": 0.020450446754693985,
+     "from": 4097,
+     "to": 1024,
+     "resident_gb": 15.468,
+     "peak_gb": 17.868,
+     "transient_gb": 2.4
+    }
+   ]
+  },
+  "L4096_K1024_B4": {
+   "L": 4096,
+   "K": 1024,
+   "batch": 4,
+   "repeats": [
+    {
+     "ms": 797.1486011520028,
+     "fwd_ms": 797.1231490373611,
+     "pol_ms": 0.025452114641666412,
+     "from": 4097,
+     "to": 1024,
+     "resident_gb": 16.974,
+     "peak_gb": 26.528,
+     "transient_gb": 9.554
+    },
+    {
+     "ms": 797.1811606548727,
+     "fwd_ms": 797.141017857939,
+     "pol_ms": 0.04014279693365097,
+     "from": 4097,
+     "to": 1024,
+     "resident_gb": 16.974,
+     "peak_gb": 26.528,
+     "transient_gb": 9.554
+    },
+    {
+     "ms": 797.1206298097968,
+     "fwd_ms": 797.0874379388988,
+     "pol_ms": 0.03319187089800835,
+     "from": 4097,
+     "to": 1024,
+     "resident_gb": 16.974,
+     "peak_gb": 26.528,
+     "transient_gb": 9.554
+    }
+   ]
+  },
+  "L4096_K1024_B16": {
+   "L": 4096,
+   "K": 1024,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 16.01 GiB. GPU 0 has a total capacity of 39.49 GiB of which 9.32 GiB is free. Including non-PyTorch memory, this process has 30.16 GiB memory in use. Of the alloc",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L4096_K2048_B1": {
+   "L": 4096,
+   "K": 2048,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 220.12279694899917,
+     "fwd_ms": 220.09336110204458,
+     "pol_ms": 0.02943584695458412,
+     "from": 4097,
+     "to": 2048,
+     "resident_gb": 15.468,
+     "peak_gb": 17.868,
+     "transient_gb": 2.4
+    },
+    {
+     "ms": 220.14706674963236,
+     "fwd_ms": 220.12225072830915,
+     "pol_ms": 0.02481602132320404,
+     "from": 4097,
+     "to": 2048,
+     "resident_gb": 15.468,
+     "peak_gb": 17.868,
+     "transient_gb": 2.4
+    },
+    {
+     "ms": 220.15120601281524,
+     "fwd_ms": 220.1287690550089,
+     "pol_ms": 0.0224369578063488,
+     "from": 4097,
+     "to": 2048,
+     "resident_gb": 15.468,
+     "peak_gb": 17.868,
+     "transient_gb": 2.4
+    }
+   ]
+  },
+  "L4096_K2048_B4": {
+   "L": 4096,
+   "K": 2048,
+   "batch": 4,
+   "repeats": [
+    {
+     "ms": 800.958096049726,
+     "fwd_ms": 800.9305167943239,
+     "pol_ms": 0.027579255402088165,
+     "from": 4097,
+     "to": 2048,
+     "resident_gb": 16.974,
+     "peak_gb": 26.528,
+     "transient_gb": 9.554
+    },
+    {
+     "ms": 800.8370487950742,
+     "fwd_ms": 800.7502136752009,
+     "pol_ms": 0.0868351198732853,
+     "from": 4097,
+     "to": 2048,
+     "resident_gb": 16.974,
+     "peak_gb": 26.528,
+     "transient_gb": 9.554
+    },
+    {
+     "ms": 801.0181002318859,
+     "fwd_ms": 800.9913512505591,
+     "pol_ms": 0.026748981326818466,
+     "from": 4097,
+     "to": 2048,
+     "resident_gb": 16.974,
+     "peak_gb": 26.528,
+     "transient_gb": 9.554
+    }
+   ]
+  },
+  "L4096_K2048_B16": {
+   "L": 4096,
+   "K": 2048,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 16.01 GiB. GPU 0 has a total capacity of 39.49 GiB of which 9.32 GiB is free. Including non-PyTorch memory, this process has 30.16 GiB memory in use. Of the alloc",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L8192_K512_B1": {
+   "L": 8192,
+   "K": 512,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 788.466326892376,
+     "fwd_ms": 788.4424170479178,
+     "pol_ms": 0.02390984445810318,
+     "from": 8193,
+     "to": 512,
+     "resident_gb": 15.968,
+     "peak_gb": 25.552,
+     "transient_gb": 9.585
+    },
+    {
+     "ms": 788.425013422966,
+     "fwd_ms": 788.3976371958852,
+     "pol_ms": 0.02737622708082199,
+     "from": 8193,
+     "to": 512,
+     "resident_gb": 15.968,
+     "peak_gb": 25.552,
+     "transient_gb": 9.585
+    },
+    {
+     "ms": 788.3570124395192,
+     "fwd_ms": 788.3312064222991,
+     "pol_ms": 0.025806017220020294,
+     "from": 8193,
+     "to": 512,
+     "resident_gb": 15.968,
+     "peak_gb": 25.552,
+     "transient_gb": 9.585
+    }
+   ]
+  },
+  "L8192_K512_B4": {
+   "L": 8192,
+   "K": 512,
+   "batch": 4,
+   "oom": "CUDA out of memory. Tried to allocate 16.01 GiB. GPU 0 has a total capacity of 39.49 GiB of which 13.73 GiB is free. Including non-PyTorch memory, this process has 25.76 GiB memory in use. Of the allo",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L8192_K512_B16": {
+   "L": 8192,
+   "K": 512,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 16.01 GiB. GPU 0 has a total capacity of 39.49 GiB of which 6.73 GiB is free. Including non-PyTorch memory, this process has 32.76 GiB memory in use. Of the alloc",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L8192_K1024_B1": {
+   "L": 8192,
+   "K": 1024,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 788.9677970670164,
+     "fwd_ms": 788.9367761090398,
+     "pol_ms": 0.031020957976579666,
+     "from": 8193,
+     "to": 1024,
+     "resident_gb": 15.968,
+     "peak_gb": 25.552,
+     "transient_gb": 9.585
+    },
+    {
+     "ms": 788.4252541698515,
+     "fwd_ms": 788.3928632363677,
+     "pol_ms": 0.032390933483839035,
+     "from": 8193,
+     "to": 1024,
+     "resident_gb": 15.968,
+     "peak_gb": 25.552,
+     "transient_gb": 9.585
+    },
+    {
+     "ms": 789.0574736520648,
+     "fwd_ms": 789.0253309160471,
+     "pol_ms": 0.03214273601770401,
+     "from": 8193,
+     "to": 1024,
+     "resident_gb": 15.968,
+     "peak_gb": 25.552,
+     "transient_gb": 9.585
+    }
+   ]
+  },
+  "L8192_K1024_B4": {
+   "L": 8192,
+   "K": 1024,
+   "batch": 4,
+   "oom": "CUDA out of memory. Tried to allocate 16.01 GiB. GPU 0 has a total capacity of 39.49 GiB of which 13.73 GiB is free. Including non-PyTorch memory, this process has 25.76 GiB memory in use. Of the allo",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L8192_K1024_B16": {
+   "L": 8192,
+   "K": 1024,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 16.01 GiB. GPU 0 has a total capacity of 39.49 GiB of which 6.73 GiB is free. Including non-PyTorch memory, this process has 32.76 GiB memory in use. Of the alloc",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L8192_K2048_B1": {
+   "L": 8192,
+   "K": 2048,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 789.9311822839081,
+     "fwd_ms": 789.9080631323159,
+     "pol_ms": 0.02311915159225464,
+     "from": 8193,
+     "to": 2048,
+     "resident_gb": 15.968,
+     "peak_gb": 25.552,
+     "transient_gb": 9.585
+    },
+    {
+     "ms": 790.0847638957202,
+     "fwd_ms": 790.0504507124424,
+     "pol_ms": 0.03431318327784538,
+     "from": 8193,
+     "to": 2048,
+     "resident_gb": 15.968,
+     "peak_gb": 25.552,
+     "transient_gb": 9.585
+    },
+    {
+     "ms": 790.0832667946815,
+     "fwd_ms": 790.0557308457792,
+     "pol_ms": 0.027535948902368546,
+     "from": 8193,
+     "to": 2048,
+     "resident_gb": 15.968,
+     "peak_gb": 25.552,
+     "transient_gb": 9.585
+    }
+   ]
+  },
+  "L8192_K2048_B4": {
+   "L": 8192,
+   "K": 2048,
+   "batch": 4,
+   "oom": "CUDA out of memory. Tried to allocate 16.01 GiB. GPU 0 has a total capacity of 39.49 GiB of which 13.73 GiB is free. Including non-PyTorch memory, this process has 25.76 GiB memory in use. Of the allo",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L8192_K2048_B16": {
+   "L": 8192,
+   "K": 2048,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 16.01 GiB. GPU 0 has a total capacity of 39.49 GiB of which 6.73 GiB is free. Including non-PyTorch memory, this process has 32.76 GiB memory in use. Of the alloc",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L8192_K4096_B1": {
+   "L": 8192,
+   "K": 4096,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 791.99980199337,
+     "fwd_ms": 791.9765547849238,
+     "pol_ms": 0.023247208446264267,
+     "from": 8193,
+     "to": 4096,
+     "resident_gb": 15.968,
+     "peak_gb": 25.552,
+     "transient_gb": 9.585
+    },
+    {
+     "ms": 792.0395936816931,
+     "fwd_ms": 792.0012245886028,
+     "pol_ms": 0.03836909309029579,
+     "from": 8193,
+     "to": 4096,
+     "resident_gb": 15.968,
+     "peak_gb": 25.552,
+     "transient_gb": 9.585
+    },
+    {
+     "ms": 791.9905800372362,
+     "fwd_ms": 791.9662822969258,
+     "pol_ms": 0.024297740310430527,
+     "from": 8193,
+     "to": 4096,
+     "resident_gb": 15.968,
+     "peak_gb": 25.552,
+     "transient_gb": 9.585
+    }
+   ]
+  },
+  "L8192_K4096_B4": {
+   "L": 8192,
+   "K": 4096,
+   "batch": 4,
+   "oom": "CUDA out of memory. Tried to allocate 16.01 GiB. GPU 0 has a total capacity of 39.49 GiB of which 13.73 GiB is free. Including non-PyTorch memory, this process has 25.76 GiB memory in use. Of the allo",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L8192_K4096_B16": {
+   "L": 8192,
+   "K": 4096,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 16.01 GiB. GPU 0 has a total capacity of 39.49 GiB of which 6.73 GiB is free. Including non-PyTorch memory, this process has 32.76 GiB memory in use. Of the alloc",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L16384_K512_B1": {
+   "L": 16384,
+   "K": 512,
+   "batch": 1,
+   "oom": "CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 15.63 GiB is free. Including non-PyTorch memory, this process has 23.86 GiB memory in use. Of the allo",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L16384_K512_B4": {
+   "L": 16384,
+   "K": 512,
+   "batch": 4,
+   "oom": "CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 15.47 GiB is free. Including non-PyTorch memory, this process has 24.02 GiB memory in use. Of the allo",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L16384_K512_B16": {
+   "L": 16384,
+   "K": 512,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 512.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 494.50 MiB is free. Including non-PyTorch memory, this process has 39.00 GiB memory in use. Of the al",
+   "oom_phase": "setup",
+   "repeats": []
+  },
+  "L16384_K1024_B1": {
+   "L": 16384,
+   "K": 1024,
+   "batch": 1,
+   "oom": "CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 15.63 GiB is free. Including non-PyTorch memory, this process has 23.86 GiB memory in use. Of the allo",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L16384_K1024_B4": {
+   "L": 16384,
+   "K": 1024,
+   "batch": 4,
+   "oom": "CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 15.47 GiB is free. Including non-PyTorch memory, this process has 24.02 GiB memory in use. Of the allo",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L16384_K1024_B16": {
+   "L": 16384,
+   "K": 1024,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 512.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 494.50 MiB is free. Including non-PyTorch memory, this process has 39.00 GiB memory in use. Of the al",
+   "oom_phase": "setup",
+   "repeats": []
+  },
+  "L16384_K2048_B1": {
+   "L": 16384,
+   "K": 2048,
+   "batch": 1,
+   "oom": "CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 15.63 GiB is free. Including non-PyTorch memory, this process has 23.86 GiB memory in use. Of the allo",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L16384_K2048_B4": {
+   "L": 16384,
+   "K": 2048,
+   "batch": 4,
+   "oom": "CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 15.47 GiB is free. Including non-PyTorch memory, this process has 24.02 GiB memory in use. Of the allo",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L16384_K2048_B16": {
+   "L": 16384,
+   "K": 2048,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 512.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 494.50 MiB is free. Including non-PyTorch memory, this process has 39.00 GiB memory in use. Of the al",
+   "oom_phase": "setup",
+   "repeats": []
+  },
+  "L16384_K4096_B1": {
+   "L": 16384,
+   "K": 4096,
+   "batch": 1,
+   "oom": "CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 15.63 GiB is free. Including non-PyTorch memory, this process has 23.86 GiB memory in use. Of the allo",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L16384_K4096_B4": {
+   "L": 16384,
+   "K": 4096,
+   "batch": 4,
+   "oom": "CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 15.47 GiB is free. Including non-PyTorch memory, this process has 24.02 GiB memory in use. Of the allo",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L16384_K4096_B16": {
+   "L": 16384,
+   "K": 4096,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 512.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 494.50 MiB is free. Including non-PyTorch memory, this process has 39.00 GiB memory in use. Of the al",
+   "oom_phase": "setup",
+   "repeats": []
+  },
+  "L32768_K512_B1": {
+   "L": 32768,
+   "K": 512,
+   "batch": 1,
+   "oom": "CUDA out of memory. Tried to allocate 8.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 2.69 GiB is free. Including non-PyTorch memory, this process has 36.80 GiB memory in use. Of the alloca",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L32768_K512_B4": {
+   "L": 32768,
+   "K": 512,
+   "batch": 4,
+   "oom": "CUDA out of memory. Tried to allocate 64.01 GiB. GPU 0 has a total capacity of 39.49 GiB of which 6.94 GiB is free. Including non-PyTorch memory, this process has 32.55 GiB memory in use. Of the alloc",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L32768_K512_B16": {
+   "L": 32768,
+   "K": 512,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 1024.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 974.50 MiB is free. Including non-PyTorch memory, this process has 38.53 GiB memory in use. Of the a",
+   "oom_phase": "setup",
+   "repeats": []
+  },
+  "L32768_K1024_B1": {
+   "L": 32768,
+   "K": 1024,
+   "batch": 1,
+   "oom": "CUDA out of memory. Tried to allocate 8.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 2.69 GiB is free. Including non-PyTorch memory, this process has 36.80 GiB memory in use. Of the alloca",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L32768_K1024_B4": {
+   "L": 32768,
+   "K": 1024,
+   "batch": 4,
+   "oom": "CUDA out of memory. Tried to allocate 64.01 GiB. GPU 0 has a total capacity of 39.49 GiB of which 6.94 GiB is free. Including non-PyTorch memory, this process has 32.55 GiB memory in use. Of the alloc",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L32768_K1024_B16": {
+   "L": 32768,
+   "K": 1024,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 1024.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 974.50 MiB is free. Including non-PyTorch memory, this process has 38.53 GiB memory in use. Of the a",
+   "oom_phase": "setup",
+   "repeats": []
+  },
+  "L32768_K2048_B1": {
+   "L": 32768,
+   "K": 2048,
+   "batch": 1,
+   "oom": "CUDA out of memory. Tried to allocate 8.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 2.69 GiB is free. Including non-PyTorch memory, this process has 36.80 GiB memory in use. Of the alloca",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L32768_K2048_B4": {
+   "L": 32768,
+   "K": 2048,
+   "batch": 4,
+   "oom": "CUDA out of memory. Tried to allocate 64.01 GiB. GPU 0 has a total capacity of 39.49 GiB of which 6.94 GiB is free. Including non-PyTorch memory, this process has 32.55 GiB memory in use. Of the alloc",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L32768_K2048_B16": {
+   "L": 32768,
+   "K": 2048,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 1024.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 974.50 MiB is free. Including non-PyTorch memory, this process has 38.53 GiB memory in use. Of the a",
+   "oom_phase": "setup",
+   "repeats": []
+  },
+  "L32768_K4096_B1": {
+   "L": 32768,
+   "K": 4096,
+   "batch": 1,
+   "oom": "CUDA out of memory. Tried to allocate 8.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 2.69 GiB is free. Including non-PyTorch memory, this process has 36.80 GiB memory in use. Of the alloca",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L32768_K4096_B4": {
+   "L": 32768,
+   "K": 4096,
+   "batch": 4,
+   "oom": "CUDA out of memory. Tried to allocate 64.01 GiB. GPU 0 has a total capacity of 39.49 GiB of which 6.94 GiB is free. Including non-PyTorch memory, this process has 32.55 GiB memory in use. Of the alloc",
+   "oom_phase": "decode",
+   "repeats": []
+  },
+  "L32768_K4096_B16": {
+   "L": 32768,
+   "K": 4096,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 1024.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 974.50 MiB is free. Including non-PyTorch memory, this process has 38.53 GiB memory in use. Of the a",
+   "oom_phase": "setup",
+   "repeats": []
+  }
+ }
+}

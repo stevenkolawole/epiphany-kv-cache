@@ -1,0 +1,127 @@
+{
+ "meta": {
+  "mode": "capacity",
+  "method": "epikv",
+  "model": "Qwen/Qwen3-8B",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.57.1",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "capacity",
+   "method": "epikv",
+   "model": "Qwen/Qwen3-8B",
+   "tokenizer": null,
+   "band_a_layer": 11,
+   "band_b_layer": 24,
+   "Ks": [
+    512,
+    1024,
+    2048,
+    4096
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    1,
+    4,
+    16
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/capacity_epikv_qwen3.json"
+  },
+  "weights_gb": 15.259,
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "K512": {
+   "K_or_context": 512,
+   "max_batch": 128,
+   "first_oom": 132,
+   "probes": {
+    "1": 15.444,
+    "2": 15.607,
+    "4": 15.937,
+    "8": 16.593,
+    "16": 17.91,
+    "32": 20.545,
+    "64": 25.813,
+    "128": 36.349,
+    "256": "OOM",
+    "192": "OOM",
+    "160": "OOM",
+    "144": "OOM",
+    "136": "OOM",
+    "132": "OOM"
+   },
+   "start_len": 632,
+   "steps": 12
+  },
+  "K1024": {
+   "K_or_context": 1024,
+   "max_batch": 48,
+   "first_oom": 49,
+   "probes": {
+    "1": 17.026,
+    "2": 17.346,
+    "4": 17.987,
+    "8": 19.248,
+    "16": 21.794,
+    "32": 26.888,
+    "64": "OOM",
+    "48": 32.173,
+    "56": "OOM",
+    "52": "OOM",
+    "50": "OOM",
+    "49": "OOM"
+   },
+   "start_len": 1144,
+   "steps": 12
+  },
+  "K2048": {
+   "K_or_context": 2048,
+   "max_batch": 18,
+   "first_oom": 19,
+   "probes": {
+    "1": 18.753,
+    "2": 19.367,
+    "4": 20.594,
+    "8": 23.048,
+    "16": 27.97,
+    "32": "OOM",
+    "24": "OOM",
+    "20": "OOM",
+    "18": 29.28,
+    "19": "OOM"
+   },
+   "start_len": 2168,
+   "steps": 12
+  },
+  "K4096": {
+   "K_or_context": 4096,
+   "max_batch": 7,
+   "first_oom": 8,
+   "probes": {
+    "1": 20.736,
+    "2": 21.933,
+    "4": 24.351,
+    "8": "OOM",
+    "6": 26.783,
+    "7": 28.008
+   },
+   "start_len": 4216,
+   "steps": 12
+  }
+ }
+}

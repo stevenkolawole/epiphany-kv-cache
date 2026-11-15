@@ -1,0 +1,63 @@
+{
+ "meta": {
+  "mode": "check_perseq",
+  "method": "epikv",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.55.4",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "check_perseq",
+   "method": "epikv",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    512,
+    1024,
+    4096
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    1,
+    4,
+    16
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/smoke2_check_epikv.json"
+  },
+  "weights_gb": 14.958,
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "K512": {
+   "same_keep_mask": true,
+   "same_kept_kv_but_newest": true,
+   "kept": 512
+  },
+  "K1024": {
+   "same_keep_mask": true,
+   "same_kept_kv_but_newest": true,
+   "kept": 1024
+  },
+  "K4096": {
+   "same_keep_mask": true,
+   "same_kept_kv_but_newest": true,
+   "kept": 4096
+  }
+ }
+}

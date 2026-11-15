@@ -1,0 +1,136 @@
+{
+ "meta": {
+  "mode": "capacity",
+  "method": "snapkv_decoding",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.57.1",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "capacity",
+   "method": "snapkv_decoding",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    512,
+    1024,
+    2048,
+    4096
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    1,
+    4,
+    16
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/capacity_snapkv_decoding.json"
+  },
+  "weights_gb": 14.958,
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "K512": {
+   "K_or_context": 512,
+   "max_batch": 128,
+   "first_oom": 132,
+   "probes": {
+    "1": 15.096,
+    "2": 15.226,
+    "4": 15.487,
+    "8": 16.007,
+    "16": 17.048,
+    "32": 19.131,
+    "64": 23.296,
+    "128": 31.626,
+    "256": "OOM",
+    "192": "OOM",
+    "160": "OOM",
+    "144": "OOM",
+    "136": "OOM",
+    "132": "OOM"
+   },
+   "start_len": 512,
+   "steps": 132
+  },
+  "K1024": {
+   "K_or_context": 1024,
+   "max_batch": 106,
+   "first_oom": 108,
+   "probes": {
+    "1": 15.174,
+    "2": 15.382,
+    "4": 15.798,
+    "8": 16.632,
+    "16": 18.298,
+    "32": 21.631,
+    "64": 28.296,
+    "128": "OOM",
+    "96": 34.961,
+    "112": "OOM",
+    "104": 36.627,
+    "108": "OOM",
+    "106": 37.033
+   },
+   "start_len": 1024,
+   "steps": 132
+  },
+  "K2048": {
+   "K_or_context": 2048,
+   "max_batch": 63,
+   "first_oom": 64,
+   "probes": {
+    "1": 15.333,
+    "2": 15.697,
+    "4": 16.425,
+    "8": 17.882,
+    "16": 20.798,
+    "32": 26.631,
+    "64": "OOM",
+    "48": 32.463,
+    "56": 35.38,
+    "60": 36.833,
+    "62": 37.6,
+    "63": 37.951
+   },
+   "start_len": 2048,
+   "steps": 132
+  },
+  "K4096": {
+   "K_or_context": 4096,
+   "max_batch": 34,
+   "first_oom": 35,
+   "probes": {
+    "1": 15.646,
+    "2": 16.322,
+    "4": 17.675,
+    "8": 20.382,
+    "16": 25.798,
+    "32": 36.631,
+    "64": "OOM",
+    "48": "OOM",
+    "40": "OOM",
+    "36": "OOM",
+    "34": 37.983,
+    "35": "OOM"
+   },
+   "start_len": 4096,
+   "steps": 132
+  }
+ }
+}

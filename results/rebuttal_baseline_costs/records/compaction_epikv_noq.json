@@ -1,0 +1,1482 @@
+{
+ "meta": {
+  "mode": "compaction",
+  "method": "epikv_noq",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.55.4",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "compaction",
+   "method": "epikv_noq",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    512,
+    1024,
+    2048,
+    4096
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    1,
+    4,
+    16
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/compaction_epikv_noq.json"
+  },
+  "weights_gb": 14.958,
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "L4096_K512_B1": {
+   "L": 4096,
+   "K": 512,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 45.61564978212118,
+     "fwd_ms": 35.67452309653163,
+     "pol_ms": 9.941126685589552,
+     "from": 4097,
+     "to": 512,
+     "resident_gb": 15.528,
+     "peak_gb": 15.591,
+     "transient_gb": 0.063
+    },
+    {
+     "ms": 45.500736217945814,
+     "fwd_ms": 35.57974798604846,
+     "pol_ms": 9.920988231897354,
+     "from": 4097,
+     "to": 512,
+     "resident_gb": 15.528,
+     "peak_gb": 15.591,
+     "transient_gb": 0.063
+    },
+    {
+     "ms": 45.37256993353367,
+     "fwd_ms": 35.468469839543104,
+     "pol_ms": 9.904100093990564,
+     "from": 4097,
+     "to": 512,
+     "resident_gb": 15.528,
+     "peak_gb": 15.591,
+     "transient_gb": 0.063
+    }
+   ]
+  },
+  "L4096_K512_B4": {
+   "L": 4096,
+   "K": 512,
+   "batch": 4,
+   "repeats": [
+    {
+     "ms": 72.10411783307791,
+     "fwd_ms": 49.84386311843991,
+     "pol_ms": 22.260254714637995,
+     "from": 4097,
+     "to": 512,
+     "resident_gb": 17.028,
+     "peak_gb": 17.281,
+     "transient_gb": 0.252
+    },
+    {
+     "ms": 74.76349081844091,
+     "fwd_ms": 52.22453083842993,
+     "pol_ms": 22.538959980010986,
+     "from": 4097,
+     "to": 512,
+     "resident_gb": 17.028,
+     "peak_gb": 17.281,
+     "transient_gb": 0.252
+    },
+    {
+     "ms": 72.00727611780167,
+     "fwd_ms": 49.738338217139244,
+     "pol_ms": 22.268937900662422,
+     "from": 4097,
+     "to": 512,
+     "resident_gb": 17.028,
+     "peak_gb": 17.281,
+     "transient_gb": 0.252
+    }
+   ]
+  },
+  "L4096_K512_B16": {
+   "L": 4096,
+   "K": 512,
+   "batch": 16,
+   "repeats": [
+    {
+     "ms": 144.7382033802569,
+     "fwd_ms": 57.487670332193375,
+     "pol_ms": 87.25053304806352,
+     "from": 4097,
+     "to": 512,
+     "resident_gb": 23.029,
+     "peak_gb": 24.038,
+     "transient_gb": 1.01
+    },
+    {
+     "ms": 145.18678886815906,
+     "fwd_ms": 59.16264699772,
+     "pol_ms": 86.02414187043905,
+     "from": 4097,
+     "to": 512,
+     "resident_gb": 23.029,
+     "peak_gb": 24.038,
+     "transient_gb": 1.01
+    },
+    {
+     "ms": 143.89612386003137,
+     "fwd_ms": 57.83439613878727,
+     "pol_ms": 86.0617277212441,
+     "from": 4097,
+     "to": 512,
+     "resident_gb": 23.029,
+     "peak_gb": 24.038,
+     "transient_gb": 1.01
+    }
+   ]
+  },
+  "L4096_K1024_B1": {
+   "L": 4096,
+   "K": 1024,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 45.59563985094428,
+     "fwd_ms": 37.731905933469534,
+     "pol_ms": 7.863733917474747,
+     "from": 4097,
+     "to": 1024,
+     "resident_gb": 15.528,
+     "peak_gb": 15.654,
+     "transient_gb": 0.126
+    },
+    {
+     "ms": 43.61455189064145,
+     "fwd_ms": 35.802213940769434,
+     "pol_ms": 7.812337949872017,
+     "from": 4097,
+     "to": 1024,
+     "resident_gb": 15.528,
+     "peak_gb": 15.654,
+     "transient_gb": 0.126
+    },
+    {
+     "ms": 43.83780108764768,
+     "fwd_ms": 36.0319372266531,
+     "pol_ms": 7.805863860994577,
+     "from": 4097,
+     "to": 1024,
+     "resident_gb": 15.528,
+     "peak_gb": 15.654,
+     "transient_gb": 0.126
+    }
+   ]
+  },
+  "L4096_K1024_B4": {
+   "L": 4096,
+   "K": 1024,
+   "batch": 4,
+   "repeats": [
+    {
+     "ms": 76.82701013982296,
+     "fwd_ms": 50.132579170167446,
+     "pol_ms": 26.694430969655514,
+     "from": 4097,
+     "to": 1024,
+     "resident_gb": 17.028,
+     "peak_gb": 17.531,
+     "transient_gb": 0.502
+    },
+    {
+     "ms": 79.0703329257667,
+     "fwd_ms": 52.288040053099394,
+     "pol_ms": 26.782292872667313,
+     "from": 4097,
+     "to": 1024,
+     "resident_gb": 17.028,
+     "peak_gb": 17.531,
+     "transient_gb": 0.502
+    },
+    {
+     "ms": 76.855659019202,
+     "fwd_ms": 50.0257620587945,
+     "pol_ms": 26.829896960407495,
+     "from": 4097,
+     "to": 1024,
+     "resident_gb": 17.028,
+     "peak_gb": 17.531,
+     "transient_gb": 0.502
+    }
+   ]
+  },
+  "L4096_K1024_B16": {
+   "L": 4096,
+   "K": 1024,
+   "batch": 16,
+   "repeats": [
+    {
+     "ms": 161.83206625282764,
+     "fwd_ms": 58.060103096067905,
+     "pol_ms": 103.77196315675974,
+     "from": 4097,
+     "to": 1024,
+     "resident_gb": 23.029,
+     "peak_gb": 25.038,
+     "transient_gb": 2.01
+    },
+    {
+     "ms": 161.33446618914604,
+     "fwd_ms": 57.60477390140295,
+     "pol_ms": 103.72969228774309,
+     "from": 4097,
+     "to": 1024,
+     "resident_gb": 23.029,
+     "peak_gb": 25.038,
+     "transient_gb": 2.01
+    },
+    {
+     "ms": 163.07160025462508,
+     "fwd_ms": 57.6284253038466,
+     "pol_ms": 105.44317495077848,
+     "from": 4097,
+     "to": 1024,
+     "resident_gb": 23.029,
+     "peak_gb": 25.038,
+     "transient_gb": 2.01
+    }
+   ]
+  },
+  "L4096_K2048_B1": {
+   "L": 4096,
+   "K": 2048,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 45.08849699050188,
+     "fwd_ms": 36.4518272690475,
+     "pol_ms": 8.636669721454382,
+     "from": 4097,
+     "to": 1353,
+     "resident_gb": 15.528,
+     "peak_gb": 15.695,
+     "transient_gb": 0.166
+    },
+    {
+     "ms": 44.33404467999935,
+     "fwd_ms": 35.76509980484843,
+     "pol_ms": 8.568944875150919,
+     "from": 4097,
+     "to": 1353,
+     "resident_gb": 15.528,
+     "peak_gb": 15.695,
+     "transient_gb": 0.166
+    },
+    {
+     "ms": 46.61020915955305,
+     "fwd_ms": 37.947115022689104,
+     "pol_ms": 8.663094136863947,
+     "from": 4097,
+     "to": 1353,
+     "resident_gb": 15.528,
+     "peak_gb": 15.695,
+     "transient_gb": 0.166
+    }
+   ]
+  },
+  "L4096_K2048_B4": {
+   "L": 4096,
+   "K": 2048,
+   "batch": 4,
+   "repeats": [
+    {
+     "ms": 79.14382871240377,
+     "fwd_ms": 50.1266117207706,
+     "pol_ms": 29.017216991633177,
+     "from": 4097,
+     "to": 1353,
+     "resident_gb": 17.028,
+     "peak_gb": 17.697,
+     "transient_gb": 0.669
+    },
+    {
+     "ms": 79.42223502323031,
+     "fwd_ms": 50.304161850363016,
+     "pol_ms": 29.118073172867298,
+     "from": 4097,
+     "to": 1353,
+     "resident_gb": 17.028,
+     "peak_gb": 17.697,
+     "transient_gb": 0.669
+    },
+    {
+     "ms": 78.83145101368427,
+     "fwd_ms": 49.846185836941004,
+     "pol_ms": 28.98526517674327,
+     "from": 4097,
+     "to": 1353,
+     "resident_gb": 17.028,
+     "peak_gb": 17.697,
+     "transient_gb": 0.669
+    }
+   ]
+  },
+  "L4096_K2048_B16": {
+   "L": 4096,
+   "K": 2048,
+   "batch": 16,
+   "repeats": [
+    {
+     "ms": 170.79133400693536,
+     "fwd_ms": 57.68568720668554,
+     "pol_ms": 113.10564680024981,
+     "from": 4097,
+     "to": 1353,
+     "resident_gb": 23.029,
+     "peak_gb": 25.681,
+     "transient_gb": 2.652
+    },
+    {
+     "ms": 171.09747510403395,
+     "fwd_ms": 57.90336988866329,
+     "pol_ms": 113.19410521537066,
+     "from": 4097,
+     "to": 1353,
+     "resident_gb": 23.029,
+     "peak_gb": 25.681,
+     "transient_gb": 2.652
+    },
+    {
+     "ms": 170.28512712568045,
+     "fwd_ms": 57.56874429062009,
+     "pol_ms": 112.71638283506036,
+     "from": 4097,
+     "to": 1353,
+     "resident_gb": 23.029,
+     "peak_gb": 25.681,
+     "transient_gb": 2.652
+    }
+   ]
+  },
+  "L8192_K512_B1": {
+   "L": 8192,
+   "K": 512,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 60.91198371723294,
+     "fwd_ms": 47.198823653161526,
+     "pol_ms": 13.713160064071417,
+     "from": 8193,
+     "to": 512,
+     "resident_gb": 16.091,
+     "peak_gb": 16.154,
+     "transient_gb": 0.063
+    },
+    {
+     "ms": 62.88453005254269,
+     "fwd_ms": 49.21421408653259,
+     "pol_ms": 13.670315966010094,
+     "from": 8193,
+     "to": 512,
+     "resident_gb": 16.091,
+     "peak_gb": 16.154,
+     "transient_gb": 0.063
+    },
+    {
+     "ms": 64.88554691895843,
+     "fwd_ms": 51.14397592842579,
+     "pol_ms": 13.741570990532637,
+     "from": 8193,
+     "to": 512,
+     "resident_gb": 16.091,
+     "peak_gb": 16.154,
+     "transient_gb": 0.063
+    }
+   ]
+  },
+  "L8192_K512_B4": {
+   "L": 8192,
+   "K": 512,
+   "batch": 4,
+   "repeats": [
+    {
+     "ms": 87.63663796707988,
+     "fwd_ms": 51.33318295702338,
+     "pol_ms": 36.303455010056496,
+     "from": 8193,
+     "to": 512,
+     "resident_gb": 19.091,
+     "peak_gb": 19.343,
+     "transient_gb": 0.252
+    },
+    {
+     "ms": 88.46332924440503,
+     "fwd_ms": 51.96760222315788,
+     "pol_ms": 36.49572702124715,
+     "from": 8193,
+     "to": 512,
+     "resident_gb": 19.091,
+     "peak_gb": 19.343,
+     "transient_gb": 0.252
+    },
+    {
+     "ms": 87.86636171862483,
+     "fwd_ms": 51.44718289375305,
+     "pol_ms": 36.41917882487178,
+     "from": 8193,
+     "to": 512,
+     "resident_gb": 19.091,
+     "peak_gb": 19.343,
+     "transient_gb": 0.252
+    }
+   ]
+  },
+  "L8192_K512_B16": {
+   "L": 8192,
+   "K": 512,
+   "batch": 16,
+   "repeats": [
+    {
+     "ms": 468.558759894222,
+     "fwd_ms": 324.40150808542967,
+     "pol_ms": 144.15725180879235,
+     "from": 8193,
+     "to": 512,
+     "resident_gb": 31.091,
+     "peak_gb": 32.101,
+     "transient_gb": 1.01
+    },
+    {
+     "ms": 467.53557585179806,
+     "fwd_ms": 323.34599271416664,
+     "pol_ms": 144.18958313763142,
+     "from": 8193,
+     "to": 512,
+     "resident_gb": 31.091,
+     "peak_gb": 32.101,
+     "transient_gb": 1.01
+    },
+    {
+     "ms": 485.8024064451456,
+     "fwd_ms": 341.2244780920446,
+     "pol_ms": 144.57792835310102,
+     "from": 8193,
+     "to": 512,
+     "resident_gb": 31.091,
+     "peak_gb": 32.101,
+     "transient_gb": 1.01
+    }
+   ]
+  },
+  "L8192_K1024_B1": {
+   "L": 8192,
+   "K": 1024,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 58.797785080969334,
+     "fwd_ms": 47.38211911171675,
+     "pol_ms": 11.415665969252586,
+     "from": 8193,
+     "to": 1024,
+     "resident_gb": 16.091,
+     "peak_gb": 16.216,
+     "transient_gb": 0.126
+    },
+    {
+     "ms": 57.962608989328146,
+     "fwd_ms": 46.58713797107339,
+     "pol_ms": 11.375471018254757,
+     "from": 8193,
+     "to": 1024,
+     "resident_gb": 16.091,
+     "peak_gb": 16.216,
+     "transient_gb": 0.126
+    },
+    {
+     "ms": 58.03037527948618,
+     "fwd_ms": 46.69108288362622,
+     "pol_ms": 11.339292395859957,
+     "from": 8193,
+     "to": 1024,
+     "resident_gb": 16.091,
+     "peak_gb": 16.216,
+     "transient_gb": 0.126
+    }
+   ]
+  },
+  "L8192_K1024_B4": {
+   "L": 8192,
+   "K": 1024,
+   "batch": 4,
+   "repeats": [
+    {
+     "ms": 93.80543604493141,
+     "fwd_ms": 51.61682469770312,
+     "pol_ms": 42.18861134722829,
+     "from": 8193,
+     "to": 1024,
+     "resident_gb": 19.091,
+     "peak_gb": 19.593,
+     "transient_gb": 0.502
+    },
+    {
+     "ms": 93.4624751098454,
+     "fwd_ms": 51.4711607247591,
+     "pol_ms": 41.9913143850863,
+     "from": 8193,
+     "to": 1024,
+     "resident_gb": 19.091,
+     "peak_gb": 19.593,
+     "transient_gb": 0.502
+    },
+    {
+     "ms": 95.74183681979775,
+     "fwd_ms": 53.82204707711935,
+     "pol_ms": 41.919789742678404,
+     "from": 8193,
+     "to": 1024,
+     "resident_gb": 19.091,
+     "peak_gb": 19.593,
+     "transient_gb": 0.502
+    }
+   ]
+  },
+  "L8192_K1024_B16": {
+   "L": 8192,
+   "K": 1024,
+   "batch": 16,
+   "repeats": [
+    {
+     "ms": 491.5158157236874,
+     "fwd_ms": 323.617038782686,
+     "pol_ms": 167.89877694100142,
+     "from": 8193,
+     "to": 1024,
+     "resident_gb": 31.091,
+     "peak_gb": 33.101,
+     "transient_gb": 2.01
+    },
+    {
+     "ms": 493.94994229078293,
+     "fwd_ms": 326.063796877861,
+     "pol_ms": 167.8861454129219,
+     "from": 8193,
+     "to": 1024,
+     "resident_gb": 31.091,
+     "peak_gb": 33.101,
+     "transient_gb": 2.01
+    },
+    {
+     "ms": 503.9126882329583,
+     "fwd_ms": 336.42133604735136,
+     "pol_ms": 167.49135218560696,
+     "from": 8193,
+     "to": 1024,
+     "resident_gb": 31.091,
+     "peak_gb": 33.101,
+     "transient_gb": 2.01
+    }
+   ]
+  },
+  "L8192_K2048_B1": {
+   "L": 8192,
+   "K": 2048,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 61.67932506650686,
+     "fwd_ms": 47.50013072043657,
+     "pol_ms": 14.17919434607029,
+     "from": 8193,
+     "to": 2048,
+     "resident_gb": 16.091,
+     "peak_gb": 16.341,
+     "transient_gb": 0.251
+    },
+    {
+     "ms": 61.274400912225246,
+     "fwd_ms": 47.20037383958697,
+     "pol_ms": 14.074027072638273,
+     "from": 8193,
+     "to": 2048,
+     "resident_gb": 16.091,
+     "peak_gb": 16.341,
+     "transient_gb": 0.251
+    },
+    {
+     "ms": 61.87178613618016,
+     "fwd_ms": 47.5513581186533,
+     "pol_ms": 14.320428017526865,
+     "from": 8193,
+     "to": 2048,
+     "resident_gb": 16.091,
+     "peak_gb": 16.341,
+     "transient_gb": 0.251
+    }
+   ]
+  },
+  "L8192_K2048_B4": {
+   "L": 8192,
+   "K": 2048,
+   "batch": 4,
+   "repeats": [
+    {
+     "ms": 105.86163494735956,
+     "fwd_ms": 55.55333662778139,
+     "pol_ms": 50.30829831957817,
+     "from": 8193,
+     "to": 2048,
+     "resident_gb": 19.091,
+     "peak_gb": 20.093,
+     "transient_gb": 1.002
+    },
+    {
+     "ms": 101.36167705059052,
+     "fwd_ms": 51.447913981974125,
+     "pol_ms": 49.91376306861639,
+     "from": 8193,
+     "to": 2048,
+     "resident_gb": 19.091,
+     "peak_gb": 20.093,
+     "transient_gb": 1.002
+    },
+    {
+     "ms": 101.39981377869844,
+     "fwd_ms": 51.339320838451385,
+     "pol_ms": 50.06049294024706,
+     "from": 8193,
+     "to": 2048,
+     "resident_gb": 19.091,
+     "peak_gb": 20.093,
+     "transient_gb": 1.002
+    }
+   ]
+  },
+  "L8192_K2048_B16": {
+   "L": 8192,
+   "K": 2048,
+   "batch": 16,
+   "repeats": [
+    {
+     "ms": 526.3550579547882,
+     "fwd_ms": 326.89054729416966,
+     "pol_ms": 199.46451066061854,
+     "from": 8193,
+     "to": 2048,
+     "resident_gb": 31.091,
+     "peak_gb": 35.101,
+     "transient_gb": 4.01
+    },
+    {
+     "ms": 524.975853972137,
+     "fwd_ms": 324.75751684978604,
+     "pol_ms": 200.21833712235093,
+     "from": 8193,
+     "to": 2048,
+     "resident_gb": 31.091,
+     "peak_gb": 35.101,
+     "transient_gb": 4.01
+    },
+    {
+     "ms": 526.5601738356054,
+     "fwd_ms": 327.02999375760555,
+     "pol_ms": 199.53018007799983,
+     "from": 8193,
+     "to": 2048,
+     "resident_gb": 31.091,
+     "peak_gb": 35.101,
+     "transient_gb": 4.01
+    }
+   ]
+  },
+  "L8192_K4096_B1": {
+   "L": 8192,
+   "K": 4096,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 62.4464494176209,
+     "fwd_ms": 47.191568184643984,
+     "pol_ms": 15.254881232976913,
+     "from": 8193,
+     "to": 2465,
+     "resident_gb": 16.091,
+     "peak_gb": 16.392,
+     "transient_gb": 0.302
+    },
+    {
+     "ms": 62.393708154559135,
+     "fwd_ms": 47.17733804136515,
+     "pol_ms": 15.216370113193989,
+     "from": 8193,
+     "to": 2465,
+     "resident_gb": 16.091,
+     "peak_gb": 16.392,
+     "transient_gb": 0.302
+    },
+    {
+     "ms": 63.26290126889944,
+     "fwd_ms": 47.76261933147907,
+     "pol_ms": 15.500281937420368,
+     "from": 8193,
+     "to": 2465,
+     "resident_gb": 16.091,
+     "peak_gb": 16.392,
+     "transient_gb": 0.302
+    }
+   ]
+  },
+  "L8192_K4096_B4": {
+   "L": 8192,
+   "K": 4096,
+   "batch": 4,
+   "repeats": [
+    {
+     "ms": 104.99844839796424,
+     "fwd_ms": 51.25961033627391,
+     "pol_ms": 53.73883806169033,
+     "from": 8193,
+     "to": 2465,
+     "resident_gb": 19.091,
+     "peak_gb": 20.297,
+     "transient_gb": 1.206
+    },
+    {
+     "ms": 104.9447157420218,
+     "fwd_ms": 51.33262975141406,
+     "pol_ms": 53.61208599060774,
+     "from": 8193,
+     "to": 2465,
+     "resident_gb": 19.091,
+     "peak_gb": 20.297,
+     "transient_gb": 1.206
+    },
+    {
+     "ms": 105.20836897194386,
+     "fwd_ms": 51.43234692513943,
+     "pol_ms": 53.77602204680443,
+     "from": 8193,
+     "to": 2465,
+     "resident_gb": 19.091,
+     "peak_gb": 20.297,
+     "transient_gb": 1.206
+    }
+   ]
+  },
+  "L8192_K4096_B16": {
+   "L": 8192,
+   "K": 4096,
+   "batch": 16,
+   "repeats": [
+    {
+     "ms": 537.9850207827985,
+     "fwd_ms": 323.56344582512975,
+     "pol_ms": 214.42157495766878,
+     "from": 8193,
+     "to": 2465,
+     "resident_gb": 31.091,
+     "peak_gb": 35.965,
+     "transient_gb": 4.874
+    },
+    {
+     "ms": 544.8175799101591,
+     "fwd_ms": 330.45530412346125,
+     "pol_ms": 214.36227578669786,
+     "from": 8193,
+     "to": 2465,
+     "resident_gb": 31.091,
+     "peak_gb": 35.965,
+     "transient_gb": 4.874
+    },
+    {
+     "ms": 571.3176936842501,
+     "fwd_ms": 357.33767272904515,
+     "pol_ms": 213.98002095520496,
+     "from": 8193,
+     "to": 2465,
+     "resident_gb": 31.091,
+     "peak_gb": 35.965,
+     "transient_gb": 4.874
+    }
+   ]
+  },
+  "L16384_K512_B1": {
+   "L": 16384,
+   "K": 512,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 68.05742019787431,
+     "fwd_ms": 48.29747509211302,
+     "pol_ms": 19.75994510576129,
+     "from": 16385,
+     "to": 512,
+     "resident_gb": 17.216,
+     "peak_gb": 17.281,
+     "transient_gb": 0.065
+    },
+    {
+     "ms": 68.29129112884402,
+     "fwd_ms": 48.53370226919651,
+     "pol_ms": 19.757588859647512,
+     "from": 16385,
+     "to": 512,
+     "resident_gb": 17.216,
+     "peak_gb": 17.281,
+     "transient_gb": 0.065
+    },
+    {
+     "ms": 68.36361205205321,
+     "fwd_ms": 48.48628072068095,
+     "pol_ms": 19.87733133137226,
+     "from": 16385,
+     "to": 512,
+     "resident_gb": 17.216,
+     "peak_gb": 17.281,
+     "transient_gb": 0.065
+    }
+   ]
+  },
+  "L16384_K512_B4": {
+   "L": 16384,
+   "K": 512,
+   "batch": 4,
+   "repeats": [
+    {
+     "ms": 117.91348131373525,
+     "fwd_ms": 55.8578809723258,
+     "pol_ms": 62.055600341409445,
+     "from": 16385,
+     "to": 512,
+     "resident_gb": 23.216,
+     "peak_gb": 23.468,
+     "transient_gb": 0.252
+    },
+    {
+     "ms": 118.96481597796082,
+     "fwd_ms": 55.98445003852248,
+     "pol_ms": 62.98036593943834,
+     "from": 16385,
+     "to": 512,
+     "resident_gb": 23.216,
+     "peak_gb": 23.468,
+     "transient_gb": 0.252
+    },
+    {
+     "ms": 118.9854247495532,
+     "fwd_ms": 56.374217849224806,
+     "pol_ms": 62.6112069003284,
+     "from": 16385,
+     "to": 512,
+     "resident_gb": 23.216,
+     "peak_gb": 23.468,
+     "transient_gb": 0.252
+    }
+   ]
+  },
+  "L16384_K512_B16": {
+   "L": 16384,
+   "K": 512,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 512.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 238.50 MiB is free. Including non-PyTorch memory, this process has 39.25 GiB memory in use. Of the al",
+   "oom_phase": "setup",
+   "repeats": []
+  },
+  "L16384_K1024_B1": {
+   "L": 16384,
+   "K": 1024,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 66.65467983111739,
+     "fwd_ms": 48.60011301934719,
+     "pol_ms": 18.0545668117702,
+     "from": 16385,
+     "to": 1024,
+     "resident_gb": 17.216,
+     "peak_gb": 17.341,
+     "transient_gb": 0.126
+    },
+    {
+     "ms": 66.49526115506887,
+     "fwd_ms": 48.49351104348898,
+     "pol_ms": 18.001750111579895,
+     "from": 16385,
+     "to": 1024,
+     "resident_gb": 17.216,
+     "peak_gb": 17.341,
+     "transient_gb": 0.126
+    },
+    {
+     "ms": 66.43999787047505,
+     "fwd_ms": 48.463820945471525,
+     "pol_ms": 17.97617692500353,
+     "from": 16385,
+     "to": 1024,
+     "resident_gb": 17.216,
+     "peak_gb": 17.341,
+     "transient_gb": 0.126
+    }
+   ]
+  },
+  "L16384_K1024_B4": {
+   "L": 16384,
+   "K": 1024,
+   "batch": 4,
+   "repeats": [
+    {
+     "ms": 124.72452316433191,
+     "fwd_ms": 56.12487532198429,
+     "pol_ms": 68.59964784234762,
+     "from": 16385,
+     "to": 1024,
+     "resident_gb": 23.216,
+     "peak_gb": 23.718,
+     "transient_gb": 0.502
+    },
+    {
+     "ms": 124.32048469781876,
+     "fwd_ms": 55.894345976412296,
+     "pol_ms": 68.42613872140646,
+     "from": 16385,
+     "to": 1024,
+     "resident_gb": 23.216,
+     "peak_gb": 23.718,
+     "transient_gb": 0.502
+    },
+    {
+     "ms": 124.18328691273928,
+     "fwd_ms": 55.8644300326705,
+     "pol_ms": 68.31885688006878,
+     "from": 16385,
+     "to": 1024,
+     "resident_gb": 23.216,
+     "peak_gb": 23.718,
+     "transient_gb": 0.502
+    }
+   ]
+  },
+  "L16384_K1024_B16": {
+   "L": 16384,
+   "K": 1024,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 512.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 238.50 MiB is free. Including non-PyTorch memory, this process has 39.25 GiB memory in use. Of the al",
+   "oom_phase": "setup",
+   "repeats": []
+  },
+  "L16384_K2048_B1": {
+   "L": 16384,
+   "K": 2048,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 69.41322796046734,
+     "fwd_ms": 48.48088510334492,
+     "pol_ms": 20.93234285712242,
+     "from": 16385,
+     "to": 2048,
+     "resident_gb": 17.216,
+     "peak_gb": 17.466,
+     "transient_gb": 0.251
+    },
+    {
+     "ms": 75.12632943689823,
+     "fwd_ms": 54.25720801576972,
+     "pol_ms": 20.86912142112851,
+     "from": 16385,
+     "to": 2048,
+     "resident_gb": 17.216,
+     "peak_gb": 17.466,
+     "transient_gb": 0.251
+    },
+    {
+     "ms": 70.04485931247473,
+     "fwd_ms": 48.884074203670025,
+     "pol_ms": 21.160785108804703,
+     "from": 16385,
+     "to": 2048,
+     "resident_gb": 17.216,
+     "peak_gb": 17.466,
+     "transient_gb": 0.251
+    }
+   ]
+  },
+  "L16384_K2048_B4": {
+   "L": 16384,
+   "K": 2048,
+   "batch": 4,
+   "repeats": [
+    {
+     "ms": 133.30101687461138,
+     "fwd_ms": 56.006438098847866,
+     "pol_ms": 77.29457877576351,
+     "from": 16385,
+     "to": 2048,
+     "resident_gb": 23.216,
+     "peak_gb": 24.218,
+     "transient_gb": 1.003
+    },
+    {
+     "ms": 132.6519981957972,
+     "fwd_ms": 55.873333010822535,
+     "pol_ms": 76.77866518497467,
+     "from": 16385,
+     "to": 2048,
+     "resident_gb": 23.216,
+     "peak_gb": 24.218,
+     "transient_gb": 1.003
+    },
+    {
+     "ms": 134.06467624008656,
+     "fwd_ms": 56.65363511070609,
+     "pol_ms": 77.41104112938046,
+     "from": 16385,
+     "to": 2048,
+     "resident_gb": 23.216,
+     "peak_gb": 24.218,
+     "transient_gb": 1.003
+    }
+   ]
+  },
+  "L16384_K2048_B16": {
+   "L": 16384,
+   "K": 2048,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 512.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 238.50 MiB is free. Including non-PyTorch memory, this process has 39.25 GiB memory in use. Of the al",
+   "oom_phase": "setup",
+   "repeats": []
+  },
+  "L16384_K4096_B1": {
+   "L": 16384,
+   "K": 4096,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 75.39687119424343,
+     "fwd_ms": 48.55494014918804,
+     "pol_ms": 26.84193104505539,
+     "from": 16385,
+     "to": 4096,
+     "resident_gb": 17.216,
+     "peak_gb": 17.716,
+     "transient_gb": 0.501
+    },
+    {
+     "ms": 76.37335872277617,
+     "fwd_ms": 48.87651512399316,
+     "pol_ms": 27.496843598783016,
+     "from": 16385,
+     "to": 4096,
+     "resident_gb": 17.216,
+     "peak_gb": 17.716,
+     "transient_gb": 0.501
+    },
+    {
+     "ms": 75.44534793123603,
+     "fwd_ms": 48.57227113097906,
+     "pol_ms": 26.873076800256968,
+     "from": 16385,
+     "to": 4096,
+     "resident_gb": 17.216,
+     "peak_gb": 17.716,
+     "transient_gb": 0.501
+    }
+   ]
+  },
+  "L16384_K4096_B4": {
+   "L": 16384,
+   "K": 4096,
+   "batch": 4,
+   "repeats": [
+    {
+     "ms": 152.3205293342471,
+     "fwd_ms": 55.80255528911948,
+     "pol_ms": 96.51797404512763,
+     "from": 16385,
+     "to": 4096,
+     "resident_gb": 23.216,
+     "peak_gb": 25.218,
+     "transient_gb": 2.003
+    },
+    {
+     "ms": 153.3416281454265,
+     "fwd_ms": 55.894468910992146,
+     "pol_ms": 97.44715923443437,
+     "from": 16385,
+     "to": 4096,
+     "resident_gb": 23.216,
+     "peak_gb": 25.218,
+     "transient_gb": 2.003
+    },
+    {
+     "ms": 155.5590550415218,
+     "fwd_ms": 58.813333977013826,
+     "pol_ms": 96.74572106450796,
+     "from": 16385,
+     "to": 4096,
+     "resident_gb": 23.216,
+     "peak_gb": 25.218,
+     "transient_gb": 2.003
+    }
+   ]
+  },
+  "L16384_K4096_B16": {
+   "L": 16384,
+   "K": 4096,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 512.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 238.50 MiB is free. Including non-PyTorch memory, this process has 39.25 GiB memory in use. Of the al",
+   "oom_phase": "setup",
+   "repeats": []
+  },
+  "L32768_K512_B1": {
+   "L": 32768,
+   "K": 512,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 81.66247885674238,
+     "fwd_ms": 49.67918898910284,
+     "pol_ms": 31.98328986763954,
+     "from": 32769,
+     "to": 512,
+     "resident_gb": 19.466,
+     "peak_gb": 19.596,
+     "transient_gb": 0.13
+    },
+    {
+     "ms": 82.72134279832244,
+     "fwd_ms": 50.86835101246834,
+     "pol_ms": 31.8529917858541,
+     "from": 32769,
+     "to": 512,
+     "resident_gb": 19.466,
+     "peak_gb": 19.596,
+     "transient_gb": 0.13
+    },
+    {
+     "ms": 84.23422602936625,
+     "fwd_ms": 51.752681378275156,
+     "pol_ms": 32.4815446510911,
+     "from": 32769,
+     "to": 512,
+     "resident_gb": 19.466,
+     "peak_gb": 19.596,
+     "transient_gb": 0.13
+    }
+   ]
+  },
+  "L32768_K512_B4": {
+   "L": 32768,
+   "K": 512,
+   "batch": 4,
+   "repeats": [
+    {
+     "ms": 461.90970996394753,
+     "fwd_ms": 345.5665619112551,
+     "pol_ms": 116.34314805269241,
+     "from": 32769,
+     "to": 512,
+     "resident_gb": 31.466,
+     "peak_gb": 31.718,
+     "transient_gb": 0.253
+    },
+    {
+     "ms": 466.51656925678253,
+     "fwd_ms": 347.81097201630473,
+     "pol_ms": 118.7055972404778,
+     "from": 32769,
+     "to": 512,
+     "resident_gb": 31.466,
+     "peak_gb": 31.718,
+     "transient_gb": 0.253
+    },
+    {
+     "ms": 461.12973522394896,
+     "fwd_ms": 344.84927728772163,
+     "pol_ms": 116.28045793622732,
+     "from": 32769,
+     "to": 512,
+     "resident_gb": 31.466,
+     "peak_gb": 31.718,
+     "transient_gb": 0.253
+    }
+   ]
+  },
+  "L32768_K512_B16": {
+   "L": 32768,
+   "K": 512,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 1024.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 462.50 MiB is free. Including non-PyTorch memory, this process has 39.03 GiB memory in use. Of the a",
+   "oom_phase": "setup",
+   "repeats": []
+  },
+  "L32768_K1024_B1": {
+   "L": 32768,
+   "K": 1024,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 79.07574204728007,
+     "fwd_ms": 48.93024591729045,
+     "pol_ms": 30.145496129989624,
+     "from": 32769,
+     "to": 1024,
+     "resident_gb": 19.466,
+     "peak_gb": 19.596,
+     "transient_gb": 0.13
+    },
+    {
+     "ms": 80.2832548506558,
+     "fwd_ms": 50.09610066190362,
+     "pol_ms": 30.187154188752174,
+     "from": 32769,
+     "to": 1024,
+     "resident_gb": 19.466,
+     "peak_gb": 19.596,
+     "transient_gb": 0.13
+    },
+    {
+     "ms": 81.7922567948699,
+     "fwd_ms": 51.53194209560752,
+     "pol_ms": 30.26031469926238,
+     "from": 32769,
+     "to": 1024,
+     "resident_gb": 19.466,
+     "peak_gb": 19.596,
+     "transient_gb": 0.13
+    }
+   ]
+  },
+  "L32768_K1024_B4": {
+   "L": 32768,
+   "K": 1024,
+   "batch": 4,
+   "repeats": [
+    {
+     "ms": 467.93305687606335,
+     "fwd_ms": 346.4934700168669,
+     "pol_ms": 121.43958685919642,
+     "from": 32769,
+     "to": 1024,
+     "resident_gb": 31.466,
+     "peak_gb": 31.968,
+     "transient_gb": 0.503
+    },
+    {
+     "ms": 472.0706003718078,
+     "fwd_ms": 349.5244821533561,
+     "pol_ms": 122.54611821845174,
+     "from": 32769,
+     "to": 1024,
+     "resident_gb": 31.466,
+     "peak_gb": 31.968,
+     "transient_gb": 0.503
+    },
+    {
+     "ms": 464.64846283197403,
+     "fwd_ms": 343.2928519323468,
+     "pol_ms": 121.35561089962721,
+     "from": 32769,
+     "to": 1024,
+     "resident_gb": 31.466,
+     "peak_gb": 31.968,
+     "transient_gb": 0.503
+    }
+   ]
+  },
+  "L32768_K1024_B16": {
+   "L": 32768,
+   "K": 1024,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 1024.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 462.50 MiB is free. Including non-PyTorch memory, this process has 39.03 GiB memory in use. Of the a",
+   "oom_phase": "setup",
+   "repeats": []
+  },
+  "L32768_K2048_B1": {
+   "L": 32768,
+   "K": 2048,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 84.0879580937326,
+     "fwd_ms": 50.502770114690065,
+     "pol_ms": 33.58518797904253,
+     "from": 32769,
+     "to": 2048,
+     "resident_gb": 19.466,
+     "peak_gb": 19.717,
+     "transient_gb": 0.251
+    },
+    {
+     "ms": 85.64316108822823,
+     "fwd_ms": 52.07598768174648,
+     "pol_ms": 33.56717340648174,
+     "from": 32769,
+     "to": 2048,
+     "resident_gb": 19.466,
+     "peak_gb": 19.717,
+     "transient_gb": 0.251
+    },
+    {
+     "ms": 83.21463596075773,
+     "fwd_ms": 49.59096107631922,
+     "pol_ms": 33.623674884438515,
+     "from": 32769,
+     "to": 2048,
+     "resident_gb": 19.466,
+     "peak_gb": 19.717,
+     "transient_gb": 0.251
+    }
+   ]
+  },
+  "L32768_K2048_B4": {
+   "L": 32768,
+   "K": 2048,
+   "batch": 4,
+   "repeats": [
+    {
+     "ms": 478.5049417987466,
+     "fwd_ms": 347.4095771089196,
+     "pol_ms": 131.09536468982697,
+     "from": 32769,
+     "to": 2048,
+     "resident_gb": 31.466,
+     "peak_gb": 32.468,
+     "transient_gb": 1.003
+    },
+    {
+     "ms": 475.09831888601184,
+     "fwd_ms": 343.9564839936793,
+     "pol_ms": 131.14183489233255,
+     "from": 32769,
+     "to": 2048,
+     "resident_gb": 31.466,
+     "peak_gb": 32.468,
+     "transient_gb": 1.003
+    },
+    {
+     "ms": 475.1183888874948,
+     "fwd_ms": 343.9893932081759,
+     "pol_ms": 131.1289956793189,
+     "from": 32769,
+     "to": 2048,
+     "resident_gb": 31.466,
+     "peak_gb": 32.468,
+     "transient_gb": 1.003
+    }
+   ]
+  },
+  "L32768_K2048_B16": {
+   "L": 32768,
+   "K": 2048,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 1024.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 462.50 MiB is free. Including non-PyTorch memory, this process has 39.03 GiB memory in use. Of the a",
+   "oom_phase": "setup",
+   "repeats": []
+  },
+  "L32768_K4096_B1": {
+   "L": 32768,
+   "K": 4096,
+   "batch": 1,
+   "repeats": [
+    {
+     "ms": 92.22276415675879,
+     "fwd_ms": 52.25390335544944,
+     "pol_ms": 39.96886080130935,
+     "from": 32769,
+     "to": 4096,
+     "resident_gb": 19.466,
+     "peak_gb": 19.967,
+     "transient_gb": 0.501
+    },
+    {
+     "ms": 90.6681320630014,
+     "fwd_ms": 50.88056577369571,
+     "pol_ms": 39.78756628930569,
+     "from": 32769,
+     "to": 4096,
+     "resident_gb": 19.466,
+     "peak_gb": 19.967,
+     "transient_gb": 0.501
+    },
+    {
+     "ms": 89.86743586137891,
+     "fwd_ms": 49.89602090790868,
+     "pol_ms": 39.97141495347023,
+     "from": 32769,
+     "to": 4096,
+     "resident_gb": 19.466,
+     "peak_gb": 19.967,
+     "transient_gb": 0.501
+    }
+   ]
+  },
+  "L32768_K4096_B4": {
+   "L": 32768,
+   "K": 4096,
+   "batch": 4,
+   "repeats": [
+    {
+     "ms": 497.2707820124924,
+     "fwd_ms": 345.1539413072169,
+     "pol_ms": 152.11684070527554,
+     "from": 32769,
+     "to": 4096,
+     "resident_gb": 31.466,
+     "peak_gb": 33.468,
+     "transient_gb": 2.003
+    },
+    {
+     "ms": 495.8152277395129,
+     "fwd_ms": 343.5766538605094,
+     "pol_ms": 152.23857387900352,
+     "from": 32769,
+     "to": 4096,
+     "resident_gb": 31.466,
+     "peak_gb": 33.468,
+     "transient_gb": 2.003
+    },
+    {
+     "ms": 501.92200392484665,
+     "fwd_ms": 345.59427108615637,
+     "pol_ms": 156.32773283869028,
+     "from": 32769,
+     "to": 4096,
+     "resident_gb": 31.466,
+     "peak_gb": 33.468,
+     "transient_gb": 2.003
+    }
+   ]
+  },
+  "L32768_K4096_B16": {
+   "L": 32768,
+   "K": 4096,
+   "batch": 16,
+   "oom": "CUDA out of memory. Tried to allocate 1024.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 462.50 MiB is free. Including non-PyTorch memory, this process has 39.03 GiB memory in use. Of the a",
+   "oom_phase": "setup",
+   "repeats": []
+  }
+ }
+}

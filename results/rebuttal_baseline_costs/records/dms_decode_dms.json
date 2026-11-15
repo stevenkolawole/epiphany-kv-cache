@@ -1,0 +1,1600 @@
+{
+ "meta": {
+  "mode": "dms_decode",
+  "method": "dms",
+  "model": "nvidia/Qwen3-8B-DMS-8x",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.57.1",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "dms_decode",
+   "method": "dms",
+   "model": "nvidia/Qwen3-8B-DMS-8x",
+   "tokenizer": "Qwen/Qwen3-8B",
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    512,
+    1024,
+    2048,
+    4096
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    1,
+    4,
+    16
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/dms_decode_dms.json"
+  },
+  "weights_gb": 15.259,
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "B1": {
+   "batch": 1,
+   "windows": [
+    {
+     "context_end": 256,
+     "ms_per_token": 59.10303250493598,
+     "live_mean": 192.5,
+     "live_end": 256.0,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 384,
+     "ms_per_token": 55.213008003192954,
+     "live_mean": 320.5,
+     "live_end": 384.0,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 512,
+     "ms_per_token": 55.19538842418115,
+     "live_mean": 448.5,
+     "live_end": 512.0,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 640,
+     "ms_per_token": 55.087653829104966,
+     "live_mean": 541.0577392578125,
+     "live_end": 560.9340209960938,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 768,
+     "ms_per_token": 55.18009101433563,
+     "live_mean": 574.431884765625,
+     "live_end": 593.0382080078125,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 896,
+     "ms_per_token": 55.11497411498567,
+     "live_mean": 614.48291015625,
+     "live_end": 633.857666015625,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 1024,
+     "ms_per_token": 55.12202746831463,
+     "live_mean": 646.9470825195312,
+     "live_end": 659.1632080078125,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 1152,
+     "ms_per_token": 55.162450327770784,
+     "live_mean": 667.8881225585938,
+     "live_end": 674.90625,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 1280,
+     "ms_per_token": 55.14867447709548,
+     "live_mean": 686.435546875,
+     "live_end": 703.3367919921875,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 1408,
+     "ms_per_token": 55.11360152740963,
+     "live_mean": 712.1475830078125,
+     "live_end": 726.1458129882812,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 1536,
+     "ms_per_token": 55.106793879531324,
+     "live_mean": 736.0245971679688,
+     "live_end": 747.9965209960938,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 1664,
+     "ms_per_token": 55.14278822738561,
+     "live_mean": 767.2086181640625,
+     "live_end": 781.8159790039062,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 1792,
+     "ms_per_token": 55.08992868271889,
+     "live_mean": 797.2552490234375,
+     "live_end": 810.6944580078125,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 1920,
+     "ms_per_token": 55.07326172300964,
+     "live_mean": 823.863037109375,
+     "live_end": 839.3923950195312,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 2048,
+     "ms_per_token": 55.022331656800816,
+     "live_mean": 855.5853271484375,
+     "live_end": 866.90625,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 2176,
+     "ms_per_token": 55.13795167644275,
+     "live_mean": 879.938232421875,
+     "live_end": 895.732666015625,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 2304,
+     "ms_per_token": 55.10090637108078,
+     "live_mean": 906.4146728515625,
+     "live_end": 917.09375,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 2432,
+     "ms_per_token": 55.05665275268257,
+     "live_mean": 933.4514770507812,
+     "live_end": 945.2430419921875,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 2560,
+     "ms_per_token": 55.076551776437555,
+     "live_mean": 953.56591796875,
+     "live_end": 959.6632080078125,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 2688,
+     "ms_per_token": 55.00631809627521,
+     "live_mean": 965.7230224609375,
+     "live_end": 972.3680419921875,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 2816,
+     "ms_per_token": 55.13602742939838,
+     "live_mean": 987.2508544921875,
+     "live_end": 995.701416015625,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "context_end": 2944,
+     "ms_per_token": 76.54969424038427,
+     "live_mean": 1009.9912719726562,
+     "live_end": 1025.0694580078125,
+     "resident_gb": 15.549,
+     "peak_gb": 15.616
+    },
+    {
+     "context_end": 3072,
+     "ms_per_token": 57.04128857541946,
+     "live_mean": 1038.790771484375,
+     "live_end": 1048.7117919921875,
+     "resident_gb": 15.553,
+     "peak_gb": 15.554
+    },
+    {
+     "context_end": 3200,
+     "ms_per_token": 56.93337174670887,
+     "live_mean": 1057.0751953125,
+     "live_end": 1070.7847900390625,
+     "resident_gb": 15.553,
+     "peak_gb": 15.554
+    },
+    {
+     "context_end": 3328,
+     "ms_per_token": 57.035805879422696,
+     "live_mean": 1085.600830078125,
+     "live_end": 1096.15625,
+     "resident_gb": 15.553,
+     "peak_gb": 15.563
+    },
+    {
+     "context_end": 3456,
+     "ms_per_token": 57.06897261552513,
+     "live_mean": 1114.6038818359375,
+     "live_end": 1127.3125,
+     "resident_gb": 15.557,
+     "peak_gb": 15.558
+    },
+    {
+     "context_end": 3584,
+     "ms_per_token": 57.004026166396216,
+     "live_mean": 1137.35107421875,
+     "live_end": 1146.013916015625,
+     "resident_gb": 15.557,
+     "peak_gb": 15.567
+    },
+    {
+     "context_end": 3712,
+     "ms_per_token": 56.93265007357695,
+     "live_mean": 1151.2987060546875,
+     "live_end": 1158.1285400390625,
+     "resident_gb": 15.561,
+     "peak_gb": 15.561
+    },
+    {
+     "context_end": 3840,
+     "ms_per_token": 56.99019289386342,
+     "live_mean": 1164.5836181640625,
+     "live_end": 1171.78125,
+     "resident_gb": 15.561,
+     "peak_gb": 15.561
+    },
+    {
+     "context_end": 3968,
+     "ms_per_token": 56.99625278793974,
+     "live_mean": 1181.810302734375,
+     "live_end": 1196.482666015625,
+     "resident_gb": 15.561,
+     "peak_gb": 15.561
+    },
+    {
+     "context_end": 4096,
+     "ms_per_token": 56.901200412539765,
+     "live_mean": 1206.63818359375,
+     "live_end": 1213.9097900390625,
+     "resident_gb": 15.561,
+     "peak_gb": 15.561
+    },
+    {
+     "context_end": 4224,
+     "ms_per_token": 56.910170842456864,
+     "live_mean": 1222.9879150390625,
+     "live_end": 1238.1597900390625,
+     "resident_gb": 15.561,
+     "peak_gb": 15.561
+    },
+    {
+     "context_end": 4352,
+     "ms_per_token": 56.983134905749466,
+     "live_mean": 1250.455322265625,
+     "live_end": 1260.7916259765625,
+     "resident_gb": 15.561,
+     "peak_gb": 15.575
+    },
+    {
+     "context_end": 4480,
+     "ms_per_token": 57.123953563859686,
+     "live_mean": 1274.997314453125,
+     "live_end": 1291.0,
+     "resident_gb": 15.569,
+     "peak_gb": 15.579
+    },
+    {
+     "context_end": 4608,
+     "ms_per_token": 57.05538503025309,
+     "live_mean": 1305.0792236328125,
+     "live_end": 1315.2603759765625,
+     "resident_gb": 15.573,
+     "peak_gb": 15.583
+    },
+    {
+     "context_end": 4736,
+     "ms_per_token": 56.956303073093295,
+     "live_mean": 1329.4342041015625,
+     "live_end": 1346.6875,
+     "resident_gb": 15.577,
+     "peak_gb": 15.597
+    },
+    {
+     "context_end": 4864,
+     "ms_per_token": 57.01436836170615,
+     "live_mean": 1359.7889404296875,
+     "live_end": 1370.8646240234375,
+     "resident_gb": 15.591,
+     "peak_gb": 15.592
+    },
+    {
+     "context_end": 4992,
+     "ms_per_token": 56.983366528584156,
+     "live_mean": 1378.422607421875,
+     "live_end": 1384.3646240234375,
+     "resident_gb": 15.591,
+     "peak_gb": 15.592
+    },
+    {
+     "context_end": 5120,
+     "ms_per_token": 57.037363476410974,
+     "live_mean": 1394.6761474609375,
+     "live_end": 1408.71875,
+     "resident_gb": 15.591,
+     "peak_gb": 15.601
+    },
+    {
+     "context_end": 5248,
+     "ms_per_token": 57.00436024199007,
+     "live_mean": 1428.1885986328125,
+     "live_end": 1443.99658203125,
+     "resident_gb": 15.595,
+     "peak_gb": 15.596
+    },
+    {
+     "context_end": 5376,
+     "ms_per_token": 57.040082348976284,
+     "live_mean": 1452.3212890625,
+     "live_end": 1462.138916015625,
+     "resident_gb": 15.595,
+     "peak_gb": 15.596
+    },
+    {
+     "context_end": 5504,
+     "ms_per_token": 57.01740740914829,
+     "live_mean": 1477.747314453125,
+     "live_end": 1490.9305419921875,
+     "resident_gb": 15.595,
+     "peak_gb": 15.609
+    },
+    {
+     "context_end": 5632,
+     "ms_per_token": 56.98923128511524,
+     "live_mean": 1504.70947265625,
+     "live_end": 1513.138916015625,
+     "resident_gb": 15.603,
+     "peak_gb": 15.619
+    },
+    {
+     "context_end": 5760,
+     "ms_per_token": 57.03239407012006,
+     "live_mean": 1520.4661865234375,
+     "live_end": 1529.295166015625,
+     "resident_gb": 15.609,
+     "peak_gb": 15.609
+    },
+    {
+     "context_end": 5888,
+     "ms_per_token": 56.95519477740163,
+     "live_mean": 1532.847900390625,
+     "live_end": 1537.1353759765625,
+     "resident_gb": 15.609,
+     "peak_gb": 15.609
+    },
+    {
+     "context_end": 6016,
+     "ms_per_token": 57.050507006351836,
+     "live_mean": 1549.3289794921875,
+     "live_end": 1565.3992919921875,
+     "resident_gb": 15.609,
+     "peak_gb": 15.625
+    },
+    {
+     "context_end": 6144,
+     "ms_per_token": 57.054861117649125,
+     "live_mean": 1574.50341796875,
+     "live_end": 1581.7430419921875,
+     "resident_gb": 15.616,
+     "peak_gb": 15.616
+    },
+    {
+     "context_end": 6272,
+     "ms_per_token": 57.10976707996451,
+     "live_mean": 1595.121337890625,
+     "live_end": 1609.857666015625,
+     "resident_gb": 15.616,
+     "peak_gb": 15.616
+    },
+    {
+     "context_end": 6400,
+     "ms_per_token": 57.0639820980432,
+     "live_mean": 1616.035888671875,
+     "live_end": 1620.236083984375,
+     "resident_gb": 15.616,
+     "peak_gb": 15.616
+    },
+    {
+     "context_end": 6528,
+     "ms_per_token": 57.04462966605206,
+     "live_mean": 1626.1480712890625,
+     "live_end": 1632.1875,
+     "resident_gb": 15.616,
+     "peak_gb": 15.625
+    },
+    {
+     "context_end": 6656,
+     "ms_per_token": 56.9561995434924,
+     "live_mean": 1636.733154296875,
+     "live_end": 1642.295166015625,
+     "resident_gb": 15.62,
+     "peak_gb": 15.62
+    },
+    {
+     "context_end": 6784,
+     "ms_per_token": 56.95070263391244,
+     "live_mean": 1646.461669921875,
+     "live_end": 1654.15625,
+     "resident_gb": 15.62,
+     "peak_gb": 15.62
+    },
+    {
+     "context_end": 6912,
+     "ms_per_token": 57.087962712103035,
+     "live_mean": 1663.5770263671875,
+     "live_end": 1679.4097900390625,
+     "resident_gb": 15.62,
+     "peak_gb": 15.62
+    },
+    {
+     "context_end": 7040,
+     "ms_per_token": 57.08193905593362,
+     "live_mean": 1698.2568359375,
+     "live_end": 1713.482666015625,
+     "resident_gb": 15.62,
+     "peak_gb": 15.629
+    },
+    {
+     "context_end": 7168,
+     "ms_per_token": 56.9604659867764,
+     "live_mean": 1722.9481201171875,
+     "live_end": 1727.951416015625,
+     "resident_gb": 15.623,
+     "peak_gb": 15.624
+    },
+    {
+     "context_end": 7296,
+     "ms_per_token": 56.98009260231629,
+     "live_mean": 1738.0751953125,
+     "live_end": 1749.4896240234375,
+     "resident_gb": 15.623,
+     "peak_gb": 15.644
+    },
+    {
+     "context_end": 7424,
+     "ms_per_token": 56.93966576291132,
+     "live_mean": 1754.8194580078125,
+     "live_end": 1759.8125,
+     "resident_gb": 15.635,
+     "peak_gb": 15.636
+    },
+    {
+     "context_end": 7552,
+     "ms_per_token": 57.09844155717292,
+     "live_mean": 1773.529541015625,
+     "live_end": 1793.40625,
+     "resident_gb": 15.635,
+     "peak_gb": 15.636
+    },
+    {
+     "context_end": 7680,
+     "ms_per_token": 56.95911653310759,
+     "live_mean": 1805.1922607421875,
+     "live_end": 1813.1632080078125,
+     "resident_gb": 15.635,
+     "peak_gb": 15.636
+    },
+    {
+     "context_end": 7808,
+     "ms_per_token": 56.89232603617711,
+     "live_mean": 1819.845947265625,
+     "live_end": 1831.4791259765625,
+     "resident_gb": 15.635,
+     "peak_gb": 15.65
+    },
+    {
+     "context_end": 7936,
+     "ms_per_token": 56.902425341831986,
+     "live_mean": 1848.2325439453125,
+     "live_end": 1858.34033203125,
+     "resident_gb": 15.641,
+     "peak_gb": 15.665
+    },
+    {
+     "context_end": 8064,
+     "ms_per_token": 56.97803630391718,
+     "live_mean": 1864.6748046875,
+     "live_end": 1870.2396240234375,
+     "resident_gb": 15.651,
+     "peak_gb": 15.651
+    },
+    {
+     "context_end": 8192,
+     "ms_per_token": 56.94079862587387,
+     "live_mean": 1876.11279296875,
+     "live_end": 1883.1875,
+     "resident_gb": 15.651,
+     "peak_gb": 15.651
+    },
+    {
+     "context_end": 8320,
+     "ms_per_token": 57.058611633692635,
+     "live_mean": 1888.4759521484375,
+     "live_end": 1895.170166015625,
+     "resident_gb": 15.651,
+     "peak_gb": 15.666
+    }
+   ]
+  },
+  "B4": {
+   "batch": 4,
+   "windows": [
+    {
+     "context_end": 256,
+     "ms_per_token": 65.86330221762182,
+     "live_mean": 192.5,
+     "live_end": 256.0,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 384,
+     "ms_per_token": 60.64431829872774,
+     "live_mean": 320.5,
+     "live_end": 384.0,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 512,
+     "ms_per_token": 60.73404211201705,
+     "live_mean": 448.5,
+     "live_end": 512.0,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 640,
+     "ms_per_token": 60.661472896754276,
+     "live_mean": 541.0382080078125,
+     "live_end": 560.8854370117188,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 768,
+     "ms_per_token": 60.5074551931466,
+     "live_mean": 574.3816528320312,
+     "live_end": 592.9930419921875,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 896,
+     "ms_per_token": 60.47062798097613,
+     "live_mean": 614.45361328125,
+     "live_end": 633.84375,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 1024,
+     "ms_per_token": 60.46477302152198,
+     "live_mean": 646.937255859375,
+     "live_end": 659.1319580078125,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 1152,
+     "ms_per_token": 60.36463183045271,
+     "live_mean": 667.8544921875,
+     "live_end": 674.8680419921875,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 1280,
+     "ms_per_token": 60.40149317414034,
+     "live_mean": 686.4229736328125,
+     "live_end": 703.3055419921875,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 1408,
+     "ms_per_token": 60.70810044911923,
+     "live_mean": 712.1156005859375,
+     "live_end": 726.0972290039062,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 1536,
+     "ms_per_token": 60.71884054108523,
+     "live_mean": 735.9436645507812,
+     "live_end": 747.9236450195312,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 1664,
+     "ms_per_token": 60.68077069357969,
+     "live_mean": 767.0707397460938,
+     "live_end": 781.625,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 1792,
+     "ms_per_token": 60.638567330897786,
+     "live_mean": 797.0238037109375,
+     "live_end": 810.4270629882812,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 1920,
+     "ms_per_token": 60.513962620461825,
+     "live_mean": 823.6226806640625,
+     "live_end": 839.1597290039062,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 2048,
+     "ms_per_token": 60.43319762829924,
+     "live_mean": 855.3310546875,
+     "live_end": 866.6492919921875,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 2176,
+     "ms_per_token": 60.418489108997164,
+     "live_mean": 879.6658935546875,
+     "live_end": 895.4340209960938,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 2304,
+     "ms_per_token": 60.34666706909775,
+     "live_mean": 906.1190185546875,
+     "live_end": 916.8125,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 2432,
+     "ms_per_token": 60.56712127610808,
+     "live_mean": 933.15283203125,
+     "live_end": 944.9340209960938,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 2560,
+     "ms_per_token": 60.433773967815796,
+     "live_mean": 953.239013671875,
+     "live_end": 959.3229370117188,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 2688,
+     "ms_per_token": 60.469086365628755,
+     "live_mean": 965.375244140625,
+     "live_end": 972.0,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 2816,
+     "ms_per_token": 60.436823518102756,
+     "live_mean": 986.893798828125,
+     "live_end": 995.3402709960938,
+     "resident_gb": 16.397,
+     "peak_gb": 16.398
+    },
+    {
+     "context_end": 2944,
+     "ms_per_token": 60.496755853819195,
+     "live_mean": 1009.6209716796875,
+     "live_end": 1024.68408203125,
+     "resident_gb": 16.397,
+     "peak_gb": 16.436
+    },
+    {
+     "context_end": 3072,
+     "ms_per_token": 60.50199714809423,
+     "live_mean": 1038.4013671875,
+     "live_end": 1048.3021240234375,
+     "resident_gb": 16.412,
+     "peak_gb": 16.414
+    },
+    {
+     "context_end": 3200,
+     "ms_per_token": 60.457040981418686,
+     "live_mean": 1056.6702880859375,
+     "live_end": 1070.3785400390625,
+     "resident_gb": 16.412,
+     "peak_gb": 16.414
+    },
+    {
+     "context_end": 3328,
+     "ms_per_token": 60.549812704266515,
+     "live_mean": 1085.17138671875,
+     "live_end": 1095.71875,
+     "resident_gb": 16.412,
+     "peak_gb": 16.452
+    },
+    {
+     "context_end": 3456,
+     "ms_per_token": 60.58122314425418,
+     "live_mean": 1114.16748046875,
+     "live_end": 1126.90283203125,
+     "resident_gb": 16.428,
+     "peak_gb": 16.429
+    },
+    {
+     "context_end": 3584,
+     "ms_per_token": 60.5427221453283,
+     "live_mean": 1136.951904296875,
+     "live_end": 1145.62158203125,
+     "resident_gb": 16.428,
+     "peak_gb": 16.467
+    },
+    {
+     "context_end": 3712,
+     "ms_per_token": 60.47463340655668,
+     "live_mean": 1150.890380859375,
+     "live_end": 1157.7222900390625,
+     "resident_gb": 16.444,
+     "peak_gb": 16.445
+    },
+    {
+     "context_end": 3840,
+     "ms_per_token": 60.618066429015016,
+     "live_mean": 1164.1522216796875,
+     "live_end": 1171.3472900390625,
+     "resident_gb": 16.444,
+     "peak_gb": 16.445
+    },
+    {
+     "context_end": 3968,
+     "ms_per_token": 60.605106791626895,
+     "live_mean": 1181.367919921875,
+     "live_end": 1196.03125,
+     "resident_gb": 16.444,
+     "peak_gb": 16.445
+    },
+    {
+     "context_end": 4096,
+     "ms_per_token": 60.54417521590949,
+     "live_mean": 1206.1787109375,
+     "live_end": 1213.4375,
+     "resident_gb": 16.444,
+     "peak_gb": 16.445
+    },
+    {
+     "context_end": 4224,
+     "ms_per_token": 60.49385481674108,
+     "live_mean": 1222.4964599609375,
+     "live_end": 1237.673583984375,
+     "resident_gb": 16.444,
+     "peak_gb": 16.445
+    },
+    {
+     "context_end": 4352,
+     "ms_per_token": 60.70804265982588,
+     "live_mean": 1249.98291015625,
+     "live_end": 1260.329833984375,
+     "resident_gb": 16.444,
+     "peak_gb": 16.499
+    },
+    {
+     "context_end": 4480,
+     "ms_per_token": 60.55299242871115,
+     "live_mean": 1274.568115234375,
+     "live_end": 1290.5972900390625,
+     "resident_gb": 16.475,
+     "peak_gb": 16.514
+    },
+    {
+     "context_end": 4608,
+     "ms_per_token": 60.52262668526964,
+     "live_mean": 1304.6851806640625,
+     "live_end": 1314.8958740234375,
+     "resident_gb": 16.491,
+     "peak_gb": 16.53
+    },
+    {
+     "context_end": 4736,
+     "ms_per_token": 60.5842963050236,
+     "live_mean": 1329.064453125,
+     "live_end": 1346.3228759765625,
+     "resident_gb": 16.506,
+     "peak_gb": 16.585
+    },
+    {
+     "context_end": 4864,
+     "ms_per_token": 60.558273715287214,
+     "live_mean": 1359.421142578125,
+     "live_end": 1370.4791259765625,
+     "resident_gb": 16.561,
+     "peak_gb": 16.562
+    },
+    {
+     "context_end": 4992,
+     "ms_per_token": 60.45830174480216,
+     "live_mean": 1378.021240234375,
+     "live_end": 1383.96875,
+     "resident_gb": 16.561,
+     "peak_gb": 16.562
+    },
+    {
+     "context_end": 5120,
+     "ms_per_token": 60.3862463394762,
+     "live_mean": 1394.2734375,
+     "live_end": 1408.3333740234375,
+     "resident_gb": 16.561,
+     "peak_gb": 16.562
+    },
+    {
+     "context_end": 5248,
+     "ms_per_token": 60.37767606176203,
+     "live_mean": 1427.793212890625,
+     "live_end": 1443.5833740234375,
+     "resident_gb": 16.561,
+     "peak_gb": 16.6
+    },
+    {
+     "context_end": 5376,
+     "ms_per_token": 60.43443563248729,
+     "live_mean": 1451.891357421875,
+     "live_end": 1461.6910400390625,
+     "resident_gb": 16.577,
+     "peak_gb": 16.578
+    },
+    {
+     "context_end": 5504,
+     "ms_per_token": 60.39836422496592,
+     "live_mean": 1477.301025390625,
+     "live_end": 1490.451416015625,
+     "resident_gb": 16.577,
+     "peak_gb": 16.631
+    },
+    {
+     "context_end": 5632,
+     "ms_per_token": 60.36903006679495,
+     "live_mean": 1504.2337646484375,
+     "live_end": 1512.6666259765625,
+     "resident_gb": 16.608,
+     "peak_gb": 16.667
+    },
+    {
+     "context_end": 5760,
+     "ms_per_token": 60.42550599522656,
+     "live_mean": 1520.0323486328125,
+     "live_end": 1528.8680419921875,
+     "resident_gb": 16.631,
+     "peak_gb": 16.632
+    },
+    {
+     "context_end": 5888,
+     "ms_per_token": 60.4792518861359,
+     "live_mean": 1532.407958984375,
+     "live_end": 1536.670166015625,
+     "resident_gb": 16.631,
+     "peak_gb": 16.632
+    },
+    {
+     "context_end": 6016,
+     "ms_per_token": 60.47252449570806,
+     "live_mean": 1548.883056640625,
+     "live_end": 1564.951416015625,
+     "resident_gb": 16.631,
+     "peak_gb": 16.69
+    },
+    {
+     "context_end": 6144,
+     "ms_per_token": 60.49351270121406,
+     "live_mean": 1574.048828125,
+     "live_end": 1581.28125,
+     "resident_gb": 16.655,
+     "peak_gb": 16.656
+    },
+    {
+     "context_end": 6272,
+     "ms_per_token": 60.523324988025706,
+     "live_mean": 1594.66064453125,
+     "live_end": 1609.388916015625,
+     "resident_gb": 16.655,
+     "peak_gb": 16.656
+    },
+    {
+     "context_end": 6400,
+     "ms_per_token": 60.75262087324518,
+     "live_mean": 1615.564697265625,
+     "live_end": 1619.767333984375,
+     "resident_gb": 16.655,
+     "peak_gb": 16.656
+    },
+    {
+     "context_end": 6528,
+     "ms_per_token": 60.740157394320704,
+     "live_mean": 1625.70751953125,
+     "live_end": 1631.763916015625,
+     "resident_gb": 16.655,
+     "peak_gb": 16.694
+    },
+    {
+     "context_end": 6656,
+     "ms_per_token": 60.70395239657955,
+     "live_mean": 1636.335693359375,
+     "live_end": 1641.8853759765625,
+     "resident_gb": 16.67,
+     "peak_gb": 16.671
+    },
+    {
+     "context_end": 6784,
+     "ms_per_token": 60.68546486494597,
+     "live_mean": 1646.05810546875,
+     "live_end": 1653.7569580078125,
+     "resident_gb": 16.67,
+     "peak_gb": 16.671
+    },
+    {
+     "context_end": 6912,
+     "ms_per_token": 60.57872949531884,
+     "live_mean": 1663.1767578125,
+     "live_end": 1679.0,
+     "resident_gb": 16.67,
+     "peak_gb": 16.671
+    },
+    {
+     "context_end": 7040,
+     "ms_per_token": 60.44427145025111,
+     "live_mean": 1697.83056640625,
+     "live_end": 1713.0521240234375,
+     "resident_gb": 16.67,
+     "peak_gb": 16.709
+    },
+    {
+     "context_end": 7168,
+     "ms_per_token": 60.482402546767844,
+     "live_mean": 1722.51416015625,
+     "live_end": 1727.513916015625,
+     "resident_gb": 16.686,
+     "peak_gb": 16.687
+    },
+    {
+     "context_end": 7296,
+     "ms_per_token": 60.535648350196425,
+     "live_mean": 1737.6253662109375,
+     "live_end": 1749.0103759765625,
+     "resident_gb": 16.686,
+     "peak_gb": 16.768
+    },
+    {
+     "context_end": 7424,
+     "ms_per_token": 60.53263324429281,
+     "live_mean": 1754.3448486328125,
+     "live_end": 1759.3333740234375,
+     "resident_gb": 16.733,
+     "peak_gb": 16.734
+    },
+    {
+     "context_end": 7552,
+     "ms_per_token": 60.49603350402322,
+     "live_mean": 1773.0546875,
+     "live_end": 1792.923583984375,
+     "resident_gb": 16.733,
+     "peak_gb": 16.734
+    },
+    {
+     "context_end": 7680,
+     "ms_per_token": 60.44652064883849,
+     "live_mean": 1804.709716796875,
+     "live_end": 1812.6875,
+     "resident_gb": 16.733,
+     "peak_gb": 16.734
+    },
+    {
+     "context_end": 7808,
+     "ms_per_token": 60.45945809819386,
+     "live_mean": 1819.3985595703125,
+     "live_end": 1831.0694580078125,
+     "resident_gb": 16.733,
+     "peak_gb": 16.792
+    },
+    {
+     "context_end": 7936,
+     "ms_per_token": 60.55675051175058,
+     "live_mean": 1847.8104248046875,
+     "live_end": 1857.93408203125,
+     "resident_gb": 16.756,
+     "peak_gb": 16.844
+    },
+    {
+     "context_end": 8064,
+     "ms_per_token": 60.44748365457053,
+     "live_mean": 1864.25439453125,
+     "live_end": 1869.80908203125,
+     "resident_gb": 16.791,
+     "peak_gb": 16.793
+    },
+    {
+     "context_end": 8192,
+     "ms_per_token": 60.41929755883757,
+     "live_mean": 1875.6846923828125,
+     "live_end": 1882.736083984375,
+     "resident_gb": 16.791,
+     "peak_gb": 16.793
+    },
+    {
+     "context_end": 8320,
+     "ms_per_token": 60.53589987277519,
+     "live_mean": 1888.0419921875,
+     "live_end": 1894.7569580078125,
+     "resident_gb": 16.791,
+     "peak_gb": 16.85
+    }
+   ]
+  },
+  "B16": {
+   "batch": 16,
+   "windows": [
+    {
+     "context_end": 256,
+     "ms_per_token": 61.249714737641625,
+     "live_mean": 192.5,
+     "live_end": 256.0,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 384,
+     "ms_per_token": 61.12917918289895,
+     "live_mean": 320.5,
+     "live_end": 384.0,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 512,
+     "ms_per_token": 61.21731699749944,
+     "live_mean": 448.5,
+     "live_end": 512.0,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 640,
+     "ms_per_token": 61.15425374082406,
+     "live_mean": 541.063720703125,
+     "live_end": 560.9236450195312,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 768,
+     "ms_per_token": 61.09535252471687,
+     "live_mean": 574.4464111328125,
+     "live_end": 593.076416015625,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 896,
+     "ms_per_token": 61.225522793392884,
+     "live_mean": 614.5208129882812,
+     "live_end": 633.888916015625,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 1024,
+     "ms_per_token": 60.98341420147335,
+     "live_mean": 646.9669799804688,
+     "live_end": 659.1597290039062,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 1152,
+     "ms_per_token": 60.87885550005012,
+     "live_mean": 667.87548828125,
+     "live_end": 674.875,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 1280,
+     "ms_per_token": 60.84454285155516,
+     "live_mean": 686.404296875,
+     "live_end": 703.326416015625,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 1408,
+     "ms_per_token": 60.85271374104195,
+     "live_mean": 712.1373901367188,
+     "live_end": 726.1180419921875,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 1536,
+     "ms_per_token": 60.90032650536159,
+     "live_mean": 735.976318359375,
+     "live_end": 747.920166015625,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 1664,
+     "ms_per_token": 60.948550770262955,
+     "live_mean": 767.10498046875,
+     "live_end": 781.6875,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 1792,
+     "ms_per_token": 60.82049665201339,
+     "live_mean": 797.0980224609375,
+     "live_end": 810.5,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 1920,
+     "ms_per_token": 61.03243194957031,
+     "live_mean": 823.6804809570312,
+     "live_end": 839.2152709960938,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 2048,
+     "ms_per_token": 61.18791439803317,
+     "live_mean": 855.3931884765625,
+     "live_end": 866.701416015625,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 2176,
+     "ms_per_token": 61.05363915048656,
+     "live_mean": 879.73486328125,
+     "live_end": 895.5277709960938,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 2304,
+     "ms_per_token": 60.85307214743807,
+     "live_mean": 906.2071533203125,
+     "live_end": 916.8645629882812,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 2432,
+     "ms_per_token": 60.855961455672514,
+     "live_mean": 933.169189453125,
+     "live_end": 944.9305419921875,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 2560,
+     "ms_per_token": 60.87625088184723,
+     "live_mean": 953.2503051757812,
+     "live_end": 959.3333129882812,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 2688,
+     "ms_per_token": 60.922549910173984,
+     "live_mean": 965.3731079101562,
+     "live_end": 971.982666015625,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 2816,
+     "ms_per_token": 60.876974392158445,
+     "live_mean": 986.8619384765625,
+     "live_end": 995.3125,
+     "resident_gb": 19.787,
+     "peak_gb": 19.792
+    },
+    {
+     "context_end": 2944,
+     "ms_per_token": 60.9251120222325,
+     "live_mean": 1009.5941772460938,
+     "live_end": 1024.6458740234375,
+     "resident_gb": 19.787,
+     "peak_gb": 19.944
+    },
+    {
+     "context_end": 3072,
+     "ms_per_token": 60.876523133629235,
+     "live_mean": 1038.3695068359375,
+     "live_end": 1048.27783203125,
+     "resident_gb": 19.85,
+     "peak_gb": 19.854
+    },
+    {
+     "context_end": 3200,
+     "ms_per_token": 60.89757018708042,
+     "live_mean": 1056.6649169921875,
+     "live_end": 1070.3785400390625,
+     "resident_gb": 19.85,
+     "peak_gb": 19.854
+    },
+    {
+     "context_end": 3328,
+     "ms_per_token": 60.85646975407144,
+     "live_mean": 1085.1756591796875,
+     "live_end": 1095.732666015625,
+     "resident_gb": 19.85,
+     "peak_gb": 20.007
+    },
+    {
+     "context_end": 3456,
+     "ms_per_token": 60.89958330267109,
+     "live_mean": 1114.185791015625,
+     "live_end": 1126.9132080078125,
+     "resident_gb": 19.912,
+     "peak_gb": 19.917
+    },
+    {
+     "context_end": 3584,
+     "ms_per_token": 60.89058846919215,
+     "live_mean": 1136.94677734375,
+     "live_end": 1145.6007080078125,
+     "resident_gb": 19.912,
+     "peak_gb": 20.069
+    },
+    {
+     "context_end": 3712,
+     "ms_per_token": 60.98156615553307,
+     "live_mean": 1150.8746337890625,
+     "live_end": 1157.704833984375,
+     "resident_gb": 19.975,
+     "peak_gb": 19.979
+    },
+    {
+     "context_end": 3840,
+     "ms_per_token": 60.94845362531487,
+     "live_mean": 1164.1351318359375,
+     "live_end": 1171.3228759765625,
+     "resident_gb": 19.975,
+     "peak_gb": 19.979
+    },
+    {
+     "context_end": 3968,
+     "ms_per_token": 60.87801964895334,
+     "live_mean": 1181.3431396484375,
+     "live_end": 1196.017333984375,
+     "resident_gb": 19.975,
+     "peak_gb": 19.979
+    },
+    {
+     "context_end": 4096,
+     "ms_per_token": 60.93007172239595,
+     "live_mean": 1206.1851806640625,
+     "live_end": 1213.454833984375,
+     "resident_gb": 19.975,
+     "peak_gb": 19.979
+    },
+    {
+     "context_end": 4224,
+     "ms_per_token": 60.958961857977556,
+     "live_mean": 1222.5423583984375,
+     "live_end": 1237.74658203125,
+     "resident_gb": 19.975,
+     "peak_gb": 19.979
+    },
+    {
+     "context_end": 4352,
+     "ms_per_token": 60.97282500923029,
+     "live_mean": 1250.051025390625,
+     "live_end": 1260.388916015625,
+     "resident_gb": 19.975,
+     "peak_gb": 20.194
+    },
+    {
+     "context_end": 4480,
+     "ms_per_token": 60.911080123332795,
+     "live_mean": 1274.593505859375,
+     "live_end": 1290.6146240234375,
+     "resident_gb": 20.1,
+     "peak_gb": 20.257
+    },
+    {
+     "context_end": 4608,
+     "ms_per_token": 60.895542381331325,
+     "live_mean": 1304.7095947265625,
+     "live_end": 1314.9132080078125,
+     "resident_gb": 20.162,
+     "peak_gb": 20.319
+    },
+    {
+     "context_end": 4736,
+     "ms_per_token": 60.926547052076785,
+     "live_mean": 1329.0604248046875,
+     "live_end": 1346.295166015625,
+     "resident_gb": 20.225,
+     "peak_gb": 20.538
+    },
+    {
+     "context_end": 4864,
+     "ms_per_token": 60.89978748423164,
+     "live_mean": 1359.380615234375,
+     "live_end": 1370.454833984375,
+     "resident_gb": 20.443,
+     "peak_gb": 20.448
+    },
+    {
+     "context_end": 4992,
+     "ms_per_token": 60.97346349633881,
+     "live_mean": 1378.0120849609375,
+     "live_end": 1383.96533203125,
+     "resident_gb": 20.443,
+     "peak_gb": 20.448
+    },
+    {
+     "context_end": 5120,
+     "ms_per_token": 60.94432141253492,
+     "live_mean": 1394.27880859375,
+     "live_end": 1408.3541259765625,
+     "resident_gb": 20.443,
+     "peak_gb": 20.448
+    },
+    {
+     "context_end": 5248,
+     "ms_per_token": 60.967924786382355,
+     "live_mean": 1427.83544921875,
+     "live_end": 1443.65625,
+     "resident_gb": 20.443,
+     "peak_gb": 20.6
+    },
+    {
+     "context_end": 5376,
+     "ms_per_token": 60.959024533076445,
+     "live_mean": 1451.9814453125,
+     "live_end": 1461.767333984375,
+     "resident_gb": 20.506,
+     "peak_gb": 20.511
+    },
+    {
+     "context_end": 5504,
+     "ms_per_token": 61.056032031046925,
+     "live_mean": 1477.372314453125,
+     "live_end": 1490.55908203125,
+     "resident_gb": 20.506,
+     "peak_gb": 20.725
+    },
+    {
+     "context_end": 5632,
+     "ms_per_token": 61.022317389870295,
+     "live_mean": 1504.339599609375,
+     "live_end": 1512.7847900390625,
+     "resident_gb": 20.631,
+     "peak_gb": 20.866
+    },
+    {
+     "context_end": 5760,
+     "ms_per_token": 60.90636486260337,
+     "live_mean": 1520.153076171875,
+     "live_end": 1528.986083984375,
+     "resident_gb": 20.725,
+     "peak_gb": 20.729
+    },
+    {
+     "context_end": 5888,
+     "ms_per_token": 60.946266323298914,
+     "live_mean": 1532.530029296875,
+     "live_end": 1536.8055419921875,
+     "resident_gb": 20.725,
+     "peak_gb": 20.729
+    },
+    {
+     "context_end": 6016,
+     "ms_per_token": 60.98792428383604,
+     "live_mean": 1549.0137939453125,
+     "live_end": 1565.0625,
+     "resident_gb": 20.725,
+     "peak_gb": 20.96
+    },
+    {
+     "context_end": 6144,
+     "ms_per_token": 61.040569675242295,
+     "live_mean": 1574.163330078125,
+     "live_end": 1581.4132080078125,
+     "resident_gb": 20.818,
+     "peak_gb": 20.823
+    },
+    {
+     "context_end": 6272,
+     "ms_per_token": 61.054556510498514,
+     "live_mean": 1594.793212890625,
+     "live_end": 1609.5035400390625,
+     "resident_gb": 20.818,
+     "peak_gb": 20.823
+    },
+    {
+     "context_end": 6400,
+     "ms_per_token": 60.9954125029617,
+     "live_mean": 1615.6669921875,
+     "live_end": 1619.8541259765625,
+     "resident_gb": 20.818,
+     "peak_gb": 20.823
+    },
+    {
+     "context_end": 6528,
+     "ms_per_token": 61.00340777265956,
+     "live_mean": 1625.787109375,
+     "live_end": 1631.829833984375,
+     "resident_gb": 20.818,
+     "peak_gb": 20.975
+    },
+    {
+     "context_end": 6656,
+     "ms_per_token": 61.14329252886819,
+     "live_mean": 1636.3924560546875,
+     "live_end": 1641.9617919921875,
+     "resident_gb": 20.881,
+     "peak_gb": 20.886
+    },
+    {
+     "context_end": 6784,
+     "ms_per_token": 61.007903605059255,
+     "live_mean": 1646.13037109375,
+     "live_end": 1653.826416015625,
+     "resident_gb": 20.881,
+     "peak_gb": 20.886
+    },
+    {
+     "context_end": 6912,
+     "ms_per_token": 61.02189798184554,
+     "live_mean": 1663.227294921875,
+     "live_end": 1679.0416259765625,
+     "resident_gb": 20.881,
+     "peak_gb": 20.886
+    },
+    {
+     "context_end": 7040,
+     "ms_per_token": 61.16761496741674,
+     "live_mean": 1697.8916015625,
+     "live_end": 1713.1146240234375,
+     "resident_gb": 20.881,
+     "peak_gb": 21.038
+    },
+    {
+     "context_end": 7168,
+     "ms_per_token": 61.098553669580724,
+     "live_mean": 1722.578369140625,
+     "live_end": 1727.576416015625,
+     "resident_gb": 20.943,
+     "peak_gb": 20.948
+    },
+    {
+     "context_end": 7296,
+     "ms_per_token": 61.062747652613325,
+     "live_mean": 1737.6845703125,
+     "live_end": 1749.076416015625,
+     "resident_gb": 20.943,
+     "peak_gb": 21.272
+    },
+    {
+     "context_end": 7424,
+     "ms_per_token": 61.12398224286153,
+     "live_mean": 1754.41162109375,
+     "live_end": 1759.40283203125,
+     "resident_gb": 21.131,
+     "peak_gb": 21.136
+    },
+    {
+     "context_end": 7552,
+     "ms_per_token": 61.224619144923054,
+     "live_mean": 1773.1435546875,
+     "live_end": 1793.0242919921875,
+     "resident_gb": 21.131,
+     "peak_gb": 21.136
+    },
+    {
+     "context_end": 7680,
+     "ms_per_token": 61.089358481694944,
+     "live_mean": 1804.8172607421875,
+     "live_end": 1812.8021240234375,
+     "resident_gb": 21.131,
+     "peak_gb": 21.136
+    },
+    {
+     "context_end": 7808,
+     "ms_per_token": 61.068977152899606,
+     "live_mean": 1819.4833984375,
+     "live_end": 1831.1146240234375,
+     "resident_gb": 21.131,
+     "peak_gb": 21.366
+    },
+    {
+     "context_end": 7936,
+     "ms_per_token": 61.111370367143536,
+     "live_mean": 1847.856689453125,
+     "live_end": 1857.982666015625,
+     "resident_gb": 21.225,
+     "peak_gb": 21.577
+    },
+    {
+     "context_end": 8064,
+     "ms_per_token": 61.03214057293371,
+     "live_mean": 1864.301025390625,
+     "live_end": 1869.8507080078125,
+     "resident_gb": 21.365,
+     "peak_gb": 21.37
+    },
+    {
+     "context_end": 8192,
+     "ms_per_token": 61.0175881847681,
+     "live_mean": 1875.722900390625,
+     "live_end": 1882.77783203125,
+     "resident_gb": 21.365,
+     "peak_gb": 21.37
+    },
+    {
+     "context_end": 8320,
+     "ms_per_token": 61.100572431314504,
+     "live_mean": 1888.07861328125,
+     "live_end": 1894.78125,
+     "resident_gb": 21.365,
+     "peak_gb": 21.6
+    }
+   ]
+  }
+ }
+}

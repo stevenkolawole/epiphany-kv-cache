@@ -1,0 +1,35 @@
+{
+ "meta": {
+  "mode": "capacity_fresh",
+  "K": 4096,
+  "args": [
+   "--method",
+   "epikv",
+   "--model",
+   "Qwen/Qwen3-8B",
+   "--band_a_layer",
+   "11",
+   "--band_b_layer",
+   "24"
+  ]
+ },
+ "cells": {
+  "K4096": {
+   "K_or_context": 4096,
+   "max_batch": 19,
+   "first_oom": 20,
+   "probes": {
+    "1": 16.537,
+    "2": 17.738,
+    "4": 20.216,
+    "8": 24.961,
+    "16": 34.591,
+    "32": "OOM",
+    "24": "OOM",
+    "20": "OOM",
+    "18": 36.998,
+    "19": 38.202
+   }
+  }
+ }
+}
