@@ -1,0 +1,67 @@
+{
+ "meta": {
+  "mode": "prefill",
+  "method": "h2o",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "eager",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.55.4",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "prefill",
+   "method": "h2o",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    1024
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384
+   ],
+   "batches": [
+    1,
+    4,
+    16
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "restart_windows": false,
+   "first_fit": false,
+   "probe_timeout": 600,
+   "energy": true,
+   "probe_only": false,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/energy_prefill_h2o.json"
+  },
+  "weights_gb": 14.958,
+  "idle_w": 75.19889225337526,
+  "gpu_uuid": "328ff6c5-b827-a542-adc7-9bd71b3373e4",
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "L4096": {
+   "L": 4096,
+   "K": 1024,
+   "oom": "CUDA out of memory. Tried to allocate 2.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 1.01 GiB is free. Including non-PyTorch memory, this process has 38.47 GiB memory in use. Of the alloca"
+  },
+  "L8192": {
+   "L": 8192,
+   "K": 1024,
+   "oom": "CUDA out of memory. Tried to allocate 4.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 1.02 GiB is free. Including non-PyTorch memory, this process has 38.47 GiB memory in use. Of the alloca"
+  },
+  "L16384": {
+   "L": 16384,
+   "K": 1024,
+   "oom": "CUDA out of memory. Tried to allocate 16.00 GiB. GPU 0 has a total capacity of 39.49 GiB of which 5.02 GiB is free. Including non-PyTorch memory, this process has 34.47 GiB memory in use. Of the alloc"
+  }
+ }
+}

@@ -1,0 +1,2369 @@
+{
+ "meta": {
+  "mode": "dms_decode",
+  "method": "dms",
+  "model": "nvidia/Qwen3-8B-DMS-8x",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.57.1",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "dms_decode",
+   "method": "dms",
+   "model": "nvidia/Qwen3-8B-DMS-8x",
+   "tokenizer": "Qwen/Qwen3-8B",
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    512,
+    1024,
+    2048,
+    4096
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    1,
+    8
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "restart_windows": false,
+   "first_fit": false,
+   "probe_timeout": 600,
+   "energy": true,
+   "probe_only": false,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/energy_dms_decode.json"
+  },
+  "weights_gb": 15.259,
+  "idle_w": 76.82146712905869,
+  "gpu_uuid": "328ff6c5-b827-a542-adc7-9bd71b3373e4",
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "B1": {
+   "batch": 1,
+   "windows": [
+    {
+     "energy": {
+      "energy_j": 786.756,
+      "wall_s": 6.3714069738052785,
+      "tokens": 128,
+      "j_per_token": 6.14653125,
+      "net_j_per_token": 2.322618504655957,
+      "mean_w": 123.48230198362536,
+      "peak_w": 135.552,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 256,
+     "ms_per_token": 48.94341842373251,
+     "live_mean": 192.5,
+     "live_end": 256.0,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 758.881,
+      "wall_s": 5.888256384059787,
+      "tokens": 128,
+      "j_per_token": 5.9287578125,
+      "net_j_per_token": 2.3948164511287584,
+      "mean_w": 128.8804274987722,
+      "peak_w": 136.097,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 384,
+     "ms_per_token": 45.170037214120384,
+     "live_mean": 320.5,
+     "live_end": 384.0,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 761.048,
+      "wall_s": 5.888974111992866,
+      "tokens": 128,
+      "j_per_token": 5.9456875,
+      "net_j_per_token": 2.411315381497363,
+      "mean_w": 129.2326958018256,
+      "peak_w": 137.445,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 512,
+     "ms_per_token": 45.1738829324313,
+     "live_mean": 448.5,
+     "live_end": 512.0,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 748.42,
+      "wall_s": 5.889649134129286,
+      "tokens": 128,
+      "j_per_token": 5.84703125,
+      "net_j_per_token": 2.312254005006235,
+      "mean_w": 127.073783676359,
+      "peak_w": 134.925,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 640,
+     "ms_per_token": 45.1756982729421,
+     "live_mean": 541.0577392578125,
+     "live_end": 560.9340209960938,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 762.788,
+      "wall_s": 5.887633821927011,
+      "tokens": 128,
+      "j_per_token": 5.95928125,
+      "net_j_per_token": 2.425713530319531,
+      "mean_w": 129.5576496553145,
+      "peak_w": 136.879,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 768,
+     "ms_per_token": 45.164253420807654,
+     "live_mean": 574.431884765625,
+     "live_end": 593.0382080078125,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 763.843,
+      "wall_s": 5.887925541959703,
+      "tokens": 128,
+      "j_per_token": 5.9675234375,
+      "net_j_per_token": 2.433780636874981,
+      "mean_w": 129.73041091578867,
+      "peak_w": 138.458,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 896,
+     "ms_per_token": 45.17048250272637,
+     "live_mean": 614.48291015625,
+     "live_end": 633.857666015625,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 748.707,
+      "wall_s": 5.891549437772483,
+      "tokens": 128,
+      "j_per_token": 5.8492734375,
+      "net_j_per_token": 2.3133556916166955,
+      "mean_w": 127.0815102050771,
+      "peak_w": 135.308,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 1024,
+     "ms_per_token": 45.19744218123378,
+     "live_mean": 646.9470825195312,
+     "live_end": 659.1632080078125,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 748.463,
+      "wall_s": 5.887334386818111,
+      "tokens": 128,
+      "j_per_token": 5.8473671875,
+      "net_j_per_token": 2.313979179103715,
+      "mean_w": 127.1310496097907,
+      "peak_w": 135.633,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 1152,
+     "ms_per_token": 45.16415259058704,
+     "live_mean": 667.8881225585938,
+     "live_end": 674.90625,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 762.148,
+      "wall_s": 5.878712356090546,
+      "tokens": 128,
+      "j_per_token": 5.95428125,
+      "net_j_per_token": 2.426067906057805,
+      "mean_w": 129.64539746708118,
+      "peak_w": 135.708,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 1280,
+     "ms_per_token": 45.099259084963705,
+     "live_mean": 686.435546875,
+     "live_end": 703.3367919921875,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 763.435,
+      "wall_s": 5.886627783998847,
+      "tokens": 128,
+      "j_per_token": 5.9643359375,
+      "net_j_per_token": 2.431372009301007,
+      "mean_w": 129.68970147478743,
+      "peak_w": 137.288,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 1408,
+     "ms_per_token": 45.16248742220341,
+     "live_mean": 712.1475830078125,
+     "live_end": 726.1458129882812,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 750.895,
+      "wall_s": 5.8802283350378275,
+      "tokens": 128,
+      "j_per_token": 5.8663671875,
+      "net_j_per_token": 2.3372440019416563,
+      "mean_w": 127.69827245070229,
+      "peak_w": 135.463,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 1536,
+     "ms_per_token": 45.10982642750605,
+     "live_mean": 736.0245971679688,
+     "live_end": 747.9965209960938,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 762.056,
+      "wall_s": 5.8710332424379885,
+      "tokens": 128,
+      "j_per_token": 5.9535625,
+      "net_j_per_token": 2.429957912128432,
+      "mean_w": 129.79929912363278,
+      "peak_w": 136.409,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 1664,
+     "ms_per_token": 45.034444196062395,
+     "live_mean": 767.2086181640625,
+     "live_end": 781.8159790039062,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 750.212,
+      "wall_s": 5.860647164285183,
+      "tokens": 128,
+      "j_per_token": 5.86103125,
+      "net_j_per_token": 2.3436600508894907,
+      "mean_w": 128.0083886591563,
+      "peak_w": 136.253,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 1792,
+     "ms_per_token": 44.95887892335304,
+     "live_mean": 797.2552490234375,
+     "live_end": 810.6944580078125,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 762.391,
+      "wall_s": 5.872509439941496,
+      "tokens": 128,
+      "j_per_token": 5.9561796875,
+      "net_j_per_token": 2.431689133550371,
+      "mean_w": 129.82371638513624,
+      "peak_w": 134.533,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 1920,
+     "ms_per_token": 45.050443903164705,
+     "live_mean": 823.863037109375,
+     "live_end": 839.3923950195312,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 749.947,
+      "wall_s": 5.870650568976998,
+      "tokens": 128,
+      "j_per_token": 5.8589609375,
+      "net_j_per_token": 2.3355860178839363,
+      "mean_w": 127.74512657303048,
+      "peak_w": 134.379,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 2048,
+     "ms_per_token": 45.03495420067338,
+     "live_mean": 855.5853271484375,
+     "live_end": 866.90625,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 749.349,
+      "wall_s": 5.885275563690811,
+      "tokens": 128,
+      "j_per_token": 5.8542890625,
+      "net_j_per_token": 2.322136693269328,
+      "mean_w": 127.32606857410488,
+      "peak_w": 136.879,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 2176,
+     "ms_per_token": 45.1470587431686,
+     "live_mean": 879.938232421875,
+     "live_end": 895.732666015625,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 764.421,
+      "wall_s": 5.871505360119045,
+      "tokens": 128,
+      "j_per_token": 5.9720390625,
+      "net_j_per_token": 2.448151124840023,
+      "mean_w": 130.19165497014916,
+      "peak_w": 135.804,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 2304,
+     "ms_per_token": 45.03435759761487,
+     "live_mean": 906.4146728515625,
+     "live_end": 917.09375,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 749.565,
+      "wall_s": 5.881896996404976,
+      "tokens": 128,
+      "j_per_token": 5.8559765625,
+      "net_j_per_token": 2.3258519002669233,
+      "mean_w": 127.43592763663412,
+      "peak_w": 136.791,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 2432,
+     "ms_per_token": 45.1227327939705,
+     "live_mean": 933.4514770507812,
+     "live_end": 945.2430419921875,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 751.024,
+      "wall_s": 5.866501550190151,
+      "tokens": 128,
+      "j_per_token": 5.867375,
+      "net_j_per_token": 2.3464901874960584,
+      "mean_w": 128.01905762313436,
+      "peak_w": 138.071,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 2560,
+     "ms_per_token": 44.996584532782435,
+     "live_mean": 953.56591796875,
+     "live_end": 959.6632080078125,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 752.308,
+      "wall_s": 5.863770505879074,
+      "tokens": 128,
+      "j_per_token": 5.87740625,
+      "net_j_per_token": 2.3581605221114597,
+      "mean_w": 128.29765408549474,
+      "peak_w": 136.948,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 2688,
+     "ms_per_token": 44.980550272157416,
+     "live_mean": 965.7230224609375,
+     "live_end": 972.3680419921875,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 765.175,
+      "wall_s": 5.862997084856033,
+      "tokens": 128,
+      "j_per_token": 5.9779296875,
+      "net_j_per_token": 2.4591481419372285,
+      "mean_w": 130.50918991183312,
+      "peak_w": 136.097,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 2816,
+     "ms_per_token": 44.97535364862415,
+     "live_mean": 987.2508544921875,
+     "live_end": 995.701416015625,
+     "resident_gb": 15.549,
+     "peak_gb": 15.55
+    },
+    {
+     "energy": {
+      "energy_j": 766.299,
+      "wall_s": 6.0807482637465,
+      "tokens": 128,
+      "j_per_token": 5.9867109375,
+      "net_j_per_token": 2.337242165129043,
+      "mean_w": 126.02051043104096,
+      "peak_w": 136.342,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 2944,
+     "ms_per_token": 46.67597229126841,
+     "live_mean": 1009.9912719726562,
+     "live_end": 1025.0694580078125,
+     "resident_gb": 15.549,
+     "peak_gb": 15.559
+    },
+    {
+     "energy": {
+      "energy_j": 768.316,
+      "wall_s": 6.061073504853994,
+      "tokens": 128,
+      "j_per_token": 6.00246875,
+      "net_j_per_token": 2.364808132656644,
+      "mean_w": 126.76236303431996,
+      "peak_w": 135.959,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 3072,
+     "ms_per_token": 46.52239955612458,
+     "live_mean": 1038.790771484375,
+     "live_end": 1048.7117919921875,
+     "resident_gb": 15.553,
+     "peak_gb": 15.554
+    },
+    {
+     "energy": {
+      "energy_j": 766.719,
+      "wall_s": 6.055688768625259,
+      "tokens": 128,
+      "j_per_token": 5.9899921875,
+      "net_j_per_token": 2.355563314978475,
+      "mean_w": 126.61136153040074,
+      "peak_w": 135.959,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 3200,
+     "ms_per_token": 46.479393837216776,
+     "live_mean": 1057.0751953125,
+     "live_end": 1070.7847900390625,
+     "resident_gb": 15.553,
+     "peak_gb": 15.554
+    },
+    {
+     "energy": {
+      "energy_j": 780.583,
+      "wall_s": 6.057509968988597,
+      "tokens": 128,
+      "j_per_token": 6.0983046875,
+      "net_j_per_token": 2.462782789323415,
+      "mean_w": 128.86202482475343,
+      "peak_w": 134.925,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 3328,
+     "ms_per_token": 46.4922787505202,
+     "live_mean": 1085.600830078125,
+     "live_end": 1096.15625,
+     "resident_gb": 15.553,
+     "peak_gb": 15.563
+    },
+    {
+     "energy": {
+      "energy_j": 768.659,
+      "wall_s": 6.051302124746144,
+      "tokens": 128,
+      "j_per_token": 6.0051484375,
+      "net_j_per_token": 2.373352286998524,
+      "mean_w": 127.02373541335052,
+      "peak_w": 134.379,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 3456,
+     "ms_per_token": 46.44568091680412,
+     "live_mean": 1114.6038818359375,
+     "live_end": 1127.3125,
+     "resident_gb": 15.557,
+     "peak_gb": 15.558
+    },
+    {
+     "energy": {
+      "energy_j": 769.091,
+      "wall_s": 6.054875278379768,
+      "tokens": 128,
+      "j_per_token": 6.0085234375,
+      "net_j_per_token": 2.374582795557801,
+      "mean_w": 127.02012256903201,
+      "peak_w": 136.097,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 3584,
+     "ms_per_token": 46.47295136601315,
+     "live_mean": 1137.35107421875,
+     "live_end": 1146.013916015625,
+     "resident_gb": 15.557,
+     "peak_gb": 15.567
+    },
+    {
+     "energy": {
+      "energy_j": 769.157,
+      "wall_s": 6.0585982841439545,
+      "tokens": 128,
+      "j_per_token": 6.0090390625,
+      "net_j_per_token": 2.372863992706749,
+      "mean_w": 126.95296237299178,
+      "peak_w": 136.409,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 3712,
+     "ms_per_token": 46.488382322422694,
+     "live_mean": 1151.2987060546875,
+     "live_end": 1158.1285400390625,
+     "resident_gb": 15.561,
+     "peak_gb": 15.561
+    },
+    {
+     "energy": {
+      "energy_j": 768.793,
+      "wall_s": 6.048967542126775,
+      "tokens": 128,
+      "j_per_token": 6.0061953125,
+      "net_j_per_token": 2.3758003031075394,
+      "mean_w": 127.09491242032648,
+      "peak_w": 133.749,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 3840,
+     "ms_per_token": 46.43011221924098,
+     "live_mean": 1164.5836181640625,
+     "live_end": 1171.78125,
+     "resident_gb": 15.561,
+     "peak_gb": 15.561
+    },
+    {
+     "energy": {
+      "energy_j": 782.377,
+      "wall_s": 6.052554356865585,
+      "tokens": 128,
+      "j_per_token": 6.1123203125,
+      "net_j_per_token": 2.479772612712574,
+      "mean_w": 129.26393616151955,
+      "peak_w": 135.169,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 3968,
+     "ms_per_token": 46.44168442609953,
+     "live_mean": 1181.810302734375,
+     "live_end": 1196.482666015625,
+     "resident_gb": 15.561,
+     "peak_gb": 15.561
+    },
+    {
+     "energy": {
+      "energy_j": 768.969,
+      "wall_s": 6.044540240895003,
+      "tokens": 128,
+      "j_per_token": 6.0075703125,
+      "net_j_per_token": 2.3798324263579067,
+      "mean_w": 127.21711980630975,
+      "peak_w": 136.253,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 4096,
+     "ms_per_token": 46.39529457926983,
+     "live_mean": 1206.63818359375,
+     "live_end": 1213.9097900390625,
+     "resident_gb": 15.561,
+     "peak_gb": 15.561
+    },
+    {
+     "energy": {
+      "energy_j": 769.656,
+      "wall_s": 6.044542051851749,
+      "tokens": 128,
+      "j_per_token": 6.0129375,
+      "net_j_per_token": 2.385198526980139,
+      "mean_w": 127.330737944691,
+      "peak_w": 136.654,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 4224,
+     "ms_per_token": 46.39559644419933,
+     "live_mean": 1222.9879150390625,
+     "live_end": 1238.1597900390625,
+     "resident_gb": 15.561,
+     "peak_gb": 15.561
+    },
+    {
+     "energy": {
+      "energy_j": 770.063,
+      "wall_s": 6.046356447972357,
+      "tokens": 128,
+      "j_per_token": 6.0161171875,
+      "net_j_per_token": 2.387289272511871,
+      "mean_w": 127.35984168750757,
+      "peak_w": 135.773,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 4352,
+     "ms_per_token": 46.408447251451435,
+     "live_mean": 1250.455322265625,
+     "live_end": 1260.7916259765625,
+     "resident_gb": 15.561,
+     "peak_gb": 15.575
+    },
+    {
+     "energy": {
+      "energy_j": 782.992,
+      "wall_s": 6.057294177822769,
+      "tokens": 128,
+      "j_per_token": 6.117125,
+      "net_j_per_token": 2.4817326127136683,
+      "mean_w": 129.26431786435677,
+      "peak_w": 135.959,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 4480,
+     "ms_per_token": 46.49323707053554,
+     "live_mean": 1274.997314453125,
+     "live_end": 1291.0,
+     "resident_gb": 15.569,
+     "peak_gb": 15.579
+    },
+    {
+     "energy": {
+      "energy_j": 768.647,
+      "wall_s": 6.0570549461990595,
+      "tokens": 128,
+      "j_per_token": 6.0050546875,
+      "net_j_per_token": 2.3698058793098955,
+      "mean_w": 126.9011106597842,
+      "peak_w": 136.342,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 4608,
+     "ms_per_token": 46.48683034974965,
+     "live_mean": 1305.0792236328125,
+     "live_end": 1315.2603759765625,
+     "resident_gb": 15.573,
+     "peak_gb": 15.583
+    },
+    {
+     "energy": {
+      "energy_j": 781.076,
+      "wall_s": 6.0562561438418925,
+      "tokens": 128,
+      "j_per_token": 6.10215625,
+      "net_j_per_token": 2.4673868571928934,
+      "mean_w": 128.97010652269253,
+      "peak_w": 132.024,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 4736,
+     "ms_per_token": 46.4844540329068,
+     "live_mean": 1329.4342041015625,
+     "live_end": 1346.6875,
+     "resident_gb": 15.577,
+     "peak_gb": 15.596
+    },
+    {
+     "energy": {
+      "energy_j": 769.204,
+      "wall_s": 6.051773893181235,
+      "tokens": 128,
+      "j_per_token": 6.00940625,
+      "net_j_per_token": 2.3773269593162674,
+      "mean_w": 127.10388946730008,
+      "peak_w": 134.834,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 4864,
+     "ms_per_token": 46.45059888935066,
+     "live_mean": 1359.7889404296875,
+     "live_end": 1370.8646240234375,
+     "resident_gb": 15.59,
+     "peak_gb": 15.591
+    },
+    {
+     "energy": {
+      "energy_j": 768.699,
+      "wall_s": 6.049699088558555,
+      "tokens": 128,
+      "j_per_token": 6.0054609375,
+      "net_j_per_token": 2.3746268775593955,
+      "mean_w": 127.06400578729541,
+      "peak_w": 135.618,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 4992,
+     "ms_per_token": 46.431796206888976,
+     "live_mean": 1378.422607421875,
+     "live_end": 1384.3646240234375,
+     "resident_gb": 15.59,
+     "peak_gb": 15.591
+    },
+    {
+     "energy": {
+      "energy_j": 782.031,
+      "wall_s": 6.062885242048651,
+      "tokens": 128,
+      "j_per_token": 6.1096171875,
+      "net_j_per_token": 2.4708692239898786,
+      "mean_w": 128.9866076593842,
+      "peak_w": 136.654,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 5120,
+     "ms_per_token": 46.53382622564095,
+     "live_mean": 1394.6761474609375,
+     "live_end": 1408.71875,
+     "resident_gb": 15.59,
+     "peak_gb": 15.6
+    },
+    {
+     "energy": {
+      "energy_j": 770.135,
+      "wall_s": 6.058565707877278,
+      "tokens": 128,
+      "j_per_token": 6.0166796875,
+      "net_j_per_token": 2.3805241689301835,
+      "mean_w": 127.11506933046533,
+      "peak_w": 137.288,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 5248,
+     "ms_per_token": 46.49870349749108,
+     "live_mean": 1428.1885986328125,
+     "live_end": 1443.99658203125,
+     "resident_gb": 15.594,
+     "peak_gb": 15.595
+    },
+    {
+     "energy": {
+      "energy_j": 782.171,
+      "wall_s": 6.056014686822891,
+      "tokens": 128,
+      "j_per_token": 6.1107109375,
+      "net_j_per_token": 2.4760864593995207,
+      "mean_w": 129.15606061885939,
+      "peak_w": 135.959,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 5376,
+     "ms_per_token": 46.482419358653715,
+     "live_mean": 1452.3212890625,
+     "live_end": 1462.138916015625,
+     "resident_gb": 15.594,
+     "peak_gb": 15.595
+    },
+    {
+     "energy": {
+      "energy_j": 770.166,
+      "wall_s": 6.0520072798244655,
+      "tokens": 128,
+      "j_per_token": 6.016921875,
+      "net_j_per_token": 2.3847025131886013,
+      "mean_w": 127.25794342110213,
+      "peak_w": 136.097,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 5504,
+     "ms_per_token": 46.45133550002356,
+     "live_mean": 1477.747314453125,
+     "live_end": 1490.9305419921875,
+     "resident_gb": 15.594,
+     "peak_gb": 15.608
+    },
+    {
+     "energy": {
+      "energy_j": 770.166,
+      "wall_s": 6.048557568807155,
+      "tokens": 128,
+      "j_per_token": 6.016921875,
+      "net_j_per_token": 2.3867729183567348,
+      "mean_w": 127.3305232261988,
+      "peak_w": 136.097,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 5632,
+     "ms_per_token": 46.42301767307799,
+     "live_mean": 1504.70947265625,
+     "live_end": 1513.138916015625,
+     "resident_gb": 15.602,
+     "peak_gb": 15.618
+    },
+    {
+     "energy": {
+      "energy_j": 783.377,
+      "wall_s": 6.058271433226764,
+      "tokens": 128,
+      "j_per_token": 6.1201328125,
+      "net_j_per_token": 2.484153908073866,
+      "mean_w": 129.3070158104086,
+      "peak_w": 136.253,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 5760,
+     "ms_per_token": 46.50019151449669,
+     "live_mean": 1520.4661865234375,
+     "live_end": 1529.295166015625,
+     "resident_gb": 15.608,
+     "peak_gb": 15.608
+    },
+    {
+     "energy": {
+      "energy_j": 769.551,
+      "wall_s": 6.062657724134624,
+      "tokens": 128,
+      "j_per_token": 6.0121171875,
+      "net_j_per_token": 2.3735057728957676,
+      "mean_w": 126.93294509048748,
+      "peak_w": 135.804,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 5888,
+     "ms_per_token": 46.531419044185895,
+     "live_mean": 1532.847900390625,
+     "live_end": 1537.1353759765625,
+     "resident_gb": 15.608,
+     "peak_gb": 15.608
+    },
+    {
+     "energy": {
+      "energy_j": 783.245,
+      "wall_s": 6.055535142309964,
+      "tokens": 128,
+      "j_per_token": 6.1191015625,
+      "net_j_per_token": 2.4847648915326204,
+      "mean_w": 129.34364702592097,
+      "peak_w": 133.051,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 6016,
+     "ms_per_token": 46.478774238494225,
+     "live_mean": 1549.3289794921875,
+     "live_end": 1565.3992919921875,
+     "resident_gb": 15.608,
+     "peak_gb": 15.624
+    },
+    {
+     "energy": {
+      "energy_j": 770.524,
+      "wall_s": 6.05776805523783,
+      "tokens": 128,
+      "j_per_token": 6.01971875,
+      "net_j_per_token": 2.3840419567897286,
+      "mean_w": 127.19602219397768,
+      "peak_w": 133.841,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 6144,
+     "ms_per_token": 46.49576160227298,
+     "live_mean": 1574.50341796875,
+     "live_end": 1581.7430419921875,
+     "resident_gb": 15.615,
+     "peak_gb": 15.615
+    },
+    {
+     "energy": {
+      "energy_j": 783.251,
+      "wall_s": 6.065262573771179,
+      "tokens": 128,
+      "j_per_token": 6.1191484375,
+      "net_j_per_token": 2.478973676249433,
+      "mean_w": 129.13719570643428,
+      "peak_w": 134.379,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 6272,
+     "ms_per_token": 46.5535505063599,
+     "live_mean": 1595.121337890625,
+     "live_end": 1609.857666015625,
+     "resident_gb": 15.615,
+     "peak_gb": 15.615
+    },
+    {
+     "energy": {
+      "energy_j": 771.379,
+      "wall_s": 6.052946260664612,
+      "tokens": 128,
+      "j_per_token": 6.0263984375,
+      "net_j_per_token": 2.3936155297062096,
+      "mean_w": 127.43860044039161,
+      "peak_w": 136.654,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 6400,
+     "ms_per_token": 46.45928673562594,
+     "live_mean": 1616.035888671875,
+     "live_end": 1620.236083984375,
+     "resident_gb": 15.615,
+     "peak_gb": 15.615
+    },
+    {
+     "energy": {
+      "energy_j": 768.574,
+      "wall_s": 6.067432631738484,
+      "tokens": 128,
+      "j_per_token": 6.004484375,
+      "net_j_per_token": 2.363007215024406,
+      "mean_w": 126.67202862370846,
+      "peak_w": 133.497,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 6528,
+     "ms_per_token": 46.56912199789076,
+     "live_mean": 1626.1480712890625,
+     "live_end": 1632.1875,
+     "resident_gb": 15.615,
+     "peak_gb": 15.625
+    },
+    {
+     "energy": {
+      "energy_j": 770.363,
+      "wall_s": 6.074537940789014,
+      "tokens": 128,
+      "j_per_token": 6.0184609375,
+      "net_j_per_token": 2.3727194004488825,
+      "mean_w": 126.81836997464511,
+      "peak_w": 134.225,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 6656,
+     "ms_per_token": 46.62341293078498,
+     "live_mean": 1636.733154296875,
+     "live_end": 1642.295166015625,
+     "resident_gb": 15.619,
+     "peak_gb": 15.619
+    },
+    {
+     "energy": {
+      "energy_j": 782.837,
+      "wall_s": 6.078803373966366,
+      "tokens": 128,
+      "j_per_token": 6.1159140625,
+      "net_j_per_token": 2.467612550178373,
+      "mean_w": 128.7814314495923,
+      "peak_w": 136.097,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 6784,
+     "ms_per_token": 46.65337891856325,
+     "live_mean": 1646.461669921875,
+     "live_end": 1654.15625,
+     "resident_gb": 15.619,
+     "peak_gb": 15.619
+    },
+    {
+     "energy": {
+      "energy_j": 768.788,
+      "wall_s": 6.078014154918492,
+      "tokens": 128,
+      "j_per_token": 6.00615625,
+      "net_j_per_token": 2.35832840146856,
+      "mean_w": 126.48670773131981,
+      "peak_w": 136.115,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 6912,
+     "ms_per_token": 46.65170671069063,
+     "live_mean": 1663.5770263671875,
+     "live_end": 1679.4097900390625,
+     "resident_gb": 15.619,
+     "peak_gb": 15.619
+    },
+    {
+     "energy": {
+      "energy_j": 782.744,
+      "wall_s": 6.070484243799001,
+      "tokens": 128,
+      "j_per_token": 6.1151875,
+      "net_j_per_token": 2.4718788609963,
+      "mean_w": 128.94259643282544,
+      "peak_w": 133.841,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 7040,
+     "ms_per_token": 46.59475215521525,
+     "live_mean": 1698.2568359375,
+     "live_end": 1713.482666015625,
+     "resident_gb": 15.619,
+     "peak_gb": 15.628
+    },
+    {
+     "energy": {
+      "energy_j": 782.621,
+      "wall_s": 6.077063929289579,
+      "tokens": 128,
+      "j_per_token": 6.1142265625,
+      "net_j_per_token": 2.4669690087100964,
+      "mean_w": 128.78274922006455,
+      "peak_w": 134.925,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 7168,
+     "ms_per_token": 46.64049834900652,
+     "live_mean": 1722.9481201171875,
+     "live_end": 1727.951416015625,
+     "resident_gb": 15.622,
+     "peak_gb": 15.623
+    },
+    {
+     "energy": {
+      "energy_j": 770.017,
+      "wall_s": 6.071488645859063,
+      "tokens": 128,
+      "j_per_token": 6.0157578125,
+      "net_j_per_token": 2.371846363810039,
+      "mean_w": 126.82507452685014,
+      "peak_w": 134.526,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 7296,
+     "ms_per_token": 46.601400688814465,
+     "live_mean": 1738.0751953125,
+     "live_end": 1749.4896240234375,
+     "resident_gb": 15.622,
+     "peak_gb": 15.643
+    },
+    {
+     "energy": {
+      "energy_j": 783.938,
+      "wall_s": 6.06790329515934,
+      "tokens": 128,
+      "j_per_token": 6.124515625,
+      "net_j_per_token": 2.4827559880360144,
+      "mean_w": 129.19421451976422,
+      "peak_w": 134.834,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 7424,
+     "ms_per_token": 46.5753520547878,
+     "live_mean": 1754.8194580078125,
+     "live_end": 1759.8125,
+     "resident_gb": 15.634,
+     "peak_gb": 15.635
+    },
+    {
+     "energy": {
+      "energy_j": 771.448,
+      "wall_s": 6.067621732130647,
+      "tokens": 128,
+      "j_per_token": 6.0269375,
+      "net_j_per_token": 2.3853468480747138,
+      "mean_w": 127.14174252406896,
+      "peak_w": 135.552,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 7552,
+     "ms_per_token": 46.571253093134146,
+     "live_mean": 1773.529541015625,
+     "live_end": 1793.40625,
+     "resident_gb": 15.634,
+     "peak_gb": 15.635
+    },
+    {
+     "energy": {
+      "energy_j": 770.765,
+      "wall_s": 6.068042133003473,
+      "tokens": 128,
+      "j_per_token": 6.0216015625,
+      "net_j_per_token": 2.3797585995447696,
+      "mean_w": 127.02037710118827,
+      "peak_w": 131.722,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 7680,
+     "ms_per_token": 46.57622886224999,
+     "live_mean": 1805.1922607421875,
+     "live_end": 1813.1632080078125,
+     "resident_gb": 15.634,
+     "peak_gb": 15.635
+    },
+    {
+     "energy": {
+      "energy_j": 784.277,
+      "wall_s": 6.067096467129886,
+      "tokens": 128,
+      "j_per_token": 6.1271640625,
+      "net_j_per_token": 2.485888657668386,
+      "mean_w": 129.26727047262722,
+      "peak_w": 135.773,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 7808,
+     "ms_per_token": 46.56772415546584,
+     "live_mean": 1819.845947265625,
+     "live_end": 1831.4791259765625,
+     "resident_gb": 15.634,
+     "peak_gb": 15.649
+    },
+    {
+     "energy": {
+      "energy_j": 772.946,
+      "wall_s": 6.046451149042696,
+      "tokens": 128,
+      "j_per_token": 6.038640625,
+      "net_j_per_token": 2.4097558734871676,
+      "mean_w": 127.83465556029121,
+      "peak_w": 136.791,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 7936,
+     "ms_per_token": 46.407762198214186,
+     "live_mean": 1848.2325439453125,
+     "live_end": 1858.34033203125,
+     "resident_gb": 15.64,
+     "peak_gb": 15.664
+    },
+    {
+     "energy": {
+      "energy_j": 771.334,
+      "wall_s": 6.046233321074396,
+      "tokens": 128,
+      "j_per_token": 6.026046875,
+      "net_j_per_token": 2.3972928568004988,
+      "mean_w": 127.57264879466086,
+      "peak_w": 135.463,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 8064,
+     "ms_per_token": 46.39832513930742,
+     "live_mean": 1864.6748046875,
+     "live_end": 1870.2396240234375,
+     "resident_gb": 15.65,
+     "peak_gb": 15.65
+    },
+    {
+     "energy": {
+      "energy_j": 786.396,
+      "wall_s": 6.04819044098258,
+      "tokens": 128,
+      "j_per_token": 6.14371875,
+      "net_j_per_token": 2.513790131623201,
+      "mean_w": 130.02169949401315,
+      "peak_w": 136.253,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 8192,
+     "ms_per_token": 46.41092167366878,
+     "live_mean": 1876.11279296875,
+     "live_end": 1883.1875,
+     "resident_gb": 15.65,
+     "peak_gb": 15.65
+    },
+    {
+     "energy": {
+      "energy_j": 771.79,
+      "wall_s": 6.053407897707075,
+      "tokens": 128,
+      "j_per_token": 6.029609375,
+      "net_j_per_token": 2.396549407558685,
+      "mean_w": 127.49677752466351,
+      "peak_w": 135.804,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 8320,
+     "ms_per_token": 46.45942214119714,
+     "live_mean": 1888.4759521484375,
+     "live_end": 1895.170166015625,
+     "resident_gb": 15.65,
+     "peak_gb": 15.666
+    }
+   ]
+  },
+  "B8": {
+   "batch": 8,
+   "windows": [
+    {
+     "energy": {
+      "energy_j": 862.902,
+      "wall_s": 7.165410268120468,
+      "tokens": 1024,
+      "j_per_token": 0.842677734375,
+      "net_j_per_token": 0.3051217486536757,
+      "mean_w": 120.4260422936459,
+      "peak_w": 233.326,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 256,
+     "ms_per_token": 55.14943760135793,
+     "live_mean": 192.5,
+     "live_end": 256.0,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 803.429,
+      "wall_s": 6.510378879029304,
+      "tokens": 1024,
+      "j_per_token": 0.7845986328125,
+      "net_j_per_token": 0.29618373334661363,
+      "mean_w": 123.40741067896053,
+      "peak_w": 132.713,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 384,
+     "ms_per_token": 50.03319587922306,
+     "live_mean": 320.5,
+     "live_end": 384.0,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 818.88,
+      "wall_s": 6.505065890029073,
+      "tokens": 1024,
+      "j_per_token": 0.7996875,
+      "net_j_per_token": 0.31167118609059635,
+      "mean_w": 125.88342898342883,
+      "peak_w": 133.344,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 512,
+     "ms_per_token": 49.99496576783713,
+     "live_mean": 448.5,
+     "live_end": 512.0,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 820.391,
+      "wall_s": 6.516511301044375,
+      "tokens": 1024,
+      "j_per_token": 0.8011630859375,
+      "net_j_per_token": 0.31228812626042973,
+      "mean_w": 125.89420352398058,
+      "peak_w": 135.169,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 640,
+     "ms_per_token": 50.077846590284025,
+     "live_mean": 541.078369140625,
+     "live_end": 560.9444580078125,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 823.074,
+      "wall_s": 6.492231761105359,
+      "tokens": 1024,
+      "j_per_token": 0.803783203125,
+      "net_j_per_token": 0.31672971793946664,
+      "mean_w": 126.77828369144119,
+      "peak_w": 135.079,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 768,
+     "ms_per_token": 49.892606195498956,
+     "live_mean": 574.4661865234375,
+     "live_end": 593.0902709960938,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 824.113,
+      "wall_s": 6.511617708019912,
+      "tokens": 1024,
+      "j_per_token": 0.8047978515625,
+      "net_j_per_token": 0.3162900139515155,
+      "mean_w": 126.56040894185122,
+      "peak_w": 135.015,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 896,
+     "ms_per_token": 50.04143010592088,
+     "live_mean": 614.5625610351562,
+     "live_end": 633.9444580078125,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 812.743,
+      "wall_s": 6.500453097280115,
+      "tokens": 1024,
+      "j_per_token": 0.7936943359375,
+      "net_j_per_token": 0.3060240781868242,
+      "mean_w": 125.02866920769934,
+      "peak_w": 133.596,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 1024,
+     "ms_per_token": 49.959245374338934,
+     "live_mean": 647.0238037109375,
+     "live_end": 659.2257080078125,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 813.002,
+      "wall_s": 6.507335973903537,
+      "tokens": 1024,
+      "j_per_token": 0.793947265625,
+      "net_j_per_token": 0.3057606478349886,
+      "mean_w": 124.93622632370506,
+      "peak_w": 134.288,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 1152,
+     "ms_per_token": 49.997366877505556,
+     "live_mean": 667.95166015625,
+     "live_end": 674.9757080078125,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 826.117,
+      "wall_s": 6.521879436913878,
+      "tokens": 1024,
+      "j_per_token": 0.8067548828125,
+      "net_j_per_token": 0.31747720040765304,
+      "mean_w": 126.66854822923783,
+      "peak_w": 135.552,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 1280,
+     "ms_per_token": 50.121547654271126,
+     "live_mean": 686.5338134765625,
+     "live_end": 703.4340209960938,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 825.696,
+      "wall_s": 6.513007653877139,
+      "tokens": 1024,
+      "j_per_token": 0.80634375,
+      "net_j_per_token": 0.3177316373109079,
+      "mean_w": 126.77645166108013,
+      "peak_w": 135.479,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 1408,
+     "ms_per_token": 50.05396594788181,
+     "live_mean": 712.250732421875,
+     "live_end": 726.2361450195312,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 828.193,
+      "wall_s": 6.514169604051858,
+      "tokens": 1024,
+      "j_per_token": 0.8087822265625,
+      "net_j_per_token": 0.32008294325118836,
+      "mean_w": 127.13715643584997,
+      "peak_w": 134.225,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 1536,
+     "ms_per_token": 50.0605074557825,
+     "live_mean": 736.1083984375,
+     "live_end": 748.1423950195312,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 828.674,
+      "wall_s": 6.521283300593495,
+      "tokens": 1024,
+      "j_per_token": 0.809251953125,
+      "net_j_per_token": 0.3200189934415795,
+      "mean_w": 127.07222824142346,
+      "peak_w": 134.77,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 1664,
+     "ms_per_token": 50.11660212039715,
+     "live_mean": 767.305908203125,
+     "live_end": 781.8854370117188,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 830.533,
+      "wall_s": 6.496779067907482,
+      "tokens": 1024,
+      "j_per_token": 0.8110673828125,
+      "net_j_per_token": 0.32367275428709846,
+      "mean_w": 127.83765483155064,
+      "peak_w": 135.552,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 1792,
+     "ms_per_token": 49.92562147526769,
+     "live_mean": 797.278076171875,
+     "live_end": 810.6770629882812,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 831.698,
+      "wall_s": 6.500161102972925,
+      "tokens": 1024,
+      "j_per_token": 0.812205078125,
+      "net_j_per_token": 0.32455672606873004,
+      "mean_w": 127.95036720237798,
+      "peak_w": 134.68,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 1920,
+     "ms_per_token": 49.94803604131448,
+     "live_mean": 823.83642578125,
+     "live_end": 839.3784790039062,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 819.709,
+      "wall_s": 6.498401038814336,
+      "tokens": 1024,
+      "j_per_token": 0.8004970703125,
+      "net_j_per_token": 0.31298075996609726,
+      "mean_w": 126.14010663607178,
+      "peak_w": 135.324,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 2048,
+     "ms_per_token": 49.94057596559287,
+     "live_mean": 855.554443359375,
+     "live_end": 866.8680419921875,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 820.666,
+      "wall_s": 6.505960492882878,
+      "tokens": 1024,
+      "j_per_token": 0.801431640625,
+      "net_j_per_token": 0.3133482127471129,
+      "mean_w": 126.14063686641786,
+      "peak_w": 135.015,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 2176,
+     "ms_per_token": 49.99980664069881,
+     "live_mean": 879.8700561523438,
+     "live_end": 895.6527709960938,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 833.801,
+      "wall_s": 6.498269912786782,
+      "tokens": 1024,
+      "j_per_token": 0.8142587890625,
+      "net_j_per_token": 0.3267523159170891,
+      "mean_w": 128.31122917183117,
+      "peak_w": 135.463,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 2304,
+     "ms_per_token": 49.939642845856724,
+     "live_mean": 906.3306884765625,
+     "live_end": 916.9965209960938,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 833.815,
+      "wall_s": 6.503587876912206,
+      "tokens": 1024,
+      "j_per_token": 0.8142724609375,
+      "net_j_per_token": 0.3263670289969184,
+      "mean_w": 128.20846212596751,
+      "peak_w": 132.654,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 2432,
+     "ms_per_token": 49.98172961859382,
+     "live_mean": 933.3514404296875,
+     "live_end": 945.1458129882812,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 833.983,
+      "wall_s": 6.502905162982643,
+      "tokens": 1024,
+      "j_per_token": 0.8144365234375,
+      "net_j_per_token": 0.32658230935404575,
+      "mean_w": 128.2477568252714,
+      "peak_w": 135.015,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 2560,
+     "ms_per_token": 49.97530827313312,
+     "live_mean": 953.4576416015625,
+     "live_end": 959.53125,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 834.787,
+      "wall_s": 6.4975673742592335,
+      "tokens": 1024,
+      "j_per_token": 0.8152216796875,
+      "net_j_per_token": 0.3277679116596681,
+      "mean_w": 128.47685170716238,
+      "peak_w": 135.708,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 2688,
+     "ms_per_token": 49.93343249952886,
+     "live_mean": 965.572998046875,
+     "live_end": 972.2048950195312,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 822.727,
+      "wall_s": 6.500559660606086,
+      "tokens": 1024,
+      "j_per_token": 0.8034443359375,
+      "net_j_per_token": 0.3157660837033834,
+      "mean_w": 126.56248737870858,
+      "peak_w": 136.253,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 2816,
+     "ms_per_token": 49.956644212215906,
+     "live_mean": 987.11181640625,
+     "live_end": 995.5694580078125,
+     "resident_gb": 17.527,
+     "peak_gb": 17.529
+    },
+    {
+     "energy": {
+      "energy_j": 822.932,
+      "wall_s": 6.502435002941638,
+      "tokens": 1024,
+      "j_per_token": 0.80364453125,
+      "net_j_per_token": 0.31582558902605307,
+      "mean_w": 126.557512628379,
+      "peak_w": 135.618,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 2944,
+     "ms_per_token": 49.96868637317675,
+     "live_mean": 1009.87060546875,
+     "live_end": 1024.9375,
+     "resident_gb": 17.527,
+     "peak_gb": 17.605
+    },
+    {
+     "energy": {
+      "energy_j": 824.639,
+      "wall_s": 6.5096863601356745,
+      "tokens": 1024,
+      "j_per_token": 0.8053115234375,
+      "net_j_per_token": 0.31694857740659726,
+      "mean_w": 126.67876060050502,
+      "peak_w": 135.463,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 3072,
+     "ms_per_token": 50.02321604479221,
+     "live_mean": 1038.6717529296875,
+     "live_end": 1048.579833984375,
+     "resident_gb": 17.558,
+     "peak_gb": 17.561
+    },
+    {
+     "energy": {
+      "energy_j": 836.476,
+      "wall_s": 6.52010522224009,
+      "tokens": 1024,
+      "j_per_token": 0.81687109375,
+      "net_j_per_token": 0.3277265146403115,
+      "mean_w": 128.29179460889355,
+      "peak_w": 135.959,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 3200,
+     "ms_per_token": 50.10901141213253,
+     "live_mean": 1056.9583740234375,
+     "live_end": 1070.673583984375,
+     "resident_gb": 17.558,
+     "peak_gb": 17.561
+    },
+    {
+     "energy": {
+      "energy_j": 837.325,
+      "wall_s": 6.512318702880293,
+      "tokens": 1024,
+      "j_per_token": 0.8177001953125,
+      "net_j_per_token": 0.32913976839133546,
+      "mean_w": 128.5755562960493,
+      "peak_w": 136.498,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 3328,
+     "ms_per_token": 50.04649530019378,
+     "live_mean": 1085.4742431640625,
+     "live_end": 1096.017333984375,
+     "resident_gb": 17.558,
+     "peak_gb": 17.637
+    },
+    {
+     "energy": {
+      "energy_j": 840.756,
+      "wall_s": 6.493934322614223,
+      "tokens": 1024,
+      "j_per_token": 0.82105078125,
+      "net_j_per_token": 0.3338695682588139,
+      "mean_w": 129.4678939194356,
+      "peak_w": 135.552,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 3456,
+     "ms_per_token": 49.90571110829478,
+     "live_mean": 1114.4979248046875,
+     "live_end": 1127.2603759765625,
+     "resident_gb": 17.589,
+     "peak_gb": 17.592
+    },
+    {
+     "energy": {
+      "energy_j": 839.388,
+      "wall_s": 6.497969355899841,
+      "tokens": 1024,
+      "j_per_token": 0.81971484375,
+      "net_j_per_token": 0.3322309186719822,
+      "mean_w": 129.1769711468209,
+      "peak_w": 137.445,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 3584,
+     "ms_per_token": 49.937826614041114,
+     "live_mean": 1137.3143310546875,
+     "live_end": 1145.9896240234375,
+     "resident_gb": 17.589,
+     "peak_gb": 17.668
+    },
+    {
+     "energy": {
+      "energy_j": 840.182,
+      "wall_s": 6.498636351898313,
+      "tokens": 1024,
+      "j_per_token": 0.820490234375,
+      "net_j_per_token": 0.3329562706141972,
+      "mean_w": 129.28589237872572,
+      "peak_w": 137.511,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 3712,
+     "ms_per_token": 49.94419715148979,
+     "live_mean": 1151.24609375,
+     "live_end": 1158.079833984375,
+     "resident_gb": 17.621,
+     "peak_gb": 17.623
+    },
+    {
+     "energy": {
+      "energy_j": 840.289,
+      "wall_s": 6.515926877968013,
+      "tokens": 1024,
+      "j_per_token": 0.8205947265625,
+      "net_j_per_token": 0.33176361086799827,
+      "mean_w": 128.9592433643214,
+      "peak_w": 136.097,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 3840,
+     "ms_per_token": 50.073039026756305,
+     "live_mean": 1164.531494140625,
+     "live_end": 1171.7430419921875,
+     "resident_gb": 17.621,
+     "peak_gb": 17.623
+    },
+    {
+     "energy": {
+      "energy_j": 839.481,
+      "wall_s": 6.510041723959148,
+      "tokens": 1024,
+      "j_per_token": 0.8198056640625,
+      "net_j_per_token": 0.33141605829499193,
+      "mean_w": 128.95170808359444,
+      "peak_w": 135.463,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 3968,
+     "ms_per_token": 50.02915392105933,
+     "live_mean": 1181.7734375,
+     "live_end": 1196.4617919921875,
+     "resident_gb": 17.621,
+     "peak_gb": 17.623
+    },
+    {
+     "energy": {
+      "energy_j": 829.888,
+      "wall_s": 6.494180045090616,
+      "tokens": 1024,
+      "j_per_token": 0.8104375,
+      "net_j_per_token": 0.3232378526717602,
+      "mean_w": 127.78949678602886,
+      "peak_w": 137.424,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 4096,
+     "ms_per_token": 49.905384144949494,
+     "live_mean": 1206.6126708984375,
+     "live_end": 1213.8785400390625,
+     "resident_gb": 17.621,
+     "peak_gb": 17.623
+    },
+    {
+     "energy": {
+      "energy_j": 829.419,
+      "wall_s": 6.504711484070867,
+      "tokens": 1024,
+      "j_per_token": 0.8099794921875,
+      "net_j_per_token": 0.32198976615472585,
+      "mean_w": 127.51049789543035,
+      "peak_w": 133.344,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 4224,
+     "ms_per_token": 49.98678675110568,
+     "live_mean": 1222.9658203125,
+     "live_end": 1238.173583984375,
+     "resident_gb": 17.621,
+     "peak_gb": 17.623
+    },
+    {
+     "energy": {
+      "energy_j": 830.578,
+      "wall_s": 6.510114090982825,
+      "tokens": 1024,
+      "j_per_token": 0.811111328125,
+      "net_j_per_token": 0.3227162933136144,
+      "mean_w": 127.5827102862046,
+      "peak_w": 137.288,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 4352,
+     "ms_per_token": 50.02977135882247,
+     "live_mean": 1250.4940185546875,
+     "live_end": 1260.84375,
+     "resident_gb": 17.621,
+     "peak_gb": 17.73
+    },
+    {
+     "energy": {
+      "energy_j": 843.69,
+      "wall_s": 6.521176919806749,
+      "tokens": 1024,
+      "j_per_token": 0.823916015625,
+      "net_j_per_token": 0.3346910367307517,
+      "mean_w": 129.3769530216951,
+      "peak_w": 136.097,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 4480,
+     "ms_per_token": 50.11380453288439,
+     "live_mean": 1275.077880859375,
+     "live_end": 1291.1180419921875,
+     "resident_gb": 17.683,
+     "peak_gb": 17.762
+    },
+    {
+     "energy": {
+      "energy_j": 843.594,
+      "wall_s": 6.528044255450368,
+      "tokens": 1024,
+      "j_per_token": 0.823822265625,
+      "net_j_per_token": 0.3340820925907024,
+      "mean_w": 129.22614599244943,
+      "peak_w": 137.826,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 4608,
+     "ms_per_token": 50.16633814011584,
+     "live_mean": 1305.207763671875,
+     "live_end": 1315.4305419921875,
+     "resident_gb": 17.714,
+     "peak_gb": 17.793
+    },
+    {
+     "energy": {
+      "energy_j": 832.019,
+      "wall_s": 6.515986042097211,
+      "tokens": 1024,
+      "j_per_token": 0.8125185546875,
+      "net_j_per_token": 0.3236830004429921,
+      "mean_w": 127.68888616775021,
+      "peak_w": 136.635,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 4736,
+     "ms_per_token": 50.07713246232015,
+     "live_mean": 1329.587158203125,
+     "live_end": 1346.8333740234375,
+     "resident_gb": 17.746,
+     "peak_gb": 17.902
+    },
+    {
+     "energy": {
+      "energy_j": 844.79,
+      "wall_s": 6.523892892058939,
+      "tokens": 1024,
+      "j_per_token": 0.824990234375,
+      "net_j_per_token": 0.33556150062421347,
+      "mean_w": 129.49170288008582,
+      "peak_w": 137.288,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 4864,
+     "ms_per_token": 50.13498733387678,
+     "live_mean": 1359.938232421875,
+     "live_end": 1371.0416259765625,
+     "resident_gb": 17.855,
+     "peak_gb": 17.857
+    },
+    {
+     "energy": {
+      "energy_j": 846.503,
+      "wall_s": 6.519221154041588,
+      "tokens": 1024,
+      "j_per_token": 0.8266630859375,
+      "net_j_per_token": 0.33758483047629895,
+      "mean_w": 129.8472593578469,
+      "peak_w": 137.896,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 4992,
+     "ms_per_token": 50.10096427213284,
+     "live_mean": 1378.599365234375,
+     "live_end": 1384.5625,
+     "resident_gb": 17.855,
+     "peak_gb": 17.857
+    },
+    {
+     "energy": {
+      "energy_j": 845.786,
+      "wall_s": 6.530038753058761,
+      "tokens": 1024,
+      "j_per_token": 0.825962890625,
+      "net_j_per_token": 0.3360730884574384,
+      "mean_w": 129.52235537711348,
+      "peak_w": 138.53,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 5120,
+     "ms_per_token": 50.17208388380823,
+     "live_mean": 1394.87353515625,
+     "live_end": 1408.9271240234375,
+     "resident_gb": 17.855,
+     "peak_gb": 17.934
+    },
+    {
+     "energy": {
+      "energy_j": 847.748,
+      "wall_s": 6.531428806949407,
+      "tokens": 1024,
+      "j_per_token": 0.82787890625,
+      "net_j_per_token": 0.33788482089955973,
+      "mean_w": 129.79518342112226,
+      "peak_w": 137.445,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 5248,
+     "ms_per_token": 50.195613668620354,
+     "live_mean": 1428.4176025390625,
+     "live_end": 1444.2535400390625,
+     "resident_gb": 17.886,
+     "peak_gb": 17.889
+    },
+    {
+     "energy": {
+      "energy_j": 847.684,
+      "wall_s": 6.526187147945166,
+      "tokens": 1024,
+      "j_per_token": 0.82781640625,
+      "net_j_per_token": 0.33821555521098157,
+      "mean_w": 129.88962479675467,
+      "peak_w": 138.616,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 5376,
+     "ms_per_token": 50.148647798778256,
+     "live_mean": 1452.583251953125,
+     "live_end": 1462.40625,
+     "resident_gb": 17.886,
+     "peak_gb": 17.889
+    },
+    {
+     "energy": {
+      "energy_j": 849.008,
+      "wall_s": 6.522161417175084,
+      "tokens": 1024,
+      "j_per_token": 0.829109375,
+      "net_j_per_token": 0.3398105381641303,
+      "mean_w": 130.17279789553677,
+      "peak_w": 137.669,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 5504,
+     "ms_per_token": 50.12124639324611,
+     "live_mean": 1478.0380859375,
+     "live_end": 1491.21533203125,
+     "resident_gb": 17.886,
+     "peak_gb": 17.996
+    },
+    {
+     "energy": {
+      "energy_j": 848.976,
+      "wall_s": 6.524957624729723,
+      "tokens": 1024,
+      "j_per_token": 0.829078125,
+      "net_j_per_token": 0.3395695139778562,
+      "mean_w": 130.11210935414562,
+      "peak_w": 138.372,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 5632,
+     "ms_per_token": 50.14360371569637,
+     "live_mean": 1505.00537109375,
+     "live_end": 1513.4583740234375,
+     "resident_gb": 17.949,
+     "peak_gb": 18.066
+    },
+    {
+     "energy": {
+      "energy_j": 851.204,
+      "wall_s": 6.5090647279284894,
+      "tokens": 1024,
+      "j_per_token": 0.83125390625,
+      "net_j_per_token": 0.3429375956665294,
+      "mean_w": 130.77209024327766,
+      "peak_w": 137.036,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 5760,
+     "ms_per_token": 50.0201407703571,
+     "live_mean": 1520.791015625,
+     "live_end": 1529.625,
+     "resident_gb": 17.996,
+     "peak_gb": 17.998
+    },
+    {
+     "energy": {
+      "energy_j": 851.341,
+      "wall_s": 6.5016346368938684,
+      "tokens": 1024,
+      "j_per_token": 0.8313876953125,
+      "net_j_per_token": 0.34362879732100415,
+      "mean_w": 130.94260867398188,
+      "peak_w": 138.751,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 5888,
+     "ms_per_token": 49.95742260871339,
+     "live_mean": 1533.167724609375,
+     "live_end": 1537.4410400390625,
+     "resident_gb": 17.996,
+     "peak_gb": 17.998
+    },
+    {
+     "energy": {
+      "energy_j": 851.676,
+      "wall_s": 6.510372855234891,
+      "tokens": 1024,
+      "j_per_token": 0.83171484375,
+      "net_j_per_token": 0.34330039619497743,
+      "mean_w": 130.81831393346087,
+      "peak_w": 138.071,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 6016,
+     "ms_per_token": 50.029984762659296,
+     "live_mean": 1549.646484375,
+     "live_end": 1565.7222900390625,
+     "resident_gb": 17.996,
+     "peak_gb": 18.113
+    },
+    {
+     "energy": {
+      "energy_j": 839.718,
+      "wall_s": 6.504803474992514,
+      "tokens": 1024,
+      "j_per_token": 0.820037109375,
+      "net_j_per_token": 0.3320404820946053,
+      "mean_w": 129.09198613428768,
+      "peak_w": 135.773,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 6144,
+     "ms_per_token": 49.98340305610327,
+     "live_mean": 1574.8056640625,
+     "live_end": 1582.0416259765625,
+     "resident_gb": 18.043,
+     "peak_gb": 18.045
+    },
+    {
+     "energy": {
+      "energy_j": 838.988,
+      "wall_s": 6.525943991728127,
+      "tokens": 1024,
+      "j_per_token": 0.81932421875,
+      "net_j_per_token": 0.3297416095247849,
+      "mean_w": 128.56193694942036,
+      "peak_w": 138.372,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 6272,
+     "ms_per_token": 50.15053629176691,
+     "live_mean": 1595.43408203125,
+     "live_end": 1610.15625,
+     "resident_gb": 18.043,
+     "peak_gb": 18.045
+    },
+    {
+     "energy": {
+      "energy_j": 852.196,
+      "wall_s": 6.526914091780782,
+      "tokens": 1024,
+      "j_per_token": 0.83222265625,
+      "net_j_per_token": 0.3425672691836648,
+      "mean_w": 130.5664496294128,
+      "peak_w": 136.879,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 6400,
+     "ms_per_token": 50.16228989552474,
+     "live_mean": 1616.327880859375,
+     "live_end": 1620.513916015625,
+     "resident_gb": 18.043,
+     "peak_gb": 18.045
+    },
+    {
+     "energy": {
+      "energy_j": 853.535,
+      "wall_s": 6.519459466915578,
+      "tokens": 1024,
+      "j_per_token": 0.8335302734375,
+      "net_j_per_token": 0.3444341395147602,
+      "mean_w": 130.92112993898496,
+      "peak_w": 137.669,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 6528,
+     "ms_per_token": 50.079803717380855,
+     "live_mean": 1626.449462890625,
+     "live_end": 1632.4896240234375,
+     "resident_gb": 18.043,
+     "peak_gb": 18.121
+    },
+    {
+     "energy": {
+      "energy_j": 853.135,
+      "wall_s": 6.51596684474498,
+      "tokens": 1024,
+      "j_per_token": 0.8331396484375,
+      "net_j_per_token": 0.3443055343968625,
+      "mean_w": 130.92991728281112,
+      "peak_w": 137.913,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 6656,
+     "ms_per_token": 50.069123644789215,
+     "live_mean": 1637.045166015625,
+     "live_end": 1642.59033203125,
+     "resident_gb": 18.074,
+     "peak_gb": 18.076
+    },
+    {
+     "energy": {
+      "energy_j": 853.625,
+      "wall_s": 6.5153539897874,
+      "tokens": 1024,
+      "j_per_token": 0.8336181640625,
+      "net_j_per_token": 0.34483002699156823,
+      "mean_w": 131.0174399331224,
+      "peak_w": 139.155,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 6784,
+     "ms_per_token": 50.0694035908964,
+     "live_mean": 1646.76123046875,
+     "live_end": 1654.4722900390625,
+     "resident_gb": 18.074,
+     "peak_gb": 18.076
+    },
+    {
+     "energy": {
+      "energy_j": 853.499,
+      "wall_s": 6.528244555927813,
+      "tokens": 1024,
+      "j_per_token": 0.8334951171875,
+      "net_j_per_token": 0.34373991741829607,
+      "mean_w": 130.73943426721064,
+      "peak_w": 137.424,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 6912,
+     "ms_per_token": 50.167525572760496,
+     "live_mean": 1663.9058837890625,
+     "live_end": 1679.7535400390625,
+     "resident_gb": 18.074,
+     "peak_gb": 18.076
+    },
+    {
+     "energy": {
+      "energy_j": 856.681,
+      "wall_s": 6.516451810020953,
+      "tokens": 1024,
+      "j_per_token": 0.8366025390625,
+      "net_j_per_token": 0.34773204245935585,
+      "mean_w": 131.46433442239257,
+      "peak_w": 139.24,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 7040,
+     "ms_per_token": 50.075586721504806,
+     "live_mean": 1698.589599609375,
+     "live_end": 1713.8228759765625,
+     "resident_gb": 18.074,
+     "peak_gb": 18.152
+    },
+    {
+     "energy": {
+      "energy_j": 856.614,
+      "wall_s": 6.519077990669757,
+      "tokens": 1024,
+      "j_per_token": 0.836537109375,
+      "net_j_per_token": 0.34746959416796225,
+      "mean_w": 131.40109709164457,
+      "peak_w": 138.751,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 7168,
+     "ms_per_token": 50.098976673325524,
+     "live_mean": 1723.2977294921875,
+     "live_end": 1728.3021240234375,
+     "resident_gb": 18.105,
+     "peak_gb": 18.107
+    },
+    {
+     "energy": {
+      "energy_j": 857.564,
+      "wall_s": 6.50718100508675,
+      "tokens": 1024,
+      "j_per_token": 0.83746484375,
+      "net_j_per_token": 0.3492898518700128,
+      "mean_w": 131.7873283883806,
+      "peak_w": 139.7,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 7296,
+     "ms_per_token": 50.00622484658379,
+     "live_mean": 1738.411865234375,
+     "live_end": 1749.8055419921875,
+     "resident_gb": 18.105,
+     "peak_gb": 18.269
+    },
+    {
+     "energy": {
+      "energy_j": 856.751,
+      "wall_s": 6.509369608946145,
+      "tokens": 1024,
+      "j_per_token": 0.8366708984375,
+      "net_j_per_token": 0.34833171538618174,
+      "mean_w": 131.61812148791262,
+      "peak_w": 135.463,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 7424,
+     "ms_per_token": 50.019195452478016,
+     "live_mean": 1755.152099609375,
+     "live_end": 1760.1458740234375,
+     "resident_gb": 18.199,
+     "peak_gb": 18.201
+    },
+    {
+     "energy": {
+      "energy_j": 857.329,
+      "wall_s": 6.519585723988712,
+      "tokens": 1024,
+      "j_per_token": 0.8372353515625,
+      "net_j_per_token": 0.34812974571242267,
+      "mean_w": 131.50053336141767,
+      "peak_w": 135.618,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 7552,
+     "ms_per_token": 50.09091557803913,
+     "live_mean": 1773.88037109375,
+     "live_end": 1793.763916015625,
+     "resident_gb": 18.199,
+     "peak_gb": 18.201
+    },
+    {
+     "energy": {
+      "energy_j": 845.016,
+      "wall_s": 6.509386999066919,
+      "tokens": 1024,
+      "j_per_token": 0.8252109375,
+      "net_j_per_token": 0.33687044982505726,
+      "mean_w": 129.81498874181668,
+      "peak_w": 138.996,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 7680,
+     "ms_per_token": 50.01346498829662,
+     "live_mean": 1805.5592041015625,
+     "live_end": 1813.5382080078125,
+     "resident_gb": 18.199,
+     "peak_gb": 18.201
+    },
+    {
+     "energy": {
+      "energy_j": 846.412,
+      "wall_s": 6.5165711040608585,
+      "tokens": 1024,
+      "j_per_token": 0.82657421875,
+      "net_j_per_token": 0.33769477259298347,
+      "mean_w": 129.88609906712304,
+      "peak_w": 139.945,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 7808,
+     "ms_per_token": 50.08119532067212,
+     "live_mean": 1820.2252197265625,
+     "live_end": 1831.857666015625,
+     "resident_gb": 18.199,
+     "peak_gb": 18.316
+    },
+    {
+     "energy": {
+      "energy_j": 846.837,
+      "wall_s": 6.511329325847328,
+      "tokens": 1024,
+      "j_per_token": 0.8269892578125,
+      "net_j_per_token": 0.3385030549101012,
+      "mean_w": 130.0559313807707,
+      "peak_w": 139.24,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 7936,
+     "ms_per_token": 50.03878266143147,
+     "live_mean": 1848.6014404296875,
+     "live_end": 1858.71533203125,
+     "resident_gb": 18.246,
+     "peak_gb": 18.422
+    },
+    {
+     "energy": {
+      "energy_j": 848.624,
+      "wall_s": 6.511642565019429,
+      "tokens": 1024,
+      "j_per_token": 0.828734375,
+      "net_j_per_token": 0.34022467259294975,
+      "mean_w": 130.32410663306547,
+      "peak_w": 139.7,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 8064,
+     "ms_per_token": 50.04054912933498,
+     "live_mean": 1865.0560302734375,
+     "live_end": 1870.6319580078125,
+     "resident_gb": 18.316,
+     "peak_gb": 18.318
+    },
+    {
+     "energy": {
+      "energy_j": 861.445,
+      "wall_s": 6.518572018947452,
+      "tokens": 1024,
+      "j_per_token": 0.8412548828125,
+      "net_j_per_token": 0.35222532609182283,
+      "mean_w": 132.15240968360072,
+      "peak_w": 136.948,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 8192,
+     "ms_per_token": 50.084778926247964,
+     "live_mean": 1876.508544921875,
+     "live_end": 1883.579833984375,
+     "resident_gb": 18.316,
+     "peak_gb": 18.318
+    },
+    {
+     "energy": {
+      "energy_j": 861.22,
+      "wall_s": 6.521061541046947,
+      "tokens": 1024,
+      "j_per_token": 0.84103515625,
+      "net_j_per_token": 0.3518188331815363,
+      "mean_w": 132.06745475089204,
+      "peak_w": 139.155,
+      "sm_mhz_mean": 1410.0
+     },
+     "context_end": 8320,
+     "ms_per_token": 50.11347839899827,
+     "live_mean": 1888.8751220703125,
+     "live_end": 1895.59375,
+     "resident_gb": 18.316,
+     "peak_gb": 18.433
+    }
+   ]
+  }
+ }
+}

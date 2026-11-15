@@ -198,3 +198,80 @@ tput_rkv_fresh_K2048_B22 END rc=0 11:35:12
 tput_rkv_fresh_K4096_B7 START 11:35:14 --mode steady --restart_windows --method rkv --Ks 4096 --batches 7
 tput_rkv_fresh_K4096_B7 END rc=0 11:35:31
 LANE2F_DONE
+smoke_energy_steady START 16:52:56 --mode steady --method epikv_batched --restart_windows --energy --Ks 1024 --batches 1 --windows 2
+smoke_energy_steady END rc=0 16:53:24
+smoke_energy_prefill START 16:53:26 --mode prefill --method none --energy --Ls 4096 --Ks 1024 --repeats 2
+smoke_energy_prefill END rc=0 16:53:50
+energy_b1_none START 16:54:11 --mode steady --restart_windows --energy --method none --Ks 1024 4096 --batches 1
+energy_b1_none END rc=0 16:55:06
+energy_b1_epikv_batched START 16:55:08 --mode steady --restart_windows --energy --method epikv_batched --Ks 1024 4096 --batches 1
+energy_b1_epikv_batched END rc=0 16:56:09
+energy_b1_epikv_noq START 16:56:11 --mode steady --restart_windows --energy --method epikv_noq --Ks 1024 4096 --batches 1
+energy_b1_epikv_noq END rc=0 16:57:12
+energy_b1_h2o START 16:57:14 --mode steady --restart_windows --energy --method h2o --Ks 1024 4096 --batches 1
+energy_b1_h2o END rc=0 16:58:27
+energy_b1_raas START 16:58:29 --mode steady --restart_windows --energy --method raas --Ks 1024 4096 --batches 1
+energy_b1_raas END rc=0 16:59:30
+energy_b1_rkv START 16:59:32 --mode steady --restart_windows --energy --method rkv --Ks 1024 4096 --batches 1
+energy_b1_rkv END rc=0 17:00:30
+energy_b1_snapkv_decoding START 17:00:32 --mode steady --restart_windows --energy --method snapkv_decoding --Ks 1024 4096 --batches 1
+energy_b1_snapkv_decoding END rc=0 17:01:33
+energy_b1_none_kvpressvenv START 17:01:35 --mode steady --restart_windows --energy --method none --Ks 1024 4096 --batches 1
+energy_b1_none_kvpressvenv END rc=0 17:02:31
+energy_b1_none_qwen3 START 17:02:33 --mode steady --restart_windows --energy --method none --model Qwen/Qwen3-8B --Ks 1024 4096 --batches 1
+energy_b1_none_qwen3 END rc=0 17:03:43
+energy_b1_epikv_qwen3 START 17:03:45 --mode steady --restart_windows --energy --method epikv --model Qwen/Qwen3-8B --band_a_layer 11 --band_b_layer 24 --Ks 1024 4096 --batches 1
+energy_b1_epikv_qwen3 END rc=0 17:05:02
+energy_max_epikv_batched_K2048 START 17:05:04 --mode steady --restart_windows --energy --method epikv_batched --Ks 2048 --batches 80
+energy_max_epikv_batched_K2048 END rc=0 17:06:53
+energy_max_epikv_batched_K4096 START 17:06:55 --mode steady --restart_windows --energy --method epikv_batched --Ks 4096 --batches 45
+energy_max_epikv_batched_K4096 END rc=0 17:08:45
+energy_max_epikv_noq_K2048 START 17:08:47 --mode steady --restart_windows --energy --method epikv_noq --Ks 2048 --batches 58
+energy_max_epikv_noq_K2048 END rc=0 17:10:18
+energy_max_epikv_noq_K4096 START 17:10:21 --mode steady --restart_windows --energy --method epikv_noq --Ks 4096 --batches 34
+energy_max_epikv_noq_K4096 END rc=0 17:11:51
+energy_max_rkv_K2048 START 17:11:53 --mode steady --restart_windows --energy --method rkv --Ks 2048 --batches 21
+energy_max_rkv_K2048 END rc=0 17:12:41
+energy_max_rkv_K4096 START 17:12:43 --mode steady --restart_windows --energy --method rkv --Ks 4096 --batches 6
+energy_max_rkv_K4096 END rc=0 17:13:28
+energy_max_h2o_K2048 START 17:13:30 --mode steady --restart_windows --energy --method h2o --Ks 2048 --batches 47
+energy_max_h2o_K2048 END rc=0 17:16:16
+energy_max_h2o_K4096 START 17:16:18 --mode steady --restart_windows --energy --method h2o --Ks 4096 --batches 23
+energy_max_h2o_K4096 END rc=0 17:19:03
+energy_max_raas_K2048 START 17:19:06 --mode steady --restart_windows --energy --method raas --Ks 2048 --batches 47
+energy_max_raas_K2048 END rc=0 17:21:52
+energy_max_raas_K4096 START 17:21:54 --mode steady --restart_windows --energy --method raas --Ks 4096 --batches 23
+energy_max_raas_K4096 END rc=0 17:24:40
+energy_max_snapkv_decoding_K2048 START 17:24:42 --mode steady --restart_windows --energy --method snapkv_decoding --Ks 2048 --batches 63
+energy_max_snapkv_decoding_K2048 END rc=0 17:26:09
+energy_max_snapkv_decoding_K4096 START 17:26:11 --mode steady --restart_windows --energy --method snapkv_decoding --Ks 4096 --batches 34
+energy_max_snapkv_decoding_K4096 END rc=0 17:27:39
+energy_max_none_K8192 START 17:27:41 --mode steady --restart_windows --energy --method none --Ks 8192 --batches 23
+energy_max_none_K8192 END rc=0 17:29:14
+energy_max_none_K16384 START 17:29:16 --mode steady --restart_windows --energy --method none --Ks 16384 --batches 11
+energy_max_none_K16384 END rc=0 17:30:44
+energy_max_none_K32768 START 17:30:46 --mode steady --restart_windows --energy --method none --Ks 32768 --batches 5
+energy_max_none_K32768 END rc=0 17:32:13
+energy_prefill_none START 17:32:15 --mode prefill --energy --Ls 4096 8192 16384 --Ks 1024 --method none
+energy_prefill_none END rc=0 17:32:56
+energy_prefill_epikv START 17:32:58 --mode prefill --energy --Ls 4096 8192 16384 --Ks 1024 --method epikv
+energy_prefill_epikv END rc=0 17:33:39
+energy_prefill_rkv START 17:33:42 --mode prefill --energy --Ls 4096 8192 16384 --Ks 1024 --method rkv
+energy_prefill_rkv END rc=0 17:34:17
+energy_prefill_h2o START 17:34:19 --mode prefill --energy --Ls 4096 8192 16384 --Ks 1024 --method h2o
+energy_prefill_h2o END rc=0 17:34:38
+energy_prefill_snapkv_prefill START 17:34:40 --mode prefill --energy --Ls 4096 8192 16384 --Ks 1024 --method snapkv_prefill
+energy_prefill_snapkv_prefill END rc=0 17:35:22
+energy_prefill_none_kvpressvenv START 17:35:24 --mode prefill --energy --Ls 4096 8192 16384 --Ks 1024 --method none
+energy_prefill_none_kvpressvenv END rc=0 17:36:05
+energy_prefill_none_qwen3 START 17:36:08 --mode prefill --energy --Ls 4096 8192 16384 --Ks 1024 --method none --model Qwen/Qwen3-8B
+energy_prefill_none_qwen3 END rc=0 17:36:51
+energy_prefill_dms START 17:36:53 --mode prefill --energy --Ls 4096 8192 16384 --Ks 1024 --method dms --model nvidia/Qwen3-8B-DMS-8x --tokenizer Qwen/Qwen3-8B
+energy_prefill_dms END rc=0 17:42:13
+energy_dms_decode START 17:42:15 --mode dms_decode --energy --method dms --model nvidia/Qwen3-8B-DMS-8x --tokenizer Qwen/Qwen3-8B --batches 1 8 --steps 8192
+energy_dms_decode END rc=0 17:56:02
+LANE3_DONE
+energy_b1_h2o START 17:57:40 --mode steady --restart_windows --energy --method h2o --Ks 1024 4096 --batches 1
+energy_b1_h2o END rc=0 17:58:42
+energy_b1_h2o_repeat START 17:58:44 --mode steady --restart_windows --energy --method h2o --Ks 1024 4096 --batches 1
+energy_b1_h2o_repeat END rc=0 17:59:46

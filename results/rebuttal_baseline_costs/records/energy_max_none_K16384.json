@@ -1,0 +1,141 @@
+{
+ "meta": {
+  "mode": "steady",
+  "method": "none",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.55.4",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "steady",
+   "method": "none",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    16384
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    11
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "restart_windows": true,
+   "first_fit": false,
+   "probe_timeout": 600,
+   "energy": true,
+   "probe_only": false,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/energy_max_none_K16384.json"
+  },
+  "weights_gb": 14.958,
+  "idle_w": 75.56290791556145,
+  "gpu_uuid": "328ff6c5-b827-a542-adc7-9bd71b3373e4",
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "K16384_B11": {
+   "K": 16384,
+   "batch": 11,
+   "windows": [
+    {
+     "steps": 128,
+     "ms_per_token": 121.5038161171833,
+     "fwd_ms_median": 112.04783292487264,
+     "pol_ms_mean": 0.022725434973835945,
+     "n_compactions": 0,
+     "cache_len_min": 16385,
+     "cache_len_max": 16512,
+     "resident_gb": 36.966,
+     "peak_gb": 37.484,
+     "transient_gb": 0.408,
+     "reserved_gb": 38.957,
+     "normal_step_ms_median": 112.06995043903589,
+     "normal_pol_ms_mean": 0.022725434973835945,
+     "energy": {
+      "energy_j": 3666.038,
+      "wall_s": 15.610568622592837,
+      "tokens": 1408,
+      "j_per_token": 2.6037201704545456,
+      "net_j_per_token": 1.7659503129697902,
+      "mean_w": 234.84333521933488,
+      "sampled_mean_w": 233.83996272493573,
+      "peak_w": 252.625,
+      "sm_mhz_mean": 1410.0,
+      "sm_mhz_min": 1410,
+      "power_samples": 778
+     }
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 121.24897857574979,
+     "fwd_ms_median": 111.99347442016006,
+     "pol_ms_mean": 0.022550018911715597,
+     "n_compactions": 0,
+     "cache_len_min": 16385,
+     "cache_len_max": 16512,
+     "resident_gb": 36.966,
+     "peak_gb": 37.484,
+     "transient_gb": 0.408,
+     "reserved_gb": 38.957,
+     "normal_step_ms_median": 112.01640102081001,
+     "normal_pol_ms_mean": 0.022550018911715597,
+     "energy": {
+      "energy_j": 3682.534,
+      "wall_s": 15.57736823009327,
+      "tokens": 1408,
+      "j_per_token": 2.6154360795454545,
+      "net_j_per_token": 1.7794479821467826,
+      "mean_w": 236.4028342660518,
+      "sampled_mean_w": 235.4127722007722,
+      "peak_w": 253.117,
+      "sm_mhz_mean": 1410.0,
+      "sm_mhz_min": 1410,
+      "power_samples": 777
+     }
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 121.3805977422453,
+     "fwd_ms_median": 111.98387551121414,
+     "pol_ms_mean": 0.023163014702731743,
+     "n_compactions": 0,
+     "cache_len_min": 16385,
+     "cache_len_max": 16512,
+     "resident_gb": 36.966,
+     "peak_gb": 37.484,
+     "transient_gb": 0.408,
+     "reserved_gb": 38.957,
+     "normal_step_ms_median": 112.00576112605631,
+     "normal_pol_ms_mean": 0.023163014702731743,
+     "energy": {
+      "energy_j": 3672.19,
+      "wall_s": 15.595364197157323,
+      "tokens": 1408,
+      "j_per_token": 2.6080894886363635,
+      "net_j_per_token": 1.771135604588464,
+      "mean_w": 235.466767789197,
+      "sampled_mean_w": 236.67522879177378,
+      "peak_w": 253.417,
+      "sm_mhz_mean": 1410.0,
+      "sm_mhz_min": 1410,
+      "power_samples": 778
+     }
+    }
+   ]
+  }
+ }
+}

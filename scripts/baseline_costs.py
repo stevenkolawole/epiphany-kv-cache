@@ -55,6 +55,31 @@ def free():
     torch.cuda.empty_cache()
 
 
+METER = [None, None]   # nvml_energy.Meter for this process's card, idle watts measured at start
+
+
+def measure_energy(fn, tokens):
+    """Run fn() between two reads of the card's energy counter, sampling power and SM clock; return fn's value
+    under "result" with joules gross and net of the idle power measured at start, per token of `tokens`."""
+    meter, idle_w = METER
+    sync()
+    e0 = meter.energy_mj()
+    t0 = time.perf_counter()
+    meter.sample()
+    result = fn()
+    sync()
+    t1 = time.perf_counter()
+    e1 = meter.energy_mj()
+    smp = meter.stop()
+    j = (e1 - e0) / 1e3
+    w = [x[1] for x in smp] or [float("nan")]
+    clk = [x[2] for x in smp] or [0]
+    return {"result": result, "energy_j": j, "wall_s": t1 - t0, "tokens": tokens, "j_per_token": j / tokens,
+            "net_j_per_token": (j - idle_w * (t1 - t0)) / tokens, "mean_w": j / (t1 - t0),
+            "sampled_mean_w": sum(w) / len(w), "peak_w": max(w), "sm_mhz_mean": sum(clk) / len(clk),
+            "sm_mhz_min": min(clk), "power_samples": len(smp)}
+
+
 
 def load_model(a):
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -373,6 +398,7 @@ def mode_steady(a, model, ids, out):
                 continue
             phase = "setup"
             try:
+                energies = []
                 if a.restart_windows:
                     # Every window starts from the cache at K with a freshly primed policy, so each one holds
                     # 127 steps at K..K+126 and one compaction from K+128, whatever the method keeps afterwards.
@@ -383,8 +409,14 @@ def mode_steady(a, model, ids, out):
                         free()
                         cache, pol = setup_state(a, model, ids, K, Bsz, 0, hs, snap, K)
                         phase = "decode"
-                        recs += run_with_press(a, K, lambda: decode(a, model, cache, ids, K, INTERVAL, Bsz, pol,
-                                                                    force_at={INTERVAL - 1}))
+                        run = lambda: run_with_press(a, K, lambda: decode(a, model, cache, ids, K, INTERVAL, Bsz,
+                                                                          pol, force_at={INTERVAL - 1}))
+                        if a.energy:
+                            en = measure_energy(run, tokens=INTERVAL * Bsz)
+                            recs += en.pop("result")
+                            energies.append(en)
+                        else:
+                            recs += run()
                 else:
                     cache, pol = setup_state(a, model, ids, K, Bsz, 0, hs, snap, K)
                     phase = "decode"
@@ -392,6 +424,8 @@ def mode_steady(a, model, ids, out):
                     recs = run_with_press(a, K, lambda: decode(a, model, cache, ids, K, a.windows * INTERVAL, Bsz,
                                                                pol, force_at=force))
                 wins = [summarize(recs[w * INTERVAL:(w + 1) * INTERVAL]) for w in range(1, a.windows)]
+                for w, en in zip(wins, energies[1:]):
+                    w["energy"] = en
                 out["cells"][key] = {"K": K, "batch": Bsz, "windows": wins}
                 print(key, [round(w["ms_per_token"], 2) for w in wins],
                       [w.get("compaction", [{}])[0].get("ms") for w in wins], wins[0]["peak_gb"], flush=True)
@@ -523,54 +557,66 @@ def mode_prefill(a, model, ids, out):
     K = a.Ks[0]
     need_hs = a.method in ("epikv", "epikv_noq")
     need_attn = a.method in ("h2o", "raas")
+    def one(L):
+        from transformers import DynamicCache
+        cache = DynamicCache()
+        if a.method == "rkv":
+            model.config.compression = None
+            for layer in model.model.layers:
+                layer.self_attn.kv_cluster.budget = K
+            if hasattr(model, "length"):
+                del model.length
+        if a.method == "dms":
+            cache = None
+        press = None
+        if a.method == "snapkv_prefill" and L > K:
+            from kvpress import SnapKVPress
+            press = SnapKVPress(compression_ratio=1 - K / L)
+        free()
+        sync()
+        a0 = torch.cuda.memory_allocated()
+        torch.cuda.reset_peak_memory_stats()
+        t0 = time.perf_counter()
+        with torch.no_grad():
+            kw = dict(input_ids=ids[:, :L], use_cache=True, logits_to_keep=1)
+            if cache is not None:
+                kw["past_key_values"] = cache
+            if need_hs:
+                kw["output_hidden_states"] = True
+            if need_attn:
+                kw["output_attentions"] = True
+            if press is not None:
+                with press(model):
+                    o = model(**kw)
+            else:
+                o = model(**kw)
+        sync()
+        dt = time.perf_counter() - t0
+        pk = torch.cuda.max_memory_allocated()
+        kept = None
+        pkv = o.past_key_values
+        if hasattr(pkv, "layers") and hasattr(pkv.layers[0], "keys") and pkv.layers[0].keys is not None:
+            kept = int(pkv.layers[0].keys.shape[2])
+        del o, pkv, cache
+        return {"ms": dt * 1e3, "peak_gb": gb(pk), "transient_gb": gb(pk - a0), "cache_len": kept}
+
     for j, L in enumerate([a.Ls[0]] + a.Ls):     # j == 0 is a warmup and is not recorded
         key = f"L{L}"
         reps = []
         try:
             for r in range(a.repeats):
-                from transformers import DynamicCache
-                cache = DynamicCache()
-                if a.method == "rkv":
-                    model.config.compression = None
-                    for layer in model.model.layers:
-                        layer.self_attn.kv_cluster.budget = K
-                    if hasattr(model, "length"):
-                        del model.length
-                if a.method == "dms":
-                    cache = None
-                press = None
-                if a.method == "snapkv_prefill" and L > K:
-                    from kvpress import SnapKVPress
-                    press = SnapKVPress(compression_ratio=1 - K / L)
-                free()
-                sync()
-                a0 = torch.cuda.memory_allocated()
-                torch.cuda.reset_peak_memory_stats()
-                t0 = time.perf_counter()
-                with torch.no_grad():
-                    kw = dict(input_ids=ids[:, :L], use_cache=True, logits_to_keep=1)
-                    if cache is not None:
-                        kw["past_key_values"] = cache
-                    if need_hs:
-                        kw["output_hidden_states"] = True
-                    if need_attn:
-                        kw["output_attentions"] = True
-                    if press is not None:
-                        with press(model):
-                            o = model(**kw)
-                    else:
-                        o = model(**kw)
-                sync()
-                dt = time.perf_counter() - t0
-                pk = torch.cuda.max_memory_allocated()
-                kept = None
-                pkv = o.past_key_values
-                if hasattr(pkv, "layers") and hasattr(pkv.layers[0], "keys") and pkv.layers[0].keys is not None:
-                    kept = int(pkv.layers[0].keys.shape[2])
-                del o, pkv, cache
-                reps.append({"ms": dt * 1e3, "peak_gb": gb(pk), "transient_gb": gb(pk - a0), "cache_len": kept})
+                reps.append(one(L))
+            energy = None
+            if a.energy and j:
+                # Back-to-back prefills for at least 3 s, so the energy counter's resolution does not matter.
+                import math
+                n = max(3, math.ceil(3.0 / (sorted(x["ms"] for x in reps)[len(reps) // 2] / 1e3)))
+                energy = measure_energy(lambda: [one(L) for _ in range(n)], tokens=n * L)
+                energy.pop("result")
+                energy["prefills"] = n
+                energy["j_per_prefill"] = energy["energy_j"] / n
             if j:
-                out["cells"][key] = {"L": L, "K": K, "repeats": reps}
+                out["cells"][key] = {"L": L, "K": K, "repeats": reps, "energy": energy}
             print(key, [round(x["ms"], 1) for x in reps], reps[0]["peak_gb"], reps[0]["cache_len"], flush=True)
         except torch.OutOfMemoryError as e:
             out["cells"][key] = {"L": L, "K": K, "oom": str(e)[:200]}
@@ -597,6 +643,10 @@ def mode_dms_decode(a, model, ids, out):
                 sync()
                 torch.cuda.reset_peak_memory_stats()
                 a0 = torch.cuda.memory_allocated()
+                if a.energy:
+                    sync()
+                    e0, t0w = METER[0].energy_mj(), time.perf_counter()
+                    METER[0].sample()
                 for i in range(INTERVAL):
                     pos = P + w * INTERVAL + i
                     sync()
@@ -609,8 +659,20 @@ def mode_dms_decode(a, model, ids, out):
                     cache = o.past_key_values
                     del o
                     live.append(torch.stack([l.cache_seq_lengths.float().mean() for l in cache.layers]).mean())
+                energy = None
+                if a.energy:
+                    sync()
+                    e1, t1w = METER[0].energy_mj(), time.perf_counter()
+                    smp = METER[0].stop()
+                    ej = (e1 - e0) / 1e3
+                    pw = [x[1] for x in smp]
+                    energy = {"energy_j": ej, "wall_s": t1w - t0w, "tokens": INTERVAL * Bsz,
+                              "j_per_token": ej / (INTERVAL * Bsz),
+                              "net_j_per_token": (ej - METER[1] * (t1w - t0w)) / (INTERVAL * Bsz),
+                              "mean_w": ej / (t1w - t0w), "peak_w": max(pw),
+                              "sm_mhz_mean": sum(x[2] for x in smp) / len(smp)}
                 live = torch.stack(live)
-                wins.append({"context_end": P + (w + 1) * INTERVAL, "ms_per_token": sum(ms) / len(ms),
+                wins.append({"energy": energy, "context_end": P + (w + 1) * INTERVAL, "ms_per_token": sum(ms) / len(ms),
                              "live_mean": float(live.mean()), "live_end": float(live[-1]),
                              "resident_gb": gb(a0), "peak_gb": gb(torch.cuda.max_memory_allocated())})
                 if w % 8 == 0:
@@ -730,6 +792,8 @@ def main():
     ap.add_argument("--first_fit", action="store_true",
                     help="steady: stop at the first batch size (in --batches order) that runs without OOM")
     ap.add_argument("--probe_timeout", type=float, default=600, help="dms_capacity: stop searching after a slower probe")
+    ap.add_argument("--energy", action="store_true",
+                    help="steady (with --restart_windows), prefill, dms_decode: NVML energy, power and SM clock")
     ap.add_argument("--probe_only", action="store_true", help="capacity: probe each --batches size, no search")
     ap.add_argument("--steps", type=int, default=8192, help="dms_decode: decode steps")
     ap.add_argument("--output", required=True)
@@ -742,6 +806,18 @@ def main():
         fa = None
     model, tok, attn = load_model(a)
     _MODEL[0] = model
+    if a.energy:
+        assert a.mode != "steady" or a.restart_windows, "--energy in steady mode needs --restart_windows"
+        import nvml_energy
+        meter = nvml_energy.Meter(nvml_energy.torch_uuid(0))
+        sync()
+        time.sleep(2)
+        e0, t0 = meter.energy_mj(), time.perf_counter()
+        meter.sample()
+        time.sleep(5)            # the card is idle: weights loaded, nothing queued
+        smp = meter.stop()
+        idle_w = (meter.energy_mj() - e0) / 1e3 / (time.perf_counter() - t0)
+        METER[:] = [meter, idle_w]
     dev = next(model.parameters()).device
     need = max(a.Ls + a.Ks) + a.windows * INTERVAL + 2 * INTERVAL + a.steps
     ids = text_ids(tok, need, dev)
@@ -750,6 +826,7 @@ def main():
                     "transformers": transformers.__version__, "flash_attn": fa,
                     "prompt_tokens": P, "interval": INTERVAL, "args": vars(a),
                     "weights_gb": gb(torch.cuda.memory_allocated()),
+                    "idle_w": METER[1], "gpu_uuid": str(torch.cuda.get_device_properties(0).uuid),
                     "note": "synchronised timing around every step; times in ms; memory from "
                             "torch.cuda.max_memory_allocated (resident = allocated before the step)"},
            "cells": {}}

@@ -1,0 +1,171 @@
+{
+ "meta": {
+  "mode": "steady",
+  "method": "epikv_batched",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.55.4",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "steady",
+   "method": "epikv_batched",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    4096
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    45
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "restart_windows": true,
+   "first_fit": false,
+   "probe_timeout": 600,
+   "energy": true,
+   "probe_only": false,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/energy_max_epikv_batched_K4096.json"
+  },
+  "weights_gb": 14.958,
+  "idle_w": 76.67492690753676,
+  "gpu_uuid": "328ff6c5-b827-a542-adc7-9bd71b3373e4",
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "K4096_B45": {
+   "K": 4096,
+   "batch": 45,
+   "windows": [
+    {
+     "steps": 128,
+     "ms_per_token": 162.11017833848018,
+     "fwd_ms_median": 119.01331623084843,
+     "pol_ms_mean": 8.829024995065993,
+     "n_compactions": 1,
+     "cache_len_min": 4096,
+     "cache_len_max": 4224,
+     "resident_gb": 37.534,
+     "peak_gb": 38.66,
+     "transient_gb": 0.438,
+     "reserved_gb": 38.988,
+     "compaction": [
+      {
+       "ms": 579.0114621631801,
+       "fwd_ms": 120.20856887102127,
+       "pol_ms": 458.80289329215884,
+       "from": 4224,
+       "to": 4096,
+       "transient_gb": 0.375
+      }
+     ],
+     "normal_step_ms_median": 124.26243722438812,
+     "normal_pol_ms_mean": 5.285923669892033,
+     "energy": {
+      "energy_j": 4522.615,
+      "wall_s": 20.80519499676302,
+      "tokens": 5760,
+      "j_per_token": 0.7851762152777777,
+      "net_j_per_token": 0.5082253809594003,
+      "mean_w": 217.3791209697218,
+      "sampled_mean_w": 215.55817743490837,
+      "peak_w": 274.059,
+      "sm_mhz_mean": 1410.0,
+      "sm_mhz_min": 1410,
+      "power_samples": 1037
+     }
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 161.28516565368045,
+     "fwd_ms_median": 118.97734110243618,
+     "pol_ms_mean": 8.754157428484177,
+     "n_compactions": 1,
+     "cache_len_min": 4096,
+     "cache_len_max": 4224,
+     "resident_gb": 37.534,
+     "peak_gb": 38.66,
+     "transient_gb": 0.438,
+     "reserved_gb": 38.988,
+     "compaction": [
+      {
+       "ms": 577.7927120216191,
+       "fwd_ms": 120.25230564177036,
+       "pol_ms": 457.5404063798487,
+       "from": 4224,
+       "to": 4096,
+       "transient_gb": 0.375
+      }
+     ],
+     "normal_step_ms_median": 124.1390467621386,
+     "normal_pol_ms_mean": 5.22040743674115,
+     "energy": {
+      "energy_j": 4509.164,
+      "wall_s": 20.697941253893077,
+      "tokens": 5760,
+      "j_per_token": 0.7828409722222222,
+      "net_j_per_token": 0.5073178588925796,
+      "mean_w": 217.85567678871786,
+      "sampled_mean_w": 217.8864108527132,
+      "peak_w": 276.347,
+      "sm_mhz_mean": 1410.0,
+      "sm_mhz_min": 1410,
+      "power_samples": 1032
+     }
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 162.19106646894943,
+     "fwd_ms_median": 119.01582777500153,
+     "pol_ms_mean": 8.750071567192208,
+     "n_compactions": 1,
+     "cache_len_min": 4096,
+     "cache_len_max": 4224,
+     "resident_gb": 37.534,
+     "peak_gb": 38.66,
+     "transient_gb": 0.438,
+     "reserved_gb": 38.988,
+     "compaction": [
+      {
+       "ms": 576.281257905066,
+       "fwd_ms": 120.33163011074066,
+       "pol_ms": 455.94962779432535,
+       "from": 4224,
+       "to": 4096,
+       "transient_gb": 0.375
+      }
+     ],
+     "normal_step_ms_median": 124.1721217520535,
+     "normal_pol_ms_mean": 5.228815218947065,
+     "energy": {
+      "energy_j": 4524.951,
+      "wall_s": 20.81456904532388,
+      "tokens": 5760,
+      "j_per_token": 0.7855817708333334,
+      "net_j_per_token": 0.508506152749638,
+      "mean_w": 217.39345119982477,
+      "sampled_mean_w": 219.678570327553,
+      "peak_w": 275.786,
+      "sm_mhz_mean": 1410.0,
+      "sm_mhz_min": 1410,
+      "power_samples": 1038
+     }
+    }
+   ]
+  }
+ }
+}

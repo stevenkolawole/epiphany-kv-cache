@@ -1,0 +1,424 @@
+{
+ "meta": {
+  "mode": "steady",
+  "method": "h2o",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "eager",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.55.4",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "steady",
+   "method": "h2o",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    1024,
+    4096
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    1
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "restart_windows": true,
+   "first_fit": false,
+   "probe_timeout": 600,
+   "energy": true,
+   "probe_only": false,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/energy_b1_h2o.json"
+  },
+  "weights_gb": 14.958,
+  "idle_w": 76.19811078490709,
+  "gpu_uuid": "328ff6c5-b827-a542-adc7-9bd71b3373e4",
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "K1024_B1": {
+   "K": 1024,
+   "batch": 1,
+   "windows": [
+    {
+     "steps": 128,
+     "ms_per_token": 47.42157191139995,
+     "fwd_ms_median": 44.869424775242805,
+     "pol_ms_mean": 2.3842801929276902,
+     "n_compactions": 128,
+     "cache_len_min": 1024,
+     "cache_len_max": 1025,
+     "resident_gb": 15.091,
+     "peak_gb": 15.218,
+     "transient_gb": 0.127,
+     "reserved_gb": 15.25,
+     "compaction": [
+      {
+       "ms": 49.87867595627904,
+       "fwd_ms": 46.702126041054726,
+       "pol_ms": 3.1765499152243137,
+       "from": 1025,
+       "to": 1024,
+       "transient_gb": 0.127
+      },
+      {
+       "ms": 47.54819581285119,
+       "fwd_ms": 45.16245611011982,
+       "pol_ms": 2.385739702731371,
+       "from": 1025,
+       "to": 1024,
+       "transient_gb": 0.127
+      },
+      {
+       "ms": 47.37663082778454,
+       "fwd_ms": 45.00764003023505,
+       "pol_ms": 2.368990797549486,
+       "from": 1025,
+       "to": 1024,
+       "transient_gb": 0.127
+      },
+      {
+       "ms": 47.16234793886542,
+       "fwd_ms": 44.79149216786027,
+       "pol_ms": 2.3708557710051537,
+       "from": 1025,
+       "to": 1024,
+       "transient_gb": 0.127
+      }
+     ],
+     "energy": {
+      "energy_j": 820.688,
+      "wall_s": 6.121640282217413,
+      "tokens": 128,
+      "j_per_token": 6.411625,
+      "net_j_per_token": 2.76742637179881,
+      "mean_w": 134.06341473281176,
+      "sampled_mean_w": 133.71419281045752,
+      "peak_w": 143.637,
+      "sm_mhz_mean": 1410.0,
+      "sm_mhz_min": 1410,
+      "power_samples": 306
+     }
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 47.296609489421826,
+     "fwd_ms_median": 44.81078893877566,
+     "pol_ms_mean": 2.373773735598661,
+     "n_compactions": 128,
+     "cache_len_min": 1024,
+     "cache_len_max": 1025,
+     "resident_gb": 15.091,
+     "peak_gb": 15.218,
+     "transient_gb": 0.127,
+     "reserved_gb": 15.25,
+     "compaction": [
+      {
+       "ms": 50.05802074447274,
+       "fwd_ms": 46.841912902891636,
+       "pol_ms": 3.216107841581106,
+       "from": 1025,
+       "to": 1024,
+       "transient_gb": 0.127
+      },
+      {
+       "ms": 47.30384983122349,
+       "fwd_ms": 44.9297190643847,
+       "pol_ms": 2.374130766838789,
+       "from": 1025,
+       "to": 1024,
+       "transient_gb": 0.127
+      },
+      {
+       "ms": 47.25704342126846,
+       "fwd_ms": 44.897192157804966,
+       "pol_ms": 2.359851263463497,
+       "from": 1025,
+       "to": 1024,
+       "transient_gb": 0.127
+      },
+      {
+       "ms": 47.56888514384627,
+       "fwd_ms": 45.17094325274229,
+       "pol_ms": 2.397941891103983,
+       "from": 1025,
+       "to": 1024,
+       "transient_gb": 0.127
+      }
+     ],
+     "energy": {
+      "energy_j": 811.168,
+      "wall_s": 6.105029516853392,
+      "tokens": 128,
+      "j_per_token": 6.33725,
+      "net_j_per_token": 2.702939722888105,
+      "mean_w": 132.8688088666418,
+      "sampled_mean_w": 133.81064918032786,
+      "peak_w": 143.801,
+      "sm_mhz_mean": 1410.0,
+      "sm_mhz_min": 1410,
+      "power_samples": 305
+     }
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 47.283770159992855,
+     "fwd_ms_median": 44.81360432691872,
+     "pol_ms_mean": 2.3724499878881034,
+     "n_compactions": 128,
+     "cache_len_min": 1024,
+     "cache_len_max": 1025,
+     "resident_gb": 15.091,
+     "peak_gb": 15.218,
+     "transient_gb": 0.127,
+     "reserved_gb": 15.25,
+     "compaction": [
+      {
+       "ms": 49.98995270580053,
+       "fwd_ms": 46.774457674473524,
+       "pol_ms": 3.215495031327009,
+       "from": 1025,
+       "to": 1024,
+       "transient_gb": 0.127
+      },
+      {
+       "ms": 47.400168143212795,
+       "fwd_ms": 44.994790107011795,
+       "pol_ms": 2.405378036201,
+       "from": 1025,
+       "to": 1024,
+       "transient_gb": 0.127
+      },
+      {
+       "ms": 47.31445526704192,
+       "fwd_ms": 44.96663995087147,
+       "pol_ms": 2.347815316170454,
+       "from": 1025,
+       "to": 1024,
+       "transient_gb": 0.127
+      },
+      {
+       "ms": 47.14405396953225,
+       "fwd_ms": 44.79468706995249,
+       "pol_ms": 2.3493668995797634,
+       "from": 1025,
+       "to": 1024,
+       "transient_gb": 0.127
+      }
+     ],
+     "energy": {
+      "energy_j": 822.502,
+      "wall_s": 6.103157060686499,
+      "tokens": 128,
+      "j_per_token": 6.425796875,
+      "net_j_per_token": 2.7926012668134548,
+      "mean_w": 134.7666448399548,
+      "sampled_mean_w": 133.10416721311475,
+      "peak_w": 140.02,
+      "sm_mhz_mean": 1410.0,
+      "sm_mhz_min": 1410,
+      "power_samples": 305
+     }
+    }
+   ]
+  },
+  "K4096_B1": {
+   "K": 4096,
+   "batch": 1,
+   "windows": [
+    {
+     "steps": 128,
+     "ms_per_token": 50.578750040585874,
+     "fwd_ms_median": 45.15228932723403,
+     "pol_ms_mean": 5.305060418322682,
+     "n_compactions": 128,
+     "cache_len_min": 4096,
+     "cache_len_max": 4097,
+     "resident_gb": 15.466,
+     "peak_gb": 15.974,
+     "transient_gb": 0.508,
+     "reserved_gb": 16.291,
+     "compaction": [
+      {
+       "ms": 54.762457963079214,
+       "fwd_ms": 48.27944794669747,
+       "pol_ms": 6.483010016381741,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 0.508
+      },
+      {
+       "ms": 51.14839784801006,
+       "fwd_ms": 45.81008991226554,
+       "pol_ms": 5.338307935744524,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 0.508
+      },
+      {
+       "ms": 50.55074440315366,
+       "fwd_ms": 45.25333642959595,
+       "pol_ms": 5.297407973557711,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 0.508
+      },
+      {
+       "ms": 50.371197052299976,
+       "fwd_ms": 45.09906191378832,
+       "pol_ms": 5.272135138511658,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 0.508
+      }
+     ],
+     "energy": {
+      "energy_j": 1066.533,
+      "wall_s": 6.5254160412587225,
+      "tokens": 128,
+      "j_per_token": 8.3322890625,
+      "net_j_per_token": 4.447723637269984,
+      "mean_w": 163.44291203144047,
+      "sampled_mean_w": 163.30764417177915,
+      "peak_w": 176.127,
+      "sm_mhz_mean": 1410.0,
+      "sm_mhz_min": 1410,
+      "power_samples": 326
+     }
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 50.638255572266644,
+     "fwd_ms_median": 45.18780950456858,
+     "pol_ms_mean": 5.3371824833448045,
+     "n_compactions": 128,
+     "cache_len_min": 4096,
+     "cache_len_max": 4097,
+     "resident_gb": 15.466,
+     "peak_gb": 15.974,
+     "transient_gb": 0.508,
+     "reserved_gb": 16.291,
+     "compaction": [
+      {
+       "ms": 54.67290198430419,
+       "fwd_ms": 48.19323215633631,
+       "pol_ms": 6.479669827967882,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 0.508
+      },
+      {
+       "ms": 51.08075821772218,
+       "fwd_ms": 45.76565884053707,
+       "pol_ms": 5.315099377185106,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 0.508
+      },
+      {
+       "ms": 50.531850196421146,
+       "fwd_ms": 45.254466123878956,
+       "pol_ms": 5.2773840725421906,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 0.508
+      },
+      {
+       "ms": 50.26458716019988,
+       "fwd_ms": 44.97696505859494,
+       "pol_ms": 5.2876221016049385,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 0.508
+      }
+     ],
+     "energy": {
+      "energy_j": 1073.534,
+      "wall_s": 6.53368536895141,
+      "tokens": 128,
+      "j_per_token": 8.386984375,
+      "net_j_per_token": 4.497496237679016,
+      "mean_w": 164.30757518590022,
+      "sampled_mean_w": 162.9006809815951,
+      "peak_w": 176.083,
+      "sm_mhz_mean": 1410.0,
+      "sm_mhz_min": 1410,
+      "power_samples": 326
+     }
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 50.64781542751007,
+     "fwd_ms_median": 45.2025611884892,
+     "pol_ms_mean": 5.308265030180337,
+     "n_compactions": 128,
+     "cache_len_min": 4096,
+     "cache_len_max": 4097,
+     "resident_gb": 15.466,
+     "peak_gb": 15.974,
+     "transient_gb": 0.508,
+     "reserved_gb": 16.291,
+     "compaction": [
+      {
+       "ms": 56.82954005897045,
+       "fwd_ms": 50.29797088354826,
+       "pol_ms": 6.531569175422192,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 0.508
+      },
+      {
+       "ms": 51.07523500919342,
+       "fwd_ms": 45.77943030744791,
+       "pol_ms": 5.29580470174551,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 0.508
+      },
+      {
+       "ms": 50.46922713518143,
+       "fwd_ms": 45.20005825906992,
+       "pol_ms": 5.269168876111507,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 0.508
+      },
+      {
+       "ms": 50.27942778542638,
+       "fwd_ms": 44.99299079179764,
+       "pol_ms": 5.28643699362874,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 0.508
+      }
+     ],
+     "energy": {
+      "energy_j": 1070.156,
+      "wall_s": 6.5352509082295,
+      "tokens": 128,
+      "j_per_token": 8.36059375,
+      "net_j_per_token": 4.470173650684092,
+      "mean_w": 163.75132569927933,
+      "sampled_mean_w": 163.4148926380368,
+      "peak_w": 177.296,
+      "sm_mhz_mean": 1410.0,
+      "sm_mhz_min": 1410,
+      "power_samples": 326
+     }
+    }
+   ]
+  }
+ }
+}

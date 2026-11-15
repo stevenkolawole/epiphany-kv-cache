@@ -1,0 +1,169 @@
+{
+ "meta": {
+  "mode": "prefill",
+  "method": "dms",
+  "model": "nvidia/Qwen3-8B-DMS-8x",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.57.1",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "prefill",
+   "method": "dms",
+   "model": "nvidia/Qwen3-8B-DMS-8x",
+   "tokenizer": "Qwen/Qwen3-8B",
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    1024
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384
+   ],
+   "batches": [
+    1,
+    4,
+    16
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "restart_windows": false,
+   "first_fit": false,
+   "probe_timeout": 600,
+   "energy": true,
+   "probe_only": false,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/energy_prefill_dms.json"
+  },
+  "weights_gb": 15.259,
+  "idle_w": 76.96876446006327,
+  "gpu_uuid": "328ff6c5-b827-a542-adc7-9bd71b3373e4",
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "L4096": {
+   "L": 4096,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 5025.928117334843,
+     "peak_gb": 16.524,
+     "transient_gb": 1.257,
+     "cache_len": null
+    },
+    {
+     "ms": 5024.731437209994,
+     "peak_gb": 16.524,
+     "transient_gb": 1.257,
+     "cache_len": null
+    },
+    {
+     "ms": 5031.691919080913,
+     "peak_gb": 16.524,
+     "transient_gb": 1.257,
+     "cache_len": null
+    }
+   ],
+   "energy": {
+    "energy_j": 2039.624,
+    "wall_s": 15.691473326645792,
+    "tokens": 12288,
+    "j_per_token": 0.16598502604166668,
+    "net_j_per_token": 0.06769780969157184,
+    "mean_w": 129.98295045606085,
+    "sampled_mean_w": 127.55683001328022,
+    "peak_w": 258.67,
+    "sm_mhz_mean": 1410.0,
+    "sm_mhz_min": 1410,
+    "power_samples": 753,
+    "prefills": 3,
+    "j_per_prefill": 679.8746666666667
+   }
+  },
+  "L8192": {
+   "L": 8192,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 11532.728677149862,
+     "peak_gb": 17.571,
+     "transient_gb": 2.304,
+     "cache_len": null
+    },
+    {
+     "ms": 11550.056298263371,
+     "peak_gb": 17.571,
+     "transient_gb": 2.304,
+     "cache_len": null
+    },
+    {
+     "ms": 11537.95319981873,
+     "peak_gb": 17.571,
+     "transient_gb": 2.304,
+     "cache_len": null
+    }
+   ],
+   "energy": {
+    "energy_j": 5118.163,
+    "wall_s": 35.22193642007187,
+    "tokens": 24576,
+    "j_per_token": 0.20825858561197916,
+    "net_j_per_token": 0.09794816373112646,
+    "mean_w": 145.3118005483458,
+    "sampled_mean_w": 144.14017844727695,
+    "peak_w": 325.758,
+    "sm_mhz_mean": 1410.0,
+    "sm_mhz_min": 1410,
+    "power_samples": 1726,
+    "prefills": 3,
+    "j_per_prefill": 1706.0543333333333
+   }
+  },
+  "L16384": {
+   "L": 16384,
+   "K": 1024,
+   "repeats": [
+    {
+     "ms": 29698.668221011758,
+     "peak_gb": 19.656,
+     "transient_gb": 4.39,
+     "cache_len": null
+    },
+    {
+     "ms": 29769.88797588274,
+     "peak_gb": 19.656,
+     "transient_gb": 4.39,
+     "cache_len": null
+    },
+    {
+     "ms": 29751.29515491426,
+     "peak_gb": 19.656,
+     "transient_gb": 4.39,
+     "cache_len": null
+    }
+   ],
+   "energy": {
+    "energy_j": 14791.147,
+    "wall_s": 89.92121000122279,
+    "tokens": 49152,
+    "j_per_token": 0.3009266560872396,
+    "net_j_per_token": 0.16011601903181963,
+    "mean_w": 164.49007970198426,
+    "sampled_mean_w": 164.9018064733648,
+    "peak_w": 406.171,
+    "sm_mhz_mean": 1409.9157113958192,
+    "sm_mhz_min": 1395,
+    "power_samples": 4449,
+    "prefills": 3,
+    "j_per_prefill": 4930.382333333334
+   }
+  }
+ }
+}

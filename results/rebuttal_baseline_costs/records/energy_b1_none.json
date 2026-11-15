@@ -1,0 +1,232 @@
+{
+ "meta": {
+  "mode": "steady",
+  "method": "none",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.55.4",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "steady",
+   "method": "none",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    1024,
+    4096
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    1
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "restart_windows": true,
+   "first_fit": false,
+   "probe_timeout": 600,
+   "energy": true,
+   "probe_only": false,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/energy_b1_none.json"
+  },
+  "weights_gb": 14.958,
+  "idle_w": 76.00912604940247,
+  "gpu_uuid": "328ff6c5-b827-a542-adc7-9bd71b3373e4",
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "K1024_B1": {
+   "K": 1024,
+   "batch": 1,
+   "windows": [
+    {
+     "steps": 128,
+     "ms_per_token": 32.343590679374756,
+     "fwd_ms_median": 32.247369876131415,
+     "pol_ms_mean": 0.01693465674179606,
+     "n_compactions": 0,
+     "cache_len_min": 1025,
+     "cache_len_max": 1152,
+     "resident_gb": 15.091,
+     "peak_gb": 15.11,
+     "transient_gb": 0.007,
+     "reserved_gb": 15.131,
+     "normal_step_ms_median": 32.26507152430713,
+     "normal_pol_ms_mean": 0.01693465674179606,
+     "energy": {
+      "energy_j": 612.47,
+      "wall_s": 4.194035297259688,
+      "tokens": 128,
+      "j_per_token": 4.784921875,
+      "net_j_per_token": 2.2944143940230095,
+      "mean_w": 146.03358259768999,
+      "sampled_mean_w": 147.19313875598087,
+      "peak_w": 157.956,
+      "sm_mhz_mean": 1410.0,
+      "sm_mhz_min": 1410,
+      "power_samples": 209
+     }
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 32.39387593566789,
+     "fwd_ms_median": 32.28719625622034,
+     "pol_ms_mean": 0.017311333067482337,
+     "n_compactions": 0,
+     "cache_len_min": 1025,
+     "cache_len_max": 1152,
+     "resident_gb": 15.091,
+     "peak_gb": 15.11,
+     "transient_gb": 0.007,
+     "reserved_gb": 15.131,
+     "normal_step_ms_median": 32.30336308479309,
+     "normal_pol_ms_mean": 0.017311333067482337,
+     "energy": {
+      "energy_j": 625.768,
+      "wall_s": 4.202445063274354,
+      "tokens": 128,
+      "j_per_token": 4.8888125,
+      "net_j_per_token": 2.39331112085852,
+      "mean_w": 148.9056943227308,
+      "sampled_mean_w": 145.95885238095238,
+      "peak_w": 151.314,
+      "sm_mhz_mean": 1410.0,
+      "sm_mhz_min": 1410,
+      "power_samples": 210
+     }
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 32.325722720997874,
+     "fwd_ms_median": 32.24799805320799,
+     "pol_ms_mean": 0.017229067452717572,
+     "n_compactions": 0,
+     "cache_len_min": 1025,
+     "cache_len_max": 1152,
+     "resident_gb": 15.091,
+     "peak_gb": 15.11,
+     "transient_gb": 0.007,
+     "reserved_gb": 15.131,
+     "normal_step_ms_median": 32.2653534822166,
+     "normal_pol_ms_mean": 0.017229067452717572,
+     "energy": {
+      "energy_j": 626.657,
+      "wall_s": 4.191506656352431,
+      "tokens": 128,
+      "j_per_token": 4.8957578125,
+      "net_j_per_token": 2.4067518923468647,
+      "mean_w": 149.50638311650326,
+      "sampled_mean_w": 146.71451196172248,
+      "peak_w": 157.598,
+      "sm_mhz_mean": 1410.0,
+      "sm_mhz_min": 1410,
+      "power_samples": 209
+     }
+    }
+   ]
+  },
+  "K4096_B1": {
+   "K": 4096,
+   "batch": 1,
+   "windows": [
+    {
+     "steps": 128,
+     "ms_per_token": 32.500833596714074,
+     "fwd_ms_median": 32.40646794438362,
+     "pol_ms_mean": 0.017146376194432378,
+     "n_compactions": 0,
+     "cache_len_min": 4097,
+     "cache_len_max": 4224,
+     "resident_gb": 15.466,
+     "peak_gb": 15.489,
+     "transient_gb": 0.008,
+     "reserved_gb": 15.619,
+     "normal_step_ms_median": 32.42426342330873,
+     "normal_pol_ms_mean": 0.017146376194432378,
+     "energy": {
+      "energy_j": 638.757,
+      "wall_s": 4.213586944155395,
+      "tokens": 128,
+      "j_per_token": 4.9902890625,
+      "net_j_per_token": 2.488171397199812,
+      "mean_w": 151.5945935056616,
+      "sampled_mean_w": 152.12340476190477,
+      "peak_w": 156.986,
+      "sm_mhz_mean": 1410.0,
+      "sm_mhz_min": 1410,
+      "power_samples": 210
+     }
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 32.41591390542453,
+     "fwd_ms_median": 32.39270532503724,
+     "pol_ms_mean": 0.017165490135084838,
+     "n_compactions": 0,
+     "cache_len_min": 4097,
+     "cache_len_max": 4224,
+     "resident_gb": 15.466,
+     "peak_gb": 15.489,
+     "transient_gb": 0.008,
+     "reserved_gb": 15.619,
+     "normal_step_ms_median": 32.410994404926896,
+     "normal_pol_ms_mean": 0.017165490135084838,
+     "energy": {
+      "energy_j": 637.336,
+      "wall_s": 4.202701023314148,
+      "tokens": 128,
+      "j_per_token": 4.9791875,
+      "net_j_per_token": 2.483534126335642,
+      "mean_w": 151.64914098443583,
+      "sampled_mean_w": 149.45773333333332,
+      "peak_w": 156.089,
+      "sm_mhz_mean": 1410.0,
+      "sm_mhz_min": 1410,
+      "power_samples": 210
+     }
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 32.440020753710996,
+     "fwd_ms_median": 32.39769791252911,
+     "pol_ms_mean": 0.017167491023428738,
+     "n_compactions": 0,
+     "cache_len_min": 4097,
+     "cache_len_max": 4224,
+     "resident_gb": 15.466,
+     "peak_gb": 15.489,
+     "transient_gb": 0.008,
+     "reserved_gb": 15.619,
+     "normal_step_ms_median": 32.4146063067019,
+     "normal_pol_ms_mean": 0.017167491023428738,
+     "energy": {
+      "energy_j": 639.053,
+      "wall_s": 4.206406478770077,
+      "tokens": 128,
+      "j_per_token": 4.9926015625,
+      "net_j_per_token": 2.4947478104698595,
+      "mean_w": 151.9237389979616,
+      "sampled_mean_w": 150.83330952380953,
+      "peak_w": 156.449,
+      "sm_mhz_mean": 1410.0,
+      "sm_mhz_min": 1410,
+      "power_samples": 210
+     }
+    }
+   ]
+  }
+ }
+}

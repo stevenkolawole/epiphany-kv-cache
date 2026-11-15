@@ -84,10 +84,120 @@
 | tput_snapkv_decoding_K2048 | 2048 | 63 | 127.9 | 0.7 | 492 | 37.95 | 2048 |
 | tput_snapkv_decoding_K4096 | 4096 | 34 | 127.5 | 0.3 | 267 | 37.98 | 4096 |
 
+## Decode energy (NVML)
+
+| run | K (none: context) | batch | J/token | net J/token | mean W | peak W | SM MHz | ms/step | idle W |
+|---|---|---|---|---|---|---|---|---|---|
+| energy_b1_epikv_batched | 1024 | 1 | 5.012 | 2.355 | 144 | 154 | 1410 | 34.4 | 76.4 |
+| energy_b1_epikv_batched | 4096 | 1 | 5.334 | 2.670 | 153 | 162 | 1410 | 34.5 | 76.4 |
+| energy_b1_epikv_noq | 1024 | 1 | 5.006 | 2.438 | 145 | 155 | 1410 | 34.1 | 74.4 |
+| energy_b1_epikv_noq | 4096 | 1 | 5.259 | 2.691 | 152 | 162 | 1410 | 34.2 | 74.4 |
+| energy_b1_epikv_qwen3 | 1024 | 1 | 6.097 | 2.437 | 127 | 136 | 1410 | 47.8 | 76.1 |
+| energy_b1_epikv_qwen3 | 4096 | 1 | 6.392 | 2.705 | 132 | 142 | 1410 | 48.0 | 76.1 |
+| energy_b1_h2o | 1024 | 1 | 5.576 | 2.726 | 150 | 161 | 1410 | 36.8 | 76.6 |
+| energy_b1_h2o | 4096 | 1 | 7.515 | 4.423 | 186 | 197 | 1410 | 40.0 | 76.6 |
+| energy_b1_h2o_repeat | 1024 | 1 | 5.558 | 2.707 | 150 | 159 | 1410 | 36.8 | 76.7 |
+| energy_b1_h2o_repeat | 4096 | 1 | 7.612 | 4.492 | 187 | 197 | 1410 | 40.0 | 76.7 |
+| energy_b1_none | 1024 | 1 | 4.889 | 2.393 | 149 | 158 | 1410 | 32.3 | 76.0 |
+| energy_b1_none | 4096 | 1 | 4.990 | 2.488 | 152 | 157 | 1410 | 32.4 | 76.0 |
+| energy_b1_none_kvpressvenv | 1024 | 1 | 4.886 | 2.347 | 147 | 155 | 1410 | 32.9 | 76.5 |
+| energy_b1_none_kvpressvenv | 4096 | 1 | 5.132 | 2.577 | 154 | 158 | 1410 | 33.0 | 76.5 |
+| energy_b1_none_qwen3 | 1024 | 1 | 6.048 | 2.564 | 130 | 138 | 1410 | 46.2 | 74.7 |
+| energy_b1_none_qwen3 | 4096 | 1 | 6.342 | 2.849 | 136 | 144 | 1410 | 46.3 | 74.7 |
+| energy_b1_raas | 1024 | 1 | 5.557 | 2.791 | 150 | 159 | 1410 | 36.6 | 74.8 |
+| energy_b1_raas | 4096 | 1 | 7.576 | 4.554 | 188 | 199 | 1410 | 39.9 | 74.8 |
+| energy_b1_rkv | 1024 | 1 | 5.008 | 2.340 | 144 | 151 | 1410 | 34.3 | 76.8 |
+| energy_b1_rkv | 4096 | 1 | 5.473 | 2.719 | 153 | 219 | 1410 | 35.4 | 76.8 |
+| energy_b1_snapkv_decoding | 1024 | 1 | 5.236 | 2.340 | 138 | 144 | 1410 | 37.6 | 76.2 |
+| energy_b1_snapkv_decoding | 4096 | 1 | 5.538 | 2.655 | 146 | 156 | 1410 | 37.4 | 76.2 |
+| energy_max_epikv_batched_K2048 | 2048 | 80 | 0.433 | 0.272 | 206 | 278 | 1410 | 167.4 | 76.4 |
+| energy_max_epikv_batched_K4096 | 4096 | 45 | 0.785 | 0.508 | 217 | 276 | 1410 | 162.1 | 76.7 |
+| energy_max_epikv_noq_K2048 | 2048 | 58 | 0.446 | 0.271 | 192 | 266 | 1410 | 134.4 | 75.4 |
+| energy_max_epikv_noq_K4096 | 4096 | 34 | 0.809 | 0.521 | 213 | 268 | 1410 | 128.5 | 75.9 |
+| energy_max_h2o_K2048 | 2048 | 47 | 1.632 | 1.168 | 269 | 300 | 1410 | 284.7 | 76.6 |
+| energy_max_h2o_K4096 | 4096 | 23 | 3.278 | 2.337 | 268 | 300 | 1410 | 281.3 | 76.9 |
+| energy_max_none_K16384 | 16384 | 11 | 2.608 | 1.771 | 235 | 253 | 1410 | 121.4 | 75.6 |
+| energy_max_none_K32768 | 32768 | 5 | 5.173 | 3.564 | 241 | 252 | 1410 | 106.7 | 75.1 |
+| energy_max_none_K8192 | 8192 | 23 | 1.446 | 0.995 | 243 | 275 | 1410 | 136.3 | 75.9 |
+| energy_max_raas_K2048 | 2048 | 47 | 1.634 | 1.167 | 269 | 300 | 1410 | 285.1 | 76.9 |
+| energy_max_raas_K4096 | 4096 | 23 | 3.283 | 2.342 | 268 | 301 | 1410 | 281.5 | 76.8 |
+| energy_max_rkv_K2048 | 2048 | 21 | 0.564 | 0.367 | 220 | 265 | 1410 | 53.4 | 76.9 |
+| energy_max_rkv_K4096 | 4096 | 6 | 1.546 | 0.957 | 202 | 257 | 1410 | 45.5 | 77.0 |
+| energy_max_snapkv_decoding_K2048 | 2048 | 63 | 0.437 | 0.279 | 213 | 279 | 1410 | 129.3 | 76.8 |
+| energy_max_snapkv_decoding_K4096 | 4096 | 34 | 0.826 | 0.539 | 220 | 278 | 1410 | 127.0 | 76.8 |
+| energy_dms_decode (128 -> 8320 context, mean) | - | 1 | 6.004 | 2.402 | 128 | 138 | 1410 | 46.5 | 76.8 |
+| energy_dms_decode (128 -> 8320 context, mean) | - | 8 | 0.819 | 0.331 | 129 | 140 | 1410 | 50.0 | 76.8 |
+
+## Prefill energy (NVML)
+
+| run | L | J per prefill | net J | mean W | peak W | ms | prefills measured |
+|---|---|---|---|---|---|---|---|
+| energy_prefill_dms | 4096 | 679.9 | 277.3 | 130 | 259 | 5025.9 | 3 |
+| energy_prefill_dms | 8192 | 1706.1 | 802.4 | 145 | 326 | 11538.0 | 3 |
+| energy_prefill_dms | 16384 | 4930.4 | 2623.3 | 164 | 406 | 29751.3 | 3 |
+| energy_prefill_epikv | 4096 | 136.8 | 102.9 | 310 | 427 | 318.3 | 10 |
+| energy_prefill_epikv | 8192 | 271.3 | 210.1 | 341 | 455 | 659.5 | 5 |
+| energy_prefill_epikv | 16384 | 595.1 | 472.4 | 373 | 481 | 1449.6 | 3 |
+| energy_prefill_h2o | 4096 | OOM | | | | | |
+| energy_prefill_h2o | 8192 | OOM | | | | | |
+| energy_prefill_h2o | 16384 | OOM | | | | | |
+| energy_prefill_none | 4096 | 134.6 | 100.8 | 306 | 438 | 316.6 | 10 |
+| energy_prefill_none | 8192 | 272.3 | 211.8 | 346 | 439 | 654.5 | 5 |
+| energy_prefill_none | 16384 | 592.6 | 470.7 | 373 | 425 | 1447.4 | 3 |
+| energy_prefill_none_kvpressvenv | 4096 | 139.0 | 106.0 | 315 | 434 | 318.0 | 10 |
+| energy_prefill_none_kvpressvenv | 8192 | 275.5 | 216.8 | 351 | 439 | 657.0 | 5 |
+| energy_prefill_none_kvpressvenv | 16384 | 592.5 | 473.2 | 371 | 462 | 1457.9 | 3 |
+| energy_prefill_none_qwen3 | 4096 | 149.8 | 113.1 | 310 | 425 | 352.1 | 9 |
+| energy_prefill_none_qwen3 | 8192 | 302.1 | 236.2 | 349 | 420 | 725.0 | 5 |
+| energy_prefill_none_qwen3 | 16384 | 640.3 | 507.0 | 366 | 445 | 1600.5 | 3 |
+| energy_prefill_rkv | 4096 | 176.3 | 129.5 | 290 | 385 | 481.7 | 7 |
+| energy_prefill_rkv | 8192 | 452.4 | 335.3 | 297 | 409 | 1374.8 | 3 |
+| energy_prefill_rkv | 16384 | OOM | | | | | |
+| energy_prefill_snapkv_prefill | 4096 | 145.7 | 109.4 | 309 | 411 | 347.8 | 9 |
+| energy_prefill_snapkv_prefill | 8192 | 285.9 | 221.7 | 343 | 420 | 701.2 | 5 |
+| energy_prefill_snapkv_prefill | 16384 | 615.7 | 488.2 | 372 | 451 | 1518.3 | 3 |
+
 ## Steady decode
 
 | run | K | B | ms/token | spread | normal step ms | compaction ms (step) | policy ms/token | resident GiB | peak GiB | max transient GiB | cache after compaction |
 |---|---|---|---|---|---|---|---|---|---|---|---|
+| energy_b1_epikv_batched | 1024 | 1 | 34.37 | 0.04 | 34.19 | 41.4 | 0.412 | 15.11 | 15.14 | 0.013 | 1024 |
+| energy_b1_epikv_batched | 4096 | 1 | 34.53 | 0.07 | 34.36 | 45.5 | 0.445 | 15.53 | 15.59 | 0.042 | 4096 |
+| energy_b1_epikv_noq | 1024 | 1 | 34.11 | 0.01 | 33.96 | 38.7 | 0.330 | 15.11 | 15.20 | 0.078 | 552 |
+| energy_b1_epikv_noq | 4096 | 1 | 34.17 | 0.05 | 34.01 | 42.3 | 0.355 | 15.53 | 15.73 | 0.191 | 1384 |
+| energy_b1_epikv_qwen3 | 1024 | 1 | 47.78 | 0.11 | 47.55 | 56.1 | 0.394 | 15.44 | 15.60 | 0.142 | 1024 |
+| energy_b1_epikv_qwen3 | 4096 | 1 | 48.00 | 0.10 | 47.73 | 64.1 | 0.457 | 15.95 | 16.54 | 0.563 | 4096 |
+| energy_b1_h2o | 1024 | 1 | 36.80 | 0.08 | - | 38.9 | 2.096 | 15.09 | 15.22 | 0.127 | 1024 |
+| energy_b1_h2o | 4096 | 1 | 39.98 | 0.04 | - | 43.6 | 5.028 | 15.47 | 15.97 | 0.508 | 4096 |
+| energy_b1_h2o_repeat | 1024 | 1 | 36.79 | 0.04 | - | 38.9 | 2.088 | 15.09 | 15.22 | 0.127 | 1024 |
+| energy_b1_h2o_repeat | 4096 | 1 | 40.00 | 0.31 | - | 44.3 | 5.032 | 15.47 | 15.97 | 0.508 | 4096 |
+| energy_b1_none | 1024 | 1 | 32.34 | 0.07 | 32.27 | - | 0.017 | 15.09 | 15.11 | 0.007 | - |
+| energy_b1_none | 4096 | 1 | 32.44 | 0.08 | 32.41 | - | 0.017 | 15.47 | 15.49 | 0.008 | - |
+| energy_b1_none_kvpressvenv | 1024 | 1 | 32.87 | 0.05 | 32.76 | - | 0.017 | 15.09 | 15.11 | 0.008 | - |
+| energy_b1_none_kvpressvenv | 4096 | 1 | 32.99 | 0.09 | 32.89 | - | 0.017 | 15.47 | 15.49 | 0.008 | - |
+| energy_b1_none_qwen3 | 1024 | 1 | 46.16 | 0.05 | 46.08 | - | 0.018 | 15.41 | 15.43 | 0.008 | - |
+| energy_b1_none_qwen3 | 4096 | 1 | 46.28 | 0.08 | 46.21 | - | 0.018 | 15.83 | 15.86 | 0.008 | - |
+| energy_b1_raas | 1024 | 1 | 36.59 | 0.07 | - | 38.8 | 2.214 | 15.09 | 15.22 | 0.127 | 1024 |
+| energy_b1_raas | 4096 | 1 | 39.85 | 0.17 | - | 43.5 | 5.187 | 15.47 | 15.97 | 0.508 | 4096 |
+| energy_b1_rkv | 1024 | 1 | 34.27 | 0.05 | 34.01 | 59.2 | 0.017 | 15.09 | 15.30 | 0.194 | 1024 |
+| energy_b1_rkv | 4096 | 1 | 35.42 | 0.13 | 34.07 | 200.6 | 0.018 | 15.47 | 18.04 | 2.553 | 4096 |
+| energy_b1_snapkv_decoding | 1024 | 1 | 37.57 | 0.08 | 37.21 | 69.3 | 0.017 | 15.09 | 15.18 | 0.037 | 1024 |
+| energy_b1_snapkv_decoding | 4096 | 1 | 37.45 | 0.10 | 37.06 | 74.1 | 0.018 | 15.47 | 15.65 | 0.133 | 4096 |
+| energy_max_epikv_batched_K2048 | 2048 | 80 | 167.41 | 0.20 | 120.26 | 681.5 | 13.535 | 35.01 | 36.61 | 0.420 | 2048 |
+| energy_max_epikv_batched_K4096 | 4096 | 45 | 162.11 | 0.91 | 124.17 | 577.8 | 8.754 | 37.53 | 38.66 | 0.438 | 4096 |
+| energy_max_epikv_noq_K2048 | 2048 | 58 | 134.40 | 0.29 | 111.64 | 368.1 | 27.845 | 29.50 | 36.32 | 5.926 | 832 |
+| energy_max_epikv_noq_K4096 | 4096 | 34 | 128.51 | 0.36 | 110.98 | 340.3 | 16.934 | 32.03 | 38.32 | 5.765 | 1384 |
+| energy_max_h2o_K2048 | 2048 | 47 | 284.74 | 0.05 | - | 631.1 | 86.624 | 26.72 | 38.67 | 11.951 | 2048 |
+| energy_max_h2o_K4096 | 4096 | 23 | 281.31 | 0.13 | - | 585.9 | 86.871 | 26.47 | 38.15 | 11.688 | 4096 |
+| energy_max_none_K16384 | 16384 | 11 | 121.38 | 0.25 | 112.02 | - | 0.023 | 36.97 | 37.48 | 0.408 | - |
+| energy_max_none_K32768 | 32768 | 5 | 106.67 | 0.09 | 102.92 | - | 0.024 | 34.97 | 35.41 | 0.376 | - |
+| energy_max_none_K8192 | 8192 | 23 | 136.27 | 0.09 | 119.36 | - | 0.024 | 37.97 | 38.71 | 0.428 | - |
+| energy_max_raas_K2048 | 2048 | 47 | 285.06 | 0.40 | - | 630.1 | 86.750 | 26.72 | 38.67 | 11.951 | 2048 |
+| energy_max_raas_K4096 | 4096 | 23 | 281.52 | 0.14 | - | 589.8 | 87.255 | 26.47 | 38.15 | 11.688 | 4096 |
+| energy_max_rkv_K2048 | 2048 | 21 | 53.40 | 0.22 | 44.00 | 1059.4 | 0.020 | 20.26 | 34.82 | 14.178 | 2048 |
+| energy_max_rkv_K4096 | 4096 | 6 | 45.47 | 0.03 | 36.78 | 1067.3 | 0.018 | 17.98 | 33.33 | 15.225 | 4096 |
+| energy_max_snapkv_decoding_K2048 | 2048 | 63 | 129.27 | 1.82 | 101.63 | 663.2 | 0.018 | 30.72 | 37.95 | 4.282 | 2048 |
+| energy_max_snapkv_decoding_K4096 | 4096 | 34 | 126.98 | 0.58 | 105.23 | 750.3 | 0.018 | 31.97 | 37.98 | 4.436 | 4096 |
 | steady_epikv | 512 | 1 | 34.24 | 0.21 | 34.09 | 40.0 | 0.372 | 15.04 | 15.12 | 0.063 | 512 |
 | steady_epikv | 512 | 4 | 38.55 | 0.15 | 38.38 | 57.9 | 2.181 | 15.25 | 15.56 | 0.244 | 512 |
 | steady_epikv | 512 | 16 | 45.03 | 0.10 | 44.36 | 121.2 | 8.352 | 16.07 | 17.32 | 0.977 | 512 |
@@ -674,6 +784,30 @@
 
 | run | L | ms | peak GiB | transient GiB | cache after |
 |---|---|---|---|---|---|
+| energy_prefill_dms | 4096 | 5025.9 | 16.52 | 1.26 | None |
+| energy_prefill_dms | 8192 | 11538.0 | 17.57 | 2.30 | None |
+| energy_prefill_dms | 16384 | 29751.3 | 19.66 | 4.39 | None |
+| energy_prefill_epikv | 4096 | 318.3 | 16.86 | 1.89 | 4096 |
+| energy_prefill_epikv | 8192 | 659.5 | 18.75 | 3.79 | 8192 |
+| energy_prefill_epikv | 16384 | 1449.6 | 22.54 | 7.57 | 16384 |
+| energy_prefill_h2o | 4096 | OOM | | | |
+| energy_prefill_h2o | 8192 | OOM | | | |
+| energy_prefill_h2o | 16384 | OOM | | | |
+| energy_prefill_none | 4096 | 316.6 | 15.92 | 0.95 | 4096 |
+| energy_prefill_none | 8192 | 654.5 | 16.88 | 1.91 | 8192 |
+| energy_prefill_none | 16384 | 1447.4 | 18.79 | 3.82 | 16384 |
+| energy_prefill_none_kvpressvenv | 4096 | 318.0 | 15.92 | 0.95 | 4096 |
+| energy_prefill_none_kvpressvenv | 8192 | 657.0 | 16.88 | 1.91 | 8192 |
+| energy_prefill_none_kvpressvenv | 16384 | 1457.9 | 18.79 | 3.82 | 16384 |
+| energy_prefill_none_qwen3 | 4096 | 352.1 | 16.24 | 0.97 | 4096 |
+| energy_prefill_none_qwen3 | 8192 | 725.0 | 17.21 | 1.94 | 8192 |
+| energy_prefill_none_qwen3 | 16384 | 1600.5 | 19.15 | 3.88 | 16384 |
+| energy_prefill_rkv | 4096 | 481.7 | 18.60 | 3.63 | 1024 |
+| energy_prefill_rkv | 8192 | 1374.8 | 26.89 | 11.92 | 1024 |
+| energy_prefill_rkv | 16384 | OOM | | | |
+| energy_prefill_snapkv_prefill | 4096 | 347.8 | 15.55 | 0.58 | 1024 |
+| energy_prefill_snapkv_prefill | 8192 | 701.2 | 16.00 | 1.03 | 1024 |
+| energy_prefill_snapkv_prefill | 16384 | 1518.3 | 16.91 | 1.95 | 1024 |
 | prefill_dms | 1024 | 587.2 | 15.80 | 0.53 | None |
 | prefill_dms | 2048 | 1972.9 | 16.04 | 0.77 | None |
 | prefill_dms | 4096 | 4997.2 | 16.52 | 1.26 | None |
@@ -745,3 +879,46 @@
 | dms_decode_dms | 16 | 2176 | 61.05 | 880 | 19.79 |
 | dms_decode_dms | 16 | 4224 | 60.96 | 1223 | 19.98 |
 | dms_decode_dms | 16 | 8320 | 61.10 | 1888 | 21.60 |
+| energy_dms_decode | 1 | 1152 | 45.16 | 668 | 15.55 |
+| energy_dms_decode | 1 | 2176 | 45.15 | 880 | 15.55 |
+| energy_dms_decode | 1 | 4224 | 46.40 | 1223 | 15.56 |
+| energy_dms_decode | 1 | 8320 | 46.46 | 1888 | 15.67 |
+| energy_dms_decode | 8 | 1152 | 50.00 | 668 | 17.53 |
+| energy_dms_decode | 8 | 2176 | 50.00 | 880 | 17.53 |
+| energy_dms_decode | 8 | 4224 | 49.99 | 1223 | 17.62 |
+| energy_dms_decode | 8 | 8320 | 50.11 | 1889 | 18.43 |
+
+## Energy per correct answer (derived: measured J/token x measured tokens per correct answer)
+
+| group | method | K | energy cell | J/token | tokens/correct | J per correct answer | net J per correct |
+|---|---|---|---|---|---|---|---|
+| Qwen3-8B MATH cap 16384 | dms | - | energy_dms_decode B1 | 6.004 | 6081 | 36513 | 14608 |
+| Qwen3-8B MATH cap 16384 | dms | - | energy_dms_decode B8 | 0.819 | 6081 | 4981 | 2010 |
+| Llama-8B MATH cap 8192 | epikv_batched | 1024 | energy_b1_epikv_batched K1024_B1 | 5.012 | 4846 | 24289 | 11411 |
+| Llama-8B MATH cap 8192 | epikv_batched | 2048 | energy_max_epikv_batched_K2048 K2048_B80 | 0.433 | 4799 | 2077 | 1308 |
+| Llama-8B MATH cap 8192 | epikv_batched | 4096 | energy_b1_epikv_batched K4096_B1 | 5.334 | 4894 | 26107 | 13068 |
+| Llama-8B MATH cap 8192 | epikv_batched | 4096 | energy_max_epikv_batched_K4096 K4096_B45 | 0.785 | 4894 | 3843 | 2487 |
+| Llama-8B MATH cap 8192 | epikv_noq | 1024 | energy_b1_epikv_noq K1024_B1 | 5.006 | 6061 | 30342 | 14779 |
+| Llama-8B MATH cap 8192 | epikv_noq | 2048 | energy_max_epikv_noq_K2048 K2048_B58 | 0.446 | 5194 | 2318 | 1407 |
+| Llama-8B MATH cap 8192 | epikv_noq | 4096 | energy_b1_epikv_noq K4096_B1 | 5.259 | 4863 | 25575 | 13084 |
+| Llama-8B MATH cap 8192 | epikv_noq | 4096 | energy_max_epikv_noq_K4096 K4096_B34 | 0.809 | 4863 | 3936 | 2536 |
+| Qwen3-8B MATH cap 16384 | epikv_qwen3 | 1024 | energy_b1_epikv_qwen3 K1024_B1 | 6.097 | 9077 | 55345 | 22122 |
+| Qwen3-8B MATH cap 16384 | epikv_qwen3 | 4096 | energy_b1_epikv_qwen3 K4096_B1 | 6.392 | 6203 | 39651 | 16777 |
+| Llama-8B MATH cap 8192 | h2o | 1024 | energy_b1_h2o K1024_B1 | 5.576 | 5474 | 30524 | 14923 |
+| Llama-8B MATH cap 8192 | h2o | 2048 | energy_max_h2o_K2048 K2048_B47 | 1.632 | 4671 | 7625 | 5455 |
+| Llama-8B MATH cap 8192 | h2o | 4096 | energy_b1_h2o K4096_B1 | 7.515 | 4661 | 35029 | 20616 |
+| Llama-8B MATH cap 8192 | h2o | 4096 | energy_max_h2o_K4096 K4096_B23 | 3.278 | 4661 | 15281 | 10892 |
+| Llama-8B MATH cap 8192 | none | 1024 | energy_b1_none K1024_B1 | 4.889 | 4971 | 24302 | 11897 |
+| Llama-8B MATH cap 8192 | none | 2048 | energy_max_none_K8192 | 1.446 | 4971 | 7188 | 4945 |
+| Llama-8B MATH cap 8192 | none | 4096 | energy_b1_none K4096_B1 | 4.990 | 4971 | 24807 | 12369 |
+| Llama-8B MATH cap 8192 | none | 4096 | energy_max_none_K8192 | 1.446 | 4971 | 7188 | 4945 |
+| Qwen3-8B MATH cap 16384 | none_qwen3 | 1024 | energy_b1_none_qwen3 K1024_B1 | 6.048 | 5976 | 36141 | 15324 |
+| Qwen3-8B MATH cap 16384 | none_qwen3 | 4096 | energy_b1_none_qwen3 K4096_B1 | 6.342 | 5976 | 37898 | 17026 |
+| Llama-8B MATH cap 8192 | raas | 1024 | energy_b1_raas K1024_B1 | 5.557 | 4812 | 26739 | 13430 |
+| Llama-8B MATH cap 8192 | raas | 2048 | energy_max_raas_K2048 K2048_B47 | 1.634 | 4691 | 7665 | 5476 |
+| Llama-8B MATH cap 8192 | raas | 4096 | energy_b1_raas K4096_B1 | 7.576 | 4718 | 35745 | 21484 |
+| Llama-8B MATH cap 8192 | raas | 4096 | energy_max_raas_K4096 K4096_B23 | 3.283 | 4718 | 15488 | 11047 |
+| Llama-8B MATH cap 8192 | rkv | 1024 | energy_b1_rkv K1024_B1 | 5.008 | 5094 | 25508 | 11919 |
+| Llama-8B MATH cap 8192 | rkv | 2048 | energy_max_rkv_K2048 K2048_B21 | 0.564 | 5045 | 2848 | 1853 |
+| Llama-8B MATH cap 8192 | rkv | 4096 | energy_b1_rkv K4096_B1 | 5.473 | 4972 | 27210 | 13521 |
+| Llama-8B MATH cap 8192 | rkv | 4096 | energy_max_rkv_K4096 K4096_B6 | 1.546 | 4972 | 7687 | 4758 |

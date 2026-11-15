@@ -134,6 +134,51 @@ do not (peak 34.9 GiB at 8). Unlike the other capacity rows, this includes DMS's
 memory (peak grows about 2.4 GiB per sequence while its live cache after prefill is about one eighth of the context).
 Base Qwen3-8B at 8k context without eviction: 20 (prefill excluded); EpiKV on Qwen3-8B at K=1024: 73.
 
+## Energy and power (NVML; measured unless marked derived)
+Energy is the difference of `nvmlDeviceGetTotalEnergyConsumption` (readable without root on sk-p4d, read through
+ctypes in `scripts/nvml_energy.py`, matched to the card by UUID) around each 128-step window of steady decode with
+restarted windows (`--energy`), median of the three windows after the warm-up. Power and SM clock are sampled every
+20 ms during the window (mean and peak in TABLES; the counter is the reference for energy). Idle power is measured at
+process start, 5 s with the weights loaded and nothing queued: 74.4-77.0 W. Net = gross minus idle W x wall time.
+SM clock stayed at 1410 MHz in every decode window. EpiKV runs the batched path (bit-identical decisions).
+
+| method | J/token, B=1, K=1024 / 4096 | J/token at max batch, K=2048 (B) / 4096 (B) | prefill J at 4k / 8k / 16k |
+|---|---|---|---|
+| no eviction | 4.89 / 4.99 | 1.45 at 8k context (23), 2.61 at 16k (11), 5.17 at 32k (5) | 135 / 272 / 593 |
+| EpiKV | 5.01 / 5.33 | 0.433 (80) / 0.785 (45) | 137 / 271 / 595 (harness: all hidden states) |
+| EpiKV^-Q | 5.01 / 5.26 | 0.446 (58) / 0.809 (34) | as EpiKV |
+| R-KV (official) | 5.01 / 5.47 | 0.564 (21) / 1.546 (6) | 176 / 452 / OOM |
+| H2O | 5.58 / 7.52 | 1.632 (47) / 3.278 (23) | OOM at 4k |
+| RaaS | 5.56 / 7.58 | 1.634 (47) / 3.283 (23) | OOM at 4k |
+| kvpress SnapKV (own stack's no eviction: 4.89 / 5.13; prefill 139 / 276 / 593) | 5.24 / 5.54 | 0.437 (63) / 0.826 (34) | 146 / 286 / 616 |
+| Qwen3-8B: no eviction / EpiKV | 6.05 / 6.34 and 6.10 / 6.39 | - | 150 / 302 / 640 (no eviction) |
+| DMS (Qwen3-8B-DMS-8x), 128 -> 8320 context | 6.00 at B=1 | 0.819 at B=8 | 680 / 1706 / 4930 |
+
+Energy per correct answer (derived: measured J/token x measured tokens per correct answer on MATH-500, n=495,
+from rebuttals/scripts/baseline_decode_work_per_correct.py; `scripts/energy_per_correct.py`,
+`records/energy_per_correct.json`; Llama tokens come from the 4.57.1 Table 2 records and official R-KV's 4.55.4 grid):
+
+| method | J/correct, B=1, K=1024 / 4096 | J/correct at max batch, K=2048 / 4096 |
+|---|---|---|
+| no eviction | 24,302 / 24,807 | 7,188 (8k context, 23) |
+| EpiKV | 24,289 / 26,107 | 2,077 / 3,843 |
+| EpiKV^-Q | 30,342 / 25,575 | 2,318 / 3,936 |
+| R-KV (official) | 25,508 / 27,210 | 2,848 / 7,687 |
+| H2O | 30,524 / 35,029 | 7,625 / 15,281 |
+| RaaS | 26,739 / 35,745 | 7,665 / 15,488 |
+| Qwen3-8B: no eviction / EpiKV / DMS | 36,141 / 37,898; 55,345 / 39,651; DMS 36,513 (B=1) | DMS 4,981 (B=8) |
+
+What goes against EpiKV here: at batch 1 it spends 2.5% (K=1024) and 6.9% (K=4096) more energy per token than no
+eviction, because its steps take longer at the same power; per correct answer it ties no eviction at K=1024 and is
+5% above it at K=4096. On Qwen3-8B, EpiKV needs more tokens per correct answer than no eviction and DMS, so its
+energy per correct answer is 1.5x theirs at K=1024 (55.3 vs 36.1 and 36.5 kJ) and 5% / 9% above them at K=4096
+(39.7 vs 37.9 / 36.5 kJ). At max batch on Llama, kvpress matches EpiKV's J/token at K=2048 (0.437 vs 0.433, within
+1%); EpiKV is 5% lower at K=4096. kvpress has no accuracy record in the tokens-per-correct script, so it has no
+energy per correct answer.
+The first H2O batch-1 run (`records/superseded/energy_b1_h2o.host_contention.json`) ran 29% slower than RaaS's
+identical forward at lower power, under host contention from the other cards' jobs; it was rerun twice (both
+5.58 / 7.5 J/token, `energy_b1_h2o.json`, `energy_b1_h2o_repeat.json`).
+
 ## Corrections (2026-11-15)
 - `steady_epikv_noq` (now `records/superseded/steady_epikv_noq.cache_below_K.json`) did not measure decode at
   budget K, at any batch size (B=1 and 4 as well as 16). EpiKV^-Q has no fill: per 128-token segment it keeps at
@@ -254,6 +299,7 @@ runs already finished: the `oom_phase` field (recorded from the compaction runs 
 cache build (from `compaction_rkv` and the `steady_rkv` rerun on), and `--probe_only` (for `capacity_search.py`).
 The committed file is the final one, identical to the copy on sk-p4d. Measurements ran src/eviction.py and scripts/benchmark.py
 from f3b46c1 on the box (md5 10a11beb, 96a619f3); later commits by another lane add WindowRuleEviction and a kvpress
-method to those files without touching any measured code path. On 2026-11-15 baseline_costs.py gained `--restart_windows`,
+method to those files without touching any measured code path. On 2026-11-15 baseline_costs.py gained `--energy` (NVML, with the prefill
+body moved into a function so it can repeat; no measured path changed) and `--restart_windows`,
 `--first_fit`, the `epikv_batched` method, the `dms_capacity` mode and a device-agnostic dummy in `prime`; none
 changes the code path of a method measured before.
