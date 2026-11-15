@@ -54,7 +54,6 @@ def free():
     torch.cuda.empty_cache()
 
 
-# ── model and text ────────────────────────────────────────────────────────────
 
 def load_model(a):
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -97,7 +96,6 @@ def text_ids(tok, n, device):
     return torch.tensor([ids[:n]], device=device)
 
 
-# ── cache helpers ─────────────────────────────────────────────────────────────
 
 def kv_pairs(cache):
     return [(l.keys, l.values) for l in cache.layers]
@@ -150,7 +148,6 @@ def restore(snap, Bsz, device):
     return cache
 
 
-# ── policies ──────────────────────────────────────────────────────────────────
 
 def make_policy(a, model, K):
     bands = dict(band_a_layer=a.band_a_layer, band_b_layer=a.band_b_layer)
@@ -238,7 +235,6 @@ class PerSeq:
                       v.gather(2, g.expand(-1, v.shape[1], -1, v.shape[3]))) for k, v in kv)
 
 
-# ── the decode loop ───────────────────────────────────────────────────────────
 
 def decode(a, model, cache, ids, start, n, Bsz, pol, force_at=None):
     """Run n decode steps feeding ids[start + i]; return one record per step.
@@ -314,7 +310,6 @@ def summarize(recs):
     return s
 
 
-# ── modes ─────────────────────────────────────────────────────────────────────
 
 def setup_state(a, model, ids, S0, Bsz, since, hs=None, snap=None, K=None):
     """Cache of length S0 replicated Bsz times and a primed policy (PerSeq for EpiKV at Bsz > 1)."""
