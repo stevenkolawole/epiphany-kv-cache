@@ -35,6 +35,7 @@ import torch
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import benchmark as B  # noqa: E402
 import eviction as E  # noqa: E402  benchmark put src/ on the path
+from epikv_batched import BatchedEpiKV, trim_bank  # noqa: E402
 
 P = 128          # prompt tokens at the start of every cache
 INTERVAL = 128   # compaction interval shared by EpiKV, R-KV and the kvpress decoding press
@@ -152,7 +153,7 @@ def restore(snap, Bsz, device):
 def make_policy(a, model, K):
     bands = dict(band_a_layer=a.band_a_layer, band_b_layer=a.band_b_layer)
     bands = {k: v for k, v in bands.items() if v is not None}
-    if a.method == "epikv":
+    if a.method in ("epikv", "epikv_batched"):
         pol = B.make_eviction("kv_seg_hs_fill", K, 128, refresh_tau=INTERVAL, tau_mode="steps",
                               query_sim_weight=1.0, query_sim_mode="replace", query_mode="qk",
                               query_sim_window=8, **bands)
@@ -187,7 +188,7 @@ def prime(a, pol, hs, S0, since):
         pol.reset(prefill_len=P)
         pol.set_prefill_end(_HS(hs, P - 1))
         nl = len(pol._model.model.layers) if pol._model is not None else 64
-        dummy = torch.zeros(1, 1, 1, 1, device="cuda")
+        dummy = torch.zeros(1, 1, 1, 1, device=next(iter(hs.values())).device)
         dkv = tuple((dummy, dummy) for _ in range(nl))   # seq_len 1 <= budget: state update only
         for t in range(P, S0):
             pol.evict_past_key_values(dkv, _HS(hs, t))
@@ -242,7 +243,7 @@ def decode(a, model, cache, ids, start, n, Bsz, pol, force_at=None):
     force_at: steps (0-based) at which R-KV is told to compress (its flag is otherwise set by its own
     length counter). Other methods compact on their own schedule.
     """
-    need_hs = isinstance(pol, (E.KVSegHSEviction, PerSeq))
+    need_hs = isinstance(pol, (E.KVSegHSEviction, PerSeq, BatchedEpiKV))
     need_attn = a.method in ("h2o", "raas")
     dev = ids.device
     recs = []
@@ -266,7 +267,10 @@ def decode(a, model, cache, ids, start, n, Bsz, pol, force_at=None):
         sync()
         t1 = time.perf_counter()
         L1 = seqlen(cache)
-        if pol is not None:
+        if isinstance(pol, BatchedEpiKV):
+            with torch.no_grad():
+                pol.step(cache, out.hidden_states)      # compacts the cache in place, one layer at a time
+        elif pol is not None:
             kv = tuple(kv_pairs(cache))
             with torch.no_grad():
                 new = pol.evict_past_key_values(kv, out.attentions if need_attn else out.hidden_states)
@@ -317,7 +321,10 @@ def setup_state(a, model, ids, S0, Bsz, since, hs=None, snap=None, K=None):
     pol = make_policy(a, model, K)
     if pol is not None:
         prime(a, pol, hs, S0, since)
-        if isinstance(pol, E.KVSegHSEviction) and Bsz > 1:
+        if a.method == "epikv_batched":
+            trim_bank(pol)          # before cloning, so the clones never hold the full bank
+            pol = BatchedEpiKV([pol] + [clone_policy(pol) for _ in range(Bsz - 1)])
+        elif isinstance(pol, E.KVSegHSEviction) and Bsz > 1:
             pol = PerSeq([pol] + [clone_policy(pol) for _ in range(Bsz - 1)])
     if a.method == "rkv":
         for layer in model.model.layers:
@@ -366,11 +373,24 @@ def mode_steady(a, model, ids, out):
                 continue
             phase = "setup"
             try:
-                cache, pol = setup_state(a, model, ids, K, Bsz, 0, hs, snap, K)
-                phase = "decode"
-                force = {w * INTERVAL + INTERVAL - 1 for w in range(a.windows)}
-                recs = run_with_press(a, K, lambda: decode(a, model, cache, ids, K, a.windows * INTERVAL, Bsz,
-                                                           pol, force_at=force))
+                if a.restart_windows:
+                    # Every window starts from the cache at K with a freshly primed policy, so each one holds
+                    # 127 steps at K..K+126 and one compaction from K+128, whatever the method keeps afterwards.
+                    recs = []
+                    for w in range(a.windows):
+                        phase = "setup"
+                        cache = pol = None
+                        free()
+                        cache, pol = setup_state(a, model, ids, K, Bsz, 0, hs, snap, K)
+                        phase = "decode"
+                        recs += run_with_press(a, K, lambda: decode(a, model, cache, ids, K, INTERVAL, Bsz, pol,
+                                                                    force_at={INTERVAL - 1}))
+                else:
+                    cache, pol = setup_state(a, model, ids, K, Bsz, 0, hs, snap, K)
+                    phase = "decode"
+                    force = {w * INTERVAL + INTERVAL - 1 for w in range(a.windows)}
+                    recs = run_with_press(a, K, lambda: decode(a, model, cache, ids, K, a.windows * INTERVAL, Bsz,
+                                                               pol, force_at=force))
                 wins = [summarize(recs[w * INTERVAL:(w + 1) * INTERVAL]) for w in range(1, a.windows)]
                 out["cells"][key] = {"K": K, "batch": Bsz, "windows": wins}
                 print(key, [round(w["ms_per_token"], 2) for w in wins],
@@ -381,6 +401,8 @@ def mode_steady(a, model, ids, out):
             cache = pol = None
             free()
             dump(a, out)
+            if a.first_fit and "oom" not in out["cells"][key]:
+                break
         del snap, hs
         free()
 
@@ -601,6 +623,59 @@ def mode_dms_decode(a, model, ids, out):
         dump(a, out)
 
 
+def mode_dms_capacity(a, model, ids, out):
+    """DMS's largest batch at context C (--Ks): prefill C tokens per sequence through its own code, decode 8 steps.
+
+    Doubling, then bisection; the search stops early (bracket recorded) once a probe takes longer than
+    --probe_timeout seconds, since DMS's prefill time grows with the batch.
+    """
+    dev = ids.device
+
+    def probe(C, Bsz):
+        o = cache = None
+        try:
+            free()
+            torch.cuda.reset_peak_memory_stats()
+            t0 = time.perf_counter()
+            with torch.no_grad():
+                o = model(input_ids=ids[:, :C].expand(Bsz, C), use_cache=True, logits_to_keep=1)
+                cache = o.past_key_values
+                o = None
+                for i in range(8):
+                    o = model(input_ids=ids[:, C + i:C + i + 1].expand(Bsz, 1), past_key_values=cache,
+                              use_cache=True, logits_to_keep=1)
+                    cache = o.past_key_values
+                    o = None
+            sync()
+            return True, gb(torch.cuda.max_memory_allocated()), time.perf_counter() - t0
+        except torch.OutOfMemoryError:
+            return False, None, time.perf_counter() - t0
+        finally:
+            o = cache = None
+            free()
+
+    for C in a.Ks:
+        key = f"C{C}"
+        tried, lo, hi, b, slow = {}, 0, None, 1, False
+        while hi is None and b <= a.max_batch and not slow:
+            ok, pk, dt = probe(C, b)
+            tried[b] = {"ok": ok, "peak_gb": pk, "seconds": round(dt, 1)}
+            print(key, b, tried[b], flush=True)
+            slow = dt > a.probe_timeout
+            lo, hi, b = (b, None, b * 2) if ok else (lo, b, b)
+        while hi is not None and hi - lo > max(1, lo // 32) and not slow:
+            mid = (lo + hi) // 2
+            ok, pk, dt = probe(C, mid)
+            tried[mid] = {"ok": ok, "peak_gb": pk, "seconds": round(dt, 1)}
+            print(key, mid, tried[mid], flush=True)
+            slow = dt > a.probe_timeout
+            lo, hi = (mid, hi) if ok else (lo, mid)
+        out["cells"][key] = {"context": C, "max_batch": lo, "first_oom": hi, "stopped_on_time": slow,
+                             "probes": tried}
+        print(key, "MAX", lo, "first_oom", hi, flush=True)
+        dump(a, out)
+
+
 def mode_check_perseq(a, model, ids, out):
     """PerSeq at batch 2 must choose exactly the slots the unmodified batch-1 policy chooses, for every K.
 
@@ -635,9 +710,10 @@ def dump(a, out):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", required=True, choices=["steady", "compaction", "capacity", "prefill", "dms_decode", "check_perseq"])
+    ap.add_argument("--mode", required=True, choices=["steady", "compaction", "capacity", "prefill", "dms_decode", "check_perseq",
+                             "dms_capacity"])
     ap.add_argument("--method", required=True,
-                    choices=["none", "epikv", "epikv_noq", "h2o", "raas", "rkv", "snapkv_decoding",
+                    choices=["none", "epikv", "epikv_batched", "epikv_noq", "h2o", "raas", "rkv", "snapkv_decoding",
                              "snapkv_prefill", "dms"])
     ap.add_argument("--model", default=LLAMA)
     ap.add_argument("--tokenizer", default=None)
@@ -649,6 +725,11 @@ def main():
     ap.add_argument("--windows", type=int, default=4, help="steady: 128-step windows; the first is warmup")
     ap.add_argument("--repeats", type=int, default=3)
     ap.add_argument("--max_batch", type=int, default=1024)
+    ap.add_argument("--restart_windows", action="store_true",
+                    help="steady: start every window from the cache at K (one compaction per window)")
+    ap.add_argument("--first_fit", action="store_true",
+                    help="steady: stop at the first batch size (in --batches order) that runs without OOM")
+    ap.add_argument("--probe_timeout", type=float, default=600, help="dms_capacity: stop searching after a slower probe")
     ap.add_argument("--probe_only", action="store_true", help="capacity: probe each --batches size, no search")
     ap.add_argument("--steps", type=int, default=8192, help="dms_decode: decode steps")
     ap.add_argument("--output", required=True)
@@ -678,7 +759,8 @@ def main():
             out["cells"] = prev["cells"]
     dump(a, out)
     {"steady": mode_steady, "compaction": mode_compaction, "capacity": mode_capacity,
-     "prefill": mode_prefill, "dms_decode": mode_dms_decode, "check_perseq": mode_check_perseq}[a.mode](a, model, ids, out)
+     "prefill": mode_prefill, "dms_decode": mode_dms_decode, "check_perseq": mode_check_perseq,
+     "dms_capacity": mode_dms_capacity}[a.mode](a, model, ids, out)
     out["meta"]["finished"] = True
     dump(a, out)
     print("DONE", flush=True)

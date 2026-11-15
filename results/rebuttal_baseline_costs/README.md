@@ -16,7 +16,7 @@ R-KV and kvpress, every step for H2O and RaaS). "Compaction extra" = the compact
 |---|---|---|---|---|---|---|
 | no eviction | 33.0 | 33.0 | 57.7 (cache 4096-4608) | - | 24.1 | 47 at 4k context, 23 at 8k, 11 at 16k, 5 at 32k |
 | EpiKV | 34.4 | 34.5 | 63.6 | 13.2 ms | 32.3 | 82 / 22 |
-| EpiKV^-Q | 34.2 | 34.2 | 43.7 (cache stays below K) | - | 18.5 | 112 / 34 |
+| EpiKV^-Q | 33.8 | 33.7 | 62.7 | 8.2 ms | 26.0 | 112 / 34 |
 | H2O | 36.7 | 39.7 | 200.4 | 6.7 ms every step | 31.1 | 94 / 23 |
 | RaaS | 36.9 | 39.9 | 200.4 | 6.8 ms every step | 31.1 | 94 / 23 |
 | R-KV (official) | 34.5 | 35.7 | OOM | 165.5 ms | OOM | 64 / 7 |
@@ -64,14 +64,32 @@ max batch 131 / 73 / 38 / 19 at K = 512 / 1024 / 2048 / 4096, against base Qwen3
   its max batch at K >= 1024 is above EpiKV's (106 vs 82 at 1024; 34 vs 22 at 4096).
 - EpiKV: 6.9 / 13.2 ms per compaction at K=1024 / 4096 batch 1 (0.05-0.10 ms per token amortised) plus about
   0.3 ms per sequence per step for the hidden-state score (two host syncs). Its batch > 1 path calls the batch-1
-  policy once per sequence (see Protocol), so at batch 16 the policy costs 8-9 ms per token and the compaction
-  87-161 ms; this is our implementation, not the method's arithmetic (analytical: 0.5-1 GFLOP and 0.6-2.4 GB per
+  policy once per sequence (see Protocol). In `steady_epikv` at K=4096 batch 16 the policy's own time is 9.1 ms per
+  token and a normal step takes 62.3 ms against 56.2 ms without eviction (EpiKV^-Q, same per-sequence update:
+  8.0 ms per token, 62.7 ms per token); the compaction adds 87-161 ms every 128 steps. The arithmetic is small (analytical: 0.5-1 GFLOP and 0.6-2.4 GB per
   compaction at batch 1). The compaction gathers a full copy of the kept cache before freeing the old one
   (transient = K x 128 KiB x batch, 8.0 GiB at K=4096 batch 16), and the policy banks a 16 KiB hidden state per
   cached decode token: these two are why H2O/RaaS fit 4-24% more sequences and kvpress more at K >= 1024.
 - DMS has no compaction step; its per-step cost (+20-24% over base at equal live length) is its paged cache and
   eviction bookkeeping in the reference HuggingFace code. Its prefill (the same code, 510-token chunks) is 6-23x
   slower than the base model's FlashAttention prefill.
+
+## Corrections (2026-11-15)
+- `steady_epikv_noq` (now `records/superseded/steady_epikv_noq.cache_below_K.json`) did not measure decode at
+  budget K, at any batch size (B=1 and 4 as well as 16). EpiKV^-Q has no fill: per 128-token segment it keeps at
+  most 64/32/8 tokens by key-variance tertile, so a compaction from K+128 leaves 416 / 552 / 832 / 1384 tokens at
+  K = 512 / 1024 / 2048 / 4096 (prompt 128 + recent 128 + tier caps). The steady protocol ran four windows on one
+  cache, so after the warm-up window's compaction the cache climbed back for hundreds of steps and the three
+  recorded windows held 553-1768 tokens with no compaction. It is the method's behaviour, not a harness fault, but
+  those cells are not comparable with the other rows. `steady_epikv_noq_restart` (`--restart_windows`) starts every
+  window from the cache at K, so each window holds 127 steps at K..K+126 and one compaction from K+128 (checked:
+  n_compactions = 1 in every window). Audit of all other steady records: every window reaches cache length >= K and
+  has 1 compaction (EpiKV, R-KV, kvpress) or 128 (H2O, RaaS); none other is affected.
+- EpiKV^-Q's capacity record is valid as it stands: each probe starts at K+120 and asserts the compaction on step
+  8 from K+128, the point of peak memory; its larger max batch reflects a smaller kept copy and no hidden-state
+  bank (weight 0).
+- The batch-16 slowdown statement in "Where each method's cost comes from" now cites `steady_epikv`'s own policy
+  time instead of the invalid EpiKV^-Q cells.
 
 ## Protocol
 - Card: sk-p4d card 7 (A100-SXM4-40GB, driver 595.91.07), alone (run.sh refuses to start if the card holds more
@@ -89,8 +107,8 @@ max batch 131 / 73 / 38 / 19 at K = 512 / 1024 / 2048 / 4096, against base Qwen3
   tokens are the prompt, the rest count as decoded; EpiKV's per-token state is replayed from the prefill's hidden
   states through the policy's own update.
 - Method settings: EpiKV = kv_seg_hs_fill, refresh_tau 128 steps, query_sim replace, query_mode qk, window 8,
-  bands 10/21 (Qwen3 11/24); EpiKV^-Q = kv_seg_hs, tau 128 steps (no fill: it keeps fewer than K, so its cache
-  stays below the budget and its compactions are rare in a window); keep_recent_k 128 for all harness methods.
+  bands 10/21 (Qwen3 11/24); EpiKV^-Q = kv_seg_hs, tau 128 steps, no fill; keep_recent_k 128 for all harness
+  methods. EpiKV^-Q's steady numbers come from `steady_epikv_noq_restart` (see Corrections).
   R-KV = official code a329f29 unmodified (window 8, kernel 7, mix_lambda 0.1, retain_ratio 0.2, direction last),
   compression forced every 128 steps (its step_length rule with a fixed phase). kvpress = DecodingPress(
   SnapKVPress(window 64, kernel 5), compression_interval 128, target_size K, buffer 256). H2O/RaaS = src/eviction.py
