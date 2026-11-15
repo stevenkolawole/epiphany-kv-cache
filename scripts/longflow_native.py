@@ -26,7 +26,7 @@ import torch
 from torch import nn
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import benchmark as bm  # prompt (build_prompt_ids), extract_boxed, answers_match, load_problems
+import benchmark as bm
 
 
 def main():
