@@ -82,3 +82,19 @@ problems are too few to say anything about accuracy.
 `lines.txt` (from `scripts/babel_window_rules/make_lines.sh`) holds 160 lines: 2 models x 4 methods x 4 K x five
 100-problem pieces. `grid.sbatch` is an array on the preempt partition (L40S, `--requeue`). Task i runs lines 2i
 and 2i+1 side by side on one card, each with `--resume`. Records are in `cells/<model>_<method>_K<K>_s<start>.json`.
+Launched 2026-11-15 as array 11159252 (`--array=0-79%20`, so 20 of the 24 preempt-QOS GPUs; general's 8 are left for
+other lanes). Expected time (inferred from the smoke wall times, n=5 per method, which includes one cap-hitting
+problem): 3.0-13.0 h per 100-problem piece, mean 6.7 h. That comes to about 27 h of array time, plus the tail of the
+Qwen kvpress pieces (~13 h) and any preemption, so roughly 1.5 days.
+
+## Finishing the grid
+
+1. State: `ssh babel 'sacct -j 11159252 -X -n -o JobID%20,State%20 | sort -k2 | uniq -c -f1; ls ~/rebuttal_window_rules/done | wc -l'`
+   (160 done markers when every line exited 0). Waiter, which exits when the array leaves the queue or a task fails:
+   `J=11159252; until s=$(ssh babel "squeue -h -j $J | wc -l; sacct -j $J -X -n -o State%20 | grep -cE 'FAILED|NODE_FAIL|OUT_OF_ME|TIMEOUT|CANCELLED'; true") && { [ "$(echo "$s" | sed -n 1p)" = 0 ] || [ "$(echo "$s" | sed -n 2p)" -gt 0 ]; }; do sleep 600; done`
+2. A FAILED or TIMEOUT task i: read `logs/grid_11159252_<i>.out` and `logs/<tag>.log`, then
+   `sbatch --array=<i> grid.sbatch`. Its partner line skips if it is done; `--resume` continues from the last finished problem.
+3. `rsync -a babel:rebuttal_window_rules/cells/ results/rebuttal_window_rules/cells/`, then
+   `python3 scripts/window_rule_tables.py results/rebuttal_window_rules`. Quote no number until its
+   "Incomplete cells" list is empty (that check covers partial pieces, gaps, and errored or 0-token problems). Then
+   commit `cells/` and `TABLES.md`.
