@@ -1,0 +1,157 @@
+{
+ "meta": {
+  "mode": "steady",
+  "method": "epikv_noq",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.55.4",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "steady",
+   "method": "epikv_noq",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    2048
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    64,
+    63,
+    62,
+    61,
+    58,
+    56
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "restart_windows": true,
+   "first_fit": true,
+   "probe_only": false,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/tput_epikv_noq_K2048.json"
+  },
+  "weights_gb": 14.958,
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "K2048_B64": {
+   "K": 2048,
+   "batch": 64,
+   "oom": "CUDA out of memory. Tried to allocate 104.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 80.50 MiB is free. Including non-PyTorch memory, this process has 39.41 GiB memory in use. Of the all",
+   "oom_phase": "decode"
+  },
+  "K2048_B63": {
+   "K": 2048,
+   "batch": 63,
+   "oom": "CUDA out of memory. Tried to allocate 104.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 102.50 MiB is free. Including non-PyTorch memory, this process has 39.38 GiB memory in use. Of the al",
+   "oom_phase": "decode"
+  },
+  "K2048_B62": {
+   "K": 2048,
+   "batch": 62,
+   "oom": "CUDA out of memory. Tried to allocate 102.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 90.50 MiB is free. Including non-PyTorch memory, this process has 39.40 GiB memory in use. Of the all",
+   "oom_phase": "decode"
+  },
+  "K2048_B61": {
+   "K": 2048,
+   "batch": 61,
+   "oom": "CUDA out of memory. Tried to allocate 100.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 8.50 MiB is free. Including non-PyTorch memory, this process has 39.48 GiB memory in use. Of the allo",
+   "oom_phase": "decode"
+  },
+  "K2048_B58": {
+   "K": 2048,
+   "batch": 58,
+   "windows": [
+    {
+     "steps": 128,
+     "ms_per_token": 134.5993699687824,
+     "fwd_ms_median": 85.9731447417289,
+     "pol_ms_mean": 27.95631718254299,
+     "n_compactions": 1,
+     "cache_len_min": 832,
+     "cache_len_max": 2176,
+     "resident_gb": 29.498,
+     "peak_gb": 36.323,
+     "transient_gb": 5.926,
+     "reserved_gb": 38.941,
+     "compaction": [
+      {
+       "ms": 368.7632819637656,
+       "fwd_ms": 87.58604293689132,
+       "pol_ms": 281.1772390268743,
+       "from": 2176,
+       "to": 832,
+       "transient_gb": 5.926
+      }
+     ],
+     "normal_step_ms_median": 111.80884204804897,
+     "normal_pol_ms_mean": 25.962451656209673
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 134.80310174054466,
+     "fwd_ms_median": 86.02508064359426,
+     "pol_ms_mean": 27.983694893919164,
+     "n_compactions": 1,
+     "cache_len_min": 832,
+     "cache_len_max": 2176,
+     "resident_gb": 29.498,
+     "peak_gb": 36.323,
+     "transient_gb": 5.926,
+     "reserved_gb": 38.941,
+     "compaction": [
+      {
+       "ms": 368.80252696573734,
+       "fwd_ms": 87.6828939653933,
+       "pol_ms": 281.11963300034404,
+       "from": 2176,
+       "to": 832,
+       "transient_gb": 5.926
+      }
+     ],
+     "normal_step_ms_median": 111.92287132143974,
+     "normal_pol_ms_mean": 25.990498530876447
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 134.74810305342544,
+     "fwd_ms_median": 85.96318773925304,
+     "pol_ms_mean": 28.018036795401713,
+     "n_compactions": 1,
+     "cache_len_min": 832,
+     "cache_len_max": 2176,
+     "resident_gb": 29.498,
+     "peak_gb": 36.323,
+     "transient_gb": 5.926,
+     "reserved_gb": 38.941,
+     "compaction": [
+      {
+       "ms": 370.9590081125498,
+       "fwd_ms": 87.70780684426427,
+       "pol_ms": 283.2512012682855,
+       "from": 2176,
+       "to": 832,
+       "transient_gb": 5.926
+      }
+     ],
+     "normal_step_ms_median": 111.93642811849713,
+     "normal_pol_ms_mean": 26.00832683892231
+    }
+   ]
+  }
+ }
+}

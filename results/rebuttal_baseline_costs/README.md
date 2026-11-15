@@ -16,6 +16,7 @@ R-KV and kvpress, every step for H2O and RaaS). "Compaction extra" = the compact
 |---|---|---|---|---|---|---|
 | no eviction | 33.0 | 33.0 | 57.7 (cache 4096-4608) | - | 24.1 | 47 at 4k context, 23 at 8k, 11 at 16k, 5 at 32k |
 | EpiKV | 34.4 | 34.5 | 63.6 | 13.2 ms | 32.3 | 82 / 22 |
+| EpiKV, batched path (same decisions) | 34.0 | 34.1 | 57.9 | 10.7 ms | 23.4 | 128 / 45 |
 | EpiKV^-Q | 33.8 | 33.7 | 62.7 | 8.2 ms | 26.0 | 112 / 34 |
 | H2O | 36.7 | 39.7 | 200.4 | 6.7 ms every step | 31.1 | 94 / 23 |
 | RaaS | 36.9 | 39.9 | 200.4 | 6.8 ms every step | 31.1 | 94 / 23 |
@@ -69,10 +70,69 @@ max batch 131 / 73 / 38 / 19 at K = 512 / 1024 / 2048 / 4096, against base Qwen3
   8.0 ms per token, 62.7 ms per token); the compaction adds 87-161 ms every 128 steps. The arithmetic is small (analytical: 0.5-1 GFLOP and 0.6-2.4 GB per
   compaction at batch 1). The compaction gathers a full copy of the kept cache before freeing the old one
   (transient = K x 128 KiB x batch, 8.0 GiB at K=4096 batch 16), and the policy banks a 16 KiB hidden state per
-  cached decode token: these two are why H2O/RaaS fit 4-24% more sequences and kvpress more at K >= 1024.
+  cached decode token: these two are why H2O/RaaS fit 4-24% more sequences and kvpress more at K >= 1024 on the per-sequence path; the
+  batched path removes both (see "Batched EpiKV policy").
 - DMS has no compaction step; its per-step cost (+20-24% over base at equal live length) is its paged cache and
   eviction bookkeeping in the reference HuggingFace code. Its prefill (the same code, 510-token chunks) is 6-23x
   slower than the base model's FlashAttention prefill.
+
+## Throughput per card at each method's largest batch (measured, Llama-8B)
+Steady decode with every window restarted from the cache at K (`--restart_windows`), at the largest batch that ran
+512 steps without OOM (`tput_*`; the capacity probes run 12 steps, and per-step torch.cat in transformers'
+DynamicCache fragments memory over longer runs, so a few probe-passing batches fail here; each failing size was
+retried in a fresh process and failed again, records `tput_*_fresh_*`). Tokens/s per card = batch x 1000 / ms per
+step.
+
+| method | K=2048: batch, tokens/s | K=4096: batch, tokens/s |
+|---|---|---|
+| EpiKV, batched path | 80, 478 | 45, 278 |
+| EpiKV, per-sequence path | 42, 407 | 22, 255 |
+| EpiKV^-Q (keeps 832 / 1384 after a compaction) | 58, 430 | 34, 265 |
+| kvpress SnapKV DecodingPress | 63, 492 | 34, 267 |
+| R-KV (official) | 21, 393 | 6, 133 |
+| H2O | 47, 165 | 23, 82 |
+| RaaS | 47, 165 | 23, 82 |
+| no eviction at context 8k / 16k / 32k | 23, 169 / 11, 90 / 5, 47 | |
+
+At these batches decode is bound by reading the cache (and by DynamicCache copying it on every step), so doubling
+the batch nearly doubles the step time: the batched path doubles EpiKV's max batch at K=4096 (22 -> 45) but adds
+9% tokens/s. kvpress leads at K=2048 by 3%, EpiKV leads at K=4096 by 4%; both are near the measured noise.
+
+## Batched EpiKV policy (src/epikv_batched.py, method `epikv_batched`)
+- Cause (profile, `records/profile_epikv_K4096_B16.json`, torch.profiler over 8 normal steps and one compaction at
+  K=4096, batch 16): the per-sequence path makes 2 host syncs per sequence per step (`aten::item` 256 in 8 steps)
+  and slices every layer's cache and every hidden state once per sequence (about 1,750 `aten::slice` per step);
+  the policy took 14.1 ms of a 70 ms profiled step. The compaction is per-sequence decision code (1,008 syncs) plus
+  a gather of the full kept cache before the old one is freed.
+- Change: one KVSegHSEviction per sequence still makes every decision with the unmodified code. Per step, the
+  band differences are computed with the original (1, d) shapes and read back with one transfer; at a compaction
+  the keep masks are captured and the cache is gathered one layer at a time in place; only the last 8 banked hidden
+  states stay on the GPU (the policy reads only those and the bank's length). The per-sequence path is unchanged.
+- Bit identity (`records/check_epikv_batched.json`, `scripts/check_epikv_batched.py`): real DeepSeek-R1-Distill-
+  Llama-8B reasoning traces (data_slim60.jsonl, a different trace stream per row), teacher-forced, 5 compactions per
+  cell, K in {1024, 4096} x batch in {1, 4, 16}: kept index tensors torch.equal at all 30 compactions, every step's
+  score identical (0 mismatches over 3,840 steps), bank length equal to the cached decode tokens, gathered K/V equal
+  to an index_select with the reference indices. All 6 cells PASS. CPU unit test `tests/test_epikv_batched.py`
+  (tiny random Llama, batch 1-3, with and without the query read): 4 passed.
+- Speed (steady, median of 3 windows, spread <= 0.13 ms): batch 16: 45.2 -> 38.8 ms/token at K=1024 (-14%),
+  63.6 -> 57.9 at K=4096 (-9%); batch 4: 38.7 -> 36.9 (-4.5%) and 38.8 -> 37.2 (-4.2%); batch 1: 34.4 -> 34.0 and
+  34.5 -> 34.1 (-1%, under the 3% bar). Profiled policy time per step 14.1 -> 3.4 ms; 0 `aten::item` syncs.
+  Compaction step unchanged within 3% (223 -> 219 ms at K=4096 batch 16): its decisions are the same per-sequence code.
+- Memory: compaction transient at K=4096 batch 16 7.98 -> 0.20 GiB; resident 24.0 -> 23.0 GiB (bank). One
+  compaction from L=4096 to K=1024 at batch 16: 250 -> 188 ms, transient 1.26 -> 0.13 GiB.
+- Capacity (fresh process per probe, `capacity_fresh_epikv_batched_K*.json`): 296 / 128 / 88 / 45 at
+  K = 512 / 1024 / 2048 / 4096, against 152 / 82 / 43 / 22 for the per-sequence path, 188 / 94 / 47 / 23 for
+  H2O/RaaS, 128 / 106 / 63 / 34 for kvpress, 156 / 64 / 24 / 7 for R-KV. At K=1024 the limit is fragmentation:
+  batch 136 fails while 34.0 GiB are allocated and 4.8 GiB are reserved but free (expandable segments were not
+  tried, for any method). The in-process search for this path drifted after its first OOM (batch-1 peak 19.4 GiB
+  at K=4096 against 15.6 fresh) and is kept as `records/superseded/capacity_epikv_batched.in_process_after_oom.json`.
+- Kept: every batch > 1 change exceeds the 3% bar; batch 1 does not move.
+
+## DMS largest batch (lowest priority; `records/dms_capacity_dms.json`)
+Through NVIDIA's reference code, prefilling 8,192 tokens per sequence and then decoding 8 steps: 8 sequences fit, 9
+do not (peak 34.9 GiB at 8). Unlike the other capacity rows, this includes DMS's own prefill, which dominates its
+memory (peak grows about 2.4 GiB per sequence while its live cache after prefill is about one eighth of the context).
+Base Qwen3-8B at 8k context without eviction: 20 (prefill excluded); EpiKV on Qwen3-8B at K=1024: 73.
 
 ## Corrections (2026-11-15)
 - `steady_epikv_noq` (now `records/superseded/steady_epikv_noq.cache_below_K.json`) did not measure decode at
@@ -192,4 +252,6 @@ The superseded in-process Qwen3 EpiKV capacity search is `records/capacity_epikv
 `scripts/baseline_costs.py` changed three times while the grid ran, each change outside the code paths of the
 runs already finished: the `oom_phase` field (recorded from the compaction runs on), the R-KV budget reset before a
 cache build (from `compaction_rkv` and the `steady_rkv` rerun on), and `--probe_only` (for `capacity_search.py`).
-The committed file is the final one, identical to the copy on sk-p4d.
+The committed file is the final one, identical to the copy on sk-p4d. On 2026-11-15 it gained `--restart_windows`,
+`--first_fit`, the `epikv_batched` method, the `dms_capacity` mode and a device-agnostic dummy in `prime`; none
+changes the code path of a method measured before.

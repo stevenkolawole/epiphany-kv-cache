@@ -1,0 +1,89 @@
+{
+ "meta": {
+  "mode": "steady",
+  "method": "epikv_batched",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.55.4",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "steady",
+   "method": "epikv_batched",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    2048
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    88,
+    87,
+    86,
+    85,
+    83,
+    80
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "restart_windows": true,
+   "first_fit": true,
+   "probe_timeout": 600,
+   "probe_only": false,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/tput_epikv_batched_fresh_K2048.json"
+  },
+  "weights_gb": 14.958,
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "K2048_B88": {
+   "K": 2048,
+   "batch": 88,
+   "oom": "CUDA out of memory. Tried to allocate 362.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 270.50 MiB is free. Including non-PyTorch memory, this process has 39.22 GiB memory in use. Of the al",
+   "oom_phase": "decode"
+  },
+  "K2048_B87": {
+   "K": 2048,
+   "batch": 87,
+   "oom": "CUDA out of memory. Tried to allocate 354.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 272.50 MiB is free. Including non-PyTorch memory, this process has 39.22 GiB memory in use. Of the al",
+   "oom_phase": "decode"
+  },
+  "K2048_B86": {
+   "K": 2048,
+   "batch": 86,
+   "oom": "CUDA out of memory. Tried to allocate 346.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 344.50 MiB is free. Including non-PyTorch memory, this process has 39.15 GiB memory in use. Of the al",
+   "oom_phase": "decode"
+  },
+  "K2048_B85": {
+   "K": 2048,
+   "batch": 85,
+   "oom": "CUDA out of memory. Tried to allocate 342.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 176.50 MiB is free. Including non-PyTorch memory, this process has 39.31 GiB memory in use. Of the al",
+   "oom_phase": "decode"
+  },
+  "K2048_B83": {
+   "K": 2048,
+   "batch": 83,
+   "oom": "CUDA out of memory. Tried to allocate 340.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 148.50 MiB is free. Including non-PyTorch memory, this process has 39.34 GiB memory in use. Of the al",
+   "oom_phase": "decode"
+  },
+  "K2048_B80": {
+   "K": 2048,
+   "batch": 80,
+   "oom": "CUDA out of memory. Tried to allocate 330.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 238.50 MiB is free. Including non-PyTorch memory, this process has 39.25 GiB memory in use. Of the al",
+   "oom_phase": "decode"
+  }
+ }
+}

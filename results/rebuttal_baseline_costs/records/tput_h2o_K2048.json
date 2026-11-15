@@ -1,0 +1,199 @@
+{
+ "meta": {
+  "mode": "steady",
+  "method": "h2o",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "eager",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.55.4",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "steady",
+   "method": "h2o",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    2048
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    47,
+    46,
+    45,
+    44,
+    42
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "restart_windows": true,
+   "first_fit": true,
+   "probe_timeout": 600,
+   "probe_only": false,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/tput_h2o_K2048.json"
+  },
+  "weights_gb": 14.958,
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "K2048_B47": {
+   "K": 2048,
+   "batch": 47,
+   "windows": [
+    {
+     "steps": 128,
+     "ms_per_token": 284.8369885687134,
+     "fwd_ms_median": 196.16010482423007,
+     "pol_ms_mean": 86.797113497596,
+     "n_compactions": 128,
+     "cache_len_min": 2048,
+     "cache_len_max": 2049,
+     "resident_gb": 26.716,
+     "peak_gb": 38.666,
+     "transient_gb": 11.951,
+     "reserved_gb": 38.885,
+     "compaction": [
+      {
+       "ms": 633.4542958065867,
+       "fwd_ms": 428.0222440138459,
+       "pol_ms": 205.43205179274082,
+       "from": 2049,
+       "to": 2048,
+       "transient_gb": 11.951
+      },
+      {
+       "ms": 282.1507677435875,
+       "fwd_ms": 196.2477690540254,
+       "pol_ms": 85.90299868956208,
+       "from": 2049,
+       "to": 2048,
+       "transient_gb": 11.951
+      },
+      {
+       "ms": 282.24116703495383,
+       "fwd_ms": 196.3566830381751,
+       "pol_ms": 85.88448399677873,
+       "from": 2049,
+       "to": 2048,
+       "transient_gb": 11.951
+      },
+      {
+       "ms": 281.9828991778195,
+       "fwd_ms": 196.16069830954075,
+       "pol_ms": 85.82220086827874,
+       "from": 2049,
+       "to": 2048,
+       "transient_gb": 11.951
+      }
+     ]
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 284.6886862098472,
+     "fwd_ms_median": 196.07262266799808,
+     "pol_ms_mean": 86.57071914058179,
+     "n_compactions": 128,
+     "cache_len_min": 2048,
+     "cache_len_max": 2049,
+     "resident_gb": 26.716,
+     "peak_gb": 38.666,
+     "transient_gb": 11.951,
+     "reserved_gb": 38.885,
+     "compaction": [
+      {
+       "ms": 635.9004690311849,
+       "fwd_ms": 456.3201288692653,
+       "pol_ms": 179.5803401619196,
+       "from": 2049,
+       "to": 2048,
+       "transient_gb": 11.951
+      },
+      {
+       "ms": 282.11909206584096,
+       "fwd_ms": 196.21901120990515,
+       "pol_ms": 85.90008085593581,
+       "from": 2049,
+       "to": 2048,
+       "transient_gb": 11.951
+      },
+      {
+       "ms": 282.024884596467,
+       "fwd_ms": 196.14038988947868,
+       "pol_ms": 85.88449470698833,
+       "from": 2049,
+       "to": 2048,
+       "transient_gb": 11.951
+      },
+      {
+       "ms": 281.7852790467441,
+       "fwd_ms": 195.92890376225114,
+       "pol_ms": 85.85637528449297,
+       "from": 2049,
+       "to": 2048,
+       "transient_gb": 11.951
+      }
+     ]
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 284.8761797940824,
+     "fwd_ms_median": 196.1057037115097,
+     "pol_ms_mean": 86.55762507987674,
+     "n_compactions": 128,
+     "cache_len_min": 2048,
+     "cache_len_max": 2049,
+     "resident_gb": 26.716,
+     "peak_gb": 38.666,
+     "transient_gb": 11.951,
+     "reserved_gb": 38.885,
+     "compaction": [
+      {
+       "ms": 651.5297596342862,
+       "fwd_ms": 473.22278283536434,
+       "pol_ms": 178.30697679892182,
+       "from": 2049,
+       "to": 2048,
+       "transient_gb": 11.951
+      },
+      {
+       "ms": 282.1351867169142,
+       "fwd_ms": 196.25999499112368,
+       "pol_ms": 85.8751917257905,
+       "from": 2049,
+       "to": 2048,
+       "transient_gb": 11.951
+      },
+      {
+       "ms": 282.2601026855409,
+       "fwd_ms": 196.40715885907412,
+       "pol_ms": 85.8529438264668,
+       "from": 2049,
+       "to": 2048,
+       "transient_gb": 11.951
+      },
+      {
+       "ms": 281.9843040779233,
+       "fwd_ms": 196.17560831829906,
+       "pol_ms": 85.80869575962424,
+       "from": 2049,
+       "to": 2048,
+       "transient_gb": 11.951
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

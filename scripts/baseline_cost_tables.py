@@ -29,7 +29,7 @@ def load(folder):
         if p.name.startswith("smoke_") or p.name == "analytical.json":
             continue
         d = json.loads(p.read_text())
-        if "meta" in d and "cells" in d:
+        if "mode" in d.get("meta", {}) and isinstance(d.get("cells"), dict):   # skips profile and check records
             recs.append((p.stem, d))
     return recs
 
@@ -78,6 +78,12 @@ def compaction(recs):
 def capacity(recs):
     rows = ["| run | K (none: context) | max batch | first OOM | peak GiB at max |", "|---|---|---|---|---|"]
     for name, d in recs:
+        if d["meta"]["mode"] == "dms_capacity":     # DMS: prefill of the context is part of each probe
+            for c in d["cells"].values():
+                pk = c["probes"].get(str(c["max_batch"]), {}).get("peak_gb")
+                rows.append(f"| {name} (with its prefill) | context {c['context']} | {c['max_batch']} | "
+                            f"{c['first_oom']} | {f(pk, 2)} |")
+            continue
         if d["meta"]["mode"] not in ("capacity", "capacity_fresh"):
             continue
         for c in d["cells"].values():
@@ -128,7 +134,7 @@ def headline(recs):
     by = {name: d for name, d in recs}
     rows = ["| method | K | B | ms/token | / none | compaction extra ms | peak GiB | max batch at K |",
             "|---|---|---|---|---|---|---|---|"]
-    for m in ("none", "epikv", "epikv_noq", "h2o", "raas", "rkv", "snapkv_decoding", "none_kvpressvenv",
+    for m in ("none", "epikv", "epikv_batched", "epikv_noq", "h2o", "raas", "rkv", "snapkv_decoding", "none_kvpressvenv",
               "none_qwen3", "epikv_qwen3"):
         # A _restart run (every window from the cache at K) supersedes one whose windows never reached K.
         d = by.get(f"steady_{m}_restart", by.get(f"steady_{m}"))

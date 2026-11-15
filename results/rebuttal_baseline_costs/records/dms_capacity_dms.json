@@ -1,0 +1,98 @@
+{
+ "meta": {
+  "mode": "dms_capacity",
+  "method": "dms",
+  "model": "nvidia/Qwen3-8B-DMS-8x",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.57.1",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "dms_capacity",
+   "method": "dms",
+   "model": "nvidia/Qwen3-8B-DMS-8x",
+   "tokenizer": "Qwen/Qwen3-8B",
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    8192
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    1,
+    4,
+    16
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 256,
+   "restart_windows": false,
+   "first_fit": false,
+   "probe_timeout": 600.0,
+   "probe_only": false,
+   "steps": 0,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/dms_capacity_dms.json"
+  },
+  "weights_gb": 15.259,
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "C8192": {
+   "context": 8192,
+   "max_batch": 8,
+   "first_oom": 9,
+   "stopped_on_time": false,
+   "probes": {
+    "1": {
+     "ok": true,
+     "peak_gb": 17.569,
+     "seconds": 15.0
+    },
+    "2": {
+     "ok": true,
+     "peak_gb": 20.175,
+     "seconds": 17.7
+    },
+    "4": {
+     "ok": true,
+     "peak_gb": 25.078,
+     "seconds": 23.3
+    },
+    "8": {
+     "ok": true,
+     "peak_gb": 34.886,
+     "seconds": 38.3
+    },
+    "16": {
+     "ok": false,
+     "peak_gb": null,
+     "seconds": 1.7
+    },
+    "12": {
+     "ok": false,
+     "peak_gb": null,
+     "seconds": 3.1
+    },
+    "10": {
+     "ok": false,
+     "peak_gb": null,
+     "seconds": 17.1
+    },
+    "9": {
+     "ok": false,
+     "peak_gb": null,
+     "seconds": 11.2
+    }
+   }
+  }
+ }
+}

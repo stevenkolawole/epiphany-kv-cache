@@ -1,0 +1,151 @@
+{
+ "meta": {
+  "mode": "steady",
+  "method": "rkv",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.55.4",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "steady",
+   "method": "rkv",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    2048
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    24,
+    23,
+    22,
+    21,
+    20
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "restart_windows": true,
+   "first_fit": true,
+   "probe_timeout": 600,
+   "probe_only": false,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/tput_rkv_K2048.json"
+  },
+  "weights_gb": 14.958,
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "K2048_B24": {
+   "K": 2048,
+   "batch": 24,
+   "oom": "CUDA out of memory. Tried to allocate 6.77 GiB. GPU 0 has a total capacity of 39.49 GiB of which 1.49 GiB is free. Including non-PyTorch memory, this process has 37.99 GiB memory in use. Of the alloca",
+   "oom_phase": "decode"
+  },
+  "K2048_B23": {
+   "K": 2048,
+   "batch": 23,
+   "oom": "CUDA out of memory. Tried to allocate 6.49 GiB. GPU 0 has a total capacity of 39.49 GiB of which 2.50 GiB is free. Including non-PyTorch memory, this process has 36.98 GiB memory in use. Of the alloca",
+   "oom_phase": "decode"
+  },
+  "K2048_B22": {
+   "K": 2048,
+   "batch": 22,
+   "oom": "CUDA out of memory. Tried to allocate 6.21 GiB. GPU 0 has a total capacity of 39.49 GiB of which 3.42 GiB is free. Including non-PyTorch memory, this process has 36.06 GiB memory in use. Of the alloca",
+   "oom_phase": "decode"
+  },
+  "K2048_B21": {
+   "K": 2048,
+   "batch": 21,
+   "windows": [
+    {
+     "steps": 128,
+     "ms_per_token": 53.334454853029456,
+     "fwd_ms_median": 43.96805935539305,
+     "pol_ms_mean": 0.019951090507674962,
+     "n_compactions": 1,
+     "cache_len_min": 2048,
+     "cache_len_max": 2175,
+     "resident_gb": 20.257,
+     "peak_gb": 34.818,
+     "transient_gb": 14.178,
+     "reserved_gb": 38.949,
+     "compaction": [
+      {
+       "ms": 1059.4457038678229,
+       "fwd_ms": 1059.40903397277,
+       "pol_ms": 0.03666989505290985,
+       "from": 2176,
+       "to": 2048,
+       "transient_gb": 14.178
+      }
+     ],
+     "normal_step_ms_median": 43.98581199347973,
+     "normal_pol_ms_mean": 0.019819446377397524
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 53.44488684568205,
+     "fwd_ms_median": 43.92037237994373,
+     "pol_ms_mean": 0.020859188225585967,
+     "n_compactions": 1,
+     "cache_len_min": 2048,
+     "cache_len_max": 2175,
+     "resident_gb": 20.257,
+     "peak_gb": 34.818,
+     "transient_gb": 14.178,
+     "reserved_gb": 38.949,
+     "compaction": [
+      {
+       "ms": 1059.32511202991,
+       "fwd_ms": 1059.2742613516748,
+       "pol_ms": 0.050850678235292435,
+       "from": 2176,
+       "to": 2048,
+       "transient_gb": 14.178
+      }
+     ],
+     "normal_step_ms_median": 43.93935389816761,
+     "normal_pol_ms_mean": 0.02062303476094261
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 53.494068979489384,
+     "fwd_ms_median": 43.961880495771766,
+     "pol_ms_mean": 0.020115454390179366,
+     "n_compactions": 1,
+     "cache_len_min": 2048,
+     "cache_len_max": 2175,
+     "resident_gb": 20.257,
+     "peak_gb": 34.818,
+     "transient_gb": 14.178,
+     "reserved_gb": 38.949,
+     "compaction": [
+      {
+       "ms": 1059.5643678680062,
+       "fwd_ms": 1059.5338218845427,
+       "pol_ms": 0.030545983463525772,
+       "from": 2176,
+       "to": 2048,
+       "transient_gb": 14.178
+      }
+     ],
+     "normal_step_ms_median": 43.976765125989914,
+     "normal_pol_ms_mean": 0.020033324239995536
+    }
+   ]
+  }
+ }
+}

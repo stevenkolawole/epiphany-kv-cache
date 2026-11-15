@@ -1,0 +1,139 @@
+{
+ "meta": {
+  "mode": "steady",
+  "method": "epikv",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.55.4",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "steady",
+   "method": "epikv",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    2048
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    43,
+    42,
+    41,
+    40,
+    38,
+    36
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "restart_windows": true,
+   "first_fit": true,
+   "probe_only": false,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/tput_epikv_K2048.json"
+  },
+  "weights_gb": 14.958,
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "K2048_B43": {
+   "K": 2048,
+   "batch": 43,
+   "oom": "CUDA out of memory. Tried to allocate 172.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 122.50 MiB is free. Including non-PyTorch memory, this process has 39.37 GiB memory in use. Of the al",
+   "oom_phase": "decode"
+  },
+  "K2048_B42": {
+   "K": 2048,
+   "batch": 42,
+   "windows": [
+    {
+     "steps": 128,
+     "ms_per_token": 102.53628989084973,
+     "fwd_ms_median": 67.70801940001547,
+     "pol_ms_mean": 22.1271870250348,
+     "n_compactions": 1,
+     "cache_len_min": 2048,
+     "cache_len_max": 2176,
+     "resident_gb": 26.728,
+     "peak_gb": 37.905,
+     "transient_gb": 10.444,
+     "reserved_gb": 38.973,
+     "compaction": [
+      {
+       "ms": 379.68120025470853,
+       "fwd_ms": 69.1483193077147,
+       "pol_ms": 310.5328809469938,
+       "from": 2176,
+       "to": 2048,
+       "transient_gb": 10.444
+      }
+     ],
+     "normal_step_ms_median": 87.45370293036103,
+     "normal_pol_ms_mean": 19.856276049271344
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 103.19186714696116,
+     "fwd_ms_median": 67.81008094549179,
+     "pol_ms_mean": 22.6499634773063,
+     "n_compactions": 1,
+     "cache_len_min": 2048,
+     "cache_len_max": 2176,
+     "resident_gb": 26.728,
+     "peak_gb": 37.905,
+     "transient_gb": 10.444,
+     "reserved_gb": 38.973,
+     "compaction": [
+      {
+       "ms": 378.295015078038,
+       "fwd_ms": 69.23016207292676,
+       "pol_ms": 309.0648530051112,
+       "from": 2176,
+       "to": 2048,
+       "transient_gb": 10.444
+      }
+     ],
+     "normal_step_ms_median": 88.1886649876833,
+     "normal_pol_ms_mean": 20.394728126693664
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 103.70911340942257,
+     "fwd_ms_median": 67.934152437374,
+     "pol_ms_mean": 22.929331855266355,
+     "n_compactions": 1,
+     "cache_len_min": 2048,
+     "cache_len_max": 2176,
+     "resident_gb": 26.728,
+     "peak_gb": 37.905,
+     "transient_gb": 10.444,
+     "reserved_gb": 38.973,
+     "compaction": [
+      {
+       "ms": 384.0430909767747,
+       "fwd_ms": 69.21105505898595,
+       "pol_ms": 314.83203591778874,
+       "from": 2176,
+       "to": 2048,
+       "transient_gb": 10.444
+      }
+     ],
+     "normal_step_ms_median": 88.13993073999882,
+     "normal_pol_ms_mean": 20.630885366585076
+    }
+   ]
+  }
+ }
+}

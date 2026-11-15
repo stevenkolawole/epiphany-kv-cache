@@ -1,0 +1,199 @@
+{
+ "meta": {
+  "mode": "steady",
+  "method": "raas",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "eager",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.55.4",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "steady",
+   "method": "raas",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    4096
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    23,
+    22,
+    21,
+    20,
+    19
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "restart_windows": true,
+   "first_fit": true,
+   "probe_timeout": 600,
+   "probe_only": false,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/tput_raas_K4096.json"
+  },
+  "weights_gb": 14.958,
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "K4096_B23": {
+   "K": 4096,
+   "batch": 23,
+   "windows": [
+    {
+     "steps": 128,
+     "ms_per_token": 281.38505145034287,
+     "fwd_ms_median": 192.57340813055634,
+     "pol_ms_mean": 87.2349435230717,
+     "n_compactions": 128,
+     "cache_len_min": 4096,
+     "cache_len_max": 4097,
+     "resident_gb": 26.466,
+     "peak_gb": 38.154,
+     "transient_gb": 11.688,
+     "reserved_gb": 38.391,
+     "compaction": [
+      {
+       "ms": 598.970171995461,
+       "fwd_ms": 392.7828180603683,
+       "pol_ms": 206.1873539350927,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 11.688
+      },
+      {
+       "ms": 279.21807998791337,
+       "fwd_ms": 192.86579778417945,
+       "pol_ms": 86.35228220373392,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 11.688
+      },
+      {
+       "ms": 278.94653799012303,
+       "fwd_ms": 192.8234393708408,
+       "pol_ms": 86.12309861928225,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 11.688
+      },
+      {
+       "ms": 278.735333122313,
+       "fwd_ms": 192.42748199030757,
+       "pol_ms": 86.30785113200545,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 11.688
+      }
+     ]
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 281.490922850935,
+     "fwd_ms_median": 192.5863658543676,
+     "pol_ms_mean": 87.2842768621922,
+     "n_compactions": 128,
+     "cache_len_min": 4096,
+     "cache_len_max": 4097,
+     "resident_gb": 26.466,
+     "peak_gb": 38.154,
+     "transient_gb": 11.688,
+     "reserved_gb": 38.391,
+     "compaction": [
+      {
+       "ms": 599.2547003552318,
+       "fwd_ms": 392.0329511165619,
+       "pol_ms": 207.22174923866987,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 11.688
+      },
+      {
+       "ms": 278.95762817934155,
+       "fwd_ms": 192.59220734238625,
+       "pol_ms": 86.36542083695531,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 11.688
+      },
+      {
+       "ms": 279.01881793513894,
+       "fwd_ms": 192.7430690266192,
+       "pol_ms": 86.27574890851974,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 11.688
+      },
+      {
+       "ms": 278.9186309091747,
+       "fwd_ms": 192.59968725964427,
+       "pol_ms": 86.31894364953041,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 11.688
+      }
+     ]
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 281.4673429966206,
+     "fwd_ms_median": 192.53554078750312,
+     "pol_ms_mean": 87.02163469570223,
+     "n_compactions": 128,
+     "cache_len_min": 4096,
+     "cache_len_max": 4097,
+     "resident_gb": 26.466,
+     "peak_gb": 38.154,
+     "transient_gb": 11.688,
+     "reserved_gb": 38.391,
+     "compaction": [
+      {
+       "ms": 609.6020811237395,
+       "fwd_ms": 429.83072390779853,
+       "pol_ms": 179.77135721594095,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 11.688
+      },
+      {
+       "ms": 279.22973688691854,
+       "fwd_ms": 192.8335251286626,
+       "pol_ms": 86.39621175825596,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 11.688
+      },
+      {
+       "ms": 279.11570807918906,
+       "fwd_ms": 192.79201608151197,
+       "pol_ms": 86.32369199767709,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 11.688
+      },
+      {
+       "ms": 279.0314508602023,
+       "fwd_ms": 192.6062097772956,
+       "pol_ms": 86.42524108290672,
+       "from": 4097,
+       "to": 4096,
+       "transient_gb": 11.688
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,134 @@
+{
+ "meta": {
+  "mode": "steady",
+  "method": "epikv_batched",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.55.4",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "steady",
+   "method": "epikv_batched",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    4096
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    45,
+    44,
+    43,
+    42,
+    40,
+    37
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "restart_windows": true,
+   "first_fit": true,
+   "probe_timeout": 600,
+   "probe_only": false,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/tput_epikv_batched_fresh_K4096.json"
+  },
+  "weights_gb": 14.958,
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "K4096_B45": {
+   "K": 4096,
+   "batch": 45,
+   "windows": [
+    {
+     "steps": 128,
+     "ms_per_token": 161.62901145071373,
+     "fwd_ms_median": 119.15076803416014,
+     "pol_ms_mean": 8.758319105254486,
+     "n_compactions": 1,
+     "cache_len_min": 4096,
+     "cache_len_max": 4224,
+     "resident_gb": 37.534,
+     "peak_gb": 38.66,
+     "transient_gb": 0.438,
+     "reserved_gb": 38.988,
+     "compaction": [
+      {
+       "ms": 577.5539148598909,
+       "fwd_ms": 120.39939593523741,
+       "pol_ms": 457.15451892465353,
+       "from": 4224,
+       "to": 4096,
+       "transient_gb": 0.375
+      }
+     ],
+     "normal_step_ms_median": 124.4060811586678,
+     "normal_pol_ms_mean": 5.2276403665190605
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 161.550063334289,
+     "fwd_ms_median": 119.1749710123986,
+     "pol_ms_mean": 8.783518827840453,
+     "n_compactions": 1,
+     "cache_len_min": 4096,
+     "cache_len_max": 4224,
+     "resident_gb": 37.534,
+     "peak_gb": 38.66,
+     "transient_gb": 0.438,
+     "reserved_gb": 38.988,
+     "compaction": [
+      {
+       "ms": 578.8894058205187,
+       "fwd_ms": 120.40771497413516,
+       "pol_ms": 458.4816908463836,
+       "from": 4224,
+       "to": 4096,
+       "transient_gb": 0.375
+      }
+     ],
+     "normal_step_ms_median": 124.3210812099278,
+     "normal_pol_ms_mean": 5.242588339505468
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 162.4733198150352,
+     "fwd_ms_median": 119.16227173060179,
+     "pol_ms_mean": 9.883344515401404,
+     "n_compactions": 1,
+     "cache_len_min": 4096,
+     "cache_len_max": 4224,
+     "resident_gb": 37.534,
+     "peak_gb": 38.66,
+     "transient_gb": 0.438,
+     "reserved_gb": 38.988,
+     "compaction": [
+      {
+       "ms": 691.6832439601421,
+       "fwd_ms": 120.61955966055393,
+       "pol_ms": 571.0636842995882,
+       "from": 4224,
+       "to": 4096,
+       "transient_gb": 0.375
+      }
+     ],
+     "normal_step_ms_median": 124.40678710117936,
+     "normal_pol_ms_mean": 5.464601682455052
+    }
+   ]
+  }
+ }
+}

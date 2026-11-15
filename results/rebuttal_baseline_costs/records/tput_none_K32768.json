@@ -1,0 +1,102 @@
+{
+ "meta": {
+  "mode": "steady",
+  "method": "none",
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "attn_implementation": "flash_attention_2",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "torch": "2.7.0+cu126",
+  "transformers": "4.55.4",
+  "flash_attn": "2.8.3",
+  "prompt_tokens": 128,
+  "interval": 128,
+  "args": {
+   "mode": "steady",
+   "method": "none",
+   "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+   "tokenizer": null,
+   "band_a_layer": null,
+   "band_b_layer": null,
+   "Ks": [
+    32768
+   ],
+   "Ls": [
+    4096,
+    8192,
+    16384,
+    32768
+   ],
+   "batches": [
+    5,
+    4,
+    3,
+    2
+   ],
+   "windows": 4,
+   "repeats": 3,
+   "max_batch": 1024,
+   "restart_windows": true,
+   "first_fit": true,
+   "probe_timeout": 600,
+   "probe_only": false,
+   "steps": 8192,
+   "output": "/home/ubuntu/rebuttal_baseline_costs/tput_none_K32768.json"
+  },
+  "weights_gb": 14.958,
+  "note": "synchronised timing around every step; times in ms; memory from torch.cuda.max_memory_allocated (resident = allocated before the step)",
+  "finished": true
+ },
+ "cells": {
+  "K32768_B5": {
+   "K": 32768,
+   "batch": 5,
+   "windows": [
+    {
+     "steps": 128,
+     "ms_per_token": 106.66048370694625,
+     "fwd_ms_median": 102.91872639209032,
+     "pol_ms_mean": 0.02358409619773738,
+     "n_compactions": 0,
+     "cache_len_min": 32769,
+     "cache_len_max": 32896,
+     "resident_gb": 34.966,
+     "peak_gb": 35.405,
+     "transient_gb": 0.376,
+     "reserved_gb": 38.842,
+     "normal_step_ms_median": 102.9395719524473,
+     "normal_pol_ms_mean": 0.02358409619773738
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 106.8032761613722,
+     "fwd_ms_median": 102.89085214026272,
+     "pol_ms_mean": 0.021447565814014524,
+     "n_compactions": 0,
+     "cache_len_min": 32769,
+     "cache_len_max": 32896,
+     "resident_gb": 34.966,
+     "peak_gb": 35.405,
+     "transient_gb": 0.376,
+     "reserved_gb": 38.842,
+     "normal_step_ms_median": 102.91078849695623,
+     "normal_pol_ms_mean": 0.021447565814014524
+    },
+    {
+     "steps": 128,
+     "ms_per_token": 106.80018420316628,
+     "fwd_ms_median": 102.93031157925725,
+     "pol_ms_mean": 0.023382930521620438,
+     "n_compactions": 0,
+     "cache_len_min": 32769,
+     "cache_len_max": 32896,
+     "resident_gb": 34.966,
+     "peak_gb": 35.405,
+     "transient_gb": 0.376,
+     "reserved_gb": 38.842,
+     "normal_step_ms_median": 102.95445215888321,
+     "normal_pol_ms_mean": 0.023382930521620438
+    }
+   ]
+  }
+ }
+}

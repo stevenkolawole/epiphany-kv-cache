@@ -114,3 +114,87 @@ steady_rkv END rc=0 05:46:29
 FOLLOWUP_DONE
 capacity_fresh_epikv_qwen3 START 05:50:26
 capacity_fresh_epikv_qwen3 END 06:03:04
+profile_epikv_K4096_B16 START 10:10:18
+profile_epikv_K4096_B16 END rc=1 10:10:41
+steady_epikv_noq_restart START 10:10:43 --mode steady --method epikv_noq --restart_windows
+steady_epikv_noq_restart END rc=0 10:15:34
+tput_epikv_K2048 START 10:15:37 --mode steady --restart_windows --first_fit --method epikv --Ks 2048 --batches 43 42 41 40 38 36
+tput_epikv_K2048 END rc=0 10:17:05
+tput_epikv_K4096 START 10:17:08 --mode steady --restart_windows --first_fit --method epikv --Ks 4096 --batches 22 21 20 19 18
+tput_epikv_K4096 END rc=0 10:18:16
+tput_epikv_noq_K2048 START 10:18:18 --mode steady --restart_windows --first_fit --method epikv_noq --Ks 2048 --batches 64 63 62 61 58 56
+tput_epikv_noq_K2048 END rc=0 10:21:03
+tput_epikv_noq_K4096 START 10:21:05 --mode steady --restart_windows --first_fit --method epikv_noq --Ks 4096 --batches 34 33 32 31 30
+tput_epikv_noq_K4096 END rc=0 10:22:29
+tput_rkv_K2048 START 10:22:31 --mode steady --restart_windows --first_fit --method rkv --Ks 2048 --batches 24 23 22 21 20
+tput_rkv_K2048 END rc=0 10:23:32
+tput_rkv_K4096 START 10:23:34 --mode steady --restart_windows --first_fit --method rkv --Ks 4096 --batches 7 6 5 4
+tput_rkv_K4096 END rc=0 10:24:17
+tput_h2o_K2048 START 10:24:19 --mode steady --restart_windows --first_fit --method h2o --Ks 2048 --batches 47 46 45 44 42
+tput_h2o_K2048 END rc=0 10:26:58
+tput_h2o_K4096 START 10:27:00 --mode steady --restart_windows --first_fit --method h2o --Ks 4096 --batches 23 22 21 20 19
+tput_h2o_K4096 END rc=0 10:29:39
+tput_raas_K2048 START 10:29:41 --mode steady --restart_windows --first_fit --method raas --Ks 2048 --batches 47 46 45 44 42
+tput_raas_K2048 END rc=0 10:32:20
+tput_raas_K4096 START 10:32:22 --mode steady --restart_windows --first_fit --method raas --Ks 4096 --batches 23 22 21 20 19
+tput_raas_K4096 END rc=0 10:35:01
+tput_snapkv_decoding_K2048 START 10:35:03 --mode steady --restart_windows --first_fit --method snapkv_decoding --Ks 2048 --batches 63 62 61 60 58
+tput_snapkv_decoding_K2048 END rc=0 10:36:23
+tput_snapkv_decoding_K4096 START 10:36:25 --mode steady --restart_windows --first_fit --method snapkv_decoding --Ks 4096 --batches 34 33 32 31 30
+tput_snapkv_decoding_K4096 END rc=0 10:37:45
+tput_none_K8192 START 10:37:47 --mode steady --restart_windows --first_fit --method none --Ks 8192 --batches 23 22 21 20 19
+tput_none_K8192 END rc=0 10:39:13
+tput_none_K16384 START 10:39:15 --mode steady --restart_windows --first_fit --method none --Ks 16384 --batches 11 10 9 8
+tput_none_K16384 END rc=0 10:40:37
+tput_none_K32768 START 10:40:39 --mode steady --restart_windows --first_fit --method none --Ks 32768 --batches 5 4 3 2
+tput_none_K32768 END rc=0 10:41:59
+LANE2A_DONE
+profile_epikv_K4096_B16 START 10:42:41
+profile_epikv_K4096_B16 END rc=0 10:43:16
+check_epikv_batched START 10:43:16
+check_epikv_batched END rc=0 10:46:49
+profile_epikv_batched_K4096_B16 START 10:46:49
+profile_epikv_batched_K4096_B16 END rc=0 10:47:20
+steady_epikv_batched START 10:47:22 --mode steady --method epikv_batched
+steady_epikv_batched END rc=0 10:51:41
+compaction_epikv_batched START 10:51:43 --mode compaction --method epikv_batched
+compaction_epikv_batched END rc=0 11:02:31
+capacity_epikv_batched START 11:02:34 --mode capacity --method epikv_batched
+capacity_epikv_batched END rc=0 11:03:57
+tput_epikv_batched_K2048 START 11:03:59 --mode steady --restart_windows --first_fit --method epikv_batched --Ks 2048 --batches 68 67 66 65 63 60
+tput_epikv_batched_K2048 END rc=0 11:05:28
+tput_epikv_batched_K4096 START 11:05:30 --mode steady --restart_windows --first_fit --method epikv_batched --Ks 4096 --batches 19 18 17 16 14 11
+tput_epikv_batched_K4096 END rc=0 11:06:23
+LANE2B_DONE
+dms_capacity_dms START 11:07:00 --mode dms_capacity --method dms --model nvidia/Qwen3-8B-DMS-8x --tokenizer Qwen/Qwen3-8B --Ks 8192 --max_batch 256 --probe_timeout 600 --steps 0
+dms_capacity_dms END rc=0 11:09:23
+LANE2C_DONE
+capacity_fresh_epikv_batched START 11:10:01
+capacity_fresh_epikv_batched END 11:22:46
+tput_epikv_batched_fresh_K2048 START 11:22:48 --mode steady --restart_windows --first_fit --method epikv_batched --Ks 2048 --batches 88 87 86 85 83 80
+tput_epikv_batched_fresh_K2048 END rc=0 11:23:43
+tput_epikv_batched_fresh_K4096 START 11:23:45 --mode steady --restart_windows --first_fit --method epikv_batched --Ks 4096 --batches 45 44 43 42 40 37
+tput_epikv_batched_fresh_K4096 END rc=0 11:25:27
+LANE2D_DONE
+tput_epikv_batched_fresh_K2048_B80 START 11:29:06 --mode steady --restart_windows --method epikv_batched --Ks 2048 --batches 80
+tput_epikv_batched_fresh_K2048_B80 END rc=0 11:30:48
+LANE2E_DONE
+tput_epikv_fresh_K2048_B43 START 11:31:35 --mode steady --restart_windows --method epikv --Ks 2048 --batches 43
+tput_epikv_fresh_K2048_B43 END rc=0 11:32:02
+tput_epikv_noq_fresh_K2048_B64 START 11:32:04 --mode steady --restart_windows --method epikv_noq --Ks 2048 --batches 64
+tput_epikv_noq_fresh_K2048_B64 END rc=0 11:32:34
+tput_epikv_noq_fresh_K2048_B63 START 11:32:36 --mode steady --restart_windows --method epikv_noq --Ks 2048 --batches 63
+tput_epikv_noq_fresh_K2048_B63 END rc=0 11:33:07
+tput_epikv_noq_fresh_K2048_B62 START 11:33:09 --mode steady --restart_windows --method epikv_noq --Ks 2048 --batches 62
+tput_epikv_noq_fresh_K2048_B62 END rc=0 11:33:39
+tput_epikv_noq_fresh_K2048_B61 START 11:33:41 --mode steady --restart_windows --method epikv_noq --Ks 2048 --batches 61
+tput_epikv_noq_fresh_K2048_B61 END rc=0 11:34:12
+tput_rkv_fresh_K2048_B24 START 11:34:14 --mode steady --restart_windows --method rkv --Ks 2048 --batches 24
+tput_rkv_fresh_K2048_B24 END rc=0 11:34:32
+tput_rkv_fresh_K2048_B23 START 11:34:34 --mode steady --restart_windows --method rkv --Ks 2048 --batches 23
+tput_rkv_fresh_K2048_B23 END rc=0 11:34:52
+tput_rkv_fresh_K2048_B22 START 11:34:54 --mode steady --restart_windows --method rkv --Ks 2048 --batches 22
+tput_rkv_fresh_K2048_B22 END rc=0 11:35:12
+tput_rkv_fresh_K4096_B7 START 11:35:14 --mode steady --restart_windows --method rkv --Ks 4096 --batches 7
+tput_rkv_fresh_K4096_B7 END rc=0 11:35:31
+LANE2F_DONE
