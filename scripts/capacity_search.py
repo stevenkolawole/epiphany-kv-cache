@@ -1,8 +1,8 @@
 """Find the largest decodable batch with one fresh process per probe (doubling, then bisection).
 
-For stacks where an OOM inside a forward leaves memory held for the rest of the process: transformers 4.57.1
-with output_hidden_states=True did this in baseline_costs.py capacity runs (EpiKV on Qwen3-8B: batch-1 peak
-17.0 GiB after an OOM against 15.6 GiB fresh). Each probe runs `baseline_costs.py --mode capacity --probe_only`;
+For configurations whose in-process search drifts after an OOM (memory stays allocated; cause not traced): in
+baseline_costs.py capacity runs, EpiKV on Qwen3-8B (transformers 4.57.1; batch-1 peak 17.0 GiB after an OOM
+against 15.6 GiB fresh) and batched EpiKV on Llama-8B (4.55.4; 19.4 against 15.6 GiB). Each probe runs `baseline_costs.py --mode capacity --probe_only`;
 the probes and the result are written to --output as JSON.
 Usage: capacity_search.py --python <venv python> --K 1024 --output out.json -- <baseline_costs.py args>
 """

@@ -85,7 +85,7 @@ step.
 
 | method | K=2048: batch, tokens/s | K=4096: batch, tokens/s |
 |---|---|---|
-| EpiKV, batched path | 80, 478 | 45, 278 |
+| EpiKV, batched path | 80 (lower bound: 81-87 not tried in a fresh process), 478 | 45, 278 |
 | EpiKV, per-sequence path | 42, 407 | 22, 255 |
 | EpiKV^-Q (keeps 832 / 1384 after a compaction) | 58, 430 | 34, 265 |
 | kvpress SnapKV DecodingPress | 63, 492 | 34, 267 |
@@ -183,11 +183,11 @@ Base Qwen3-8B at 8k context without eviction: 20 (prefill excluded); EpiKV on Qw
 - Capacity: doubling then bisection on batch; a probe passes if the batch decodes through one compaction (EpiKV,
   R-KV: compaction on step 8 of 12; H2O/RaaS: 8 evicting steps; kvpress: 132 steps) without CUDA OOM; no eviction
   decodes 8 steps at the given context. Prefill of new requests is not part of a probe. Precision: the search stops
-  when the gap is under max(1, max_batch/32) (`first_oom` in the records). EpiKV on Qwen3-8B uses
-  `scripts/capacity_search.py` (a fresh process per probe): in transformers 4.57.1 an OOM inside a forward with
-  output_hidden_states left memory held for the rest of the process (batch-1 peak 17.0 GiB after one OOM against
-  15.6 GiB fresh; the cause in transformers is inferred, not traced). The other stacks showed no such drift
-  (batch-1 capacity peaks equal the steady-run peaks).
+  when the gap is under max(1, max_batch/32) (`first_oom` in the records). In-process searches drifted
+  after their first OOM in two configurations, EpiKV on Qwen3-8B (transformers 4.57.1; batch-1 peak 17.0 GiB after
+  an OOM against 15.6 GiB fresh) and batched EpiKV on Llama-8B (4.55.4; 19.4 against 15.6 GiB); the cause was not
+  traced. Both use `scripts/capacity_search.py` (a fresh process per probe). Every other method's batch-1 capacity
+  peak equals its steady-run peak, so their in-process searches are not affected.
 
 ## Commands
 On sk-p4d, from `/opt/dlami/nvme/kvcache_cost/kvcache` (scripts/benchmark.py and src/ at epiphany-kv-cache
@@ -252,6 +252,8 @@ The superseded in-process Qwen3 EpiKV capacity search is `records/capacity_epikv
 `scripts/baseline_costs.py` changed three times while the grid ran, each change outside the code paths of the
 runs already finished: the `oom_phase` field (recorded from the compaction runs on), the R-KV budget reset before a
 cache build (from `compaction_rkv` and the `steady_rkv` rerun on), and `--probe_only` (for `capacity_search.py`).
-The committed file is the final one, identical to the copy on sk-p4d. On 2026-11-15 it gained `--restart_windows`,
+The committed file is the final one, identical to the copy on sk-p4d. Measurements ran src/eviction.py and scripts/benchmark.py
+from f3b46c1 on the box (md5 10a11beb, 96a619f3); later commits by another lane add WindowRuleEviction and a kvpress
+method to those files without touching any measured code path. On 2026-11-15 baseline_costs.py gained `--restart_windows`,
 `--first_fit`, the `epikv_batched` method, the `dms_capacity` mode and a device-agnostic dummy in `prime`; none
 changes the code path of a method measured before.
