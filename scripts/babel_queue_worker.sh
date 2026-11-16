@@ -10,7 +10,7 @@
 # held by jobs that no longer exist to the head of the queue. A failed line goes to failed.txt and is not retried.
 #SBATCH --job-name=q_worker
 #SBATCH --constraint=L40S
-#SBATCH --exclude=babel-o9-24,babel-o5-16,babel-p9-28,babel-t5-28,babel-p9-20,babel-n9-32,babel-x9-32,babel-n9-28,babel-q5-28,babel-m5-20
+#SBATCH --exclude=babel-o9-24,babel-o5-16,babel-p9-28,babel-t5-28,babel-p9-20,babel-n9-32,babel-x9-32,babel-n9-28,babel-q5-28,babel-m5-20,babel-u5-28
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=3
 #SBATCH --mem=32G

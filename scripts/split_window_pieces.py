@@ -1,9 +1,11 @@
-# Split window-rule pieces into 25-problem pieces: the original line keeps its finished problems plus 25 more,
+# Split window-rule pieces into C-problem pieces (default 25): the original line keeps its finished problems plus C more,
 # new lines (tag _s<start>) cover the rest. The queue is reordered so the --defer tags run after the others.
-# Run under the queue lock. Args: --split TAG... --defer TAG...
+# Run under the queue lock. Args: [--chunk C] --split TAG... --defer TAG...
 import json, os, sys, re
 W = '/home/skolawol/rebuttal_window_rules'; G = '/home/skolawol/gridq'
-args = sys.argv[1:]; i = args.index('--defer'); split, defer = args[1:i], args[i + 1:]
+args = sys.argv[1:]; C = 25
+if args[0] == '--chunk': C = int(args[1]); args = args[2:]
+i = args.index('--defer'); split, defer = args[1:i], args[i + 1:]
 L = open(f'{W}/lines.txt').read().rstrip('\n').split('\n')
 num = {l.split()[0]: k + 1 for k, l in enumerate(L)}
 new_first = []
@@ -13,13 +15,13 @@ for tag in split:
     f = f'{W}/cells/{tag}.json'; d = 0
     if os.path.exists(f):
         r = json.load(open(f))['results']; d = sum(len(b['per_problem']) for v in r.values() for b in v.values())
-    keep = min(tot, d + 25)
+    keep = min(tot, d + C)
     L[k - 1] = line.replace(f'--n_samples {n_old}', f'--n_samples {keep}')
-    for s in range(S + keep, S + tot, 25):
+    for s in range(S + keep, S + tot, C):
         nt = re.sub(r'_s\d+$', f'_s{s}', tag); assert nt not in num, nt
-        nl = line.replace(tag, nt, 1).replace(f'--start_idx {S}', f'--start_idx {s}').replace(f'--n_samples {n_old}', f'--n_samples {min(25, S + tot - s)}')
+        nl = line.replace(tag, nt, 1).replace(f'--start_idx {S}', f'--start_idx {s}').replace(f'--n_samples {n_old}', f'--n_samples {min(C, S + tot - s)}')
         L.append(nl); num[nt] = len(L); new_first.append(f'wr {len(L)}')
-    print(tag, 'done', d, 'keep', keep, 'new', (tot - keep + 24) // 25)
+    print(tag, 'done', d, 'keep', keep, 'new', (tot - keep + C - 1) // C)
 open(f'{W}/lines.txt.tmp', 'w').write('\n'.join(L) + '\n'); os.replace(f'{W}/lines.txt.tmp', f'{W}/lines.txt')
 q = [l for l in open(f'{G}/queue.txt').read().split('\n') if l.strip()]
 dset = {f'wr {num[t]}' for t in defer}
