@@ -1,0 +1,31 @@
+# python3 scripts/pair_with_epikv.py ~/rebuttal_window_rules ~/lf_results/grid  (Babel, 2026-11-16 15:10 ET; MATH-500 n=495, greedy, cap 16384, L40S)
+# Rows with pairs < 495 were still running and are not final.
+config                                 pairs  meth% epikv% only_m only_e       p cap_m cap_e oe_cap
+llama_kvpress_snapkv_decoding_K1024      495   72.5   76.8     13     34  0.0031    86    49     27
+llama_kvpress_snapkv_decoding_K2048      495   75.6   76.0     17     19  0.8679    56    54     16
+llama_kvpress_snapkv_decoding_K4096      495   78.0   77.0     11      6  0.3323    46    44      6
+llama_kvpress_snapkv_decoding_K512       495   60.8   70.5      9     57  0.0000   127    73     36
+llama_r_kv_epikv_window_K1024            495   72.1   76.8     17     40  0.0032    87    49     38
+llama_r_kv_epikv_window_K2048            495   78.2   76.0     22     11  0.0801    49    54      9
+llama_r_kv_epikv_window_K4096            495   77.0   77.0      9      9  1.0000    45    44      8
+llama_r_kv_epikv_window_K512             495   59.6   70.5     12     66  0.0000   155    73     63
+llama_raas_epikv_window_K1024            495   77.0   76.8     26     25  1.0000    48    49     17
+llama_raas_epikv_window_K2048            495   77.6   76.0     20     12  0.2153    46    54      7
+llama_raas_epikv_window_K4096            495   76.6   77.0      9     11  0.8238    49    44      9
+llama_raas_epikv_window_K512             495   71.1   70.5     26     23  0.7754    75    73     16
+qwen_kvpress_snapkv_decoding_K1024       359   73.5   77.4     10     24  0.0243    47    44     17
+qwen_kvpress_snapkv_decoding_K2048       272   82.0   80.1     11      6  0.3323    26    28      6
+qwen_kvpress_snapkv_decoding_K4096        69   73.9   75.4      1      2  1.0000    10     9      2
+qwen_kvpress_snapkv_decoding_K512        217   57.1   67.3      5     27  0.0001    67    48     17
+qwen_longflow_native_K1024               495   65.1   75.8     16     69  0.0000   129    67     66
+qwen_longflow_native_K2048               495   77.2   80.0     18     32  0.0649    62    44     28
+qwen_longflow_native_K4096               495   79.2   80.4     18     24  0.4408    51    44     21
+qwen_longflow_native_K512                495   41.0   67.7      6    138  0.0000   242   102    117
+qwen_r_kv_epikv_window_K1024             430   67.0   77.7      6     52  0.0000   107    54     47
+qwen_r_kv_epikv_window_K2048             466   79.2   80.7     10     17  0.2478    54    39     16
+qwen_r_kv_epikv_window_K4096             488   81.4   81.1      9      8  1.0000    43    40      7
+qwen_r_kv_epikv_window_K512              283   54.1   69.6     10     54  0.0000   114    55     43
+qwen_raas_epikv_window_K1024             495   76.2   75.8     23     21  0.8804    64    67     14
+qwen_raas_epikv_window_K2048             482   78.6   79.9     10     16  0.3269    47    43     15
+qwen_raas_epikv_window_K4096             495   81.2   80.4     12      8  0.5034    46    44      8
+qwen_raas_epikv_window_K512              495   66.1   67.7     24     32  0.3497   108   102     27
