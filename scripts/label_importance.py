@@ -403,11 +403,8 @@ def main():
             if t.get("ground_truth") is None:
                 continue   # LiveCodeBench — no boxed answer to compare
             traces.append(t)
-    # Sharding across processes: skip the first N correct traces, then take max_traces.
-    if getattr(args, "skip_traces", 0):
-        traces = traces[args.skip_traces:]
-    if args.max_traces:
-        traces = traces[:args.max_traces]
+            if args.max_traces and len(traces) >= args.max_traces:
+                break
 
     if not traces:
         sys.exit(
@@ -560,8 +557,6 @@ def parse_args():
     p.add_argument("--mask_seed", type=int, default=0,
                    help="Seed for --mask_token random/randmulti, so the arm is "
                         "reproducible.")
-    p.add_argument("--skip_traces", type=int, default=0,
-                   help="Skip the first N correctly-answered traces (for sharding across processes)")
     p.add_argument("--max_traces", type=int, default=None,
                    help="Process at most this many traces (default: all)")
     p.add_argument("--dry_run", action="store_true",
