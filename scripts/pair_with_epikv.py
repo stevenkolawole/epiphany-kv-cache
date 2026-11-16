@@ -1,6 +1,6 @@
 # Pair each window-rule, kvpress and native-LongFlow config with EpiKV (kv_seg_hs_fill) at the same model and K, on
-# MATH-500 problems both have finished. Prints accuracy, paired wins, exact McNemar p and cap hits (a run that
-# reaches the token cap without answering; the paper's loop count). A row is final only when pairs = 495.
+# MATH-500 problems both have finished. Prints accuracy, paired wins, exact McNemar p and cap hits (runs that
+# reach the token cap; the paper's loop count). A row is final only when pairs = 495.
 import json, glob, re, collections, sys
 from math import comb
 WR, LF, CAP = sys.argv[1], sys.argv[2], 16384
