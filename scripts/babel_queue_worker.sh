@@ -12,9 +12,9 @@
 #SBATCH --constraint=L40S
 #SBATCH --exclude=babel-o9-24,babel-o5-16,babel-p9-28,babel-t5-28,babel-p9-20,babel-n9-32,babel-x9-32,babel-n9-28,babel-q5-28
 #SBATCH --gres=gpu:1
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=16G
-#SBATCH --time=2-00:00:00
+#SBATCH --cpus-per-task=3
+#SBATCH --mem=12G
+#SBATCH --time=06:00:00
 #SBATCH --requeue
 #SBATCH --output=/home/skolawol/gridq/logs/worker_%j.out
 G=$HOME/gridq; Q=$G/queue.txt; LK=$G/queue.lock; H=$G/held; mkdir -p $H $G/logs
