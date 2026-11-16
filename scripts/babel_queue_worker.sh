@@ -13,7 +13,7 @@
 #SBATCH --exclude=babel-o9-24,babel-o5-16,babel-p9-28,babel-t5-28,babel-p9-20,babel-n9-32,babel-x9-32,babel-n9-28,babel-q5-28
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=3
-#SBATCH --mem=12G
+#SBATCH --mem=32G
 #SBATCH --time=06:00:00
 #SBATCH --requeue
 #SBATCH --output=/home/skolawol/gridq/logs/worker_%j.out
