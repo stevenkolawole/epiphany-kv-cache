@@ -1,5 +1,5 @@
 # Split window-rule pieces into 25-problem pieces: the original line keeps its finished problems plus 25 more,
-# new lines (tag _s<start>) cover the rest. Queue: split pieces first, then the given low-priority tags moved back.
+# new lines (tag _s<start>) cover the rest. The queue is reordered so the --defer tags run after the others.
 # Run under the queue lock. Args: --split TAG... --defer TAG...
 import json, os, sys, re
 W = '/home/skolawol/rebuttal_window_rules'; G = '/home/skolawol/gridq'
