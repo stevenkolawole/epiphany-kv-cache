@@ -81,7 +81,7 @@ def seeds():
                 w, l = pair(e, r, probs)
                 a = lambda x: 100 * sum(x[q]["correct"] for q in probs) / len(probs)
                 row.append(f"{a(e):.1f} & {a(r):.1f} & {len(w)}/{len(l)}{stars(mcnemar_exact(len(w), len(l)))}")
-            print(f"{mname} & {run} ({PLATFORM[run]}) & " + " & ".join(row) + f" \\\\ % n={len(probs)}")
+            print(f"{mname} & {run} ({PLATFORM[run]}) & " + " & ".join(row) + " \\\\")
 
 
 {"table": table, "seeds": seeds}[sys.argv[1]]()
