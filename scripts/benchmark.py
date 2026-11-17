@@ -600,6 +600,7 @@ def run_one(
     cache_obj = _to_model_kv(past_kv)   # built once; reused unless eviction fires
     generated_ids: List[int] = []
     eos_id = tokenizer.eos_token_id
+    lens = [_as_legacy_kv(cache_obj)[0][0].shape[2]]   # cached positions in layer 0 after the prefill and each step
 
     for step in range(max_new_tokens):
         token_id = int(next_token[0, 0])
@@ -647,6 +648,7 @@ def run_one(
                 if not _write_back(cache_obj, _as_legacy_kv(evicted)):
                     cache_obj = _to_model_kv(_as_legacy_kv(evicted))
 
+        lens.append(_as_legacy_kv(cache_obj)[0][0].shape[2])
         next_token = _pick(step_out.logits[0, -1, :], gen)
         del step_out
         if len(generated_ids) % 512 == 0:
@@ -665,6 +667,8 @@ def run_one(
         "n_tokens_generated": len(generated_ids),
         "wall_time_s":        round(wall_time_s, 2),
         "peak_gpu_mb":        round(peak_gpu_mb, 1),
+        "kv_live":            {"total_tokens": prompt_len + len(generated_ids), "mean_all": round(sum(lens) / len(lens), 1),
+                               "peak_all": max(lens), "after_prefill": lens[0]},
     }
 
 
