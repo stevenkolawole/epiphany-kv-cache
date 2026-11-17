@@ -19,7 +19,7 @@ ds = sys.argv[1]
 MODELS = ["qwen3", "q14b", "nemo"]
 KS = [512, 1024, 2048, 4096] if ds == "math" else [1024, 2048, 4096]
 ROWS = ["none", "epikvnoq", "lagkv", "raas", "h2o", "rkv", "longflow", "thinkv"]
-NAME = {"none": "none (no eviction)", "epikvnoq": "\\methodseg~(no query term)", "lagkv": "Lag-KV", "raas": "RaaS",
+NAME = {"none": "none", "epikvnoq": "\\methodseg", "lagkv": "Lag-KV", "raas": "RaaS",
         "h2o": "H2O", "rkv": "R-KV", "longflow": "LongFlow", "thinkv": "ThinKV"}
 ATTENTION = ["raas", "h2o", "rkv", "longflow", "thinkv"]
 cells, _, _ = load()

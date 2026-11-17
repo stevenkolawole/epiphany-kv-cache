@@ -19,7 +19,7 @@ R = Path(__file__).resolve().parent.parent / "results"
 RUNS = {"seed 0": (R / "rebuttal_sampling", "samp", 8192), "seed 1": (R / "rebuttal_sampling", "samp1", 8192),
         "seed 2": (R / "rebuttal_sampling_seed2_p4d", "samp2", 8192), "seed 0, 16k": (R / "rebuttal_sampling", "samp16k", 16384)}
 SEED = {"samp": 0, "samp1": 1, "samp2": 2, "samp16k": 0}
-PLATFORM = {"seed 0": "Babel L40S", "seed 1": "Babel L40S", "seed 2": "p4d A100", "seed 0, 16k": "Babel L40S"}
+PLATFORM = {"seed 0": "L40S", "seed 1": "L40S", "seed 2": "A100", "seed 0, 16k": "L40S"}
 MODELS = {"llama": "Llama-8B", "qwen": "Qwen-7B"}
 KS = [512, 1024, 2048, 4096]
 
