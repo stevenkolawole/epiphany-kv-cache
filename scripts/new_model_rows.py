@@ -1,7 +1,7 @@
 """LaTeX rows for the new-model tables (Qwen3-8B, Qwen3-14B, Nemotron-Nano-8B; H200, greedy, cap 16,384), from the
 cells pooled by grid_tables.load(). Cells are accuracy on the problems every row of that model shares. Bold: best
-eviction row in a column. Dagger on the EpiKV row: EpiKV is significantly above every attention-based row of the
-table in that column (exact McNemar p<0.05).
+eviction row in a column. Dagger on the EpiKV row: EpiKV is significantly above every attention-based row
+in that column (exact McNemar p<0.05), including the R-KV and LongFlow rows that only the full tables print.
 
   new_model_rows.py main          MATH-500 at K=512, 1024, 4096; rows that need no adaptation
   new_model_rows.py full math     every row and budget, MATH-500
@@ -22,6 +22,7 @@ ds = "math" if mode == "main" else sys.argv[2]
 KS = [512, 1024, 4096] if mode == "main" else ([512, 1024, 2048, 4096] if ds == "math" else [1024, 2048, 4096])
 ROWS = ["none", "epikv", "epikvnoq", "lagkv", "raas", "h2o", "thinkv"] if mode == "main" else \
        ["none", "epikv", "epikvnoq", "lagkv", "raas", "h2o", "rkv", "longflow", "thinkv"]
+ATTENTION = ["raas", "h2o", "rkv", "longflow", "thinkv"]
 cells, _, _ = load()
 ROWS = [p for p in ROWS if all((ds, m, p, 0 if p == "none" else KS[0]) in cells for m in MODELS)]
 probs = {}
@@ -49,7 +50,7 @@ for p in ROWS:
                 c = f"\\textbf{{{c}}}"
             if p == "epikv":
                 sig = []
-                for t in [r for r in ROWS if r not in FA2]:
+                for t in [r for r in ATTENTION if (ds, m, r, k) in cells]:
                     w, l = pair(cells[(ds, m, "epikv", k)], cells[(ds, m, t, k)], probs[m])
                     sig.append(len(w) > len(l) and mcnemar_exact(len(w), len(l)) < 0.05)
                 if sig and all(sig):
