@@ -1,0 +1,429 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "dataset": "math500",
+    "n_samples": 25,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "raas_epikv_window"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "raas_epikv_window": {
+      "512": {
+        "accuracy": 0.68,
+        "n_correct": 17,
+        "n_total": 25,
+        "mean_wall_time_s": 184.78,
+        "mean_peak_gpu_mb": 15591.3,
+        "per_problem": [
+          {
+            "problem": "Roslyn has ten boxes. Five of the boxes contain pencils, four of the boxes conta",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 1011,
+            "wall_time_s": 28.47,
+            "peak_gpu_mb": 15589.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1072,
+              "mean_all": 444.4,
+              "peak_all": 639,
+              "after_prefill": 61
+            }
+          },
+          {
+            "problem": "If no one shares an office, in how many ways can 3 people be assigned to 5 diffe",
+            "ground_truth": "60",
+            "pred_answer": "60",
+            "correct": true,
+            "n_tokens_generated": 1043,
+            "wall_time_s": 28.02,
+            "peak_gpu_mb": 15588.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1095,
+              "mean_all": 443.8,
+              "peak_all": 639,
+              "after_prefill": 52
+            }
+          },
+          {
+            "problem": "What is the remainder of 2004 divided by 12?",
+            "ground_truth": "0",
+            "pred_answer": "0",
+            "correct": true,
+            "n_tokens_generated": 1405,
+            "wall_time_s": 35.08,
+            "peak_gpu_mb": 15585.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1439,
+              "mean_all": 471.3,
+              "peak_all": 639,
+              "after_prefill": 34
+            }
+          },
+          {
+            "problem": "If $f(x)=\\dfrac{2}{x+1}$, then what is the value of $f^{-1}\\left(\\frac{1}{5}\\rig",
+            "ground_truth": "9",
+            "pred_answer": "9",
+            "correct": true,
+            "n_tokens_generated": 1383,
+            "wall_time_s": 34.53,
+            "peak_gpu_mb": 15589.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1442,
+              "mean_all": 479.2,
+              "peak_all": 639,
+              "after_prefill": 59
+            }
+          },
+          {
+            "problem": "A reflection takes $\\begin{pmatrix} 5 \\\\ 0 \\end{pmatrix}$ to $\\begin{pmatrix} 4 ",
+            "ground_truth": "\\begin{pmatrix} 1/5 \\\\ -18/5 \\end{pmatrix}",
+            "pred_answer": "\\begin{pmatrix} \\frac{1}{5} \\\\ \\frac{6}{5} \\end{pmatrix}",
+            "correct": false,
+            "n_tokens_generated": 5398,
+            "wall_time_s": 135.43,
+            "peak_gpu_mb": 15592.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 5484,
+              "mean_all": 553.4,
+              "peak_all": 639,
+              "after_prefill": 86
+            }
+          },
+          {
+            "problem": "The asymptotes of a hyperbola are $y = 2x - 3$ and $y = 17 - 2x.$  Also, the hyp",
+            "ground_truth": "2 \\sqrt{5}",
+            "pred_answer": "2\\sqrt{5}",
+            "correct": true,
+            "n_tokens_generated": 2217,
+            "wall_time_s": 55.7,
+            "peak_gpu_mb": 15592.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2299,
+              "mean_all": 521.2,
+              "peak_all": 639,
+              "after_prefill": 82
+            }
+          },
+          {
+            "problem": "Let $N$ be the units digit of the number $21420N$. Which nonzero value of $N$ ma",
+            "ground_truth": "6",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 424.68,
+            "peak_gpu_mb": 15588.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16437,
+              "mean_all": 567.2,
+              "peak_all": 639,
+              "after_prefill": 53
+            }
+          },
+          {
+            "problem": "Six witches and ten sorcerers are at an arcane mixer. The witches have decided t",
+            "ground_truth": "60",
+            "pred_answer": "60",
+            "correct": true,
+            "n_tokens_generated": 1318,
+            "wall_time_s": 39.48,
+            "peak_gpu_mb": 15595.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1420,
+              "mean_all": 491.3,
+              "peak_all": 639,
+              "after_prefill": 102
+            }
+          },
+          {
+            "problem": "Let $P(x)$ be a quadratic polynomial with real coefficients satisfying $x^2 - 2x",
+            "ground_truth": "406",
+            "pred_answer": "\\frac{8117}{20}",
+            "correct": false,
+            "n_tokens_generated": 2346,
+            "wall_time_s": 72.03,
+            "peak_gpu_mb": 15593.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2437,
+              "mean_all": 526.1,
+              "peak_all": 639,
+              "after_prefill": 91
+            }
+          },
+          {
+            "problem": "Simplify $\\frac{(10r^3)(4r^6)}{8r^4}$.",
+            "ground_truth": "5r^5",
+            "pred_answer": "5r^5",
+            "correct": true,
+            "n_tokens_generated": 1579,
+            "wall_time_s": 48.72,
+            "peak_gpu_mb": 15586.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1622,
+              "mean_all": 485.6,
+              "peak_all": 639,
+              "after_prefill": 43
+            }
+          },
+          {
+            "problem": "What is the sum of the values of $a$ that satisfy the equation $$(3)5^2-4(5-a)^2",
+            "ground_truth": "10",
+            "pred_answer": "10",
+            "correct": true,
+            "n_tokens_generated": 2304,
+            "wall_time_s": 87.91,
+            "peak_gpu_mb": 15588.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2362,
+              "mean_all": 517.3,
+              "peak_all": 639,
+              "after_prefill": 58
+            }
+          },
+          {
+            "problem": "What is the remainder when $129^{34}+96^{38}$ is divided by $11$?",
+            "ground_truth": "9",
+            "pred_answer": "9",
+            "correct": true,
+            "n_tokens_generated": 3459,
+            "wall_time_s": 138.77,
+            "peak_gpu_mb": 15586.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3502,
+              "mean_all": 534.5,
+              "peak_all": 639,
+              "after_prefill": 43
+            }
+          },
+          {
+            "problem": "Compute $\\sin^3 18^\\circ + \\sin^2 18^\\circ.$",
+            "ground_truth": "\\frac{1}{8}",
+            "pred_answer": "\\dfrac{1}{8}",
+            "correct": true,
+            "n_tokens_generated": 3391,
+            "wall_time_s": 136.12,
+            "peak_gpu_mb": 15586.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3431,
+              "mean_all": 533.3,
+              "peak_all": 639,
+              "after_prefill": 40
+            }
+          },
+          {
+            "problem": "Let $f(x)$ be the polynomial \\[f(x)=3x^4+5x^2-9x-2.\\] If $g(x)$ is equal to the ",
+            "ground_truth": "-2",
+            "pred_answer": "-2",
+            "correct": true,
+            "n_tokens_generated": 2001,
+            "wall_time_s": 80.25,
+            "peak_gpu_mb": 15591.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2080,
+              "mean_all": 514.0,
+              "peak_all": 639,
+              "after_prefill": 79
+            }
+          },
+          {
+            "problem": "What is the shortest distance from the point $(6, 0)$ to the line $y = 2x-2$? Ex",
+            "ground_truth": "2\\sqrt{5}",
+            "pred_answer": "2\\sqrt{5}",
+            "correct": true,
+            "n_tokens_generated": 1428,
+            "wall_time_s": 57.26,
+            "peak_gpu_mb": 15588.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1484,
+              "mean_all": 480.8,
+              "peak_all": 639,
+              "after_prefill": 56
+            }
+          },
+          {
+            "problem": "There are an infinite number of vectors $\\mathbf{v}$ such that\n\\[\\begin{pmatrix}",
+            "ground_truth": "\\begin{pmatrix} -7 \\\\ 16 \\\\ 5 \\end{pmatrix}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 658.02,
+            "peak_gpu_mb": 15595.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16488,
+              "mean_all": 568.7,
+              "peak_all": 639,
+              "after_prefill": 104
+            }
+          },
+          {
+            "problem": "Find the projection of $\\mathbf{a}$ onto $\\mathbf{b} = \\begin{pmatrix} 2 \\\\ 6 \\\\",
+            "ground_truth": "\\begin{pmatrix} 16/49 \\\\ 48/49 \\\\ 24/49 \\end{pmatrix}",
+            "pred_answer": "\\begin{pmatrix} \\dfrac{16}{49} \\\\ \\dfrac{48}{49} \\\\ \\dfrac{24}{49} \\end{pmatrix}",
+            "correct": false,
+            "n_tokens_generated": 1418,
+            "wall_time_s": 56.92,
+            "peak_gpu_mb": 15591.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1496,
+              "mean_all": 488.2,
+              "peak_all": 639,
+              "after_prefill": 78
+            }
+          },
+          {
+            "problem": "If $\\arccos x + \\arccos 2x + \\arccos 3x = \\pi,$ then $x$ satisfies a cubic polyn",
+            "ground_truth": "27",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 658.16,
+            "peak_gpu_mb": 15598.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16510,
+              "mean_all": 569.4,
+              "peak_all": 639,
+              "after_prefill": 126
+            }
+          },
+          {
+            "problem": "What is the largest integer less than $2010$ that has a remainder of $5$ when di",
+            "ground_truth": "1440",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 658.78,
+            "peak_gpu_mb": 15590.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16456,
+              "mean_all": 567.7,
+              "peak_all": 639,
+              "after_prefill": 72
+            }
+          },
+          {
+            "problem": "The value of $y$ varies inversely as $\\sqrt x$ and when $x=24$, $y=15$. What is ",
+            "ground_truth": "600",
+            "pred_answer": "600",
+            "correct": true,
+            "n_tokens_generated": 1172,
+            "wall_time_s": 47.43,
+            "peak_gpu_mb": 15589.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1231,
+              "mean_all": 461.5,
+              "peak_all": 639,
+              "after_prefill": 59
+            }
+          },
+          {
+            "problem": "Let $G$ and $H$ denote the centroid and orthocenter of triangle $ABC,$ respectiv",
+            "ground_truth": "3R^2",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 665.18,
+            "peak_gpu_mb": 15594.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16484,
+              "mean_all": 568.6,
+              "peak_all": 639,
+              "after_prefill": 100
+            }
+          },
+          {
+            "problem": "A square and an equilateral triangle have\tequal\tperimeters.\tThe area of the tria",
+            "ground_truth": "6\\sqrt{2}",
+            "pred_answer": "6\\sqrt{2}",
+            "correct": true,
+            "n_tokens_generated": 661,
+            "wall_time_s": 26.75,
+            "peak_gpu_mb": 15605.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 817,
+              "mean_all": 442.2,
+              "peak_all": 639,
+              "after_prefill": 156
+            }
+          },
+          {
+            "problem": "Three pencils and a jumbo eraser cost $\\$1.24$. Five pencils and a jumbo eraser ",
+            "ground_truth": "29",
+            "pred_answer": "29",
+            "correct": true,
+            "n_tokens_generated": 1292,
+            "wall_time_s": 52.32,
+            "peak_gpu_mb": 15590.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1359,
+              "mean_all": 475.3,
+              "peak_all": 639,
+              "after_prefill": 67
+            }
+          },
+          {
+            "problem": "Let $a,$ $b,$ $c,$ $d$ be positive real numbers such that $a + b + c + d = 1.$  ",
+            "ground_truth": "64",
+            "pred_answer": "64",
+            "correct": true,
+            "n_tokens_generated": 6427,
+            "wall_time_s": 260.96,
+            "peak_gpu_mb": 15593.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 6520,
+              "mean_all": 557.6,
+              "peak_all": 639,
+              "after_prefill": 93
+            }
+          },
+          {
+            "problem": "Let $a$ and $b$ be positive real numbers such that $ab^2 = 5.$  Find the minimum",
+            "ground_truth": "50",
+            "pred_answer": "50",
+            "correct": true,
+            "n_tokens_generated": 3240,
+            "wall_time_s": 132.54,
+            "peak_gpu_mb": 15588.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3298,
+              "mean_all": 534.2,
+              "peak_all": 639,
+              "after_prefill": 58
+            }
+          }
+        ]
+      }
+    }
+  }
+}
