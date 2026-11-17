@@ -15,7 +15,7 @@ from pool_aime import mcnemar_exact  # noqa: E402
 
 MODELS = ["qwen3", "q14b", "nemo"]
 TEX = {"none": "none$^{\\star}$", "epikv": "\\methodq~(ours)", "epikvnoq": "\\methodseg~(no query term)", "lagkv": "Lag-KV",
-       "raas": "RaaS", "h2o": "H2O", "rkv": "R-KV$^{\\ddagger}$", "longflow": "LongFlow$^{\\ddagger}$", "thinkv": "ThinKV"}
+       "raas": "RaaS", "h2o": "H2O", "rkv": "R-KV", "longflow": "LongFlow", "thinkv": "ThinKV"}
 FA2 = {"none", "epikv", "epikvnoq", "lagkv"}
 mode = sys.argv[1]
 ds = "math" if mode == "main" else sys.argv[2]
