@@ -1,0 +1,205 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "gpqa",
+    "n_samples": 11,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "4096": {
+        "accuracy": 0.5454545454545454,
+        "n_correct": 6,
+        "n_total": 11,
+        "mean_wall_time_s": 475.06,
+        "mean_peak_gpu_mb": 18119.7,
+        "per_problem": [
+          {
+            "problem": "We have a solution which has the volume of 200.00 cm3 and contains 1.00 g KH2PO4",
+            "ground_truth": "A",
+            "pred_answer": "A",
+            "correct": true,
+            "n_tokens_generated": 12077,
+            "wall_time_s": 571.42,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 12337,
+              "mean_all": 3529.8,
+              "peak_all": 4223,
+              "after_prefill": 260
+            }
+          },
+          {
+            "problem": "Calculate the enthalpy of neutralization when 500 mL 0.2 M HCl, 300 mL 0.3 M H2S",
+            "ground_truth": "B",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 849.14,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16535,
+              "mean_all": 3669.1,
+              "peak_all": 4223,
+              "after_prefill": 151
+            }
+          },
+          {
+            "problem": "The Interaction between the bosonic field X and fermions is given by\n\n\\mathcal{L",
+            "ground_truth": "A",
+            "pred_answer": "A",
+            "correct": true,
+            "n_tokens_generated": 8822,
+            "wall_time_s": 439.13,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 9190,
+              "mean_all": 3344.6,
+              "peak_all": 4223,
+              "after_prefill": 368
+            }
+          },
+          {
+            "problem": "A vector field f(r) falls off radially as 1/r^2 from the origin, i.e. the magnit",
+            "ground_truth": "B",
+            "pred_answer": "B",
+            "correct": true,
+            "n_tokens_generated": 3876,
+            "wall_time_s": 181.64,
+            "peak_gpu_mb": 16238.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4071,
+              "mean_all": 2132.5,
+              "peak_all": 4070,
+              "after_prefill": 195
+            }
+          },
+          {
+            "problem": "A synchrocyclotron is a special type of cyclotron. A proton is injected at \\$t=0",
+            "ground_truth": "A",
+            "pred_answer": "A",
+            "correct": true,
+            "n_tokens_generated": 11191,
+            "wall_time_s": 556.02,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 11432,
+              "mean_all": 3473.3,
+              "peak_all": 4223,
+              "after_prefill": 241
+            }
+          },
+          {
+            "problem": "A chemical reaction for the synthesis of a product containing H+ ion was proceed",
+            "ground_truth": "C",
+            "pred_answer": "C",
+            "correct": true,
+            "n_tokens_generated": 2983,
+            "wall_time_s": 142.54,
+            "peak_gpu_mb": 16110.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3165,
+              "mean_all": 1673.0,
+              "peak_all": 3164,
+              "after_prefill": 182
+            }
+          },
+          {
+            "problem": "Two compounds A and B are treated separately with hydrochloric acid, sodium nitr",
+            "ground_truth": "B",
+            "pred_answer": "C",
+            "correct": false,
+            "n_tokens_generated": 9956,
+            "wall_time_s": 490.29,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 10260,
+              "mean_all": 3412.9,
+              "peak_all": 4223,
+              "after_prefill": 304
+            }
+          },
+          {
+            "problem": "Substance X, known for incorporating a heavier isotope of one of its constituent",
+            "ground_truth": "A",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 840.96,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16626,
+              "mean_all": 3691.1,
+              "peak_all": 4223,
+              "after_prefill": 242
+            }
+          },
+          {
+            "problem": "1-bromobenzene-2-d is treated with NaNH2 in condensed ammonia solvent. How many ",
+            "ground_truth": "C",
+            "pred_answer": "B",
+            "correct": false,
+            "n_tokens_generated": 6615,
+            "wall_time_s": 314.02,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 6724,
+              "mean_all": 2919.1,
+              "peak_all": 4223,
+              "after_prefill": 109
+            }
+          },
+          {
+            "problem": "Consider this density matrix\n\n$\\rho=\\frac{1}{2}\\left(\\left|0\\right\\rangle \\left\\",
+            "ground_truth": "A",
+            "pred_answer": "A",
+            "correct": true,
+            "n_tokens_generated": 2499,
+            "wall_time_s": 117.79,
+            "peak_gpu_mb": 16037.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2661,
+              "mean_all": 1411.0,
+              "peak_all": 2660,
+              "after_prefill": 162
+            }
+          },
+          {
+            "problem": "The Pinacol-Pinacolone rearrangement is a chemical reaction involving the conver",
+            "ground_truth": "A",
+            "pred_answer": "D",
+            "correct": false,
+            "n_tokens_generated": 14655,
+            "wall_time_s": 722.66,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 15070,
+              "mean_all": 3681.0,
+              "peak_all": 4223,
+              "after_prefill": 415
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,205 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "gpqa",
+    "n_samples": 11,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "4096": {
+        "accuracy": 0.6363636363636364,
+        "n_correct": 7,
+        "n_total": 11,
+        "mean_wall_time_s": 395.1,
+        "mean_peak_gpu_mb": 18612.2,
+        "per_problem": [
+          {
+            "problem": "Consider two electrons are in p orbital angular momentum state. Ignoring there s",
+            "ground_truth": "C",
+            "pred_answer": "C",
+            "correct": true,
+            "n_tokens_generated": 12376,
+            "wall_time_s": 587.72,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 12628,
+              "mean_all": 3542.5,
+              "peak_all": 4223,
+              "after_prefill": 252
+            }
+          },
+          {
+            "problem": "There is a spin 1/2 particle with magnetic moment mu (= gamma*Sz), aligned with ",
+            "ground_truth": "B",
+            "pred_answer": "B",
+            "correct": true,
+            "n_tokens_generated": 8101,
+            "wall_time_s": 366.05,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8271,
+              "mean_all": 3176.9,
+              "peak_all": 4223,
+              "after_prefill": 170
+            }
+          },
+          {
+            "problem": "In the CERN Bubble Chamber a decay occurs, $X^{0}\\rightarrow Y^{+}Z^{-}$ in \\tau",
+            "ground_truth": "C",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 778.98,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16596,
+              "mean_all": 3683.9,
+              "peak_all": 4223,
+              "after_prefill": 212
+            }
+          },
+          {
+            "problem": "reaction of solid A with 8 equivalents of gas B forms bright red product C.\nWhen",
+            "ground_truth": "B",
+            "pred_answer": "D",
+            "correct": false,
+            "n_tokens_generated": 8042,
+            "wall_time_s": 354.62,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8217,
+              "mean_all": 3172.3,
+              "peak_all": 4223,
+              "after_prefill": 175
+            }
+          },
+          {
+            "problem": "Astronomers are studying a system of five exoplanets with circular orbits, disco",
+            "ground_truth": "A",
+            "pred_answer": "A",
+            "correct": true,
+            "n_tokens_generated": 4651,
+            "wall_time_s": 231.12,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4833,
+              "mean_all": 2458.4,
+              "peak_all": 4223,
+              "after_prefill": 182
+            }
+          },
+          {
+            "problem": "7-(tert-butoxy)bicyclo[2.2.1]hepta-2,5-diene is combined with 2 equivalents of 5",
+            "ground_truth": "A",
+            "pred_answer": "C",
+            "correct": false,
+            "n_tokens_generated": 6020,
+            "wall_time_s": 306.85,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 6228,
+              "mean_all": 2862.3,
+              "peak_all": 4223,
+              "after_prefill": 208
+            }
+          },
+          {
+            "problem": "Two astronauts of masses 2m and 3m travel at relativistic speeds of 0.6 c and 0.",
+            "ground_truth": "C",
+            "pred_answer": "C",
+            "correct": true,
+            "n_tokens_generated": 2692,
+            "wall_time_s": 128.76,
+            "peak_gpu_mb": 16070.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2889,
+              "mean_all": 1542.5,
+              "peak_all": 2888,
+              "after_prefill": 197
+            }
+          },
+          {
+            "problem": "We want to observe a decay of a single atom (atomic nucleus). It is possible to ",
+            "ground_truth": "C",
+            "pred_answer": "C",
+            "correct": true,
+            "n_tokens_generated": 6782,
+            "wall_time_s": 338.24,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 6961,
+              "mean_all": 2991.1,
+              "peak_all": 4223,
+              "after_prefill": 179
+            }
+          },
+          {
+            "problem": "You want to study the role of the GADD45G protein in a mouse model. You are high",
+            "ground_truth": "B",
+            "pred_answer": "B",
+            "correct": true,
+            "n_tokens_generated": 4064,
+            "wall_time_s": 198.89,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4713,
+              "mean_all": 2643.1,
+              "peak_all": 4223,
+              "after_prefill": 649
+            }
+          },
+          {
+            "problem": "You want to create a mouse embryonic chimera with induced pluripotent stem cells",
+            "ground_truth": "A",
+            "pred_answer": "A",
+            "correct": true,
+            "n_tokens_generated": 4914,
+            "wall_time_s": 235.52,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 5145,
+              "mean_all": 2588.9,
+              "peak_all": 4223,
+              "after_prefill": 231
+            }
+          },
+          {
+            "problem": "The Cope rearrangement is a chemical reaction where a 1,5-diene molecule undergo",
+            "ground_truth": "D",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 819.35,
+            "peak_gpu_mb": 18866.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16965,
+              "mean_all": 3768.6,
+              "peak_all": 4223,
+              "after_prefill": 581
+            }
+          }
+        ]
+      }
+    }
+  }
+}

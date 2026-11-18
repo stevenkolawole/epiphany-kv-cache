@@ -1,0 +1,205 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "gpqa",
+    "n_samples": 11,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "4096": {
+        "accuracy": 0.45454545454545453,
+        "n_correct": 5,
+        "n_total": 11,
+        "mean_wall_time_s": 324.38,
+        "mean_peak_gpu_mb": 17697.9,
+        "per_problem": [
+          {
+            "problem": "Imagine a point charge q is moving with a trajectory $\\vec{s}(t)$, where t is ti",
+            "ground_truth": "D",
+            "pred_answer": "D",
+            "correct": true,
+            "n_tokens_generated": 5800,
+            "wall_time_s": 199.03,
+            "peak_gpu_mb": 18493.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 6333,
+              "mean_all": 3025.4,
+              "peak_all": 4223,
+              "after_prefill": 533
+            }
+          },
+          {
+            "problem": "In an experiment, compound X (C11H12O) was subjected to a reaction with 1,4-diaz",
+            "ground_truth": "D",
+            "pred_answer": "B",
+            "correct": false,
+            "n_tokens_generated": 15226,
+            "wall_time_s": 532.4,
+            "peak_gpu_mb": 18493.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 15603,
+              "mean_all": 3689.6,
+              "peak_all": 4223,
+              "after_prefill": 377
+            }
+          },
+          {
+            "problem": "You come across an algorithm that gives the following output (written as input -",
+            "ground_truth": "D",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 568.05,
+            "peak_gpu_mb": 18493.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16509,
+              "mean_all": 3662.8,
+              "peak_all": 4223,
+              "after_prefill": 125
+            }
+          },
+          {
+            "problem": "Identify the correct sequence of reagents for the synthesis of [1,1'-bi(cyclopen",
+            "ground_truth": "D",
+            "pred_answer": "D",
+            "correct": true,
+            "n_tokens_generated": 12178,
+            "wall_time_s": 425.3,
+            "peak_gpu_mb": 18493.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 12443,
+              "mean_all": 3536.7,
+              "peak_all": 4223,
+              "after_prefill": 265
+            }
+          },
+          {
+            "problem": "cyclooctatetraene was heated with maleic anhydride in a 1:1 ratio, forming produ",
+            "ground_truth": "D",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 571.92,
+            "peak_gpu_mb": 18493.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 17191,
+              "mean_all": 3816.4,
+              "peak_all": 4223,
+              "after_prefill": 807
+            }
+          },
+          {
+            "problem": "We dilute 20.00 cm3 0.05 M acetic acid with 20.00 cm3 water, then titrate the re",
+            "ground_truth": "C",
+            "pred_answer": "C",
+            "correct": true,
+            "n_tokens_generated": 2393,
+            "wall_time_s": 79.89,
+            "peak_gpu_mb": 15679.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2587,
+              "mean_all": 1390.0,
+              "peak_all": 2586,
+              "after_prefill": 194
+            }
+          },
+          {
+            "problem": "While solving higher dimensional heat equations subject to suitable initial and ",
+            "ground_truth": "B",
+            "pred_answer": "B",
+            "correct": true,
+            "n_tokens_generated": 771,
+            "wall_time_s": 25.14,
+            "peak_gpu_mb": 15469.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 917,
+              "mean_all": 531.0,
+              "peak_all": 916,
+              "after_prefill": 146
+            }
+          },
+          {
+            "problem": "Two planets have been detected orbiting a star using both the transit and radial",
+            "ground_truth": "C",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 570.57,
+            "peak_gpu_mb": 18493.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16680,
+              "mean_all": 3703.9,
+              "peak_all": 4223,
+              "after_prefill": 296
+            }
+          },
+          {
+            "problem": "A chemist performed two reactions by taking two unknown compounds and treated th",
+            "ground_truth": "B",
+            "pred_answer": "C",
+            "correct": false,
+            "n_tokens_generated": 5853,
+            "wall_time_s": 195.76,
+            "peak_gpu_mb": 18493.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 6206,
+              "mean_all": 2921.4,
+              "peak_all": 4223,
+              "after_prefill": 353
+            }
+          },
+          {
+            "problem": "You have prepared a di-substituted 6-membered aromatic ring compound containing ",
+            "ground_truth": "D",
+            "pred_answer": "A",
+            "correct": false,
+            "n_tokens_generated": 12709,
+            "wall_time_s": 356.18,
+            "peak_gpu_mb": 18493.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 13036,
+              "mean_all": 3581.6,
+              "peak_all": 4223,
+              "after_prefill": 327
+            }
+          },
+          {
+            "problem": "You tag the inner capsid proteins of rotavirus with a GFP and deliver them to mi",
+            "ground_truth": "D",
+            "pred_answer": "D",
+            "correct": true,
+            "n_tokens_generated": 1636,
+            "wall_time_s": 43.9,
+            "peak_gpu_mb": 15582.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1822,
+              "mean_all": 1003.5,
+              "peak_all": 1821,
+              "after_prefill": 186
+            }
+          }
+        ]
+      }
+    }
+  }
+}

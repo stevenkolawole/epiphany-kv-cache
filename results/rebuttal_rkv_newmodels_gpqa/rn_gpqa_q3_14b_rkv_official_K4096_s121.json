@@ -1,0 +1,205 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "gpqa",
+    "n_samples": 11,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "4096": {
+        "accuracy": 0.45454545454545453,
+        "n_correct": 5,
+        "n_total": 11,
+        "mean_wall_time_s": 509.93,
+        "mean_peak_gpu_mb": 31232.1,
+        "per_problem": [
+          {
+            "problem": "acetic acid is treated with bromine, pyridine, and acetic anhydride with heating",
+            "ground_truth": "B",
+            "pred_answer": "B",
+            "correct": true,
+            "n_tokens_generated": 12889,
+            "wall_time_s": 744.89,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 13108,
+              "mean_all": 3557.0,
+              "peak_all": 4223,
+              "after_prefill": 219
+            }
+          },
+          {
+            "problem": "A supernova occurred in our Galaxy. Part of the supernova ejecta is moving direc",
+            "ground_truth": "B",
+            "pred_answer": "B",
+            "correct": true,
+            "n_tokens_generated": 10601,
+            "wall_time_s": 565.17,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 10834,
+              "mean_all": 3432.2,
+              "peak_all": 4223,
+              "after_prefill": 233
+            }
+          },
+          {
+            "problem": "Particles are collided at the center of a spherical detector producing new type ",
+            "ground_truth": "D",
+            "pred_answer": "D",
+            "correct": true,
+            "n_tokens_generated": 4385,
+            "wall_time_s": 234.13,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4556,
+              "mean_all": 2345.1,
+              "peak_all": 4223,
+              "after_prefill": 171
+            }
+          },
+          {
+            "problem": "Consider a quantum mechanical system containing a particle of mass $m$ moving in",
+            "ground_truth": "A",
+            "pred_answer": "A",
+            "correct": true,
+            "n_tokens_generated": 3292,
+            "wall_time_s": 177.02,
+            "peak_gpu_mb": 28765.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3548,
+              "mean_all": 1901.5,
+              "peak_all": 3547,
+              "after_prefill": 256
+            }
+          },
+          {
+            "problem": "An organic chemist performs two reactions.\nReaction I:\n(S)-5-methoxyhexan-3-one ",
+            "ground_truth": "A",
+            "pred_answer": "C",
+            "correct": false,
+            "n_tokens_generated": 16116,
+            "wall_time_s": 712.79,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16386,
+              "mean_all": 3690.1,
+              "peak_all": 4223,
+              "after_prefill": 270
+            }
+          },
+          {
+            "problem": "Which of the following molecules is formed when 5-butylnona-2,6-diene is heated?",
+            "ground_truth": "D",
+            "pred_answer": "D",
+            "correct": true,
+            "n_tokens_generated": 8347,
+            "wall_time_s": 313.6,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8500,
+              "mean_all": 3197.7,
+              "peak_all": 4223,
+              "after_prefill": 153
+            }
+          },
+          {
+            "problem": "Congratulations, you just landed your dream job at one of the top structural bio",
+            "ground_truth": "A",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 636.19,
+            "peak_gpu_mb": 31480.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 19208,
+              "mean_all": 4105.1,
+              "peak_all": 4223,
+              "after_prefill": 2824
+            }
+          },
+          {
+            "problem": "Identify compound E in the following reaction scheme.\nCompound A, when reacted w",
+            "ground_truth": "A",
+            "pred_answer": "B",
+            "correct": false,
+            "n_tokens_generated": 16050,
+            "wall_time_s": 741.2,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16339,
+              "mean_all": 3692.7,
+              "peak_all": 4223,
+              "after_prefill": 289
+            }
+          },
+          {
+            "problem": "Large clouds of neutral hydrogen in deep space absorb the light from background ",
+            "ground_truth": "A",
+            "pred_answer": "C",
+            "correct": false,
+            "n_tokens_generated": 5172,
+            "wall_time_s": 224.55,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 5310,
+              "mean_all": 2595.6,
+              "peak_all": 4223,
+              "after_prefill": 138
+            }
+          },
+          {
+            "problem": "A dicarboxylic acid containing a cis-alkene was dehydrated to the corresponding ",
+            "ground_truth": "D",
+            "pred_answer": "A",
+            "correct": false,
+            "n_tokens_generated": 10806,
+            "wall_time_s": 497.76,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 11175,
+              "mean_all": 3494.5,
+              "peak_all": 4223,
+              "after_prefill": 369
+            }
+          },
+          {
+            "problem": "The 1H NMR spectrum of a solution containing a 1:1 mixture of two aromatic compo",
+            "ground_truth": "D",
+            "pred_answer": "A",
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 761.91,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16725,
+              "mean_all": 3714.4,
+              "peak_all": 4223,
+              "after_prefill": 341
+            }
+          }
+        ]
+      }
+    }
+  }
+}

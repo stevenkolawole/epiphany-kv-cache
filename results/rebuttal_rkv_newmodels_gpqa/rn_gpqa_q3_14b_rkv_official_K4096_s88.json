@@ -1,0 +1,122 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "gpqa",
+    "n_samples": 11,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "4096": {
+        "partial": true,
+        "n_total": 11,
+        "per_problem": [
+          {
+            "problem": "1,3-dibromoadamantane is heated to 240C with an excess of KOH, creating a light ",
+            "ground_truth": "D",
+            "pred_answer": "D",
+            "correct": true,
+            "n_tokens_generated": 8566,
+            "wall_time_s": 360.22,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8832,
+              "mean_all": 3274.6,
+              "peak_all": 4223,
+              "after_prefill": 266
+            }
+          },
+          {
+            "problem": "Determine the product obtained when 3,4-dimethylhexanedial is reacted with the f",
+            "ground_truth": "C",
+            "pred_answer": "A",
+            "correct": false,
+            "n_tokens_generated": 10717,
+            "wall_time_s": 451.99,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 10932,
+              "mean_all": 3433.4,
+              "peak_all": 4223,
+              "after_prefill": 215
+            }
+          },
+          {
+            "problem": "cyclohexanone is treated with LDA at low temperature, followed by benzaldehyde. ",
+            "ground_truth": "D",
+            "pred_answer": "B",
+            "correct": false,
+            "n_tokens_generated": 13496,
+            "wall_time_s": 573.44,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 13742,
+              "mean_all": 3592.0,
+              "peak_all": 4223,
+              "after_prefill": 246
+            }
+          },
+          {
+            "problem": "Calculate the enthalpy of formation of (CH3)2C=CH-CH2-CH(CH3)-CH2-CH=C(CH3)2. Gi",
+            "ground_truth": "C",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 698.31,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16598,
+              "mean_all": 3684.4,
+              "peak_all": 4223,
+              "after_prefill": 214
+            }
+          },
+          {
+            "problem": "\"Scientist aims to run quantitative polymerase chain reaction (qPCR) on some sam",
+            "ground_truth": "B",
+            "pred_answer": "B",
+            "correct": true,
+            "n_tokens_generated": 8678,
+            "wall_time_s": 367.29,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 9085,
+              "mean_all": 3348.2,
+              "peak_all": 4223,
+              "after_prefill": 407
+            }
+          },
+          {
+            "problem": "Identify the starting material(s) required to synthesize methyl 2-propyl-1,2,4a,",
+            "ground_truth": "C",
+            "pred_answer": "C",
+            "correct": true,
+            "n_tokens_generated": 10617,
+            "wall_time_s": 672.46,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 10826,
+              "mean_all": 3424.3,
+              "peak_all": 4223,
+              "after_prefill": 209
+            }
+          }
+        ]
+      }
+    }
+  }
+}
