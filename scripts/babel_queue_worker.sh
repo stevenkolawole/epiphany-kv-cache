@@ -1,5 +1,8 @@
 #!/bin/bash
-# Pull-based worker for Babel: two slots per card, each pops the next line of $Q and runs it until the queue is empty.
+# Pull-based worker for Babel: SLOTS slots per card (default 2), each pops the next line of $Q and runs it until the
+# queue is empty. QUEUE_NAME picks the queue file $HOME/gridq/<name>.txt (default queue) and its own held folder, so
+# lines that need a card to themselves go in a separate queue served with SLOTS=1:
+#   sbatch -p general --export=ALL,QUEUE_NAME=one_per_card,SLOTS=1 scripts/babel_queue_worker.sh
 # Submit on both partitions (any number; spare workers exit when the queue is empty):
 #   sbatch -p general scripts/babel_queue_worker.sh
 #   sbatch -p preempt --qos=preempt_qos scripts/babel_queue_worker.sh
@@ -19,7 +22,7 @@
 #SBATCH --time=06:00:00
 #SBATCH --requeue
 #SBATCH --output=/home/skolawol/gridq/logs/worker_%j.out
-G=$HOME/gridq; Q=$G/queue.txt; LK=$G/queue.lock; H=$G/held; mkdir -p $H $G/logs
+G=$HOME/gridq; QN=${QUEUE_NAME:-queue}; Q=$G/$QN.txt; LK=$G/$QN.lock; H=$G/held; [ $QN = queue ] || H=$G/held_$QN; mkdir -p $H $G/logs
 WR=$HOME/rebuttal_window_rules; LF=$HOME/lf_results/grid; mkdir -p $LF/results $LF/done $LF/logs
 LFV=/data/user_data/skolawol/lf_venv; LFCODE=$HOME/workspace/lf_smoke/epikv
 J=$SLURM_JOB_ID
@@ -69,5 +72,5 @@ slot(){ local s=$1 hf=$H/$J.$1 line rc t0 fast=0
   done; }
 
 log "WORKER_UP partition=$SLURM_JOB_PARTITION"
-slot 0 & slot 1 & wait
+for i in $(seq 0 $(( ${SLOTS:-2} - 1 ))); do slot $i & done; wait
 log "WORKER_DONE"
