@@ -20,7 +20,7 @@ R = Path(__file__).resolve().parent.parent / "results"
 N, KS = 198, [1024, 2048, 4096]
 PAPER, ADDED = ["llama", "qwen"], ["qwen3", "q14b", "nemo"]
 ROWS = ["none", "epikv", "epikvnoq", "raas", "h2o", "rkv", "longflow", "thinkv", "dms"]
-TEX = {"none": "none$^{\\star}$", "epikv": "\\methodq", "epikvnoq": "\\methodseg", "raas": "RaaS", "h2o": "H2O",
+TEX = {"none": "No eviction (no budget)", "epikv": "\\methodq", "epikvnoq": "\\methodseg", "raas": "RaaS", "h2o": "H2O",
        "rkv": "R-KV", "longflow": "LongFlow", "thinkv": "ThinKV", "dms": "DMS (trained, no budget)"}
 FA2 = {"none", "epikv", "epikvnoq"}
 PENDING, UNSUPPORTED = "$\\circ$", "--"

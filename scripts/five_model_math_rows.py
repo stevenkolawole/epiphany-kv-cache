@@ -12,7 +12,7 @@ import re
 import sys
 from pathlib import Path
 
-SHORT = {"\\methodq~(ours)": "\\methodq", "\\methodseg~(no query term)": "\\methodseg"}
+SHORT = {"\\methodq~(ours)": "\\methodq", "\\methodseg~(no query term)": "\\methodseg", "none$^{\\star}$": "No eviction (no budget)"}
 
 
 def rows(path):
