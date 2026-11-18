@@ -1,10 +1,14 @@
 """LaTeX rows of the five-model MATH-500 table: joins the rows of the two paper models (n500_table.py --latex-main) and of
 the three added models (new_model_rows.py full math) into one row per method, 8 + 12 budget cells. Daggers are set in
-the column gap (\\rlap) so they add no width.
+the column gap (\\rlap) so they add no width. The last row is DMS, a trained policy with one checkpoint (Qwen3-8B) and no
+budget, from results/rebuttal_dms.
 
   five_model_math_rows.py <two-model rows .tex> <three-model rows .tex>
 """
+import glob
+import json
 import sys
+from pathlib import Path
 
 SHORT = {"\\methodq~(ours)": "\\methodq", "\\methodseg~(no query term)": "\\methodseg"}
 
@@ -32,3 +36,10 @@ for label, mark in order:
     print(f"{SHORT.get(label, label)} & {mark} & " + " & ".join(cells) + " \\\\")
     if label.startswith("none") or label == "Lag-KV":
         print("\\midrule")
+dms = [p for f in glob.glob(str(Path(__file__).resolve().parent.parent / "results/rebuttal_dms/math_q8b_dms8x_s*.json"))
+       for byk in json.load(open(f))["results"].values() for e in byk.values() for p in e["per_problem"]]
+assert len(dms) == 495 and not any(p.get("error") for p in dms), len(dms)
+none = "\\multicolumn{4}{c}{--}"
+print("\\midrule")
+print(f"DMS (trained, no budget) & \\xmark & {none} & {none} & \\multicolumn{{4}}{{c}}"
+      f"{{{100 * sum(bool(p['correct']) for p in dms) / 495:.1f}}} & {none} & {none} \\\\")
