@@ -3,7 +3,7 @@ cells pooled by grid_tables.load(). Cells are accuracy on the problems every row
 eviction row in a column. Dagger on the EpiKV row: EpiKV is significantly above every attention-based row
 in that column (exact McNemar p<0.05), including the R-KV and LongFlow rows that only the full tables print.
 
-  new_model_rows.py main          MATH-500 at K=512, 1024, 4096; rows that need no adaptation
+  new_model_rows.py main          MATH-500 at K=512, 1024, 4096; every row but LongFlow
   new_model_rows.py full math     every row and budget, MATH-500
   new_model_rows.py full gpqa     every row and budget, GPQA-Diamond
 """
@@ -21,7 +21,7 @@ FA2 = {"none", "epikv", "epikvnoq", "lagkv"}
 mode = sys.argv[1]
 ds = "math" if mode == "main" else sys.argv[2]
 KS = [512, 1024, 4096] if mode == "main" else ([512, 1024, 2048, 4096] if ds == "math" else [1024, 2048, 4096])
-ROWS = ["none", "epikv", "epikvnoq", "lagkv", "raas", "h2o", "thinkv"] if mode == "main" else \
+ROWS = ["none", "epikv", "epikvnoq", "lagkv", "raas", "h2o", "rkv", "thinkv"] if mode == "main" else \
        ["none", "epikv", "epikvnoq", "lagkv", "raas", "h2o", "rkv", "longflow", "thinkv"]
 ATTENTION = ["raas", "h2o", "rkv", "longflow", "thinkv"]
 cells, _, _ = load()
