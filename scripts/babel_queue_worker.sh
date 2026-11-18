@@ -5,8 +5,9 @@
 #   sbatch -p preempt --qos=preempt_qos scripts/babel_queue_worker.sh
 # Line kinds:
 #   wr <n>                     line n of the window-rule grid ($HOME/rebuttal_window_rules/lines.txt)
-#   lf <model> <K> <start> <n> [cap] [folder]   one LongFlow-native MATH-500 piece in the LongFlow venv; cap is the
-#                              generation length cap (default 16384), folder the output folder (default $LF)
+#   lf <model> <K> <start> <n> [cap] [folder] [dataset]   one LongFlow-native piece in the LongFlow venv; cap is the
+#                              generation length cap (default 16384), folder the output folder (default $LF),
+#                              dataset a benchmark.py dataset name (default math500)
 # A popped line sits in held/<job>.<slot> until it ends, so a requeued worker resumes it, and any worker returns lines
 # held by jobs that no longer exist to the head of the queue. A failed line goes to failed.txt and is not retried.
 #SBATCH --job-name=q_worker
@@ -38,12 +39,12 @@ run_wr(){ local n=$1 l tag args; l=$(sed -n "${n}p" $WR/lines.txt); tag=${l%% *}
   ( source $HOME/workspace/kvcache_window/scripts/babel_window_rules/common.sh; cd $CODE || exit 1; preflight || exit 1
     $PY scripts/benchmark.py $args --output $OUT/cells/$tag.json >> $OUT/logs/$tag.log 2>&1 ) && touch $WR/done/$tag; }
 
-run_lf(){ local model=$1 K=$2 s=$3 n=$4 cap=${5:-16384} LF=${6:-$LF} tag out; tag=$(basename $model)_longflow_native_K${K}_s${s}; out=$LF/results/$tag.json
+run_lf(){ local model=$1 K=$2 s=$3 n=$4 cap=${5:-16384} LF=${6:-$LF} ds=${7:-math500} tag out; tag=$(basename $model)_longflow_native_K${K}_s${s}; [ $ds = math500 ] || tag=$(basename $model)_longflow_native_${ds}_K${K}_s${s}; out=$LF/results/$tag.json
   mkdir -p $LF/results $LF/done $LF/logs; [ -e $LF/done/$tag ] && return 0
   ( export HF_HOME=/data/user_data/skolawol/hf_home HF_HUB_OFFLINE=1 USE_TF=0 TRANSFORMERS_NO_TF=1 TOKENIZERS_PARALLELISM=false TQDM_DISABLE=1 PYTHONUNBUFFERED=1
     $LFV/bin/python -c "import torch; assert torch.cuda.is_available(), 'NO CUDA'" || exit 1
     cd $LFCODE || exit 1
-    $LFV/bin/python scripts/longflow_native.py --longflow_dir $HOME/workspace/lf_smoke/LongFlow --model $model \
+    $LFV/bin/python scripts/longflow_native.py --longflow_dir $HOME/workspace/lf_smoke/LongFlow --model $model --dataset $ds \
       --n_samples $n --start_idx $s --cache_size $K --max_new_tokens $cap --resume --output $out >> $LF/logs/$tag.log 2>&1 || exit 1
     $LFV/bin/python - "$out" "$n" <<'PY'
 import json,sys
@@ -59,7 +60,7 @@ slot(){ local s=$1 hf=$H/$J.$1 line rc t0 fast=0
     if [ -s $hf ]; then line=$(cat $hf); log "RESUME s$s $line"
     else reclaim; line=$(pop); [ -n "$line" ] || { log "EMPTY s$s"; return; }; printf '%s\n' "$line" > $hf; fi
     t0=$(date +%s); log "START s$s $line"
-    set -- $line; case $1 in wr) run_wr $2;; lf) run_lf $2 $3 $4 $5 $6 $7;; *) false;; esac; rc=$?
+    set -- $line; case $1 in wr) run_wr $2;; lf) run_lf $2 $3 $4 $5 $6 $7 $8;; *) false;; esac; rc=$?
     log "END s$s rc=$rc $(( $(date +%s) - t0 ))s $line"
     if [ $rc -ne 0 ]; then printf '%s rc=%s job=%s\n' "$line" $rc $J >> $G/failed.txt
       [ $(( $(date +%s) - t0 )) -lt 300 ] && fast=$((fast+1)) || fast=0
