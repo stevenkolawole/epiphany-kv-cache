@@ -2,8 +2,8 @@
 
 Llama-8B and Qwen-7B: results/gpqa_p5, and R-KV from its released code in results/rebuttal_rkv_gpqa. Qwen3-8B,
 Qwen3-14B and Nemotron-Nano-8B: grid_tables.load() with released_baselines.apply(). DMS: results/rebuttal_dms (one
-Qwen3-8B checkpoint, no budget). Bold: best eviction row in a column. Stars: the cell differs from the EpiKV cell of
-its column (exact McNemar on the paired problems). A cell with no complete run prints "$\\circ$", or "--" where no
+Qwen3-8B checkpoint, no budget). Bold: best eviction row in a column. Grey (\\sigbelow): the cell is significantly below the EpiKV
+cell of its column (exact McNemar on the paired problems, p<0.05); a dagger: significantly above it. A cell with no complete run prints "$\\circ$", or "--" where no
 released code or checkpoint exists for the model.
 """
 import glob
@@ -12,7 +12,7 @@ import re
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from grid_tables import load, pair, star  # noqa: E402
+from grid_tables import load, pair  # noqa: E402
 from pool_aime import mcnemar_exact  # noqa: E402
 import released_baselines  # noqa: E402
 
@@ -103,9 +103,8 @@ for row in ROWS:
             if row != "epikv":
                 e = cells[(m, "epikv", k)]
                 w, l = pair(e, c, sorted(e))
-                st = star(mcnemar_exact(len(w), len(l)))
-                if st:
-                    s += f"$^{{{st}}}$"
+                if mcnemar_exact(len(w), len(l)) < 0.05:
+                    s = f"\\sigbelow{{{s}}}" if len(w) > len(l) else s + "$^{\\dagger}$"
             out.append(s)
     if row == "epikv":
         print("\\rowcolor{epirow}")
