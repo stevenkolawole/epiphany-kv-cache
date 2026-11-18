@@ -1,0 +1,122 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "gpqa",
+    "n_samples": 11,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "4096": {
+        "partial": true,
+        "n_total": 11,
+        "per_problem": [
+          {
+            "problem": "Imagine an operator $\\vec{P}$ of a system have components $P_x, P_y$ and $P_z$. ",
+            "ground_truth": "D",
+            "pred_answer": "D",
+            "correct": true,
+            "n_tokens_generated": 3890,
+            "wall_time_s": 146.43,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4330,
+              "mean_all": 2381.0,
+              "peak_all": 4223,
+              "after_prefill": 440
+            }
+          },
+          {
+            "problem": "A chemist performs two reactions:\n\nReaction 1: (E)-oct-4-ene is treated with one",
+            "ground_truth": "B",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 639.58,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16660,
+              "mean_all": 3699.2,
+              "peak_all": 4223,
+              "after_prefill": 276
+            }
+          },
+          {
+            "problem": "There has been an outbreak of an viral infectious disease in your city. You have",
+            "ground_truth": "B",
+            "pred_answer": "B",
+            "correct": true,
+            "n_tokens_generated": 1687,
+            "wall_time_s": 61.51,
+            "peak_gpu_mb": 15930.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1906,
+              "mean_all": 1062.0,
+              "peak_all": 1905,
+              "after_prefill": 219
+            }
+          },
+          {
+            "problem": "In an inactive state, a transcription factor subunit awaits an activation signal",
+            "ground_truth": "C",
+            "pred_answer": "B",
+            "correct": false,
+            "n_tokens_generated": 4457,
+            "wall_time_s": 167.67,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4677,
+              "mean_all": 2418.0,
+              "peak_all": 4223,
+              "after_prefill": 220
+            }
+          },
+          {
+            "problem": "Observations of a quasar across the electromagnetic spectrum are being carried o",
+            "ground_truth": "B",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 632.94,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16609,
+              "mean_all": 3687.0,
+              "peak_all": 4223,
+              "after_prefill": 225
+            }
+          },
+          {
+            "problem": "Consider an aperture, which shapes like a N-sided polygon. All the apothems are ",
+            "ground_truth": "A",
+            "pred_answer": "A",
+            "correct": true,
+            "n_tokens_generated": 4036,
+            "wall_time_s": 170.35,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4245,
+              "mean_all": 2225.8,
+              "peak_all": 4223,
+              "after_prefill": 209
+            }
+          }
+        ]
+      }
+    }
+  }
+}

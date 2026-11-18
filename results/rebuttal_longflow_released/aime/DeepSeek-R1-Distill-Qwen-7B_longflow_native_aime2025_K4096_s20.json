@@ -1,0 +1,158 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "dataset": "aime2025",
+    "n_samples": 10,
+    "start_idx": 20,
+    "max_new_tokens": 16384,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "longflow_native"
+    ],
+    "attn_impl": "eager",
+    "dtype": "float16",
+    "shims": [
+      "q_norm/k_norm = nn.Identity (absent in Qwen2Attention)",
+      "sliding_window = None"
+    ],
+    "versions": {
+      "torch": "2.4.0+cu121",
+      "transformers": "4.51.3"
+    },
+    "gpu": "NVIDIA L40S"
+  },
+  "results": {
+    "longflow_native": {
+      "4096": {
+        "accuracy": 0.1,
+        "n_correct": 1,
+        "n_total": 10,
+        "mean_wall_time_s": 960.3,
+        "per_problem": [
+          {
+            "problem": "Circle $\\omega_1$ with radius $6$ centered at point $A$ is internally tangent at",
+            "ground_truth": "293",
+            "problem_idx": 20,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 996.63,
+            "peak_gpu_mb": 14965.8,
+            "prompt_len": 789,
+            "hit_eos": false
+          },
+          {
+            "problem": "Let $A$ be the set of positive integer divisors of $2025$. Let $B$ be a randomly",
+            "ground_truth": "237",
+            "problem_idx": 21,
+            "pred_answer": "60431",
+            "correct": false,
+            "n_tokens_generated": 8486,
+            "wall_time_s": 507.56,
+            "peak_gpu_mb": 14816.0,
+            "prompt_len": 111,
+            "hit_eos": true
+          },
+          {
+            "problem": "From an unlimited supply of $1$-cent coins, $10$-cent coins, and $25$-cent coins",
+            "ground_truth": "610",
+            "problem_idx": 22,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1059.01,
+            "peak_gpu_mb": 14846.5,
+            "prompt_len": 313,
+            "hit_eos": false
+          },
+          {
+            "problem": "There are $n$ values of $x$ in the interval $0 < x < 2\\pi$ where $f(x) = \\sin\\le",
+            "ground_truth": "149",
+            "problem_idx": 23,
+            "pred_answer": "89",
+            "correct": false,
+            "n_tokens_generated": 8799,
+            "wall_time_s": 626.38,
+            "peak_gpu_mb": 14816.0,
+            "prompt_len": 111,
+            "hit_eos": true
+          },
+          {
+            "problem": "Sixteen chairs are arranged in a row. Eight people each select a chair in which ",
+            "ground_truth": "907",
+            "problem_idx": 24,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1167.9,
+            "peak_gpu_mb": 14813.6,
+            "prompt_len": 87,
+            "hit_eos": false
+          },
+          {
+            "problem": "Let $S$ be the set of vertices of a regular $24$-gon. Find the number of ways to",
+            "ground_truth": "113",
+            "problem_idx": 25,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1168.47,
+            "peak_gpu_mb": 14811.6,
+            "prompt_len": 77,
+            "hit_eos": false
+          },
+          {
+            "problem": "Let $A_1 A_2 A_3 \\ldots A_{11}$ be an $11$-sided non-convex simple polygon with ",
+            "ground_truth": "19",
+            "problem_idx": 26,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1168.01,
+            "peak_gpu_mb": 14844.0,
+            "prompt_len": 280,
+            "hit_eos": false
+          },
+          {
+            "problem": "Let $x_1, x_2, x_3, \\ldots$ be a sequence of rational numbers defined by $x_1 = ",
+            "ground_truth": "248",
+            "problem_idx": 27,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1167.85,
+            "peak_gpu_mb": 14824.4,
+            "prompt_len": 160,
+            "hit_eos": false
+          },
+          {
+            "problem": "Let $\\triangle ABC$ be a right triangle with $\\angle A = 90^\\circ$ and $BC = 38$",
+            "ground_truth": "104",
+            "problem_idx": 28,
+            "pred_answer": "104",
+            "correct": true,
+            "n_tokens_generated": 8068,
+            "wall_time_s": 574.03,
+            "peak_gpu_mb": 14816.3,
+            "prompt_len": 113,
+            "hit_eos": true
+          },
+          {
+            "problem": "There are exactly three positive real numbers $k$ such that the function\n$$f(x) ",
+            "ground_truth": "240",
+            "problem_idx": 29,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1167.16,
+            "peak_gpu_mb": 14815.0,
+            "prompt_len": 101,
+            "hit_eos": false
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "gpqa",
+    "n_samples": 11,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "4096": {
+        "partial": true,
+        "n_total": 11,
+        "per_problem": [
+          {
+            "problem": "acetic acid is treated with bromine, pyridine, and acetic anhydride with heating",
+            "ground_truth": "B",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 635.03,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16603,
+              "mean_all": 3685.6,
+              "peak_all": 4223,
+              "after_prefill": 219
+            }
+          },
+          {
+            "problem": "A supernova occurred in our Galaxy. Part of the supernova ejecta is moving direc",
+            "ground_truth": "B",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 720.23,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16617,
+              "mean_all": 3689.0,
+              "peak_all": 4223,
+              "after_prefill": 233
+            }
+          }
+        ]
+      }
+    }
+  }
+}

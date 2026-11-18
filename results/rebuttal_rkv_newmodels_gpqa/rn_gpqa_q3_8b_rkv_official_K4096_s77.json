@@ -1,0 +1,74 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "gpqa",
+    "n_samples": 11,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "4096": {
+        "partial": true,
+        "n_total": 11,
+        "per_problem": [
+          {
+            "problem": "Imagine a point charge q is moving with a trajectory $\\vec{s}(t)$, where t is ti",
+            "ground_truth": "D",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 737.61,
+            "peak_gpu_mb": 18867.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16909,
+              "mean_all": 3756.4,
+              "peak_all": 4223,
+              "after_prefill": 525
+            }
+          },
+          {
+            "problem": "In an experiment, compound X (C11H12O) was subjected to a reaction with 1,4-diaz",
+            "ground_truth": "D",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 742.85,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16781,
+              "mean_all": 3727.5,
+              "peak_all": 4223,
+              "after_prefill": 397
+            }
+          },
+          {
+            "problem": "You come across an algorithm that gives the following output (written as input -",
+            "ground_truth": "D",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 736.75,
+            "peak_gpu_mb": 18866.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16513,
+              "mean_all": 3663.8,
+              "peak_all": 4223,
+              "after_prefill": 129
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "gpqa",
+    "n_samples": 11,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      2048
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "2048": {
+        "partial": true,
+        "n_total": 11,
+        "per_problem": [
+          {
+            "problem": "\"1,2-Rearrangement reaction in which vicinal diols are allowed to react with aci",
+            "ground_truth": "D",
+            "pred_answer": "C",
+            "correct": false,
+            "n_tokens_generated": 16058,
+            "wall_time_s": 874.87,
+            "peak_gpu_mb": 29243.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16540,
+              "mean_all": 2028.8,
+              "peak_all": 2175,
+              "after_prefill": 482
+            }
+          },
+          {
+            "problem": "Consider the Y-component of the intrinsic angular momentum operator, A of a muon",
+            "ground_truth": "C",
+            "pred_answer": "C",
+            "correct": true,
+            "n_tokens_generated": 4153,
+            "wall_time_s": 249.55,
+            "peak_gpu_mb": 29243.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4479,
+              "mean_all": 1727.9,
+              "peak_all": 2175,
+              "after_prefill": 326
+            }
+          },
+          {
+            "problem": "Observations of structures located at a distance of about 2.1 gigaparsecs (2.1 G",
+            "ground_truth": "A",
+            "pred_answer": "A",
+            "correct": true,
+            "n_tokens_generated": 4260,
+            "wall_time_s": 255.67,
+            "peak_gpu_mb": 29242.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4424,
+              "mean_all": 1666.1,
+              "peak_all": 2175,
+              "after_prefill": 164
+            }
+          },
+          {
+            "problem": "Identify the number of 13C-NMR signals produced by the final product, denoted as",
+            "ground_truth": "C",
+            "pred_answer": "D",
+            "correct": false,
+            "n_tokens_generated": 16231,
+            "wall_time_s": 926.35,
+            "peak_gpu_mb": 29244.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16404,
+              "mean_all": 1995.7,
+              "peak_all": 2175,
+              "after_prefill": 173
+            }
+          }
+        ]
+      }
+    }
+  }
+}

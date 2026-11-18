@@ -1,0 +1,158 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "dataset": "aime2024",
+    "n_samples": 10,
+    "start_idx": 10,
+    "max_new_tokens": 16384,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "longflow_native"
+    ],
+    "attn_impl": "eager",
+    "dtype": "float16",
+    "shims": [
+      "q_norm/k_norm = nn.Identity (absent in Qwen2Attention)",
+      "sliding_window = None"
+    ],
+    "versions": {
+      "torch": "2.4.0+cu121",
+      "transformers": "4.51.3"
+    },
+    "gpu": "NVIDIA L40S"
+  },
+  "results": {
+    "longflow_native": {
+      "4096": {
+        "accuracy": 0.4,
+        "n_correct": 4,
+        "n_total": 10,
+        "mean_wall_time_s": 670.87,
+        "per_problem": [
+          {
+            "problem": "Find the largest possible real part of \\[(75+117i)z + \\frac{96+144i}{z}\\] where ",
+            "ground_truth": "540",
+            "problem_idx": 10,
+            "pred_answer": "540",
+            "correct": true,
+            "n_tokens_generated": 4594,
+            "wall_time_s": 268.33,
+            "peak_gpu_mb": 14810.8,
+            "prompt_len": 69,
+            "hit_eos": true
+          },
+          {
+            "problem": "Find the number of ways to place a digit in each cell of a 2x3 grid so that the ",
+            "ground_truth": "45",
+            "problem_idx": 11,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 955.65,
+            "peak_gpu_mb": 14824.9,
+            "prompt_len": 160,
+            "hit_eos": false
+          },
+          {
+            "problem": "Every morning Aya goes for a $9$-kilometer-long walk and stops at a coffee shop ",
+            "ground_truth": "204",
+            "problem_idx": 12,
+            "pred_answer": "204",
+            "correct": true,
+            "n_tokens_generated": 2571,
+            "wall_time_s": 149.59,
+            "peak_gpu_mb": 14824.3,
+            "prompt_len": 155,
+            "hit_eos": true
+          },
+          {
+            "problem": "Let $N$ be the greatest four-digit positive integer with the property that whene",
+            "ground_truth": "699",
+            "problem_idx": 13,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 962.73,
+            "peak_gpu_mb": 14814.4,
+            "prompt_len": 91,
+            "hit_eos": false
+          },
+          {
+            "problem": "Consider the paths of length $16$ that follow the lines from the lower left corn",
+            "ground_truth": "294",
+            "problem_idx": 14,
+            "pred_answer": "294",
+            "correct": true,
+            "n_tokens_generated": 5907,
+            "wall_time_s": 343.48,
+            "peak_gpu_mb": 14811.6,
+            "prompt_len": 75,
+            "hit_eos": true
+          },
+          {
+            "problem": "Let $p$ be the least prime number for which there exists a positive integer $n$ ",
+            "ground_truth": "110",
+            "problem_idx": 15,
+            "pred_answer": "155",
+            "correct": false,
+            "n_tokens_generated": 7336,
+            "wall_time_s": 428.66,
+            "peak_gpu_mb": 14813.9,
+            "prompt_len": 86,
+            "hit_eos": true
+          },
+          {
+            "problem": "Let $\\mathcal{B}$ be the set of rectangular boxes with surface area $54$ and vol",
+            "ground_truth": "721",
+            "problem_idx": 16,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 961.34,
+            "peak_gpu_mb": 14817.5,
+            "prompt_len": 118,
+            "hit_eos": false
+          },
+          {
+            "problem": "Find the number of rectangles that can be formed inside a fixed regular dodecago",
+            "ground_truth": "315",
+            "problem_idx": 17,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1055.43,
+            "peak_gpu_mb": 14811.4,
+            "prompt_len": 74,
+            "hit_eos": false
+          },
+          {
+            "problem": "Let $\\triangle ABC$ have circumcenter $O$ and incenter $I$ with $\\overline{IA}\\p",
+            "ground_truth": "468",
+            "problem_idx": 18,
+            "pred_answer": "468",
+            "correct": true,
+            "n_tokens_generated": 8234,
+            "wall_time_s": 527.63,
+            "peak_gpu_mb": 14811.3,
+            "prompt_len": 73,
+            "hit_eos": true
+          },
+          {
+            "problem": "There is a collection of $25$ indistinguishable white chips and $25$ indistingui",
+            "ground_truth": "902",
+            "problem_idx": 19,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1055.85,
+            "peak_gpu_mb": 14817.9,
+            "prompt_len": 121,
+            "hit_eos": false
+          }
+        ]
+      }
+    }
+  }
+}

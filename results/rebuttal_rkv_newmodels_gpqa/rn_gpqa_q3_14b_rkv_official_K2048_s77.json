@@ -1,0 +1,138 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "gpqa",
+    "n_samples": 11,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      2048
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "2048": {
+        "partial": true,
+        "n_total": 11,
+        "per_problem": [
+          {
+            "problem": "Imagine a point charge q is moving with a trajectory $\\vec{s}(t)$, where t is ti",
+            "ground_truth": "D",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 679.4,
+            "peak_gpu_mb": 29244.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16909,
+              "mean_all": 2034.7,
+              "peak_all": 2175,
+              "after_prefill": 525
+            }
+          },
+          {
+            "problem": "In an experiment, compound X (C11H12O) was subjected to a reaction with 1,4-diaz",
+            "ground_truth": "D",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 738.09,
+            "peak_gpu_mb": 29244.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16781,
+              "mean_all": 2021.8,
+              "peak_all": 2175,
+              "after_prefill": 397
+            }
+          },
+          {
+            "problem": "You come across an algorithm that gives the following output (written as input -",
+            "ground_truth": "D",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 809.99,
+            "peak_gpu_mb": 29242.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16513,
+              "mean_all": 1991.6,
+              "peak_all": 2175,
+              "after_prefill": 129
+            }
+          },
+          {
+            "problem": "Identify the correct sequence of reagents for the synthesis of [1,1'-bi(cyclopen",
+            "ground_truth": "D",
+            "pred_answer": "D",
+            "correct": true,
+            "n_tokens_generated": 16064,
+            "wall_time_s": 740.64,
+            "peak_gpu_mb": 29242.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16323,
+              "mean_all": 2004.6,
+              "peak_all": 2175,
+              "after_prefill": 259
+            }
+          },
+          {
+            "problem": "cyclooctatetraene was heated with maleic anhydride in a 1:1 ratio, forming produ",
+            "ground_truth": "D",
+            "pred_answer": "B",
+            "correct": false,
+            "n_tokens_generated": 9778,
+            "wall_time_s": 405.34,
+            "peak_gpu_mb": 29242.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 10593,
+              "mean_all": 2025.5,
+              "peak_all": 2175,
+              "after_prefill": 815
+            }
+          },
+          {
+            "problem": "We dilute 20.00 cm3 0.05 M acetic acid with 20.00 cm3 water, then titrate the re",
+            "ground_truth": "C",
+            "pred_answer": "C",
+            "correct": true,
+            "n_tokens_generated": 6105,
+            "wall_time_s": 251.38,
+            "peak_gpu_mb": 29242.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 6308,
+              "mean_all": 1813.1,
+              "peak_all": 2175,
+              "after_prefill": 203
+            }
+          },
+          {
+            "problem": "While solving higher dimensional heat equations subject to suitable initial and ",
+            "ground_truth": "B",
+            "pred_answer": "B",
+            "correct": true,
+            "n_tokens_generated": 1217,
+            "wall_time_s": 48.17,
+            "peak_gpu_mb": 28418.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1355,
+              "mean_all": 746.0,
+              "peak_all": 1354,
+              "after_prefill": 138
+            }
+          }
+        ]
+      }
+    }
+  }
+}

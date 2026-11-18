@@ -14,6 +14,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from grid_tables import load, pair, star  # noqa: E402
 from pool_aime import mcnemar_exact  # noqa: E402
+import released_baselines  # noqa: E402
 
 ds = sys.argv[1]
 MODELS = ["qwen3", "q14b", "nemo"]
@@ -23,11 +24,12 @@ NAME = {"none": "none", "epikvnoq": "\\methodseg", "lagkv": "Lag-KV", "raas": "R
         "h2o": "H2O", "rkv": "R-KV", "longflow": "LongFlow", "thinkv": "ThinKV"}
 ATTENTION = ["raas", "h2o", "rkv", "longflow", "thinkv"]
 cells, _, _ = load()
+MARK = released_baselines.apply(cells, ds, MODELS, KS)   # R-KV from its released code; cells with no released number
 def have(p, m, k):
     return bool(cells.get((ds, m, p, 0 if p == "none" else k)))
 
 
-gone = [p for p in ROWS if not any(have(p, m, k) for m in MODELS for k in KS)]   # as new_model_rows.py: a row with no cell is left out
+gone = [p for p in ROWS if p not in ("rkv", "longflow") and not any(have(p, m, k) for m in MODELS for k in KS)]   # as new_model_rows.py: a row with no cell is left out
 if gone:
     print(f"row left out, no complete cell for any model: {gone}", file=sys.stderr)
 ROWS = [p for p in ROWS if p not in gone]
@@ -37,7 +39,9 @@ for m in MODELS:   # same set as new_model_rows.py full: problems present in eve
     s = None
     for p in need:
         for k in ([0] if p == "none" else KS):
-            assert have(p, m, k), (ds, m, p, k)   # a row present for some cells must be present for all
+            if not have(p, m, k):
+                assert p in ("rkv", "longflow"), (ds, m, p, k)   # only released-code rows may lack a cell
+                continue
             v = set(cells[(ds, m, p, k)])
             s = v if s is None else s & v
     probs[m] = sorted(s)
@@ -48,6 +52,10 @@ for p in ROWS:
     row = []
     for m in MODELS:
         for k in KS:
+            if not have(p, m, k):
+                res[(p, m, k)] = None
+                row.append(MARK[(m, p, k)])
+                continue
             w, l = pair(cells[(ds, m, "epikv", k)], cells[(ds, m, p, 0 if p == "none" else k)], probs[m])
             pv = mcnemar_exact(len(w), len(l))
             res[(p, m, k)] = len(w) > len(l) and pv < 0.05
@@ -57,7 +65,7 @@ f = Path(__file__).resolve().parent.parent.parent / "EpiKV-overleaf/tables" / f"
 if f.exists():
     line = next(l for l in f.read_text().splitlines() if l.startswith("\\methodq~(ours)"))
     daggers = ["dagger" in c for c in line.split(" & ")[2:]]
-    mine = [all(res[(p, m, k)] for p in ATTENTION) for m in MODELS for k in KS]
+    mine = [all(res[(p, m, k)] for p in ATTENTION if res.get((p, m, k)) is not None) for m in MODELS for k in KS]
     for (m, k), d, s in zip([(m, k) for m in MODELS for k in KS], daggers, mine):
         if d != s:
             print(f"DAGGER DISAGREES {ds} {m} K={k}: rows file {d}, counts {s}", file=sys.stderr)

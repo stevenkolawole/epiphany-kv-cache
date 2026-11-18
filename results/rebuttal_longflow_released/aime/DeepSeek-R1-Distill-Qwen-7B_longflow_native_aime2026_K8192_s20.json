@@ -1,0 +1,132 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "dataset": "aime2026",
+    "n_samples": 10,
+    "start_idx": 20,
+    "max_new_tokens": 16384,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "longflow_native"
+    ],
+    "attn_impl": "eager",
+    "dtype": "float16",
+    "shims": [
+      "q_norm/k_norm = nn.Identity (absent in Qwen2Attention)",
+      "sliding_window = None"
+    ],
+    "versions": {
+      "torch": "2.4.0+cu121",
+      "transformers": "4.51.3"
+    },
+    "gpu": "NVIDIA L40S"
+  },
+  "results": {
+    "longflow_native": {
+      "8192": {
+        "partial": true,
+        "n_total": 10,
+        "per_problem": [
+          {
+            "problem": "Find the sum of all real numbers $r$ such that there is at least one point where",
+            "ground_truth": "50",
+            "problem_idx": 20,
+            "pred_answer": "50",
+            "correct": true,
+            "n_tokens_generated": 6676,
+            "wall_time_s": 520.43,
+            "peak_gpu_mb": 15036.7,
+            "prompt_len": 81,
+            "hit_eos": true
+          },
+          {
+            "problem": "A standard fair six-sided die is rolled repeatedly. Each time the die reads 1 or",
+            "ground_truth": "754",
+            "problem_idx": 21,
+            "pred_answer": "754",
+            "correct": true,
+            "n_tokens_generated": 9068,
+            "wall_time_s": 705.23,
+            "peak_gpu_mb": 15042.7,
+            "prompt_len": 130,
+            "hit_eos": true
+          },
+          {
+            "problem": "Isosceles triangle $\\triangle ABC$ has $AB = BC.$ Let $I$ be the incenter of $\\t",
+            "ground_truth": "245",
+            "problem_idx": 22,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1282.43,
+            "peak_gpu_mb": 15039.6,
+            "prompt_len": 94,
+            "hit_eos": false
+          },
+          {
+            "problem": "Let $S$ denote the value of the infinite sum\n\\[\n\\frac{1}{9} + \\frac{1}{99} + \\fr",
+            "ground_truth": "669",
+            "problem_idx": 23,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1150.16,
+            "peak_gpu_mb": 15040.5,
+            "prompt_len": 111,
+            "hit_eos": false
+          },
+          {
+            "problem": "Let $\\triangle ABC$ be a triangle with $D$ on $\\overline{BC}$ such that $\\overli",
+            "ground_truth": "850",
+            "problem_idx": 24,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1037.5,
+            "peak_gpu_mb": 15049.7,
+            "prompt_len": 171,
+            "hit_eos": false
+          },
+          {
+            "problem": "Find the greatest integer $n$ such that the cubic polynomial\n\\[\nx^{3} - \\display",
+            "ground_truth": "132",
+            "problem_idx": 25,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1037.48,
+            "peak_gpu_mb": 15041.9,
+            "prompt_len": 124,
+            "hit_eos": false
+          },
+          {
+            "problem": "Consider a tetrahedron with two isosceles triangle faces with side lengths $5\\sq",
+            "ground_truth": "223",
+            "problem_idx": 26,
+            "pred_answer": "349",
+            "correct": false,
+            "n_tokens_generated": 10350,
+            "wall_time_s": 654.7,
+            "peak_gpu_mb": 15049.5,
+            "prompt_len": 169,
+            "hit_eos": true
+          },
+          {
+            "problem": "Call finite sets of integers $S$ and $T$ cousins if\n- $S$ and $T$ have the same ",
+            "ground_truth": "107",
+            "problem_idx": 27,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1037.46,
+            "peak_gpu_mb": 15047.5,
+            "prompt_len": 151,
+            "hit_eos": false
+          }
+        ]
+      }
+    }
+  }
+}
