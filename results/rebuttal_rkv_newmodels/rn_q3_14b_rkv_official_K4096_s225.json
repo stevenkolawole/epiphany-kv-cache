@@ -1,0 +1,429 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 25,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "4096": {
+        "accuracy": 0.76,
+        "n_correct": 19,
+        "n_total": 25,
+        "mean_wall_time_s": 226.72,
+        "mean_peak_gpu_mb": 29899.8,
+        "per_problem": [
+          {
+            "problem": "For a point $P,$ let $d_1,$ $d_2$ and $d_3$ represents the distances from $P$ to",
+            "ground_truth": "288 \\pi",
+            "pred_answer": "288\\pi",
+            "correct": true,
+            "n_tokens_generated": 8254,
+            "wall_time_s": 418.67,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8397,
+              "mean_all": 3182.0,
+              "peak_all": 4223,
+              "after_prefill": 143
+            }
+          },
+          {
+            "problem": "Yann and Camille go to a restaurant.  If there are 10 items on the menu, and eac",
+            "ground_truth": "90",
+            "pred_answer": "90",
+            "correct": true,
+            "n_tokens_generated": 1951,
+            "wall_time_s": 93.68,
+            "peak_gpu_mb": 28530.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2059,
+              "mean_all": 1083.0,
+              "peak_all": 2058,
+              "after_prefill": 108
+            }
+          },
+          {
+            "problem": "Given that $a,$ $b,$ $c,$ $d,$ $e$ are real numbers such that\n\\begin{align*}\na +",
+            "ground_truth": "\\frac{16}{5}",
+            "pred_answer": "\\dfrac{16}{5}",
+            "correct": true,
+            "n_tokens_generated": 6782,
+            "wall_time_s": 277.33,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 6892,
+              "mean_all": 2950.4,
+              "peak_all": 4223,
+              "after_prefill": 110
+            }
+          },
+          {
+            "problem": "The average of Amy's, Ben's, and Chris's ages is 6. Four years ago,  Chris was t",
+            "ground_truth": "10",
+            "pred_answer": "10",
+            "correct": true,
+            "n_tokens_generated": 3512,
+            "wall_time_s": 139.58,
+            "peak_gpu_mb": 28774.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3604,
+              "mean_all": 1847.5,
+              "peak_all": 3603,
+              "after_prefill": 92
+            }
+          },
+          {
+            "problem": "If $\\omega^{1997} = 1$ and $\\omega \\neq 1,$ then evaluate\n\\[\\frac{1}{1 + \\omega}",
+            "ground_truth": "\\frac{1997}{2}",
+            "pred_answer": "\\dfrac{1997}{2}",
+            "correct": true,
+            "n_tokens_generated": 6398,
+            "wall_time_s": 265.03,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 6496,
+              "mean_all": 2870.1,
+              "peak_all": 4223,
+              "after_prefill": 98
+            }
+          },
+          {
+            "problem": "If $\\mathbf{a}$ and $\\mathbf{b}$ are vectors such that $\\|\\mathbf{a}\\| = 2,$ $\\|",
+            "ground_truth": "30^\\circ",
+            "pred_answer": "30",
+            "correct": false,
+            "n_tokens_generated": 4230,
+            "wall_time_s": 173.72,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4364,
+              "mean_all": 2243.9,
+              "peak_all": 4223,
+              "after_prefill": 134
+            }
+          },
+          {
+            "problem": "Let $f$ be the function defined by $f(x) = x^3 - 49x^2 + 623x - 2015,$ and let $",
+            "ground_truth": "34",
+            "pred_answer": "34",
+            "correct": true,
+            "n_tokens_generated": 3120,
+            "wall_time_s": 125.18,
+            "peak_gpu_mb": 28712.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3210,
+              "mean_all": 1649.5,
+              "peak_all": 3209,
+              "after_prefill": 90
+            }
+          },
+          {
+            "problem": "Compute: $0.\\overline{7}-0.\\overline{4}+0.\\overline{2}$. Express your answer as ",
+            "ground_truth": "\\frac 59",
+            "pred_answer": "\\dfrac{5}{9}",
+            "correct": false,
+            "n_tokens_generated": 3252,
+            "wall_time_s": 130.4,
+            "peak_gpu_mb": 28745.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3314,
+              "mean_all": 1687.5,
+              "peak_all": 3313,
+              "after_prefill": 62
+            }
+          },
+          {
+            "problem": "Compute\n\\[\\frac{1}{\\cos^2 10^\\circ} + \\frac{1}{\\sin^2 20^\\circ} + \\frac{1}{\\sin^",
+            "ground_truth": "12",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 690.98,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16464,
+              "mean_all": 3651.5,
+              "peak_all": 4223,
+              "after_prefill": 80
+            }
+          },
+          {
+            "problem": "If $x$, $y$, and $z$ are positive with $xy = 24$, $xz = 48$, and $yz = 72$, then",
+            "ground_truth": "22",
+            "pred_answer": "22",
+            "correct": true,
+            "n_tokens_generated": 2647,
+            "wall_time_s": 105.75,
+            "peak_gpu_mb": 28634.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2720,
+              "mean_all": 1396.0,
+              "peak_all": 2719,
+              "after_prefill": 73
+            }
+          },
+          {
+            "problem": "What real values of $x$ are not in the domain of\n\n$f(x)=\\frac{1}{|x^2+3x-4|+|x^2",
+            "ground_truth": "-4",
+            "pred_answer": "-4",
+            "correct": true,
+            "n_tokens_generated": 3141,
+            "wall_time_s": 128.18,
+            "peak_gpu_mb": 28712.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3215,
+              "mean_all": 1644.0,
+              "peak_all": 3214,
+              "after_prefill": 74
+            }
+          },
+          {
+            "problem": "The parallelogram bounded by the lines $y=ax+c$, $y=ax+d$, $y=bx+c$, and $y=bx+d",
+            "ground_truth": "16",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 698.81,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16519,
+              "mean_all": 3665.2,
+              "peak_all": 4223,
+              "after_prefill": 135
+            }
+          },
+          {
+            "problem": "In the diagram, $PT$ is parallel to $QR.$ What is the measure of $\\angle PQR$ in",
+            "ground_truth": "116",
+            "pred_answer": "154",
+            "correct": false,
+            "n_tokens_generated": 7569,
+            "wall_time_s": 314.97,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 7823,
+              "mean_all": 3151.8,
+              "peak_all": 4223,
+              "after_prefill": 254
+            }
+          },
+          {
+            "problem": "The smallest distance between the origin and a point on the graph of $y=\\frac{1}",
+            "ground_truth": "17",
+            "pred_answer": "17",
+            "correct": true,
+            "n_tokens_generated": 4333,
+            "wall_time_s": 174.24,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4403,
+              "mean_all": 2229.2,
+              "peak_all": 4223,
+              "after_prefill": 70
+            }
+          },
+          {
+            "problem": "An investment of $\\$24,\\!000$ is made in a government bond that will pay $1\\%$ b",
+            "ground_truth": "\\$32,\\!348",
+            "pred_answer": "32348",
+            "correct": false,
+            "n_tokens_generated": 12533,
+            "wall_time_s": 528.49,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 12636,
+              "mean_all": 3502.9,
+              "peak_all": 4223,
+              "after_prefill": 103
+            }
+          },
+          {
+            "problem": "A triangle has sides measuring 1 unit and 3 units. The length of the third side ",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 1848,
+            "wall_time_s": 72.94,
+            "peak_gpu_mb": 28507.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1914,
+              "mean_all": 989.5,
+              "peak_all": 1913,
+              "after_prefill": 66
+            }
+          },
+          {
+            "problem": "How many sides would there be in a convex polygon if the sum of all but one of i",
+            "ground_truth": "8",
+            "pred_answer": "8",
+            "correct": true,
+            "n_tokens_generated": 3325,
+            "wall_time_s": 129.94,
+            "peak_gpu_mb": 28745.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3385,
+              "mean_all": 1722.0,
+              "peak_all": 3384,
+              "after_prefill": 60
+            }
+          },
+          {
+            "problem": "Let $f(x) = x^{10}+5x^9-8x^8+7x^7-x^6-12x^5+4x^4-8x^3+12x^2-5x-5$.\n\nWithout usin",
+            "ground_truth": "-13x+3",
+            "pred_answer": "-13x + 3",
+            "correct": true,
+            "n_tokens_generated": 3153,
+            "wall_time_s": 147.93,
+            "peak_gpu_mb": 28745.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3268,
+              "mean_all": 1691.0,
+              "peak_all": 3267,
+              "after_prefill": 115
+            }
+          },
+          {
+            "problem": "Twelve friends met for dinner at Oscar's Overstuffed Oyster House, and each orde",
+            "ground_truth": "8",
+            "pred_answer": "8",
+            "correct": true,
+            "n_tokens_generated": 1627,
+            "wall_time_s": 76.52,
+            "peak_gpu_mb": 28475.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1717,
+              "mean_all": 903.0,
+              "peak_all": 1716,
+              "after_prefill": 90
+            }
+          },
+          {
+            "problem": "Let $p(x)$ be a quadratic polynomial with integer coefficients which has $4-\\sqr",
+            "ground_truth": "\\frac{10}{11}",
+            "pred_answer": "\\dfrac{10}{11}",
+            "correct": true,
+            "n_tokens_generated": 2616,
+            "wall_time_s": 123.27,
+            "peak_gpu_mb": 28628.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2684,
+              "mean_all": 1375.5,
+              "peak_all": 2683,
+              "after_prefill": 68
+            }
+          },
+          {
+            "problem": "Given\n\\[\\mathbf{A} = \\begin{pmatrix} 3 & 7 \\\\ -1 & -2 \\end{pmatrix},\\]compute $\\",
+            "ground_truth": "\\begin{pmatrix} -1 & 0 \\\\ 0 & -1 \\end{pmatrix}",
+            "pred_answer": "\\begin{pmatrix} -1 & 0 \\\\ 0 & -1 \\end{pmatrix}",
+            "correct": true,
+            "n_tokens_generated": 4922,
+            "wall_time_s": 237.03,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 5019,
+              "mean_all": 2482.7,
+              "peak_all": 4223,
+              "after_prefill": 97
+            }
+          },
+          {
+            "problem": "Find the unique $\\textbf{odd}$ integer $t$ such that $0<t<23$ and $t+2$ is the i",
+            "ground_truth": "17",
+            "pred_answer": "17",
+            "correct": true,
+            "n_tokens_generated": 4701,
+            "wall_time_s": 224.78,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4769,
+              "mean_all": 2378.6,
+              "peak_all": 4223,
+              "after_prefill": 68
+            }
+          },
+          {
+            "problem": "If $a$ is the $x$-intercept, $b$ is the $y$-intercept, and $m$ is the slope of t",
+            "ground_truth": "13",
+            "pred_answer": "13",
+            "correct": true,
+            "n_tokens_generated": 1950,
+            "wall_time_s": 90.22,
+            "peak_gpu_mb": 28529.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2047,
+              "mean_all": 1071.5,
+              "peak_all": 2046,
+              "after_prefill": 97
+            }
+          },
+          {
+            "problem": "Six cars pull up to a red light, one at a time. At the light, there are three la",
+            "ground_truth": "540",
+            "pred_answer": "540",
+            "correct": true,
+            "n_tokens_generated": 3144,
+            "wall_time_s": 148.19,
+            "peak_gpu_mb": 28745.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3279,
+              "mean_all": 1706.5,
+              "peak_all": 3278,
+              "after_prefill": 135
+            }
+          },
+          {
+            "problem": "What is the maximum value of $4(x + 7)(2 - x)$, over all real numbers $x$?",
+            "ground_truth": "81",
+            "pred_answer": "81",
+            "correct": true,
+            "n_tokens_generated": 3240,
+            "wall_time_s": 152.27,
+            "peak_gpu_mb": 28745.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3294,
+              "mean_all": 1673.5,
+              "peak_all": 3293,
+              "after_prefill": 54
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,429 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "math500",
+    "n_samples": 25,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      2048
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "2048": {
+        "accuracy": 0.84,
+        "n_correct": 21,
+        "n_total": 25,
+        "mean_wall_time_s": 149.69,
+        "mean_peak_gpu_mb": 16035.3,
+        "per_problem": [
+          {
+            "problem": "Convert the point $(0,3)$ in rectangular coordinates to polar coordinates.  Ente",
+            "ground_truth": "\\left( 3, \\frac{\\pi}{2} \\right)",
+            "pred_answer": "(3, \\frac{\\pi}{2})",
+            "correct": true,
+            "n_tokens_generated": 1029,
+            "wall_time_s": 23.86,
+            "peak_gpu_mb": 15660.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1112,
+              "mean_all": 597.0,
+              "peak_all": 1111,
+              "after_prefill": 83
+            }
+          },
+          {
+            "problem": "Define\n\\[p = \\sum_{k = 1}^\\infty \\frac{1}{k^2} \\quad \\text{and} \\quad q = \\sum_{",
+            "ground_truth": "p - q",
+            "pred_answer": "p - q",
+            "correct": true,
+            "n_tokens_generated": 3377,
+            "wall_time_s": 76.92,
+            "peak_gpu_mb": 16220.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3523,
+              "mean_all": 1539.2,
+              "peak_all": 2175,
+              "after_prefill": 146
+            }
+          },
+          {
+            "problem": "If $f(x) = \\frac{3x-2}{x-2}$, what is the value of $f(-2) +f(-1)+f(0)$? Express ",
+            "ground_truth": "\\frac{14}{3}",
+            "pred_answer": "\\dfrac{14}{3}",
+            "correct": true,
+            "n_tokens_generated": 1308,
+            "wall_time_s": 29.44,
+            "peak_gpu_mb": 15732.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1391,
+              "mean_all": 736.5,
+              "peak_all": 1390,
+              "after_prefill": 83
+            }
+          },
+          {
+            "problem": "How many positive whole-number divisors does 196 have?",
+            "ground_truth": "9",
+            "pred_answer": "9",
+            "correct": true,
+            "n_tokens_generated": 1079,
+            "wall_time_s": 24.41,
+            "peak_gpu_mb": 15656.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1127,
+              "mean_all": 587.0,
+              "peak_all": 1126,
+              "after_prefill": 48
+            }
+          },
+          {
+            "problem": "The results of a cross-country team's training run are graphed below. Which stud",
+            "ground_truth": "\\text{Evelyn}",
+            "pred_answer": "Evelyn",
+            "correct": true,
+            "n_tokens_generated": 2115,
+            "wall_time_s": 48.2,
+            "peak_gpu_mb": 16244.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2478,
+              "mean_all": 1388.4,
+              "peak_all": 2175,
+              "after_prefill": 363
+            }
+          },
+          {
+            "problem": "A regular hexagon can be divided into six equilateral triangles. If the perimete",
+            "ground_truth": "42",
+            "pred_answer": "42",
+            "correct": true,
+            "n_tokens_generated": 738,
+            "wall_time_s": 17.33,
+            "peak_gpu_mb": 15582.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 814,
+              "mean_all": 444.5,
+              "peak_all": 813,
+              "after_prefill": 76
+            }
+          },
+          {
+            "problem": "What is the smallest positive perfect cube that can be written as the sum of thr",
+            "ground_truth": "27",
+            "pred_answer": "27",
+            "correct": true,
+            "n_tokens_generated": 2084,
+            "wall_time_s": 48.42,
+            "peak_gpu_mb": 16173.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2139,
+              "mean_all": 1096.5,
+              "peak_all": 2137,
+              "after_prefill": 55
+            }
+          },
+          {
+            "problem": "The set of points $(x,y,z)$ that satisfy\n\\[2x = 3y = -z\\]is a line.\n\nThe set of ",
+            "ground_truth": "90^\\circ",
+            "pred_answer": "90",
+            "correct": false,
+            "n_tokens_generated": 3164,
+            "wall_time_s": 86.02,
+            "peak_gpu_mb": 16215.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3266,
+              "mean_all": 1473.0,
+              "peak_all": 2175,
+              "after_prefill": 102
+            }
+          },
+          {
+            "problem": "What is the distance, in units, between the points $(2, -6)$ and $(-4, 3)$? Expr",
+            "ground_truth": "3\\sqrt{13}",
+            "pred_answer": "3\\sqrt{13}",
+            "correct": true,
+            "n_tokens_generated": 879,
+            "wall_time_s": 26.45,
+            "peak_gpu_mb": 15608.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 949,
+              "mean_all": 509.0,
+              "peak_all": 948,
+              "after_prefill": 70
+            }
+          },
+          {
+            "problem": "The expression $2\\cdot 3 \\cdot 4\\cdot 5+1$ is equal to 121, since multiplication",
+            "ground_truth": "4",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 637.91,
+            "peak_gpu_mb": 16224.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16561,
+              "mean_all": 1997.2,
+              "peak_all": 2175,
+              "after_prefill": 177
+            }
+          },
+          {
+            "problem": "What is the least positive integer multiple of 30 that can be written with only ",
+            "ground_truth": "2220",
+            "pred_answer": "2220",
+            "correct": true,
+            "n_tokens_generated": 2614,
+            "wall_time_s": 102.84,
+            "peak_gpu_mb": 16211.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2674,
+              "mean_all": 1306.5,
+              "peak_all": 2175,
+              "after_prefill": 60
+            }
+          },
+          {
+            "problem": "Let $p(x)$ be a polynomial of degree 5 such that\n\\[p(n) = \\frac{n}{n^2 - 1}\\]for",
+            "ground_truth": "\\frac{3}{56}",
+            "pred_answer": "\\dfrac{451}{56}",
+            "correct": false,
+            "n_tokens_generated": 15427,
+            "wall_time_s": 614.39,
+            "peak_gpu_mb": 16215.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 15522,
+              "mean_all": 1979.7,
+              "peak_all": 2175,
+              "after_prefill": 95
+            }
+          },
+          {
+            "problem": "The proper divisors of 12 are 1, 2, 3, 4 and 6. A proper divisor of an integer $",
+            "ground_truth": "284",
+            "pred_answer": "284",
+            "correct": true,
+            "n_tokens_generated": 2062,
+            "wall_time_s": 80.93,
+            "peak_gpu_mb": 16178.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2166,
+              "mean_all": 1134.4,
+              "peak_all": 2164,
+              "after_prefill": 104
+            }
+          },
+          {
+            "problem": "The volume of the cylinder shown is $45\\pi$ cubic cm. What is the height in cent",
+            "ground_truth": "5",
+            "pred_answer": "5",
+            "correct": true,
+            "n_tokens_generated": 1024,
+            "wall_time_s": 39.91,
+            "peak_gpu_mb": 15711.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1231,
+              "mean_all": 718.5,
+              "peak_all": 1230,
+              "after_prefill": 207
+            }
+          },
+          {
+            "problem": "Suppose $\\sin D = 0.7$ in the diagram below. What is $DE$? [asy]\npair D,E,F;\nF =",
+            "ground_truth": "\\sqrt{51}",
+            "pred_answer": "\\sqrt{51}",
+            "correct": true,
+            "n_tokens_generated": 2329,
+            "wall_time_s": 91.26,
+            "peak_gpu_mb": 16220.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2476,
+              "mean_all": 1282.6,
+              "peak_all": 2175,
+              "after_prefill": 147
+            }
+          },
+          {
+            "problem": "Let $z = 2 + \\sqrt{2} - (3 + 3 \\sqrt{2})i$, and let $c = 2 - 3i$.  Let $w$ be th",
+            "ground_truth": "6 - 5i",
+            "pred_answer": "6 - 5i",
+            "correct": true,
+            "n_tokens_generated": 3560,
+            "wall_time_s": 139.62,
+            "peak_gpu_mb": 16227.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3773,
+              "mean_all": 1605.0,
+              "peak_all": 2175,
+              "after_prefill": 213
+            }
+          },
+          {
+            "problem": "Compute: $1-2+3-4+5- \\dots +99-100$.",
+            "ground_truth": "-50",
+            "pred_answer": "-50",
+            "correct": true,
+            "n_tokens_generated": 1756,
+            "wall_time_s": 66.09,
+            "peak_gpu_mb": 15836.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1812,
+              "mean_all": 933.5,
+              "peak_all": 1811,
+              "after_prefill": 56
+            }
+          },
+          {
+            "problem": "Below is the graph of $y = a \\sin (bx + c) + d$ for some positive constants $a,$",
+            "ground_truth": "\\pi",
+            "pred_answer": "\\pi",
+            "correct": true,
+            "n_tokens_generated": 4465,
+            "wall_time_s": 176.8,
+            "peak_gpu_mb": 16231.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4708,
+              "mean_all": 1720.5,
+              "peak_all": 2175,
+              "after_prefill": 243
+            }
+          },
+          {
+            "problem": "$\\overline{BC}$ is parallel to the segment through $A$, and $AB = BC$. What is t",
+            "ground_truth": "28",
+            "pred_answer": "56",
+            "correct": false,
+            "n_tokens_generated": 13810,
+            "wall_time_s": 549.31,
+            "peak_gpu_mb": 16224.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 13992,
+              "mean_all": 1976.7,
+              "peak_all": 2175,
+              "after_prefill": 182
+            }
+          },
+          {
+            "problem": "Let $a$ be a positive real number such that all the roots of\n\\[x^3 + ax^2 + ax +",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 5465,
+            "wall_time_s": 216.75,
+            "peak_gpu_mb": 16213.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 5548,
+              "mean_all": 1734.9,
+              "peak_all": 2175,
+              "after_prefill": 83
+            }
+          },
+          {
+            "problem": "Evaluate $(1+2i)6-3i$.",
+            "ground_truth": "6+9i",
+            "pred_answer": "6 + 9i",
+            "correct": true,
+            "n_tokens_generated": 1359,
+            "wall_time_s": 52.84,
+            "peak_gpu_mb": 15742.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1407,
+              "mean_all": 727.0,
+              "peak_all": 1406,
+              "after_prefill": 48
+            }
+          },
+          {
+            "problem": "Find the greatest integer less than $(\\sqrt{7} + \\sqrt{5})^6.$  (Do not use a ca",
+            "ground_truth": "13535",
+            "pred_answer": "13535",
+            "correct": true,
+            "n_tokens_generated": 7874,
+            "wall_time_s": 313.03,
+            "peak_gpu_mb": 16211.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 7939,
+              "mean_all": 1845.7,
+              "peak_all": 2175,
+              "after_prefill": 65
+            }
+          },
+          {
+            "problem": "Denali and Nate work for a dog walking business and are paid for each dog they w",
+            "ground_truth": "5",
+            "pred_answer": "5",
+            "correct": true,
+            "n_tokens_generated": 1814,
+            "wall_time_s": 70.36,
+            "peak_gpu_mb": 15909.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1974,
+              "mean_all": 1066.5,
+              "peak_all": 1973,
+              "after_prefill": 160
+            }
+          },
+          {
+            "problem": "Find all values of $x$ that satisfy the equation $x = \\!\\sqrt{11-2x} + 4$.",
+            "ground_truth": "x=5",
+            "pred_answer": "5",
+            "correct": true,
+            "n_tokens_generated": 3028,
+            "wall_time_s": 119.03,
+            "peak_gpu_mb": 16211.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3091,
+              "mean_all": 1418.6,
+              "peak_all": 2175,
+              "after_prefill": 63
+            }
+          },
+          {
+            "problem": "A worker receives an annual wage of $\\$20{,}000$, which he always deposits into ",
+            "ground_truth": "10",
+            "pred_answer": "10",
+            "correct": true,
+            "n_tokens_generated": 2298,
+            "wall_time_s": 90.24,
+            "peak_gpu_mb": 16219.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2431,
+              "mean_all": 1260.2,
+              "peak_all": 2175,
+              "after_prefill": 133
+            }
+          }
+        ]
+      }
+    }
+  }
+}
