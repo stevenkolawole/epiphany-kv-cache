@@ -87,7 +87,7 @@ for model in ("llama", "qwen"):
                 print(f"  epikv vs {p:6s}: wins {w:3d} ({wl} looped under {p}) / losses {l:3d}   p={mcnemar(w, l):.2f}")
 
 if a.latex:
-    NAME = {"none": "No eviction (no budget)", "epikv": "\\rowcolor{epirow}\\methodq", "seg": "\\methodseg", "raas": "RaaS"}
+    NAME = {"none": "No eviction", "epikv": "\\rowcolor{epirow}\\methodq", "seg": "\\methodseg", "raas": "RaaS"}
     ks_l = sorted({k for (_, k) in LATEX})
     # only budgets paired on both models with the full problem set
     full = [k for k in ks_l if all((m, k) in LATEX and LATEX[(m, k)]["none"][0] >= 180 for m in ("llama", "qwen"))]
