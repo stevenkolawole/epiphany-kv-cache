@@ -1,0 +1,349 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "math500",
+    "n_samples": 20,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      1024
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "1024": {
+        "accuracy": 0.75,
+        "n_correct": 15,
+        "n_total": 20,
+        "mean_wall_time_s": 161.5,
+        "mean_peak_gpu_mb": 15798.7,
+        "per_problem": [
+          {
+            "problem": "Let $\\omega$ be a complex number such that $\\omega^3 = 1.$  Find all possible va",
+            "ground_truth": "1",
+            "pred_answer": "1",
+            "correct": true,
+            "n_tokens_generated": 2695,
+            "wall_time_s": 97.55,
+            "peak_gpu_mb": 15807.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2792,
+              "mean_all": 905.6,
+              "peak_all": 1151,
+              "after_prefill": 97
+            }
+          },
+          {
+            "problem": "Let $n$ be a positive integer.  Simplify the expression\n\\[\\frac{(2^4 + \\frac{1}{",
+            "ground_truth": "8n^2 + 4n + 1",
+            "pred_answer": "8n^2 + 4n + 1",
+            "correct": true,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 589.66,
+            "peak_gpu_mb": 15812.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16523,
+              "mean_all": 1060.1,
+              "peak_all": 1151,
+              "after_prefill": 139
+            }
+          },
+          {
+            "problem": "If $\\frac{a}{b}$ is the probability that the reciprocal of a randomly selected p",
+            "ground_truth": "202",
+            "pred_answer": "202",
+            "correct": true,
+            "n_tokens_generated": 2674,
+            "wall_time_s": 95.88,
+            "peak_gpu_mb": 15806.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2762,
+              "mean_all": 900.5,
+              "peak_all": 1151,
+              "after_prefill": 88
+            }
+          },
+          {
+            "problem": "The area of triangle $ABC$ is equal to $a^2 - (b - c)^2,$ where $a,$ $b,$ and $c",
+            "ground_truth": "\\frac{8}{15}",
+            "pred_answer": "\\dfrac{8}{15}",
+            "correct": true,
+            "n_tokens_generated": 2997,
+            "wall_time_s": 107.46,
+            "peak_gpu_mb": 15806.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3083,
+              "mean_all": 920.5,
+              "peak_all": 1151,
+              "after_prefill": 86
+            }
+          },
+          {
+            "problem": "Solve\n\\[\\sqrt{x + \\sqrt{3x + 6}} + \\sqrt{x - \\sqrt{3x + 6}} = 6.\\]",
+            "ground_truth": "10",
+            "pred_answer": "10",
+            "correct": true,
+            "n_tokens_generated": 5412,
+            "wall_time_s": 193.48,
+            "peak_gpu_mb": 15805.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 5484,
+              "mean_all": 992.3,
+              "peak_all": 1151,
+              "after_prefill": 72
+            }
+          },
+          {
+            "problem": "What is the shortest distance that can be travelled if you start at any point, $",
+            "ground_truth": "13",
+            "pred_answer": "13",
+            "correct": true,
+            "n_tokens_generated": 4485,
+            "wall_time_s": 130.34,
+            "peak_gpu_mb": 15823.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4722,
+              "mean_all": 1007.0,
+              "peak_all": 1151,
+              "after_prefill": 237
+            }
+          },
+          {
+            "problem": "A steel sphere with a 3-inch radius is made by removing metal from the corners o",
+            "ground_truth": "216",
+            "pred_answer": "216",
+            "correct": true,
+            "n_tokens_generated": 11905,
+            "wall_time_s": 345.78,
+            "peak_gpu_mb": 15805.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 11981,
+              "mean_all": 1044.5,
+              "peak_all": 1151,
+              "after_prefill": 76
+            }
+          },
+          {
+            "problem": "Determine the modulo 4 remainder of the following sum: $$ 1 + 2 + 3 + 4 + 5 + 6 ",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 1735,
+            "wall_time_s": 50.01,
+            "peak_gpu_mb": 15806.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1821,
+              "mean_all": 798.5,
+              "peak_all": 1151,
+              "after_prefill": 86
+            }
+          },
+          {
+            "problem": "A shirt's sale price is marked $\\$14.40$, which is $60\\%$ off the original price",
+            "ground_truth": "\\$36",
+            "pred_answer": "36",
+            "correct": false,
+            "n_tokens_generated": 854,
+            "wall_time_s": 24.39,
+            "peak_gpu_mb": 15604.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 926,
+              "mean_all": 498.5,
+              "peak_all": 925,
+              "after_prefill": 72
+            }
+          },
+          {
+            "problem": "Let $f(x)=|x-p|+|x-15|+|x-p-15|,$ where $0 < p < 15.$ Determine the minimum valu",
+            "ground_truth": "15",
+            "pred_answer": "15",
+            "correct": true,
+            "n_tokens_generated": 3221,
+            "wall_time_s": 93.26,
+            "peak_gpu_mb": 15807.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3317,
+              "mean_all": 935.1,
+              "peak_all": 1151,
+              "after_prefill": 96
+            }
+          },
+          {
+            "problem": "Suppose the polynomial\n$$f(x) = a_nx^n + a_{n-1}x^{n-1} + \\cdots + a_2x^2 + a_1x",
+            "ground_truth": "14",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 445.84,
+            "peak_gpu_mb": 15811.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16512,
+              "mean_all": 1059.5,
+              "peak_all": 1151,
+              "after_prefill": 128
+            }
+          },
+          {
+            "problem": "Tom got a Mr. Potato Head for his birthday. It came with 3 hairstyles, 2 sets of",
+            "ground_truth": "64",
+            "pred_answer": "64",
+            "correct": true,
+            "n_tokens_generated": 1609,
+            "wall_time_s": 46.2,
+            "peak_gpu_mb": 15815.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1779,
+              "mean_all": 826.4,
+              "peak_all": 1151,
+              "after_prefill": 170
+            }
+          },
+          {
+            "problem": "The set of vectors $\\mathbf{v}$ such that\n\\[\\operatorname{proj}_{\\begin{pmatrix}",
+            "ground_truth": "y = -2x",
+            "pred_answer": "y = -2x",
+            "correct": true,
+            "n_tokens_generated": 1453,
+            "wall_time_s": 41.6,
+            "peak_gpu_mb": 15810.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1574,
+              "mean_all": 765.9,
+              "peak_all": 1151,
+              "after_prefill": 121
+            }
+          },
+          {
+            "problem": "The number $(\\sqrt{2}+\\sqrt{3})^3$ can be written in the form $a\\sqrt{2} + b\\sqr",
+            "ground_truth": "20",
+            "pred_answer": "20",
+            "correct": true,
+            "n_tokens_generated": 3899,
+            "wall_time_s": 112.48,
+            "peak_gpu_mb": 15808.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4002,
+              "mean_all": 963.2,
+              "peak_all": 1151,
+              "after_prefill": 103
+            }
+          },
+          {
+            "problem": "Let $S$ be the set of points $(a,b)$ with $0 \\le a,$ $b \\le 1$ such that the equ",
+            "ground_truth": "\\frac{1}{4}",
+            "pred_answer": "1/4",
+            "correct": false,
+            "n_tokens_generated": 3471,
+            "wall_time_s": 100.28,
+            "peak_gpu_mb": 15809.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3579,
+              "mean_all": 949.6,
+              "peak_all": 1151,
+              "after_prefill": 108
+            }
+          },
+          {
+            "problem": "What is the domain of the function $f(x) = \\frac{2-x}{\\log(2-\\log(x-2))}$, where",
+            "ground_truth": "(2,12) \\cup (12,102)",
+            "pred_answer": "(2, 12) \\cup (12, 102)",
+            "correct": true,
+            "n_tokens_generated": 2126,
+            "wall_time_s": 61.17,
+            "peak_gpu_mb": 15806.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2213,
+              "mean_all": 852.0,
+              "peak_all": 1151,
+              "after_prefill": 87
+            }
+          },
+          {
+            "problem": "Let $z = 1+i$ and $w = \\dfrac{3z+1}{5z+7}$. Find $|w|$.",
+            "ground_truth": "\\frac{5}{13}",
+            "pred_answer": "\\dfrac{5}{13}",
+            "correct": true,
+            "n_tokens_generated": 1981,
+            "wall_time_s": 56.51,
+            "peak_gpu_mb": 15804.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2050,
+              "mean_all": 826.4,
+              "peak_all": 1151,
+              "after_prefill": 69
+            }
+          },
+          {
+            "problem": "An equiangular octagon has four sides of length $1$ and four sides of length $\\f",
+            "ground_truth": "\\frac{7}{2}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 417.94,
+            "peak_gpu_mb": 15806.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16471,
+              "mean_all": 1056.9,
+              "peak_all": 1151,
+              "after_prefill": 87
+            }
+          },
+          {
+            "problem": "A sequence $(a_n)$ is defined as follows:\n\\[a_{i + 1} = \\frac{1}{1 - a_i}\\]for $",
+            "ground_truth": "-1",
+            "pred_answer": "-1",
+            "correct": true,
+            "n_tokens_generated": 3254,
+            "wall_time_s": 82.84,
+            "peak_gpu_mb": 15807.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3348,
+              "mean_all": 936.0,
+              "peak_all": 1151,
+              "after_prefill": 94
+            }
+          },
+          {
+            "problem": "Altitudes $\\overline{AD}$ and $\\overline{BE}$ of $\\triangle ABC$ intersect at $H",
+            "ground_truth": "106^\\circ",
+            "pred_answer": "106",
+            "correct": false,
+            "n_tokens_generated": 5381,
+            "wall_time_s": 137.41,
+            "peak_gpu_mb": 15807.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 5473,
+              "mean_all": 995.4,
+              "peak_all": 1151,
+              "after_prefill": 92
+            }
+          }
+        ]
+      }
+    }
+  }
+}

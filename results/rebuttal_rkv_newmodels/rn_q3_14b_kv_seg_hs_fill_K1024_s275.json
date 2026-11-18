@@ -1,0 +1,429 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "math500",
+    "n_samples": 25,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      1024
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "1024": {
+        "accuracy": 0.76,
+        "n_correct": 19,
+        "n_total": 25,
+        "mean_wall_time_s": 377.0,
+        "mean_peak_gpu_mb": 28785.0,
+        "per_problem": [
+          {
+            "problem": "What's the largest eight-digit base 2 integer?  Express your answer in base 10.",
+            "ground_truth": "255",
+            "pred_answer": "255",
+            "correct": true,
+            "n_tokens_generated": 1883,
+            "wall_time_s": 74.09,
+            "peak_gpu_mb": 28767.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1932,
+              "mean_all": 801.6,
+              "peak_all": 1151,
+              "after_prefill": 49
+            }
+          },
+          {
+            "problem": "In the diagram, the three concentric circles have radii of $4,$ $6,$ and $7.$ Th",
+            "ground_truth": "7\\pi",
+            "pred_answer": "7\\pi",
+            "correct": true,
+            "n_tokens_generated": 3165,
+            "wall_time_s": 123.93,
+            "peak_gpu_mb": 28790.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3368,
+              "mean_all": 963.8,
+              "peak_all": 1151,
+              "after_prefill": 203
+            }
+          },
+          {
+            "problem": "Suppose $a$ and $b$ are different prime numbers greater than 2. How many whole-n",
+            "ground_truth": "8",
+            "pred_answer": "8",
+            "correct": true,
+            "n_tokens_generated": 2058,
+            "wall_time_s": 80.28,
+            "peak_gpu_mb": 28770.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2131,
+              "mean_all": 837.3,
+              "peak_all": 1151,
+              "after_prefill": 73
+            }
+          },
+          {
+            "problem": "In regular pentagon $FGHIJ$, extending the sides of the pentagon, as shown, form",
+            "ground_truth": "36^\\circ",
+            "pred_answer": "36",
+            "correct": false,
+            "n_tokens_generated": 14453,
+            "wall_time_s": 565.19,
+            "peak_gpu_mb": 28811.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 14823,
+              "mean_all": 1069.7,
+              "peak_all": 1151,
+              "after_prefill": 370
+            }
+          },
+          {
+            "problem": "In the sequence 0, 1, 1, 3, 6, 9, 27, ..., the first term is 0.   Subsequent ter",
+            "ground_truth": "129",
+            "pred_answer": "129",
+            "correct": true,
+            "n_tokens_generated": 2636,
+            "wall_time_s": 102.69,
+            "peak_gpu_mb": 28783.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2792,
+              "mean_all": 923.0,
+              "peak_all": 1151,
+              "after_prefill": 156
+            }
+          },
+          {
+            "problem": "What is $\\left(4\\dfrac{5}{8}\\right)^{55} \\cdot \\left(\\dfrac{8}{37}\\right)^{55}$?",
+            "ground_truth": "1",
+            "pred_answer": "1",
+            "correct": true,
+            "n_tokens_generated": 1597,
+            "wall_time_s": 62.16,
+            "peak_gpu_mb": 28769.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1664,
+              "mean_all": 762.3,
+              "peak_all": 1151,
+              "after_prefill": 67
+            }
+          },
+          {
+            "problem": "Find all solutions to\n\\[\\sin \\left( \\tan^{-1} (x) + \\cot^{-1} \\left( \\frac{1}{x}",
+            "ground_truth": "3 \\pm 2 \\sqrt{2}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 733.14,
+            "peak_gpu_mb": 28776.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16472,
+              "mean_all": 1057.0,
+              "peak_all": 1151,
+              "after_prefill": 88
+            }
+          },
+          {
+            "problem": "Steve says to Jon, \"I am thinking of a polynomial whose roots are all positive i",
+            "ground_truth": "440",
+            "pred_answer": "440",
+            "correct": true,
+            "n_tokens_generated": 11041,
+            "wall_time_s": 546.97,
+            "peak_gpu_mb": 28789.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 11225,
+              "mean_all": 1050.5,
+              "peak_all": 1151,
+              "after_prefill": 184
+            }
+          },
+          {
+            "problem": "Let $T$ be the set of all triples $(a,b,c)$ of positive integers for which there",
+            "ground_truth": "\\frac{17}{21}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 804.57,
+            "peak_gpu_mb": 28777.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16480,
+              "mean_all": 1057.5,
+              "peak_all": 1151,
+              "after_prefill": 96
+            }
+          },
+          {
+            "problem": "One gear turns $33\\frac{1}{3}$ times in a minute.  Another gear turns   45 times",
+            "ground_truth": "36",
+            "pred_answer": "36",
+            "correct": true,
+            "n_tokens_generated": 4084,
+            "wall_time_s": 199.68,
+            "peak_gpu_mb": 28777.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4176,
+              "mean_all": 966.1,
+              "peak_all": 1151,
+              "after_prefill": 92
+            }
+          },
+          {
+            "problem": "One line is defined by\n\\[\\begin{pmatrix} 3 \\\\ -10 \\\\ 1 \\end{pmatrix} + t \\begin{",
+            "ground_truth": "7",
+            "pred_answer": "7",
+            "correct": true,
+            "n_tokens_generated": 7741,
+            "wall_time_s": 377.33,
+            "peak_gpu_mb": 28782.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 7888,
+              "mean_all": 1030.3,
+              "peak_all": 1151,
+              "after_prefill": 147
+            }
+          },
+          {
+            "problem": "Let $a,$ $b,$ $c,$ $d$ be positive real numbers.  Find the minimum value of\n\\[(a",
+            "ground_truth": "16",
+            "pred_answer": "16",
+            "correct": true,
+            "n_tokens_generated": 2781,
+            "wall_time_s": 135.67,
+            "peak_gpu_mb": 28776.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2882,
+              "mean_all": 912.3,
+              "peak_all": 1151,
+              "after_prefill": 101
+            }
+          },
+          {
+            "problem": "Find the value of $r$ such that $$\\frac{6r^2 -19r - 7}{2r-7} = 4r-3.$$",
+            "ground_truth": "4",
+            "pred_answer": "4",
+            "correct": true,
+            "n_tokens_generated": 2375,
+            "wall_time_s": 118.67,
+            "peak_gpu_mb": 28771.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2440,
+              "mean_all": 867.8,
+              "peak_all": 1151,
+              "after_prefill": 65
+            }
+          },
+          {
+            "problem": "Consider the rectangular region with the following points as vertices: $$(5,4), ",
+            "ground_truth": "63",
+            "pred_answer": "63",
+            "correct": true,
+            "n_tokens_generated": 5642,
+            "wall_time_s": 280.01,
+            "peak_gpu_mb": 28775.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 5720,
+              "mean_all": 997.1,
+              "peak_all": 1151,
+              "after_prefill": 78
+            }
+          },
+          {
+            "problem": "Given that \\begin{align*}x_{1}&=211,\\\\ x_{2}&=375,\\\\ x_{3}&=420,\\\\ x_{4}&=523,\\ ",
+            "ground_truth": "898",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 810.62,
+            "peak_gpu_mb": 28785.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16537,
+              "mean_all": 1060.9,
+              "peak_all": 1151,
+              "after_prefill": 153
+            }
+          },
+          {
+            "problem": "Find all $p$ which satisfy both the inequalities $0\\ge 54p-144$ and $0>12-20p$. ",
+            "ground_truth": "\\left(\\frac{3}{5},\\frac{8}{3}\\right]",
+            "pred_answer": "\\left( \\dfrac{3}{5}, \\dfrac{8}{3} \\right]",
+            "correct": true,
+            "n_tokens_generated": 2441,
+            "wall_time_s": 113.61,
+            "peak_gpu_mb": 28772.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2517,
+              "mean_all": 877.8,
+              "peak_all": 1151,
+              "after_prefill": 76
+            }
+          },
+          {
+            "problem": "A palindrome is a number that reads the same forwards and backwards. The sum of ",
+            "ground_truth": "58",
+            "pred_answer": "58",
+            "correct": true,
+            "n_tokens_generated": 6864,
+            "wall_time_s": 336.86,
+            "peak_gpu_mb": 28776.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 6950,
+              "mean_all": 1014.4,
+              "peak_all": 1151,
+              "after_prefill": 86
+            }
+          },
+          {
+            "problem": "The solutions of the equation $z^4+4z^3i-6z^2-4zi-i=0$ are the vertices of a con",
+            "ground_truth": "11",
+            "pred_answer": "11",
+            "correct": true,
+            "n_tokens_generated": 15313,
+            "wall_time_s": 767.07,
+            "peak_gpu_mb": 28781.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 15440,
+              "mean_all": 1057.3,
+              "peak_all": 1151,
+              "after_prefill": 127
+            }
+          },
+          {
+            "problem": "Assume $0 < r < 3$.  Below are five equations for $x$.  Which equation has the l",
+            "ground_truth": "\\text{(B)}",
+            "pred_answer": "B",
+            "correct": false,
+            "n_tokens_generated": 10071,
+            "wall_time_s": 502.71,
+            "peak_gpu_mb": 28789.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 10241,
+              "mean_all": 1045.9,
+              "peak_all": 1151,
+              "after_prefill": 170
+            }
+          },
+          {
+            "problem": "A book is said to have $n$ leaves if it is composed of $n$ pieces of paper. On t",
+            "ground_truth": "103",
+            "pred_answer": "103",
+            "correct": true,
+            "n_tokens_generated": 3644,
+            "wall_time_s": 174.48,
+            "peak_gpu_mb": 28781.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3766,
+              "mean_all": 959.5,
+              "peak_all": 1151,
+              "after_prefill": 122
+            }
+          },
+          {
+            "problem": "Let $\\mathbf{a},$ $\\mathbf{b},$ $\\mathbf{c}$ be three vectors such that\n\\[\\mathb",
+            "ground_truth": "\\begin{pmatrix} -18 \\\\ -49 \\\\ 96 \\end{pmatrix}",
+            "pred_answer": "\\begin{pmatrix} -18 \\\\ -49 \\\\ 96 \\end{pmatrix}",
+            "correct": true,
+            "n_tokens_generated": 4575,
+            "wall_time_s": 227.61,
+            "peak_gpu_mb": 28792.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4777,
+              "mean_all": 1001.8,
+              "peak_all": 1151,
+              "after_prefill": 202
+            }
+          },
+          {
+            "problem": "Consider the rectangle with vertices at $(5,4),$ $(5,-4),$ $(-5,4),$ $(-5,-4)$. ",
+            "ground_truth": "63",
+            "pred_answer": "63",
+            "correct": true,
+            "n_tokens_generated": 3885,
+            "wall_time_s": 190.45,
+            "peak_gpu_mb": 28771.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3954,
+              "mean_all": 954.2,
+              "peak_all": 1151,
+              "after_prefill": 69
+            }
+          },
+          {
+            "problem": "Four distinct circles are drawn in a plane. What is the maximum number of points",
+            "ground_truth": "12",
+            "pred_answer": "12",
+            "correct": true,
+            "n_tokens_generated": 2405,
+            "wall_time_s": 124.3,
+            "peak_gpu_mb": 28769.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2458,
+              "mean_all": 865.1,
+              "peak_all": 1151,
+              "after_prefill": 53
+            }
+          },
+          {
+            "problem": "$\\textbf{Juan's Old Stamping Grounds}$\n\nJuan organizes the stamps in his collect",
+            "ground_truth": "5.4 \\text{ cents}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1013.27,
+            "peak_gpu_mb": 28907.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 17203,
+              "mean_all": 1085.3,
+              "peak_all": 1151,
+              "after_prefill": 819
+            }
+          },
+          {
+            "problem": "When converting $\\frac{31}{11111}$ to a decimal, the decimal turns out to be a r",
+            "ground_truth": "5",
+            "pred_answer": "5",
+            "correct": true,
+            "n_tokens_generated": 13440,
+            "wall_time_s": 959.68,
+            "peak_gpu_mb": 28778.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 13557,
+              "mean_all": 1052.5,
+              "peak_all": 1151,
+              "after_prefill": 117
+            }
+          }
+        ]
+      }
+    }
+  }
+}

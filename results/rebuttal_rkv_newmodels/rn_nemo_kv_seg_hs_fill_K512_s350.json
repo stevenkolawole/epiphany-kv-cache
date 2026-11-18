@@ -1,0 +1,429 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "math500",
+    "n_samples": 25,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      512
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "512": {
+        "accuracy": 0.76,
+        "n_correct": 19,
+        "n_total": 25,
+        "mean_wall_time_s": 134.76,
+        "mean_peak_gpu_mb": 15599.5,
+        "per_problem": [
+          {
+            "problem": "Suppose that I have $6$ different books, $2$ of which are math books. In how man",
+            "ground_truth": "480",
+            "pred_answer": "480",
+            "correct": true,
+            "n_tokens_generated": 2243,
+            "wall_time_s": 64.5,
+            "peak_gpu_mb": 15598.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2329,
+              "mean_all": 522.3,
+              "peak_all": 639,
+              "after_prefill": 86
+            }
+          },
+          {
+            "problem": "The sum of 27 consecutive positive integers is $3^7$. What is their median?",
+            "ground_truth": "81",
+            "pred_answer": "81",
+            "correct": true,
+            "n_tokens_generated": 1152,
+            "wall_time_s": 32.84,
+            "peak_gpu_mb": 15595.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1207,
+              "mean_all": 457.7,
+              "peak_all": 639,
+              "after_prefill": 55
+            }
+          },
+          {
+            "problem": "Let $a,$ $b,$ and $c$ be positive real numbers.  Find the minimum value of\n\\[\\fr",
+            "ground_truth": "100",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 466.93,
+            "peak_gpu_mb": 15601.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16476,
+              "mean_all": 568.4,
+              "peak_all": 639,
+              "after_prefill": 92
+            }
+          },
+          {
+            "problem": "For what real values of $x$ is $-4<x^{4}+4x^{2}<21$ satisfied? Express your answ",
+            "ground_truth": "(-\\sqrt{3}, \\sqrt{3})",
+            "pred_answer": "(-\\sqrt{3}, \\sqrt{3})",
+            "correct": true,
+            "n_tokens_generated": 2012,
+            "wall_time_s": 57.3,
+            "peak_gpu_mb": 15596.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2081,
+              "mean_all": 511.8,
+              "peak_all": 639,
+              "after_prefill": 69
+            }
+          },
+          {
+            "problem": "I have a deck of $54$ cards, and I deal all of the cards to $x$ players, with ea",
+            "ground_truth": "4",
+            "pred_answer": "4",
+            "correct": true,
+            "n_tokens_generated": 1941,
+            "wall_time_s": 55.18,
+            "peak_gpu_mb": 15599.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2041,
+              "mean_all": 517.9,
+              "peak_all": 639,
+              "after_prefill": 100
+            }
+          },
+          {
+            "problem": "Determine if the graph of the equation below is a parabola, circle, ellipse, hyp",
+            "ground_truth": "\\text{ellipse}",
+            "pred_answer": "ellipse",
+            "correct": true,
+            "n_tokens_generated": 1297,
+            "wall_time_s": 36.86,
+            "peak_gpu_mb": 15598.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1387,
+              "mean_all": 485.1,
+              "peak_all": 639,
+              "after_prefill": 90
+            }
+          },
+          {
+            "problem": "Suppose that $x,$ $y,$ and $z$ satisfy the equations\n\\begin{align*}\nxyz &= 4, \\\\",
+            "ground_truth": "6",
+            "pred_answer": "6",
+            "correct": true,
+            "n_tokens_generated": 5447,
+            "wall_time_s": 155.09,
+            "peak_gpu_mb": 15603.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 5578,
+              "mean_all": 557.3,
+              "peak_all": 639,
+              "after_prefill": 131
+            }
+          },
+          {
+            "problem": "The following line is parameterized, so that its direction vector is of the form",
+            "ground_truth": "\\frac{7}{4}",
+            "pred_answer": "\\frac{7}{4}",
+            "correct": true,
+            "n_tokens_generated": 1630,
+            "wall_time_s": 46.43,
+            "peak_gpu_mb": 15617.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1893,
+              "mean_all": 545.8,
+              "peak_all": 639,
+              "after_prefill": 263
+            }
+          },
+          {
+            "problem": "An equilateral triangle is inscribed in the parabola $x^2 = 8y,$ such that one o",
+            "ground_truth": "16 \\sqrt{3}",
+            "pred_answer": "16\\sqrt{3}",
+            "correct": true,
+            "n_tokens_generated": 7803,
+            "wall_time_s": 222.21,
+            "peak_gpu_mb": 15598.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 7891,
+              "mean_all": 560.3,
+              "peak_all": 639,
+              "after_prefill": 88
+            }
+          },
+          {
+            "problem": "Two candidates, Dan and Donald, run for class president. Two other candidates, F",
+            "ground_truth": "\\frac14",
+            "pred_answer": "\\dfrac{1}{4}",
+            "correct": false,
+            "n_tokens_generated": 1307,
+            "wall_time_s": 37.13,
+            "peak_gpu_mb": 15599.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1400,
+              "mean_all": 487.4,
+              "peak_all": 639,
+              "after_prefill": 93
+            }
+          },
+          {
+            "problem": "Three plus the reciprocal of a number equals 7 divided by that number.  What is ",
+            "ground_truth": "2",
+            "pred_answer": "2",
+            "correct": true,
+            "n_tokens_generated": 664,
+            "wall_time_s": 18.82,
+            "peak_gpu_mb": 15595.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 721,
+              "mean_all": 372.8,
+              "peak_all": 639,
+              "after_prefill": 57
+            }
+          },
+          {
+            "problem": "If each point of the circle $x^2 + y^2 = 25$ is reflected in the point $(4,1),$ ",
+            "ground_truth": "(1,-16,-4,43)",
+            "pred_answer": "(1, -16, -4, 43)",
+            "correct": true,
+            "n_tokens_generated": 2648,
+            "wall_time_s": 75.31,
+            "peak_gpu_mb": 15600.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2755,
+              "mean_all": 533.9,
+              "peak_all": 639,
+              "after_prefill": 107
+            }
+          },
+          {
+            "problem": "If $a$ and $b$ are positive integers such that $\\gcd(a,b)=210$, $\\mathop{\\text{l",
+            "ground_truth": "8",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 466.87,
+            "peak_gpu_mb": 15601.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16472,
+              "mean_all": 568.2,
+              "peak_all": 639,
+              "after_prefill": 88
+            }
+          },
+          {
+            "problem": "Find the modulo $7$ remainder of the sum $1+3+5+7+9+\\dots+195+197+199.$",
+            "ground_truth": "4",
+            "pred_answer": "4",
+            "correct": true,
+            "n_tokens_generated": 2957,
+            "wall_time_s": 84.07,
+            "peak_gpu_mb": 15596.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3022,
+              "mean_all": 531.4,
+              "peak_all": 639,
+              "after_prefill": 65
+            }
+          },
+          {
+            "problem": "Suppose that $f$ is a function and $f^{-1}$ is the inverse of $f$.  If $f(1)=2$,",
+            "ground_truth": "1",
+            "pred_answer": "1",
+            "correct": true,
+            "n_tokens_generated": 1478,
+            "wall_time_s": 42.1,
+            "peak_gpu_mb": 15599.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1578,
+              "mean_all": 499.0,
+              "peak_all": 639,
+              "after_prefill": 100
+            }
+          },
+          {
+            "problem": "Two sides of a triangle are each $8$ units long. If the third side has a whole n",
+            "ground_truth": "31",
+            "pred_answer": "31",
+            "correct": true,
+            "n_tokens_generated": 1343,
+            "wall_time_s": 38.14,
+            "peak_gpu_mb": 15597.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1416,
+              "mean_all": 482.5,
+              "peak_all": 639,
+              "after_prefill": 73
+            }
+          },
+          {
+            "problem": "What is the number of square centimeters in the area of this trapezoid?\n\n[asy]\nd",
+            "ground_truth": "21",
+            "pred_answer": "15",
+            "correct": false,
+            "n_tokens_generated": 6672,
+            "wall_time_s": 189.67,
+            "peak_gpu_mb": 15609.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 6857,
+              "mean_all": 564.0,
+              "peak_all": 639,
+              "after_prefill": 185
+            }
+          },
+          {
+            "problem": "Find the dot product of $\\begin{pmatrix} -2 \\\\ 0 \\\\ 7 \\end{pmatrix}$ and $\\begin",
+            "ground_truth": "-41",
+            "pred_answer": "-41",
+            "correct": true,
+            "n_tokens_generated": 826,
+            "wall_time_s": 23.41,
+            "peak_gpu_mb": 15598.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 909,
+              "mean_all": 429.9,
+              "peak_all": 639,
+              "after_prefill": 83
+            }
+          },
+          {
+            "problem": "Let $a,$ $b,$ $c$ be real numbers such that\n\\[|ax^2 + bx + c| \\le 1\\]for all $0 ",
+            "ground_truth": "17",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 468.93,
+            "peak_gpu_mb": 15602.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16484,
+              "mean_all": 568.6,
+              "peak_all": 639,
+              "after_prefill": 100
+            }
+          },
+          {
+            "problem": "In the diagram, $AD=BD=CD$ and $\\angle BCA = 40^\\circ.$ What is the measure of $",
+            "ground_truth": "90^\\circ",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 462.5,
+            "peak_gpu_mb": 15619.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16638,
+              "mean_all": 572.4,
+              "peak_all": 639,
+              "after_prefill": 254
+            }
+          },
+          {
+            "problem": "William Sydney Porter tried to perform the calculation $\\frac{-3+4i}{1+2i}$. How",
+            "ground_truth": "1+2i",
+            "pred_answer": "1 + 2i",
+            "correct": true,
+            "n_tokens_generated": 4809,
+            "wall_time_s": 113.51,
+            "peak_gpu_mb": 15600.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4913,
+              "mean_all": 552.4,
+              "peak_all": 639,
+              "after_prefill": 104
+            }
+          },
+          {
+            "problem": "What is the difference between the positive square root of 64 and the cube root ",
+            "ground_truth": "4",
+            "pred_answer": "4",
+            "correct": true,
+            "n_tokens_generated": 516,
+            "wall_time_s": 12.08,
+            "peak_gpu_mb": 15562.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 572,
+              "mean_all": 313.4,
+              "peak_all": 570,
+              "after_prefill": 56
+            }
+          },
+          {
+            "problem": "If $A$ is the sum of the positive divisors of $500$, what is the sum of the dist",
+            "ground_truth": "25",
+            "pred_answer": "25",
+            "correct": true,
+            "n_tokens_generated": 1722,
+            "wall_time_s": 40.62,
+            "peak_gpu_mb": 15596.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1789,
+              "mean_all": 501.3,
+              "peak_all": 639,
+              "after_prefill": 67
+            }
+          },
+          {
+            "problem": "Determine the coordinates of the point $P$ on the line $y=-x+6$ such that $P$ is",
+            "ground_truth": "(8,-2)",
+            "pred_answer": "(8, -2)",
+            "correct": true,
+            "n_tokens_generated": 4144,
+            "wall_time_s": 97.73,
+            "peak_gpu_mb": 15600.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4252,
+              "mean_all": 549.2,
+              "peak_all": 639,
+              "after_prefill": 108
+            }
+          },
+          {
+            "problem": "The superfactorial $n\\$$ is defined as $n\\$ = \\underbrace{ n!^{{n!}^{{\\cdot}^{{\\",
+            "ground_truth": "6",
+            "pred_answer": "6",
+            "correct": true,
+            "n_tokens_generated": 2580,
+            "wall_time_s": 60.88,
+            "peak_gpu_mb": 15599.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2679,
+              "mean_all": 531.9,
+              "peak_all": 639,
+              "after_prefill": 99
+            }
+          }
+        ]
+      }
+    }
+  }
+}

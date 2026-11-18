@@ -1,0 +1,429 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "dataset": "math500",
+    "n_samples": 25,
+    "max_new_tokens": 16384,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      2048
+    ],
+    "methods": [
+      "raas_epikv_window"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "raas_epikv_window": {
+      "2048": {
+        "accuracy": 0.72,
+        "n_correct": 18,
+        "n_total": 25,
+        "mean_wall_time_s": 133.14,
+        "mean_peak_gpu_mb": 14871.8,
+        "per_problem": [
+          {
+            "problem": "Suppose that $ABCD$ is a trapezoid in which $\\overline{AD}|| \\overline{BC}$.  Gi",
+            "ground_truth": "28",
+            "pred_answer": "28",
+            "correct": true,
+            "n_tokens_generated": 5635,
+            "wall_time_s": 207.45,
+            "peak_gpu_mb": 14949.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 5734,
+              "mean_all": 1752.1,
+              "peak_all": 2175,
+              "after_prefill": 99
+            }
+          },
+          {
+            "problem": "Find the minimum value of\n\\[\\frac{(x + 5)(x + 2)}{x + 1}\\]for $x > 0.$",
+            "ground_truth": "9",
+            "pred_answer": "9",
+            "correct": true,
+            "n_tokens_generated": 3130,
+            "wall_time_s": 115.89,
+            "peak_gpu_mb": 14946.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3185,
+              "mean_all": 1435.9,
+              "peak_all": 2175,
+              "after_prefill": 55
+            }
+          },
+          {
+            "problem": "If $\\frac{\\sqrt{2x}}{\\sqrt{3x-1}}=\\frac32$, solve for $x$. Express your answer i",
+            "ground_truth": "\\frac9{19}",
+            "pred_answer": "\\dfrac{9}{19}",
+            "correct": false,
+            "n_tokens_generated": 1522,
+            "wall_time_s": 56.59,
+            "peak_gpu_mb": 14738.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1578,
+              "mean_all": 816.5,
+              "peak_all": 1577,
+              "after_prefill": 56
+            }
+          },
+          {
+            "problem": "Find the number of quadratic equations of the form $x^2 + ax + b = 0,$ such that",
+            "ground_truth": "6",
+            "pred_answer": "4",
+            "correct": false,
+            "n_tokens_generated": 3876,
+            "wall_time_s": 144.78,
+            "peak_gpu_mb": 14947.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3947,
+              "mean_all": 1574.3,
+              "peak_all": 2175,
+              "after_prefill": 71
+            }
+          },
+          {
+            "problem": "What is the range of the function $y=\\log_2 (\\sqrt{\\sin x})$ for $0^\\circ< x < 1",
+            "ground_truth": "(-\\infty, 0]",
+            "pred_answer": "(-\\infty, 0]",
+            "correct": true,
+            "n_tokens_generated": 3691,
+            "wall_time_s": 135.14,
+            "peak_gpu_mb": 14946.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3748,
+              "mean_all": 1539.5,
+              "peak_all": 2175,
+              "after_prefill": 57
+            }
+          },
+          {
+            "problem": "Let $ABCD$ be a regular tetrahedron with side length 2. The plane parallel to ed",
+            "ground_truth": "1+2\\sqrt{3}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 605.88,
+            "peak_gpu_mb": 14948.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16459,
+              "mean_all": 1984.9,
+              "peak_all": 2175,
+              "after_prefill": 75
+            }
+          },
+          {
+            "problem": "The product of a set of distinct positive integers is 84. What is the least poss",
+            "ground_truth": "14",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 516.17,
+            "peak_gpu_mb": 14945.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16429,
+              "mean_all": 1981.1,
+              "peak_all": 2175,
+              "after_prefill": 45
+            }
+          },
+          {
+            "problem": "The operation @ is defined as $\\frac{m}{n}@\\frac{p}{q} = (m)(p)\\left(\\frac{q}{n}",
+            "ground_truth": "49",
+            "pred_answer": "49",
+            "correct": true,
+            "n_tokens_generated": 2243,
+            "wall_time_s": 68.92,
+            "peak_gpu_mb": 14948.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2336,
+              "mean_all": 1203.0,
+              "peak_all": 2175,
+              "after_prefill": 93
+            }
+          },
+          {
+            "problem": "If $$1+12+123+1234+12345+123456+1234567+12345678$$is congruent to $n$ modulo 9, ",
+            "ground_truth": "3",
+            "pred_answer": "3",
+            "correct": true,
+            "n_tokens_generated": 3122,
+            "wall_time_s": 96.24,
+            "peak_gpu_mb": 14948.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3218,
+              "mean_all": 1460.9,
+              "peak_all": 2175,
+              "after_prefill": 96
+            }
+          },
+          {
+            "problem": "Solve\n\\[\\frac{1}{x - 5} > 0.\\]Enter your answer using interval notation.",
+            "ground_truth": "(5,\\infty)",
+            "pred_answer": "(5, \\infty)",
+            "correct": true,
+            "n_tokens_generated": 860,
+            "wall_time_s": 26.37,
+            "peak_gpu_mb": 14664.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 907,
+              "mean_all": 476.5,
+              "peak_all": 906,
+              "after_prefill": 47
+            }
+          },
+          {
+            "problem": "Charlie is riding on his unicycle. If the unicycle's wheel has a radius of 9 inc",
+            "ground_truth": "12\\pi",
+            "pred_answer": "12\\pi",
+            "correct": true,
+            "n_tokens_generated": 1085,
+            "wall_time_s": 32.71,
+            "peak_gpu_mb": 14700.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1149,
+              "mean_all": 606.0,
+              "peak_all": 1148,
+              "after_prefill": 64
+            }
+          },
+          {
+            "problem": "The point $(0,0)$ is reflected over the vertical line $x=1$.  When its image is ",
+            "ground_truth": "(2,4)",
+            "pred_answer": "(2, 4)",
+            "correct": true,
+            "n_tokens_generated": 1282,
+            "wall_time_s": 39.03,
+            "peak_gpu_mb": 14718.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1365,
+              "mean_all": 723.5,
+              "peak_all": 1364,
+              "after_prefill": 83
+            }
+          },
+          {
+            "problem": "Positive integers $a$, $b$, and $2009$, with $a<b<2009$, form a geometric sequen",
+            "ground_truth": "41",
+            "pred_answer": "41",
+            "correct": true,
+            "n_tokens_generated": 1648,
+            "wall_time_s": 49.25,
+            "peak_gpu_mb": 14753.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1709,
+              "mean_all": 884.5,
+              "peak_all": 1708,
+              "after_prefill": 61
+            }
+          },
+          {
+            "problem": "The expression $10x^2-x-24$ can be written as $(Ax-8)(Bx+3),$ where $A$ and $B$ ",
+            "ground_truth": "12",
+            "pred_answer": "12",
+            "correct": true,
+            "n_tokens_generated": 2019,
+            "wall_time_s": 60.1,
+            "peak_gpu_mb": 14919.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2086,
+              "mean_all": 1076.0,
+              "peak_all": 2084,
+              "after_prefill": 67
+            }
+          },
+          {
+            "problem": "Let $a,$ $b,$ and $c$ be distinct real numbers.  Find the degree of the polynomi",
+            "ground_truth": "0",
+            "pred_answer": "0",
+            "correct": true,
+            "n_tokens_generated": 7421,
+            "wall_time_s": 194.66,
+            "peak_gpu_mb": 14949.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 7535,
+              "mean_all": 1842.7,
+              "peak_all": 2175,
+              "after_prefill": 114
+            }
+          },
+          {
+            "problem": "Write the expression \\[\\frac{4+6a}{5}-\\frac{1+3a}{4}\\] as a single fraction.",
+            "ground_truth": "\\frac{11+9a}{20}",
+            "pred_answer": "\\dfrac{9a + 11}{20}",
+            "correct": false,
+            "n_tokens_generated": 1448,
+            "wall_time_s": 34.37,
+            "peak_gpu_mb": 14735.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1499,
+              "mean_all": 774.5,
+              "peak_all": 1498,
+              "after_prefill": 51
+            }
+          },
+          {
+            "problem": "In the equation $|x-4| -10 = 2$, what is the product of all possible values of $",
+            "ground_truth": "-128",
+            "pred_answer": "-128",
+            "correct": true,
+            "n_tokens_generated": 1287,
+            "wall_time_s": 30.41,
+            "peak_gpu_mb": 14716.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1337,
+              "mean_all": 693.0,
+              "peak_all": 1336,
+              "after_prefill": 50
+            }
+          },
+          {
+            "problem": "In the diagram below, we have $\\sin \\angle RPQ = \\frac{7}{25}$.  What is $\\cos \\",
+            "ground_truth": "-\\frac{24}{25}",
+            "pred_answer": "-\\dfrac{24}{25}",
+            "correct": true,
+            "n_tokens_generated": 2903,
+            "wall_time_s": 68.71,
+            "peak_gpu_mb": 14951.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3047,
+              "mean_all": 1444.7,
+              "peak_all": 2175,
+              "after_prefill": 144
+            }
+          },
+          {
+            "problem": "A robot moving forward at a constant speed takes 2.5 hours to travel 1 kilometer",
+            "ground_truth": "10",
+            "pred_answer": "10",
+            "correct": true,
+            "n_tokens_generated": 2001,
+            "wall_time_s": 47.19,
+            "peak_gpu_mb": 14919.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2076,
+              "mean_all": 1075.0,
+              "peak_all": 2074,
+              "after_prefill": 75
+            }
+          },
+          {
+            "problem": "Let $f(x) = x - 3$ and $q(x) = bx +1$.  If $f(q(1)) = -3$, what is $b$?",
+            "ground_truth": "-1",
+            "pred_answer": "-1",
+            "correct": true,
+            "n_tokens_generated": 1023,
+            "wall_time_s": 24.27,
+            "peak_gpu_mb": 14697.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1083,
+              "mean_all": 571.0,
+              "peak_all": 1082,
+              "after_prefill": 60
+            }
+          },
+          {
+            "problem": "Four points, $A$, $B$, $C$, and $D$, are chosen randomly and independently on th",
+            "ground_truth": "\\frac{1}{3}",
+            "pred_answer": "\\dfrac{1}{3}",
+            "correct": true,
+            "n_tokens_generated": 4938,
+            "wall_time_s": 116.46,
+            "peak_gpu_mb": 14946.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 5002,
+              "mean_all": 1687.1,
+              "peak_all": 2175,
+              "after_prefill": 64
+            }
+          },
+          {
+            "problem": "In the diagram, two circles, each with center $D$, have radii of $1$ and $2$. Th",
+            "ground_truth": "120",
+            "pred_answer": "150",
+            "correct": false,
+            "n_tokens_generated": 2459,
+            "wall_time_s": 57.98,
+            "peak_gpu_mb": 14960.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2754,
+              "mean_all": 1440.2,
+              "peak_all": 2175,
+              "after_prefill": 295
+            }
+          },
+          {
+            "problem": "A cylindrical beaker is 8 cm high and has a radius of 3 cm. How many such beaker",
+            "ground_truth": "4",
+            "pred_answer": "4",
+            "correct": true,
+            "n_tokens_generated": 2155,
+            "wall_time_s": 50.88,
+            "peak_gpu_mb": 14945.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2215,
+              "mean_all": 1134.7,
+              "peak_all": 2175,
+              "after_prefill": 60
+            }
+          },
+          {
+            "problem": "Evaluate\n\\[\\sin (\\arcsin 0.4 + \\arcsin 0.5) \\cdot \\sin (\\arcsin 0.5 - \\arcsin 0.",
+            "ground_truth": "\\frac{9}{100}",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 386.34,
+            "peak_gpu_mb": 14947.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 16451,
+              "mean_all": 1983.9,
+              "peak_all": 2175,
+              "after_prefill": 67
+            }
+          },
+          {
+            "problem": "Let $P(x)$ be a monic polynomial of degree 3.  Suppose that $P(x)$ has remainder",
+            "ground_truth": "15",
+            "pred_answer": "15",
+            "correct": true,
+            "n_tokens_generated": 6901,
+            "wall_time_s": 162.69,
+            "peak_gpu_mb": 14949.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 7009,
+              "mean_all": 1820.6,
+              "peak_all": 2175,
+              "after_prefill": 108
+            }
+          }
+        ]
+      }
+    }
+  }
+}
