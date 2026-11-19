@@ -16,8 +16,11 @@
   "results": {
     "rkv_official": {
       "4096": {
-        "partial": true,
+        "accuracy": 0.7272727272727273,
+        "n_correct": 8,
         "n_total": 11,
+        "mean_wall_time_s": 392.29,
+        "mean_peak_gpu_mb": 30687.7,
         "per_problem": [
           {
             "problem": "Imagine a point charge q is moving with a trajectory $\\vec{s}(t)$, where t is ti",
@@ -145,6 +148,54 @@
               "mean_all": 3479.8,
               "peak_all": 4223,
               "after_prefill": 298
+            }
+          },
+          {
+            "problem": "A chemist performed two reactions by taking two unknown compounds and treated th",
+            "ground_truth": "B",
+            "pred_answer": "C",
+            "correct": false,
+            "n_tokens_generated": 8031,
+            "wall_time_s": 464.0,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8376,
+              "mean_all": 3253.4,
+              "peak_all": 4223,
+              "after_prefill": 345
+            }
+          },
+          {
+            "problem": "You have prepared a di-substituted 6-membered aromatic ring compound containing ",
+            "ground_truth": "D",
+            "pred_answer": "D",
+            "correct": true,
+            "n_tokens_generated": 7273,
+            "wall_time_s": 416.95,
+            "peak_gpu_mb": 31478.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 7592,
+              "mean_all": 3145.3,
+              "peak_all": 4223,
+              "after_prefill": 319
+            }
+          },
+          {
+            "problem": "You tag the inner capsid proteins of rotavirus with a GFP and deliver them to mi",
+            "ground_truth": "D",
+            "pred_answer": "D",
+            "correct": true,
+            "n_tokens_generated": 1527,
+            "wall_time_s": 86.74,
+            "peak_gpu_mb": 28474.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 1705,
+              "mean_all": 941.0,
+              "peak_all": 1704,
+              "after_prefill": 178
             }
           }
         ]
