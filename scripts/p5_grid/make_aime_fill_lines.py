@@ -4,7 +4,7 @@
 #   babel  baselines + ablations on Qwen3-8B (same stack as that column), one problem  -> <out>/babel_aime_fill_lines.txt
 #   babel  LongFlow (native) on Qwen3-8B, GPQA-Diamond and AIME                        -> <out>/babel_longflow_lines.txt
 #   p5     EpiKV^-Q (no query flags) on Qwen3-14B and Nemotron MATH-500, and on all three models GPQA-Diamond
-#          -> <out>/p5_epikv_noq.txt (the earlier "seg" cells of those models carried the query flags)
+#          -> <out>/p5_epikv_noq.txt
 # Usage: make_aime_fill_lines.py <p5 root> <out dir>
 import sys
 R, O = sys.argv[1], sys.argv[2]
@@ -14,7 +14,7 @@ M = {"q3_8b": ("Qwen/Qwen3-8B", "--band_a_layer 11 --band_b_layer 24", "", 20),
      "q14b": ("Qwen/Qwen3-14B", "--band_a_layer 12 --band_b_layer 26", "", 34),
      "nemo": ("nvidia/Llama-3.1-Nemotron-Nano-8B-v1", "", NEMO, 20)}
 DS = ("aime2024", "aime2025", "aime2026")
-SEG = "--refresh_tau 128 --tau_mode steps"   # EpiKV^-Q: no query flags (as the paper models' cells)
+SEG = "--refresh_tau 128 --tau_mode steps"   # EpiKV^-Q takes no query flags
 FILL = [("kv_seg_hs", "seg"), ("lag_kv", ""), ("h2o", ""), ("thinkv_faithful", ""),
         ("hs_variance_detrend", "bands"), ("hs_variance", ""), ("kv_key", "")]
 base = "--logical_positions --keep_recent_k 128 --resume --attn_impl flash_attention_2"
