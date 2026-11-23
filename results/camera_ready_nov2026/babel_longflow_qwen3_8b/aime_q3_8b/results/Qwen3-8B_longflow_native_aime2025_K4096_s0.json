@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2025",
+    "n_samples": 5,
+    "start_idx": 0,
+    "max_new_tokens": 32768,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "longflow_native"
+    ],
+    "attn_impl": "eager",
+    "dtype": "float16",
+    "shims": [],
+    "versions": {
+      "torch": "2.4.0+cu121",
+      "transformers": "4.51.3"
+    },
+    "gpu": "NVIDIA L40S"
+  },
+  "results": {
+    "longflow_native": {
+      "4096": {
+        "accuracy": 0.6,
+        "n_correct": 3,
+        "n_total": 5,
+        "mean_wall_time_s": 1357.04,
+        "per_problem": [
+          {
+            "problem": "Find the sum of all integer bases $b>9$ for which $17_b$ is a divisor of $97_b.$",
+            "ground_truth": "70",
+            "problem_idx": 0,
+            "pred_answer": "70",
+            "correct": true,
+            "n_tokens_generated": 4000,
+            "wall_time_s": 308.63,
+            "peak_gpu_mb": 16219.4,
+            "prompt_len": 56,
+            "hit_eos": true
+          },
+          {
+            "problem": "On $\\triangle ABC$ points $A, D, E$, and $B$ lie in that order on side $\\overlin",
+            "ground_truth": "588",
+            "problem_idx": 1,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 2525.16,
+            "peak_gpu_mb": 16338.3,
+            "prompt_len": 666,
+            "hit_eos": false
+          },
+          {
+            "problem": "The 9 members of a baseball team went to an ice-cream parlor after their game. E",
+            "ground_truth": "16",
+            "problem_idx": 2,
+            "pred_answer": "16",
+            "correct": true,
+            "n_tokens_generated": 10093,
+            "wall_time_s": 776.18,
+            "peak_gpu_mb": 16226.2,
+            "prompt_len": 139,
+            "hit_eos": true
+          },
+          {
+            "problem": "Find the number of ordered pairs $(x,y)$, where both $x$ and $y$ are integers be",
+            "ground_truth": "117",
+            "problem_idx": 3,
+            "pred_answer": "117",
+            "correct": true,
+            "n_tokens_generated": 8386,
+            "wall_time_s": 643.84,
+            "peak_gpu_mb": 16220.8,
+            "prompt_len": 83,
+            "hit_eos": true
+          },
+          {
+            "problem": "There are $8!= 40320$ eight-digit positive integers that use each of the digits ",
+            "ground_truth": "279",
+            "problem_idx": 4,
+            "pred_answer": "2079",
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 2531.4,
+            "peak_gpu_mb": 16222.0,
+            "prompt_len": 106,
+            "hit_eos": false
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "aime2024",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "hs_variance"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "hs_variance": {
+      "8192": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 227.83,
+        "mean_peak_gpu_mb": 16886.4,
+        "per_problem": [
+          {
+            "problem": "Find the number of ways to place a digit in each cell of a 2x3 grid so that the ",
+            "ground_truth": "45",
+            "pred_answer": "45",
+            "correct": true,
+            "n_tokens_generated": 5678,
+            "wall_time_s": 227.83,
+            "peak_gpu_mb": 16886.4,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

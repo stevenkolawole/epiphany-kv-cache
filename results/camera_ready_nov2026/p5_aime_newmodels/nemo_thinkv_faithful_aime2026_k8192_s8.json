@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "aime2026",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "thinkv_faithful"
+    ],
+    "attn_impl": "eager"
+  },
+  "results": {
+    "thinkv_faithful": {
+      "8192": {
+        "accuracy": 0.0,
+        "n_correct": 0,
+        "n_total": 1,
+        "mean_wall_time_s": 2105.95,
+        "mean_peak_gpu_mb": 17571.0,
+        "per_problem": [
+          {
+            "problem": "Joanne has a blank fair six-sided die and six stickers each displaying a differe",
+            "ground_truth": "29",
+            "pred_answer": "\\dfrac{5}{6}",
+            "correct": false,
+            "n_tokens_generated": 32074,
+            "wall_time_s": 2105.95,
+            "peak_gpu_mb": 17571.0,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

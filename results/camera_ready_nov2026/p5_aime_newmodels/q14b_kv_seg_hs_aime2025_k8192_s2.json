@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "aime2025",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "kv_seg_hs"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs": {
+      "8192": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 345.98,
+        "mean_peak_gpu_mb": 31165.3,
+        "per_problem": [
+          {
+            "problem": "The 9 members of a baseball team went to an ice-cream parlor after their game. E",
+            "ground_truth": "16",
+            "pred_answer": "16",
+            "correct": true,
+            "n_tokens_generated": 8055,
+            "wall_time_s": 345.98,
+            "peak_gpu_mb": 31165.3,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

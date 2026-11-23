@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2025",
+    "n_samples": 5,
+    "start_idx": 15,
+    "max_new_tokens": 32768,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "longflow_native"
+    ],
+    "attn_impl": "eager",
+    "dtype": "float16",
+    "shims": [],
+    "versions": {
+      "torch": "2.4.0+cu121",
+      "transformers": "4.51.3"
+    },
+    "gpu": "NVIDIA L40S"
+  },
+  "results": {
+    "longflow_native": {
+      "8192": {
+        "accuracy": 0.6,
+        "n_correct": 3,
+        "n_total": 5,
+        "mean_wall_time_s": 1038.06,
+        "per_problem": [
+          {
+            "problem": "Six points $A, B, C, D, E$ and $F$ lie in a straight line in that order. Suppose",
+            "ground_truth": "468",
+            "problem_idx": 15,
+            "pred_answer": "468",
+            "correct": true,
+            "n_tokens_generated": 6276,
+            "wall_time_s": 594.25,
+            "peak_gpu_mb": 16807.6,
+            "prompt_len": 127,
+            "hit_eos": true
+          },
+          {
+            "problem": "Find the sum of all positive integers $n$ such that $n+2$ divides the product $3",
+            "ground_truth": "49",
+            "problem_idx": 16,
+            "pred_answer": "49",
+            "correct": true,
+            "n_tokens_generated": 7955,
+            "wall_time_s": 755.24,
+            "peak_gpu_mb": 16803.9,
+            "prompt_len": 61,
+            "hit_eos": true
+          },
+          {
+            "problem": "Four unit squares form a $2\\times 2$ grid. Each of the $12$ unit line segments f",
+            "ground_truth": "82",
+            "problem_idx": 17,
+            "pred_answer": "100",
+            "correct": false,
+            "n_tokens_generated": 16110,
+            "wall_time_s": 1531.6,
+            "peak_gpu_mb": 16819.4,
+            "prompt_len": 296,
+            "hit_eos": true
+          },
+          {
+            "problem": "The product\n$$\\prod_{k=4}^{63} \\frac{\\log_k \\left(5^{k^2 - 1}\\right)}{\\log_{k+1}",
+            "ground_truth": "106",
+            "problem_idx": 18,
+            "pred_answer": "106",
+            "correct": true,
+            "n_tokens_generated": 9852,
+            "wall_time_s": 937.86,
+            "peak_gpu_mb": 16816.4,
+            "prompt_len": 227,
+            "hit_eos": true
+          },
+          {
+            "problem": "Suppose $\\triangle ABC$ has angles $\\angle BAC = 84^\\circ$, $\\angle ABC = 60^\\ci",
+            "ground_truth": "336",
+            "problem_idx": 19,
+            "pred_answer": "330",
+            "correct": false,
+            "n_tokens_generated": 14403,
+            "wall_time_s": 1371.36,
+            "peak_gpu_mb": 16888.1,
+            "prompt_len": 639,
+            "hit_eos": true
+          }
+        ]
+      }
+    }
+  }
+}

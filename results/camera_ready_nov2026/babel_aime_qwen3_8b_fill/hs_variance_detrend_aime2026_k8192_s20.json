@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2026",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "hs_variance_detrend"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "hs_variance_detrend": {
+      "8192": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 383.61,
+        "mean_peak_gpu_mb": 19101.2,
+        "per_problem": [
+          {
+            "problem": "Find the sum of all real numbers $r$ such that there is at least one point where",
+            "ground_truth": "50",
+            "pred_answer": "50",
+            "correct": true,
+            "n_tokens_generated": 10476,
+            "wall_time_s": 383.61,
+            "peak_gpu_mb": 19101.2,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

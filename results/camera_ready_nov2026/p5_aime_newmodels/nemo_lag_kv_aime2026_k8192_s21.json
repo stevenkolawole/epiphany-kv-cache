@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "aime2026",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "8192": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 431.64,
+        "mean_peak_gpu_mb": 18454.9,
+        "per_problem": [
+          {
+            "problem": "A standard fair six-sided die is rolled repeatedly. Each time the die reads 1 or",
+            "ground_truth": "754",
+            "pred_answer": "754",
+            "correct": true,
+            "n_tokens_generated": 9432,
+            "wall_time_s": 431.64,
+            "peak_gpu_mb": 18454.9,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

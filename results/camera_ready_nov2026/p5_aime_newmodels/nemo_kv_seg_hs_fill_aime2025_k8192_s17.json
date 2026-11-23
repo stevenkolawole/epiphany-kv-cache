@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "aime2025",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "8192": {
+        "accuracy": 0.0,
+        "n_correct": 0,
+        "n_total": 1,
+        "mean_wall_time_s": 521.13,
+        "mean_peak_gpu_mb": 18690.7,
+        "per_problem": [
+          {
+            "problem": "Four unit squares form a $2\\times 2$ grid. Each of the $12$ unit line segments f",
+            "ground_truth": "82",
+            "pred_answer": "6",
+            "correct": false,
+            "n_tokens_generated": 15880,
+            "wall_time_s": 521.13,
+            "peak_gpu_mb": 18690.7,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

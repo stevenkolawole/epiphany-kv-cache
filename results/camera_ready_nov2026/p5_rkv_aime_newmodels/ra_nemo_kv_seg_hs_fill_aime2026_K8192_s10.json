@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "aime2026",
+    "n_samples": 5,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "8192": {
+        "accuracy": 0.2,
+        "n_correct": 1,
+        "n_total": 5,
+        "mean_wall_time_s": 469.27,
+        "mean_peak_gpu_mb": 18218.9,
+        "per_problem": [
+          {
+            "problem": "The integers from $1$ to $64$ are placed in some order into an $8 \\times 8$ grid",
+            "ground_truth": "896",
+            "pred_answer": "736",
+            "correct": false,
+            "n_tokens_generated": 10492,
+            "wall_time_s": 320.2,
+            "peak_gpu_mb": 18678.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 10679,
+              "mean_all": 5152.7,
+              "peak_all": 8319,
+              "after_prefill": 187
+            }
+          },
+          {
+            "problem": "Triangle $\\triangle ABC$ lies in plane $\\mathcal P$ with $AB = 6, AC = 4,$ and $",
+            "ground_truth": "161",
+            "pred_answer": "161",
+            "correct": true,
+            "n_tokens_generated": 7868,
+            "wall_time_s": 221.68,
+            "peak_gpu_mb": 17539.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8081,
+              "mean_all": 4146.5,
+              "peak_all": 8080,
+              "after_prefill": 213
+            }
+          },
+          {
+            "problem": "For each positive integer $r$ less than $502,$ define\n\\[\nS_r=\\sum_{m\\ge 0}\\dbino",
+            "ground_truth": "39",
+            "pred_answer": "38",
+            "correct": false,
+            "n_tokens_generated": 7651,
+            "wall_time_s": 220.39,
+            "peak_gpu_mb": 17517.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 7834,
+              "mean_all": 4008.0,
+              "peak_all": 7833,
+              "after_prefill": 183
+            }
+          },
+          {
+            "problem": "In an equiangular pentagon, the sum of the squares of the side lengths equals $3",
+            "ground_truth": "681",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 1052.25,
+            "peak_gpu_mb": 18671.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 32889,
+              "mean_all": 7245.8,
+              "peak_all": 8319,
+              "after_prefill": 121
+            }
+          },
+          {
+            "problem": "Let $a, b,$ and $n$ be positive integers with both $a$ and $b$ greater than or e",
+            "ground_truth": "83",
+            "pred_answer": "2",
+            "correct": false,
+            "n_tokens_generated": 17808,
+            "wall_time_s": 531.83,
+            "peak_gpu_mb": 18688.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 18090,
+              "mean_all": 6470.2,
+              "peak_all": 8319,
+              "after_prefill": 282
+            }
+          }
+        ]
+      }
+    }
+  }
+}

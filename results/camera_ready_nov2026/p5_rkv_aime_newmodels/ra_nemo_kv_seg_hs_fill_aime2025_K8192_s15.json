@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "aime2025",
+    "n_samples": 5,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "8192": {
+        "accuracy": 0.6,
+        "n_correct": 3,
+        "n_total": 5,
+        "mean_wall_time_s": 445.75,
+        "mean_peak_gpu_mb": 17283.4,
+        "per_problem": [
+          {
+            "problem": "Six points $A, B, C, D, E$ and $F$ lie in a straight line in that order. Suppose",
+            "ground_truth": "468",
+            "pred_answer": "468",
+            "correct": true,
+            "n_tokens_generated": 3050,
+            "wall_time_s": 90.06,
+            "peak_gpu_mb": 16206.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3178,
+              "mean_all": 1652.5,
+              "peak_all": 3177,
+              "after_prefill": 128
+            }
+          },
+          {
+            "problem": "Find the sum of all positive integers $n$ such that $n+2$ divides the product $3",
+            "ground_truth": "49",
+            "pred_answer": "49",
+            "correct": true,
+            "n_tokens_generated": 3221,
+            "wall_time_s": 106.98,
+            "peak_gpu_mb": 16261.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3290,
+              "mean_all": 1679.0,
+              "peak_all": 3289,
+              "after_prefill": 69
+            }
+          },
+          {
+            "problem": "Four unit squares form a $2\\times 2$ grid. Each of the $12$ unit line segments f",
+            "ground_truth": "82",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 21529,
+            "wall_time_s": 779.29,
+            "peak_gpu_mb": 18690.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 21830,
+              "mean_all": 6785.8,
+              "peak_all": 8319,
+              "after_prefill": 301
+            }
+          },
+          {
+            "problem": "The product\n$$\\prod_{k=4}^{63} \\frac{\\log_k \\left(5^{k^2 - 1}\\right)}{\\log_{k+1}",
+            "ground_truth": "106",
+            "pred_answer": "106",
+            "correct": true,
+            "n_tokens_generated": 4116,
+            "wall_time_s": 139.95,
+            "peak_gpu_mb": 16525.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4338,
+              "mean_all": 2279.5,
+              "peak_all": 4337,
+              "after_prefill": 222
+            }
+          },
+          {
+            "problem": "Suppose $\\triangle ABC$ has angles $\\angle BAC = 84^\\circ$, $\\angle ABC = 60^\\ci",
+            "ground_truth": "336",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 1112.45,
+            "peak_gpu_mb": 18732.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 33401,
+              "mean_all": 7368.9,
+              "peak_all": 8319,
+              "after_prefill": 633
+            }
+          }
+        ]
+      }
+    }
+  }
+}

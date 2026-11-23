@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2024",
+    "n_samples": 5,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "8192": {
+        "accuracy": 0.8,
+        "n_correct": 4,
+        "n_total": 5,
+        "mean_wall_time_s": 708.27,
+        "mean_peak_gpu_mb": 19106.2,
+        "per_problem": [
+          {
+            "problem": "Let $b \\geq 2$ be an integer. Call a positive integer $n$ $b$\\textit{-eautiful} ",
+            "ground_truth": "211",
+            "pred_answer": "211",
+            "correct": true,
+            "n_tokens_generated": 19735,
+            "wall_time_s": 955.21,
+            "peak_gpu_mb": 19371.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 19886,
+              "mean_all": 6591.2,
+              "peak_all": 8319,
+              "after_prefill": 151
+            }
+          },
+          {
+            "problem": "Let ABCDEF be a convex equilateral hexagon in which all pairs of opposite sides ",
+            "ground_truth": "80",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 1517.79,
+            "peak_gpu_mb": 19364.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 32858,
+              "mean_all": 7238.0,
+              "peak_all": 8319,
+              "after_prefill": 90
+            }
+          },
+          {
+            "problem": "Let $A$, $B$, $C$, and $D$ be points on the hyperbola $\\frac{x^2}{20}- \\frac{y^2",
+            "ground_truth": "480",
+            "pred_answer": "480",
+            "correct": true,
+            "n_tokens_generated": 10146,
+            "wall_time_s": 401.29,
+            "peak_gpu_mb": 19367.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 10258,
+              "mean_all": 4987.1,
+              "peak_all": 8319,
+              "after_prefill": 112
+            }
+          },
+          {
+            "problem": "A list of positive integers has the following properties:\n\n\\bullet The sum of th",
+            "ground_truth": "236",
+            "pred_answer": "236",
+            "correct": true,
+            "n_tokens_generated": 9352,
+            "wall_time_s": 368.09,
+            "peak_gpu_mb": 19365.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 9451,
+              "mean_all": 4698.2,
+              "peak_all": 8319,
+              "after_prefill": 99
+            }
+          },
+          {
+            "problem": "Among the 900 residents of Aimeville, there are 195 who own a diamond ring, 367 ",
+            "ground_truth": "73",
+            "pred_answer": "73",
+            "correct": true,
+            "n_tokens_generated": 7546,
+            "wall_time_s": 298.95,
+            "peak_gpu_mb": 18062.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 7686,
+              "mean_all": 3912.5,
+              "peak_all": 7685,
+              "after_prefill": 140
+            }
+          }
+        ]
+      }
+    }
+  }
+}

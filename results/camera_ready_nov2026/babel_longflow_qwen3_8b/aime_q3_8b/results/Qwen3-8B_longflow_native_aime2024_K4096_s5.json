@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2024",
+    "n_samples": 5,
+    "start_idx": 5,
+    "max_new_tokens": 32768,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "longflow_native"
+    ],
+    "attn_impl": "eager",
+    "dtype": "float16",
+    "shims": [],
+    "versions": {
+      "torch": "2.4.0+cu121",
+      "transformers": "4.51.3"
+    },
+    "gpu": "NVIDIA L40S"
+  },
+  "results": {
+    "longflow_native": {
+      "4096": {
+        "accuracy": 0.6,
+        "n_correct": 3,
+        "n_total": 5,
+        "mean_wall_time_s": 1487.44,
+        "per_problem": [
+          {
+            "problem": "Define $f(x)=|| x|-\\tfrac{1}{2}|$ and $g(x)=|| x|-\\tfrac{1}{4}|$. Find the numbe",
+            "ground_truth": "385",
+            "problem_idx": 5,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 2520.82,
+            "peak_gpu_mb": 16222.2,
+            "prompt_len": 109,
+            "hit_eos": false
+          },
+          {
+            "problem": "Each vertex of a regular octagon is independently colored either red or blue wit",
+            "ground_truth": "371",
+            "problem_idx": 6,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 2525.69,
+            "peak_gpu_mb": 16221.9,
+            "prompt_len": 104,
+            "hit_eos": false
+          },
+          {
+            "problem": "Find the number of triples of nonnegative integers $(a,b,c)$ satisfying $a + b +",
+            "ground_truth": "601",
+            "problem_idx": 7,
+            "pred_answer": "601",
+            "correct": true,
+            "n_tokens_generated": 16754,
+            "wall_time_s": 1264.25,
+            "peak_gpu_mb": 16221.7,
+            "prompt_len": 100,
+            "hit_eos": true
+          },
+          {
+            "problem": "There exist real numbers $x$ and $y$, both greater than 1, such that $\\log_x\\lef",
+            "ground_truth": "25",
+            "problem_idx": 8,
+            "pred_answer": "25",
+            "correct": true,
+            "n_tokens_generated": 7586,
+            "wall_time_s": 584.89,
+            "peak_gpu_mb": 16220.5,
+            "prompt_len": 77,
+            "hit_eos": true
+          },
+          {
+            "problem": "Alice chooses a set $A$ of positive integers. Then Bob lists all finite nonempty",
+            "ground_truth": "55",
+            "problem_idx": 9,
+            "pred_answer": "55",
+            "correct": true,
+            "n_tokens_generated": 7033,
+            "wall_time_s": 541.57,
+            "peak_gpu_mb": 16221.1,
+            "prompt_len": 89,
+            "hit_eos": true
+          }
+        ]
+      }
+    }
+  }
+}

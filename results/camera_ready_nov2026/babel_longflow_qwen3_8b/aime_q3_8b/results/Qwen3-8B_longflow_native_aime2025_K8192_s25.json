@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2025",
+    "n_samples": 5,
+    "start_idx": 25,
+    "max_new_tokens": 32768,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "longflow_native"
+    ],
+    "attn_impl": "eager",
+    "dtype": "float16",
+    "shims": [],
+    "versions": {
+      "torch": "2.4.0+cu121",
+      "transformers": "4.51.3"
+    },
+    "gpu": "NVIDIA L40S"
+  },
+  "results": {
+    "longflow_native": {
+      "8192": {
+        "accuracy": 0.6,
+        "n_correct": 3,
+        "n_total": 5,
+        "mean_wall_time_s": 1680.34,
+        "per_problem": [
+          {
+            "problem": "Let $S$ be the set of vertices of a regular $24$-gon. Find the number of ways to",
+            "ground_truth": "113",
+            "problem_idx": 25,
+            "pred_answer": "113",
+            "correct": true,
+            "n_tokens_generated": 13836,
+            "wall_time_s": 1194.62,
+            "peak_gpu_mb": 16805.1,
+            "prompt_len": 84,
+            "hit_eos": true
+          },
+          {
+            "problem": "Let $A_1 A_2 A_3 \\ldots A_{11}$ be an $11$-sided non-convex simple polygon with ",
+            "ground_truth": "19",
+            "problem_idx": 26,
+            "pred_answer": "19",
+            "correct": true,
+            "n_tokens_generated": 9412,
+            "wall_time_s": 808.29,
+            "peak_gpu_mb": 16818.7,
+            "prompt_len": 287,
+            "hit_eos": true
+          },
+          {
+            "problem": "Let $x_1, x_2, x_3, \\ldots$ be a sequence of rational numbers defined by $x_1 = ",
+            "ground_truth": "248",
+            "problem_idx": 27,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 2825.99,
+            "peak_gpu_mb": 16810.8,
+            "prompt_len": 167,
+            "hit_eos": false
+          },
+          {
+            "problem": "Let $\\triangle ABC$ be a right triangle with $\\angle A = 90^\\circ$ and $BC = 38$",
+            "ground_truth": "104",
+            "problem_idx": 28,
+            "pred_answer": "104",
+            "correct": true,
+            "n_tokens_generated": 19752,
+            "wall_time_s": 1703.98,
+            "peak_gpu_mb": 16807.2,
+            "prompt_len": 120,
+            "hit_eos": true
+          },
+          {
+            "problem": "There are exactly three positive real numbers $k$ such that the function\n$$f(x) ",
+            "ground_truth": "240",
+            "problem_idx": 29,
+            "pred_answer": "188",
+            "correct": false,
+            "n_tokens_generated": 30606,
+            "wall_time_s": 1868.8,
+            "peak_gpu_mb": 16806.5,
+            "prompt_len": 108,
+            "hit_eos": true
+          }
+        ]
+      }
+    }
+  }
+}

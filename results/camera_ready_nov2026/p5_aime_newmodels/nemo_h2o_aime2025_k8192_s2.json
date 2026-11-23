@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "aime2025",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "h2o"
+    ],
+    "attn_impl": "eager"
+  },
+  "results": {
+    "h2o": {
+      "8192": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 269.46,
+        "mean_peak_gpu_mb": 16485.5,
+        "per_problem": [
+          {
+            "problem": "The 9 members of a baseball team went to an ice-cream parlor after their game. E",
+            "ground_truth": "16",
+            "pred_answer": "16",
+            "correct": true,
+            "n_tokens_generated": 4034,
+            "wall_time_s": 269.46,
+            "peak_gpu_mb": 16485.5,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

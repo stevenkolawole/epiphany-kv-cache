@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "aime2026",
+    "n_samples": 5,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "4096": {
+        "accuracy": 0.4,
+        "n_correct": 2,
+        "n_total": 5,
+        "mean_wall_time_s": 494.32,
+        "mean_peak_gpu_mb": 18493.4,
+        "per_problem": [
+          {
+            "problem": "Find the greatest integer $n$ such that the cubic polynomial\n\\[\nx^{3} - \\display",
+            "ground_truth": "132",
+            "pred_answer": "132",
+            "correct": true,
+            "n_tokens_generated": 17037,
+            "wall_time_s": 468.34,
+            "peak_gpu_mb": 18493.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 17173,
+              "mean_all": 3684.3,
+              "peak_all": 4223,
+              "after_prefill": 136
+            }
+          },
+          {
+            "problem": "Consider a tetrahedron with two isosceles triangle faces with side lengths $5\\sq",
+            "ground_truth": "223",
+            "pred_answer": "223",
+            "correct": true,
+            "n_tokens_generated": 10642,
+            "wall_time_s": 297.04,
+            "peak_gpu_mb": 18493.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 10820,
+              "mean_all": 3414.5,
+              "peak_all": 4223,
+              "after_prefill": 178
+            }
+          },
+          {
+            "problem": "Call finite sets of integers $S$ and $T$ cousins if\n- $S$ and $T$ have the same ",
+            "ground_truth": "107",
+            "pred_answer": "12",
+            "correct": false,
+            "n_tokens_generated": 23874,
+            "wall_time_s": 788.94,
+            "peak_gpu_mb": 18493.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 24038,
+              "mean_all": 3825.1,
+              "peak_all": 4223,
+              "after_prefill": 164
+            }
+          },
+          {
+            "problem": "For integers $a$ and $b,$ let $a \\circ b = a - b$ if $a$ is odd and $b$ is even,",
+            "ground_truth": "157",
+            "pred_answer": "21",
+            "correct": false,
+            "n_tokens_generated": 17768,
+            "wall_time_s": 606.03,
+            "peak_gpu_mb": 18493.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 17980,
+              "mean_all": 3720.9,
+              "peak_all": 4223,
+              "after_prefill": 212
+            }
+          },
+          {
+            "problem": "Find the number of ordered 7-tuples $(a_1, a_2, a_3, \\ldots, a_7)$ having the fo",
+            "ground_truth": "393",
+            "pred_answer": "243",
+            "correct": false,
+            "n_tokens_generated": 9429,
+            "wall_time_s": 311.26,
+            "peak_gpu_mb": 18493.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 9632,
+              "mean_all": 3329.2,
+              "peak_all": 4223,
+              "after_prefill": 203
+            }
+          }
+        ]
+      }
+    }
+  }
+}

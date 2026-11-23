@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "aime2025",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "thinkv_faithful"
+    ],
+    "attn_impl": "eager"
+  },
+  "results": {
+    "thinkv_faithful": {
+      "4096": {
+        "accuracy": 0.0,
+        "n_correct": 0,
+        "n_total": 1,
+        "mean_wall_time_s": 1308.3,
+        "mean_peak_gpu_mb": 16527.5,
+        "per_problem": [
+          {
+            "problem": "A piecewise linear function is defined by\n\\[f(x) = \\begin{cases} x & \\text{if } ",
+            "ground_truth": "259",
+            "pred_answer": "f \\text{ is differentiable at } a \\text{ and } f'(a) = \\lim_{h \\to 0} \\frac{f(a+h) - f(a)}{h}",
+            "correct": false,
+            "n_tokens_generated": 19315,
+            "wall_time_s": 1308.3,
+            "peak_gpu_mb": 16527.5,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

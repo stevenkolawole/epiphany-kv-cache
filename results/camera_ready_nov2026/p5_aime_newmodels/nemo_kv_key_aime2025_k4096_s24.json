@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "aime2025",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "kv_key"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_key": {
+      "4096": {
+        "accuracy": 0.0,
+        "n_correct": 0,
+        "n_total": 1,
+        "mean_wall_time_s": 757.14,
+        "mean_peak_gpu_mb": 16897.7,
+        "per_problem": [
+          {
+            "problem": "Sixteen chairs are arranged in a row. Eight people each select a chair in which ",
+            "ground_truth": "907",
+            "pred_answer": "290",
+            "correct": false,
+            "n_tokens_generated": 15763,
+            "wall_time_s": 757.14,
+            "peak_gpu_mb": 16897.7,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

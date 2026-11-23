@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "aime2025",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "thinkv_faithful"
+    ],
+    "attn_impl": "eager"
+  },
+  "results": {
+    "thinkv_faithful": {
+      "4096": {
+        "accuracy": 0.0,
+        "n_correct": 0,
+        "n_total": 1,
+        "mean_wall_time_s": 297.08,
+        "mean_peak_gpu_mb": 29630.9,
+        "per_problem": [
+          {
+            "problem": "Let $k$ be a real number such that the system\n\\begin{align*} |25+20i-z|&=5\\\\ |z-",
+            "ground_truth": "77",
+            "pred_answer": "\\frac{9}{2}",
+            "correct": false,
+            "n_tokens_generated": 5767,
+            "wall_time_s": 297.08,
+            "peak_gpu_mb": 29630.9,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

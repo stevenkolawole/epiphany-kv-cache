@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "aime2025",
+    "n_samples": 5,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "8192": {
+        "accuracy": 0.6,
+        "n_correct": 3,
+        "n_total": 5,
+        "mean_wall_time_s": 863.17,
+        "mean_peak_gpu_mb": 39626.3,
+        "per_problem": [
+          {
+            "problem": "Let $S$ be the set of vertices of a regular $24$-gon. Find the number of ways to",
+            "ground_truth": "113",
+            "pred_answer": "113",
+            "correct": true,
+            "n_tokens_generated": 14057,
+            "wall_time_s": 626.18,
+            "peak_gpu_mb": 39626.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 14141,
+              "mean_all": 5880.1,
+              "peak_all": 8319,
+              "after_prefill": 84
+            }
+          },
+          {
+            "problem": "Let $A_1 A_2 A_3 \\ldots A_{11}$ be an $11$-sided non-convex simple polygon with ",
+            "ground_truth": "19",
+            "pred_answer": "19",
+            "correct": true,
+            "n_tokens_generated": 8912,
+            "wall_time_s": 373.87,
+            "peak_gpu_mb": 39625.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 9199,
+              "mean_all": 4692.7,
+              "peak_all": 8319,
+              "after_prefill": 287
+            }
+          },
+          {
+            "problem": "Let $x_1, x_2, x_3, \\ldots$ be a sequence of rational numbers defined by $x_1 = ",
+            "ground_truth": "248",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 1659.35,
+            "peak_gpu_mb": 39627.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 32935,
+              "mean_all": 7257.1,
+              "peak_all": 8319,
+              "after_prefill": 167
+            }
+          },
+          {
+            "problem": "Let $\\triangle ABC$ be a right triangle with $\\angle A = 90^\\circ$ and $BC = 38$",
+            "ground_truth": "104",
+            "pred_answer": "104",
+            "correct": true,
+            "n_tokens_generated": 11755,
+            "wall_time_s": 424.08,
+            "peak_gpu_mb": 39625.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 11875,
+              "mean_all": 5440.0,
+              "peak_all": 8319,
+              "after_prefill": 120
+            }
+          },
+          {
+            "problem": "There are exactly three positive real numbers $k$ such that the function\n$$f(x) ",
+            "ground_truth": "240",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 1232.39,
+            "peak_gpu_mb": 39626.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 32876,
+              "mean_all": 7242.5,
+              "peak_all": 8319,
+              "after_prefill": 108
+            }
+          }
+        ]
+      }
+    }
+  }
+}

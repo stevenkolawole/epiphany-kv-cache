@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "aime2025",
+    "n_samples": 5,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "4096": {
+        "accuracy": 0.6,
+        "n_correct": 3,
+        "n_total": 5,
+        "mean_wall_time_s": 1031.58,
+        "mean_peak_gpu_mb": 30333.4,
+        "per_problem": [
+          {
+            "problem": "Circle $\\omega_1$ with radius $6$ centered at point $A$ is internally tangent at",
+            "ground_truth": "293",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 1397.25,
+            "peak_gpu_mb": 30410.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 33564,
+              "mean_all": 3986.8,
+              "peak_all": 4223,
+              "after_prefill": 796
+            }
+          },
+          {
+            "problem": "Let $A$ be the set of positive integer divisors of $2025$. Let $B$ be a randomly",
+            "ground_truth": "237",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 1444.78,
+            "peak_gpu_mb": 30308.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 32886,
+              "mean_all": 3910.3,
+              "peak_all": 4223,
+              "after_prefill": 118
+            }
+          },
+          {
+            "problem": "From an unlimited supply of $1$-cent coins, $10$-cent coins, and $25$-cent coins",
+            "ground_truth": "610",
+            "pred_answer": "610",
+            "correct": true,
+            "n_tokens_generated": 22408,
+            "wall_time_s": 1045.06,
+            "peak_gpu_mb": 30335.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 22728,
+              "mean_all": 3830.5,
+              "peak_all": 4223,
+              "after_prefill": 320
+            }
+          },
+          {
+            "problem": "There are $n$ values of $x$ in the interval $0 < x < 2\\pi$ where $f(x) = \\sin\\le",
+            "ground_truth": "149",
+            "pred_answer": "149",
+            "correct": true,
+            "n_tokens_generated": 11635,
+            "wall_time_s": 534.27,
+            "peak_gpu_mb": 30308.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 11753,
+              "mean_all": 3457.5,
+              "peak_all": 4223,
+              "after_prefill": 118
+            }
+          },
+          {
+            "problem": "Sixteen chairs are arranged in a row. Eight people each select a chair in which ",
+            "ground_truth": "907",
+            "pred_answer": "907",
+            "correct": true,
+            "n_tokens_generated": 15888,
+            "wall_time_s": 736.54,
+            "peak_gpu_mb": 30304.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 15982,
+              "mean_all": 3639.3,
+              "peak_all": 4223,
+              "after_prefill": 94
+            }
+          }
+        ]
+      }
+    }
+  }
+}

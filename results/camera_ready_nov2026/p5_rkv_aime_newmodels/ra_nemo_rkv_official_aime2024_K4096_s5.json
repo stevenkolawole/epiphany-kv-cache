@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "aime2024",
+    "n_samples": 5,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "4096": {
+        "accuracy": 0.6,
+        "n_correct": 3,
+        "n_total": 5,
+        "mean_wall_time_s": 265.41,
+        "mean_peak_gpu_mb": 17929.9,
+        "per_problem": [
+          {
+            "problem": "Define $f(x)=|| x|-\\tfrac{1}{2}|$ and $g(x)=|| x|-\\tfrac{1}{4}|$. Find the numbe",
+            "ground_truth": "385",
+            "pred_answer": "16",
+            "correct": false,
+            "n_tokens_generated": 11833,
+            "wall_time_s": 364.2,
+            "peak_gpu_mb": 18493.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 11950,
+              "mean_all": 3468.8,
+              "peak_all": 4223,
+              "after_prefill": 117
+            }
+          },
+          {
+            "problem": "Each vertex of a regular octagon is independently colored either red or blue wit",
+            "ground_truth": "371",
+            "pred_answer": "131",
+            "correct": false,
+            "n_tokens_generated": 20086,
+            "wall_time_s": 551.66,
+            "peak_gpu_mb": 18493.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 20198,
+              "mean_all": 3751.6,
+              "peak_all": 4223,
+              "after_prefill": 112
+            }
+          },
+          {
+            "problem": "Find the number of triples of nonnegative integers $(a,b,c)$ satisfying $a + b +",
+            "ground_truth": "601",
+            "pred_answer": "601",
+            "correct": true,
+            "n_tokens_generated": 8169,
+            "wall_time_s": 219.95,
+            "peak_gpu_mb": 18493.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8271,
+              "mean_all": 3151.6,
+              "peak_all": 4223,
+              "after_prefill": 102
+            }
+          },
+          {
+            "problem": "There exist real numbers $x$ and $y$, both greater than 1, such that $\\log_x\\lef",
+            "ground_truth": "25",
+            "pred_answer": "25",
+            "correct": true,
+            "n_tokens_generated": 4939,
+            "wall_time_s": 128.73,
+            "peak_gpu_mb": 18493.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 5023,
+              "mean_all": 2477.7,
+              "peak_all": 4223,
+              "after_prefill": 84
+            }
+          },
+          {
+            "problem": "Alice chooses a set $A$ of positive integers. Then Bob lists all finite nonempty",
+            "ground_truth": "55",
+            "pred_answer": "55",
+            "correct": true,
+            "n_tokens_generated": 2425,
+            "wall_time_s": 62.5,
+            "peak_gpu_mb": 15676.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2520,
+              "mean_all": 1307.0,
+              "peak_all": 2519,
+              "after_prefill": 95
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "aime2024",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "kv_seg_hs"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs": {
+      "8192": {
+        "accuracy": 0.0,
+        "n_correct": 0,
+        "n_total": 1,
+        "mean_wall_time_s": 1391.51,
+        "mean_peak_gpu_mb": 31166.9,
+        "per_problem": [
+          {
+            "problem": "Let $A$, $B$, $C$, and $D$ be points on the hyperbola $\\frac{x^2}{20}- \\frac{y^2",
+            "ground_truth": "480",
+            "pred_answer": "80",
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 1391.51,
+            "peak_gpu_mb": 31166.9,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

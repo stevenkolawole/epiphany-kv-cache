@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2026",
+    "n_samples": 5,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "4096": {
+        "accuracy": 0.6,
+        "n_correct": 3,
+        "n_total": 5,
+        "mean_wall_time_s": 839.03,
+        "mean_peak_gpu_mb": 17541.2,
+        "per_problem": [
+          {
+            "problem": "A real number $x$ satisfies $\\sqrt[20]{x^{\\log_{2026}x}}=26x$. What is the numbe",
+            "ground_truth": "441",
+            "pred_answer": "441",
+            "correct": true,
+            "n_tokens_generated": 7623,
+            "wall_time_s": 413.15,
+            "peak_gpu_mb": 17536.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 7702,
+              "mean_all": 3067.2,
+              "peak_all": 4223,
+              "after_prefill": 79
+            }
+          },
+          {
+            "problem": "Find the number of functions $\\pi$ mapping the set $A =\\{1,2,3,4,5,6\\}$ onto $A$",
+            "ground_truth": "396",
+            "pred_answer": "396",
+            "correct": true,
+            "n_tokens_generated": 9245,
+            "wall_time_s": 501.08,
+            "peak_gpu_mb": 17536.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 9339,
+              "mean_all": 3265.6,
+              "peak_all": 4223,
+              "after_prefill": 94
+            }
+          },
+          {
+            "problem": "Let $N$ be the number of positive integer divisors of $17017^{17}$ that leave a ",
+            "ground_truth": "244",
+            "pred_answer": "244",
+            "correct": true,
+            "n_tokens_generated": 9170,
+            "wall_time_s": 423.84,
+            "peak_gpu_mb": 17534.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 9252,
+              "mean_all": 3252.8,
+              "peak_all": 4223,
+              "after_prefill": 82
+            }
+          },
+          {
+            "problem": "Joanne has a blank fair six-sided die and six stickers each displaying a differe",
+            "ground_truth": "29",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 1441.03,
+            "peak_gpu_mb": 17549.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 32970,
+              "mean_all": 3920.5,
+              "peak_all": 4223,
+              "after_prefill": 202
+            }
+          },
+          {
+            "problem": "Let $\\triangle ABC$ have side lengths $AB = 13, BC = 14,$ and $CA = 15.$ Triangl",
+            "ground_truth": "156",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 1416.03,
+            "peak_gpu_mb": 17548.9,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 32899,
+              "mean_all": 3911.9,
+              "peak_all": 4223,
+              "after_prefill": 131
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2025",
+    "n_samples": 5,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "4096": {
+        "accuracy": 0.0,
+        "n_correct": 0,
+        "n_total": 5,
+        "mean_wall_time_s": 1572.95,
+        "mean_peak_gpu_mb": 18866.5,
+        "per_problem": [
+          {
+            "problem": "A piecewise linear function is defined by\n\\[f(x) = \\begin{cases} x & \\text{if } ",
+            "ground_truth": "259",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 1818.35,
+            "peak_gpu_mb": 18867.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 33279,
+              "mean_all": 3956.4,
+              "peak_all": 4223,
+              "after_prefill": 511
+            }
+          },
+          {
+            "problem": "The set of points in $3$-dimensional coordinate space that lie in the plane $x+y",
+            "ground_truth": "510",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 1684.19,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 32906,
+              "mean_all": 3912.7,
+              "peak_all": 4223,
+              "after_prefill": 138
+            }
+          },
+          {
+            "problem": "Alex divides a disk into four quadrants with two perpendicular diameters interse",
+            "ground_truth": "204",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 1636.42,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 32875,
+              "mean_all": 3908.9,
+              "peak_all": 4223,
+              "after_prefill": 107
+            }
+          },
+          {
+            "problem": "Let $ABCDE$ be a convex pentagon with $AB=14$, $BC=7$, $CD=24$, $DE=13$, $EA=26$",
+            "ground_truth": "60",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 1590.14,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 32928,
+              "mean_all": 3915.4,
+              "peak_all": 4223,
+              "after_prefill": 160
+            }
+          },
+          {
+            "problem": "Let $N$ denote the numbers of ordered triples of positive integers $(a, b, c)$ s",
+            "ground_truth": "735",
+            "pred_answer": "683",
+            "correct": false,
+            "n_tokens_generated": 24296,
+            "wall_time_s": 1135.66,
+            "peak_gpu_mb": 18866.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 24398,
+              "mean_all": 3820.6,
+              "peak_all": 4223,
+              "after_prefill": 102
+            }
+          }
+        ]
+      }
+    }
+  }
+}

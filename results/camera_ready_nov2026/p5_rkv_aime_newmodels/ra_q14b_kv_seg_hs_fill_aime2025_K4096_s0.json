@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "aime2025",
+    "n_samples": 5,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "4096": {
+        "accuracy": 0.8,
+        "n_correct": 4,
+        "n_total": 5,
+        "mean_wall_time_s": 811.79,
+        "mean_peak_gpu_mb": 30091.3,
+        "per_problem": [
+          {
+            "problem": "Find the sum of all integer bases $b>9$ for which $17_b$ is a divisor of $97_b.$",
+            "ground_truth": "70",
+            "pred_answer": "70",
+            "correct": true,
+            "n_tokens_generated": 2723,
+            "wall_time_s": 154.14,
+            "peak_gpu_mb": 29131.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 2779,
+              "mean_all": 1417.0,
+              "peak_all": 2778,
+              "after_prefill": 56
+            }
+          },
+          {
+            "problem": "On $\\triangle ABC$ points $A, D, E$, and $B$ lie in that order on side $\\overlin",
+            "ground_truth": "588",
+            "pred_answer": "588",
+            "correct": true,
+            "n_tokens_generated": 16533,
+            "wall_time_s": 878.83,
+            "peak_gpu_mb": 30399.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 17199,
+              "mean_all": 3790.3,
+              "peak_all": 4223,
+              "after_prefill": 666
+            }
+          },
+          {
+            "problem": "The 9 members of a baseball team went to an ice-cream parlor after their game. E",
+            "ground_truth": "16",
+            "pred_answer": "16",
+            "correct": true,
+            "n_tokens_generated": 9290,
+            "wall_time_s": 456.85,
+            "peak_gpu_mb": 30312.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 9429,
+              "mean_all": 3289.3,
+              "peak_all": 4223,
+              "after_prefill": 139
+            }
+          },
+          {
+            "problem": "Find the number of ordered pairs $(x,y)$, where both $x$ and $y$ are integers be",
+            "ground_truth": "117",
+            "pred_answer": "117",
+            "correct": true,
+            "n_tokens_generated": 10029,
+            "wall_time_s": 627.63,
+            "peak_gpu_mb": 30305.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 10112,
+              "mean_all": 3331.0,
+              "peak_all": 4223,
+              "after_prefill": 83
+            }
+          },
+          {
+            "problem": "There are $8!= 40320$ eight-digit positive integers that use each of the digits ",
+            "ground_truth": "279",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 1941.52,
+            "peak_gpu_mb": 30306.4,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 32874,
+              "mean_all": 3908.8,
+              "peak_all": 4223,
+              "after_prefill": 106
+            }
+          }
+        ]
+      }
+    }
+  }
+}

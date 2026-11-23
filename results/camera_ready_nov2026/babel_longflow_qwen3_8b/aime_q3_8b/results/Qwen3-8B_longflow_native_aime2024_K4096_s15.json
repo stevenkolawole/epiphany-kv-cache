@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2024",
+    "n_samples": 5,
+    "start_idx": 15,
+    "max_new_tokens": 32768,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "longflow_native"
+    ],
+    "attn_impl": "eager",
+    "dtype": "float16",
+    "shims": [],
+    "versions": {
+      "torch": "2.4.0+cu121",
+      "transformers": "4.51.3"
+    },
+    "gpu": "NVIDIA L40S"
+  },
+  "results": {
+    "longflow_native": {
+      "4096": {
+        "accuracy": 0.4,
+        "n_correct": 2,
+        "n_total": 5,
+        "mean_wall_time_s": 1204.05,
+        "per_problem": [
+          {
+            "problem": "Let $p$ be the least prime number for which there exists a positive integer $n$ ",
+            "ground_truth": "110",
+            "problem_idx": 15,
+            "pred_answer": "110",
+            "correct": true,
+            "n_tokens_generated": 10557,
+            "wall_time_s": 813.71,
+            "peak_gpu_mb": 16221.3,
+            "prompt_len": 93,
+            "hit_eos": true
+          },
+          {
+            "problem": "Let $\\mathcal{B}$ be the set of rectangular boxes with surface area $54$ and vol",
+            "ground_truth": "721",
+            "problem_idx": 16,
+            "pred_answer": "p + q = 657 + 16 = \\boxed{721}",
+            "correct": false,
+            "n_tokens_generated": 12623,
+            "wall_time_s": 971.59,
+            "peak_gpu_mb": 16223.1,
+            "prompt_len": 125,
+            "hit_eos": true
+          },
+          {
+            "problem": "Find the number of rectangles that can be formed inside a fixed regular dodecago",
+            "ground_truth": "315",
+            "problem_idx": 17,
+            "pred_answer": "15",
+            "correct": false,
+            "n_tokens_generated": 15723,
+            "wall_time_s": 1196.58,
+            "peak_gpu_mb": 16220.7,
+            "prompt_len": 81,
+            "hit_eos": true
+          },
+          {
+            "problem": "Let $\\triangle ABC$ have circumcenter $O$ and incenter $I$ with $\\overline{IA}\\p",
+            "ground_truth": "468",
+            "problem_idx": 18,
+            "pred_answer": "468",
+            "correct": true,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 2527.21,
+            "peak_gpu_mb": 16220.6,
+            "prompt_len": 80,
+            "hit_eos": false
+          },
+          {
+            "problem": "There is a collection of $25$ indistinguishable white chips and $25$ indistingui",
+            "ground_truth": "902",
+            "problem_idx": 19,
+            "pred_answer": "2",
+            "correct": false,
+            "n_tokens_generated": 6644,
+            "wall_time_s": 511.16,
+            "peak_gpu_mb": 16225.0,
+            "prompt_len": 128,
+            "hit_eos": true
+          }
+        ]
+      }
+    }
+  }
+}

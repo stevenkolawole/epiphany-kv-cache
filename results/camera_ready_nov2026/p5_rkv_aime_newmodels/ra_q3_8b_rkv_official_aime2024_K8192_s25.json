@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2024",
+    "n_samples": 5,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "8192": {
+        "accuracy": 0.8,
+        "n_correct": 4,
+        "n_total": 5,
+        "mean_wall_time_s": 777.75,
+        "mean_peak_gpu_mb": 24922.3,
+        "per_problem": [
+          {
+            "problem": "Let $ABC$ be a triangle inscribed in circle $\\omega$. Let the tangents to $\\omeg",
+            "ground_truth": "113",
+            "pred_answer": "113",
+            "correct": true,
+            "n_tokens_generated": 19511,
+            "wall_time_s": 909.08,
+            "peak_gpu_mb": 26949.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 19894,
+              "mean_all": 6667.1,
+              "peak_all": 8319,
+              "after_prefill": 383
+            }
+          },
+          {
+            "problem": "Torus $T$ is the surface produced by revolving a circle with radius $3$ around a",
+            "ground_truth": "127",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 1460.86,
+            "peak_gpu_mb": 26949.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 32956,
+              "mean_all": 7262.3,
+              "peak_all": 8319,
+              "after_prefill": 188
+            }
+          },
+          {
+            "problem": "Let $ABCD$ be a tetrahedron such that $AB=CD= \\sqrt{41}$, $AC=BD= \\sqrt{80}$, an",
+            "ground_truth": "104",
+            "pred_answer": "104",
+            "correct": true,
+            "n_tokens_generated": 9245,
+            "wall_time_s": 354.47,
+            "peak_gpu_mb": 26949.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 9424,
+              "mean_all": 4727.2,
+              "peak_all": 8319,
+              "after_prefill": 179
+            }
+          },
+          {
+            "problem": "Rectangles $ABCD$ and $EFGH$ are drawn such that $D,E,C,F$ are collinear. Also, ",
+            "ground_truth": "104",
+            "pred_answer": "104",
+            "correct": true,
+            "n_tokens_generated": 21499,
+            "wall_time_s": 863.22,
+            "peak_gpu_mb": 26949.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 21604,
+              "mean_all": 6710.4,
+              "peak_all": 8319,
+              "after_prefill": 105
+            }
+          },
+          {
+            "problem": "Let $\\omega \\neq 1$ be a 13th root of unity. Find the remainder when \n\\[ \\prod_{",
+            "ground_truth": "321",
+            "pred_answer": "321",
+            "correct": true,
+            "n_tokens_generated": 7931,
+            "wall_time_s": 301.11,
+            "peak_gpu_mb": 16814.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8021,
+              "mean_all": 4055.0,
+              "peak_all": 8020,
+              "after_prefill": 90
+            }
+          }
+        ]
+      }
+    }
+  }
+}

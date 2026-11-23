@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2026",
+    "n_samples": 5,
+    "start_idx": 20,
+    "max_new_tokens": 32768,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "longflow_native"
+    ],
+    "attn_impl": "eager",
+    "dtype": "float16",
+    "shims": [],
+    "versions": {
+      "torch": "2.4.0+cu121",
+      "transformers": "4.51.3"
+    },
+    "gpu": "NVIDIA L40S"
+  },
+  "results": {
+    "longflow_native": {
+      "8192": {
+        "accuracy": 0.6,
+        "n_correct": 3,
+        "n_total": 5,
+        "mean_wall_time_s": 1290.8,
+        "per_problem": [
+          {
+            "problem": "Find the sum of all real numbers $r$ such that there is at least one point where",
+            "ground_truth": "50",
+            "problem_idx": 20,
+            "pred_answer": "50",
+            "correct": true,
+            "n_tokens_generated": 8494,
+            "wall_time_s": 806.58,
+            "peak_gpu_mb": 16805.3,
+            "prompt_len": 88,
+            "hit_eos": true
+          },
+          {
+            "problem": "A standard fair six-sided die is rolled repeatedly. Each time the die reads 1 or",
+            "ground_truth": "754",
+            "problem_idx": 21,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 3120.28,
+            "peak_gpu_mb": 16810.5,
+            "prompt_len": 137,
+            "hit_eos": false
+          },
+          {
+            "problem": "Isosceles triangle $\\triangle ABC$ has $AB = BC.$ Let $I$ be the incenter of $\\t",
+            "ground_truth": "245",
+            "problem_idx": 22,
+            "pred_answer": "245",
+            "correct": true,
+            "n_tokens_generated": 13760,
+            "wall_time_s": 1093.19,
+            "peak_gpu_mb": 16806.1,
+            "prompt_len": 101,
+            "hit_eos": true
+          },
+          {
+            "problem": "Let $S$ denote the value of the infinite sum\n\\[\n\\frac{1}{9} + \\frac{1}{99} + \\fr",
+            "ground_truth": "669",
+            "problem_idx": 23,
+            "pred_answer": "669",
+            "correct": true,
+            "n_tokens_generated": 19526,
+            "wall_time_s": 948.49,
+            "peak_gpu_mb": 16807.0,
+            "prompt_len": 118,
+            "hit_eos": true
+          },
+          {
+            "problem": "Let $\\triangle ABC$ be a triangle with $D$ on $\\overline{BC}$ such that $\\overli",
+            "ground_truth": "850",
+            "problem_idx": 24,
+            "pred_answer": "155 + 310 = \\boxed{465}",
+            "correct": false,
+            "n_tokens_generated": 10005,
+            "wall_time_s": 485.47,
+            "peak_gpu_mb": 16810.9,
+            "prompt_len": 178,
+            "hit_eos": true
+          }
+        ]
+      }
+    }
+  }
+}

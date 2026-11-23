@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "aime2024",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "hs_variance"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "hs_variance": {
+      "8192": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 313.7,
+        "mean_peak_gpu_mb": 30553.3,
+        "per_problem": [
+          {
+            "problem": "Let $\\triangle ABC$ have circumcenter $O$ and incenter $I$ with $\\overline{IA}\\p",
+            "ground_truth": "468",
+            "pred_answer": "468",
+            "correct": true,
+            "n_tokens_generated": 7406,
+            "wall_time_s": 313.7,
+            "peak_gpu_mb": 30553.3,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "aime2026",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "hs_variance_detrend"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "hs_variance_detrend": {
+      "8192": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 313.17,
+        "mean_peak_gpu_mb": 17385.0,
+        "per_problem": [
+          {
+            "problem": "For each positive integer $n$ let $f(n)$ be the value of the base-ten numeral $n",
+            "ground_truth": "279",
+            "pred_answer": "279",
+            "correct": true,
+            "n_tokens_generated": 7549,
+            "wall_time_s": 313.17,
+            "peak_gpu_mb": 17385.0,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

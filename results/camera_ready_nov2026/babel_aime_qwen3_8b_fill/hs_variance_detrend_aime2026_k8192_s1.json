@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2026",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "hs_variance_detrend"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "hs_variance_detrend": {
+      "8192": {
+        "accuracy": 0.0,
+        "n_correct": 0,
+        "n_total": 1,
+        "mean_wall_time_s": 666.81,
+        "mean_peak_gpu_mb": 19102.4,
+        "per_problem": [
+          {
+            "problem": "Find the number of positive integer palindromes written in base $10$ with no zer",
+            "ground_truth": "62",
+            "pred_answer": "300",
+            "correct": false,
+            "n_tokens_generated": 16406,
+            "wall_time_s": 666.81,
+            "peak_gpu_mb": 19102.4,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

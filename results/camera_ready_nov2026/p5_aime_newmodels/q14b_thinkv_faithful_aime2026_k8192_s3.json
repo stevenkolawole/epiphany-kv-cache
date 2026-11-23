@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "aime2026",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "thinkv_faithful"
+    ],
+    "attn_impl": "eager"
+  },
+  "results": {
+    "thinkv_faithful": {
+      "8192": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 992.22,
+        "mean_peak_gpu_mb": 30959.9,
+        "per_problem": [
+          {
+            "problem": "Find the number of integers less than or equal to 100 that are equal to $a+b+ab$",
+            "ground_truth": "70",
+            "pred_answer": "70",
+            "correct": true,
+            "n_tokens_generated": 15509,
+            "wall_time_s": 992.22,
+            "peak_gpu_mb": 30959.9,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

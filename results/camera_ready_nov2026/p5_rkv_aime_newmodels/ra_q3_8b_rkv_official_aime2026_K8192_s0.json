@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2026",
+    "n_samples": 5,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "8192": {
+        "accuracy": 1.0,
+        "n_correct": 5,
+        "n_total": 5,
+        "mean_wall_time_s": 365.93,
+        "mean_peak_gpu_mb": 20652.0,
+        "per_problem": [
+          {
+            "problem": "Patrick started walking at a constant rate along a straight road from school to ",
+            "ground_truth": "277",
+            "pred_answer": "277",
+            "correct": true,
+            "n_tokens_generated": 3963,
+            "wall_time_s": 170.06,
+            "peak_gpu_mb": 16248.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4139,
+              "mean_all": 2157.0,
+              "peak_all": 4138,
+              "after_prefill": 176
+            }
+          },
+          {
+            "problem": "Find the number of positive integer palindromes written in base $10$ with no zer",
+            "ground_truth": "62",
+            "pred_answer": "62",
+            "correct": true,
+            "n_tokens_generated": 12713,
+            "wall_time_s": 629.55,
+            "peak_gpu_mb": 26949.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 12809,
+              "mean_all": 5636.8,
+              "peak_all": 8319,
+              "after_prefill": 96
+            }
+          },
+          {
+            "problem": "A hemisphere with radius $200$ sits on top of a horizontal circular disk with ra",
+            "ground_truth": "79",
+            "pred_answer": "79",
+            "correct": true,
+            "n_tokens_generated": 7117,
+            "wall_time_s": 324.46,
+            "peak_gpu_mb": 16693.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 7264,
+              "mean_all": 3705.0,
+              "peak_all": 7263,
+              "after_prefill": 147
+            }
+          },
+          {
+            "problem": "Find the number of integers less than or equal to 100 that are equal to $a+b+ab$",
+            "ground_truth": "70",
+            "pred_answer": "70",
+            "correct": true,
+            "n_tokens_generated": 8789,
+            "wall_time_s": 430.07,
+            "peak_gpu_mb": 26949.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8852,
+              "mean_all": 4436.9,
+              "peak_all": 8319,
+              "after_prefill": 63
+            }
+          },
+          {
+            "problem": "A plane contains points $A$ and $B$ with $AB = 1$. Point $A$ is rotated in the p",
+            "ground_truth": "65",
+            "pred_answer": "65",
+            "correct": true,
+            "n_tokens_generated": 5183,
+            "wall_time_s": 275.53,
+            "peak_gpu_mb": 16420.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 5345,
+              "mean_all": 2753.0,
+              "peak_all": 5344,
+              "after_prefill": 162
+            }
+          }
+        ]
+      }
+    }
+  }
+}

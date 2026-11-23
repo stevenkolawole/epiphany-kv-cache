@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2024",
+    "n_samples": 5,
+    "start_idx": 0,
+    "max_new_tokens": 32768,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "longflow_native"
+    ],
+    "attn_impl": "eager",
+    "dtype": "float16",
+    "shims": [],
+    "versions": {
+      "torch": "2.4.0+cu121",
+      "transformers": "4.51.3"
+    },
+    "gpu": "NVIDIA L40S"
+  },
+  "results": {
+    "longflow_native": {
+      "4096": {
+        "accuracy": 0.6,
+        "n_correct": 3,
+        "n_total": 5,
+        "mean_wall_time_s": 1051.58,
+        "per_problem": [
+          {
+            "problem": "Let $x,y$ and $z$ be positive real numbers that satisfy the following system of ",
+            "ground_truth": "33",
+            "problem_idx": 0,
+            "pred_answer": "33",
+            "correct": true,
+            "n_tokens_generated": 6380,
+            "wall_time_s": 490.94,
+            "peak_gpu_mb": 16226.7,
+            "prompt_len": 174,
+            "hit_eos": true
+          },
+          {
+            "problem": "Let $O(0,0), A(\\tfrac{1}{2}, 0),$ and $B(0, \\tfrac{\\sqrt{3}}{2})$ be points in t",
+            "ground_truth": "23",
+            "problem_idx": 1,
+            "pred_answer": "\\dfrac{3}{4}",
+            "correct": false,
+            "n_tokens_generated": 21705,
+            "wall_time_s": 1670.0,
+            "peak_gpu_mb": 16230.8,
+            "prompt_len": 206,
+            "hit_eos": true
+          },
+          {
+            "problem": "Jen enters a lottery by picking $4$ distinct numbers from $S=\\{1,2,3,\\cdots,9,10",
+            "ground_truth": "116",
+            "problem_idx": 2,
+            "pred_answer": "116",
+            "correct": true,
+            "n_tokens_generated": 6750,
+            "wall_time_s": 518.05,
+            "peak_gpu_mb": 16226.2,
+            "prompt_len": 152,
+            "hit_eos": true
+          },
+          {
+            "problem": "Alice and Bob play the following game. A stack of $n$ tokens lies before them. T",
+            "ground_truth": "809",
+            "problem_idx": 3,
+            "pred_answer": "809",
+            "correct": true,
+            "n_tokens_generated": 8581,
+            "wall_time_s": 660.44,
+            "peak_gpu_mb": 16223.1,
+            "prompt_len": 126,
+            "hit_eos": true
+          },
+          {
+            "problem": "Eight circles of radius $34$ are sequentially tangent, and two of the circles ar",
+            "ground_truth": "197",
+            "problem_idx": 4,
+            "pred_answer": "272",
+            "correct": false,
+            "n_tokens_generated": 24883,
+            "wall_time_s": 1918.47,
+            "peak_gpu_mb": 16222.8,
+            "prompt_len": 121,
+            "hit_eos": true
+          }
+        ]
+      }
+    }
+  }
+}

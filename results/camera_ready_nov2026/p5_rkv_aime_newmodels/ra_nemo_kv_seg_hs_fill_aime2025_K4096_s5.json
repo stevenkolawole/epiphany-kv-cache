@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "aime2025",
+    "n_samples": 5,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "4096": {
+        "accuracy": 0.6,
+        "n_correct": 3,
+        "n_total": 5,
+        "mean_wall_time_s": 333.96,
+        "mean_peak_gpu_mb": 16888.3,
+        "per_problem": [
+          {
+            "problem": "An isosceles trapezoid has an inscribed circle tangent to each of its four sides",
+            "ground_truth": "504",
+            "pred_answer": "504",
+            "correct": true,
+            "n_tokens_generated": 3133,
+            "wall_time_s": 121.82,
+            "peak_gpu_mb": 16266.3,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3249,
+              "mean_all": 1682.0,
+              "peak_all": 3248,
+              "after_prefill": 116
+            }
+          },
+          {
+            "problem": "The twelve letters $A$,$B$,$C$,$D$,$E$,$F$,$G$,$H$,$I$,$J$,$K$, and $L$ are rand",
+            "ground_truth": "821",
+            "pred_answer": "16",
+            "correct": false,
+            "n_tokens_generated": 13966,
+            "wall_time_s": 533.21,
+            "peak_gpu_mb": 17041.1,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 14144,
+              "mean_all": 3591.8,
+              "peak_all": 4223,
+              "after_prefill": 178
+            }
+          },
+          {
+            "problem": "Let $k$ be a real number such that the system\n\\begin{align*} |25+20i-z|&=5\\\\ |z-",
+            "ground_truth": "77",
+            "pred_answer": "77",
+            "correct": true,
+            "n_tokens_generated": 4761,
+            "wall_time_s": 189.17,
+            "peak_gpu_mb": 17037.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 4907,
+              "mean_all": 2467.4,
+              "peak_all": 4223,
+              "after_prefill": 146
+            }
+          },
+          {
+            "problem": "The parabola with equation $y = x^2 - 4$ is rotated $60^\\circ$ counterclockwise ",
+            "ground_truth": "62",
+            "pred_answer": "62",
+            "correct": true,
+            "n_tokens_generated": 9065,
+            "wall_time_s": 355.89,
+            "peak_gpu_mb": 17038.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 9204,
+              "mean_all": 3267.8,
+              "peak_all": 4223,
+              "after_prefill": 139
+            }
+          },
+          {
+            "problem": "The $27$ cells of a $3 \\times 9$ grid are filled in using the numbers $1$ throug",
+            "ground_truth": "81",
+            "pred_answer": "59",
+            "correct": false,
+            "n_tokens_generated": 12546,
+            "wall_time_s": 469.69,
+            "peak_gpu_mb": 17057.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 12876,
+              "mean_all": 3574.9,
+              "peak_all": 4223,
+              "after_prefill": 330
+            }
+          }
+        ]
+      }
+    }
+  }
+}

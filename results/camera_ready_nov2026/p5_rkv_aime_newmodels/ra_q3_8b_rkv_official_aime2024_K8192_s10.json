@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2024",
+    "n_samples": 5,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "8192": {
+        "accuracy": 1.0,
+        "n_correct": 5,
+        "n_total": 5,
+        "mean_wall_time_s": 809.69,
+        "mean_peak_gpu_mb": 22778.7,
+        "per_problem": [
+          {
+            "problem": "Find the largest possible real part of \\[(75+117i)z + \\frac{96+144i}{z}\\] where ",
+            "ground_truth": "540",
+            "pred_answer": "540",
+            "correct": true,
+            "n_tokens_generated": 9498,
+            "wall_time_s": 526.21,
+            "peak_gpu_mb": 26949.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 9574,
+              "mean_all": 4733.1,
+              "peak_all": 8319,
+              "after_prefill": 76
+            }
+          },
+          {
+            "problem": "Find the number of ways to place a digit in each cell of a 2x3 grid so that the ",
+            "ground_truth": "45",
+            "pred_answer": "45",
+            "correct": true,
+            "n_tokens_generated": 26834,
+            "wall_time_s": 1541.21,
+            "peak_gpu_mb": 26949.0,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 27001,
+              "mean_all": 7036.4,
+              "peak_all": 8319,
+              "after_prefill": 167
+            }
+          },
+          {
+            "problem": "Every morning Aya goes for a $9$-kilometer-long walk and stops at a coffee shop ",
+            "ground_truth": "204",
+            "pred_answer": "204",
+            "correct": true,
+            "n_tokens_generated": 4982,
+            "wall_time_s": 254.23,
+            "peak_gpu_mb": 16391.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 5144,
+              "mean_all": 2652.5,
+              "peak_all": 5143,
+              "after_prefill": 162
+            }
+          },
+          {
+            "problem": "Let $N$ be the greatest four-digit positive integer with the property that whene",
+            "ground_truth": "699",
+            "pred_answer": "699",
+            "correct": true,
+            "n_tokens_generated": 28397,
+            "wall_time_s": 1409.97,
+            "peak_gpu_mb": 26949.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 28495,
+              "mean_all": 7083.7,
+              "peak_all": 8319,
+              "after_prefill": 98
+            }
+          },
+          {
+            "problem": "Consider the paths of length $16$ that follow the lines from the lower left corn",
+            "ground_truth": "294",
+            "pred_answer": "294",
+            "correct": true,
+            "n_tokens_generated": 6707,
+            "wall_time_s": 316.83,
+            "peak_gpu_mb": 16654.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 6789,
+              "mean_all": 3435.0,
+              "peak_all": 6788,
+              "after_prefill": 82
+            }
+          }
+        ]
+      }
+    }
+  }
+}

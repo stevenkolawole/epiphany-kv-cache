@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "aime2024",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "hs_variance_detrend"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "hs_variance_detrend": {
+      "8192": {
+        "accuracy": 0.0,
+        "n_correct": 0,
+        "n_total": 1,
+        "mean_wall_time_s": 697.48,
+        "mean_peak_gpu_mb": 32061.8,
+        "per_problem": [
+          {
+            "problem": "Let $\\mathcal{B}$ be the set of rectangular boxes with surface area $54$ and vol",
+            "ground_truth": "721",
+            "pred_answer": "1153",
+            "correct": false,
+            "n_tokens_generated": 14113,
+            "wall_time_s": 697.48,
+            "peak_gpu_mb": 32061.8,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

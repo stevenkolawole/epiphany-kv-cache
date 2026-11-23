@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "aime2026",
+    "n_samples": 5,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "kv_seg_hs_fill"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "kv_seg_hs_fill": {
+      "4096": {
+        "accuracy": 0.8,
+        "n_correct": 4,
+        "n_total": 5,
+        "mean_wall_time_s": 569.56,
+        "mean_peak_gpu_mb": 30151.7,
+        "per_problem": [
+          {
+            "problem": "Find the sum of the $10$th terms of all arithmetic sequences of integers that ha",
+            "ground_truth": "178",
+            "pred_answer": "178",
+            "correct": true,
+            "n_tokens_generated": 3745,
+            "wall_time_s": 149.97,
+            "peak_gpu_mb": 29477.2,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 3814,
+              "mean_all": 1941.0,
+              "peak_all": 3813,
+              "after_prefill": 69
+            }
+          },
+          {
+            "problem": "The figure below shows a grid of $10$ squares in a row. Each square has a diagon",
+            "ground_truth": "243",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 1368.14,
+            "peak_gpu_mb": 30343.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 33148,
+              "mean_all": 3941.5,
+              "peak_all": 4223,
+              "after_prefill": 380
+            }
+          },
+          {
+            "problem": "Let $ABCDE$ be a nonconvex pentagon with internal angles $\\angle A = \\angle E = ",
+            "ground_truth": "503",
+            "pred_answer": "503",
+            "correct": true,
+            "n_tokens_generated": 12415,
+            "wall_time_s": 515.39,
+            "peak_gpu_mb": 30313.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 12575,
+              "mean_all": 3515.2,
+              "peak_all": 4223,
+              "after_prefill": 160
+            }
+          },
+          {
+            "problem": "For each positive integer $n$ let $f(n)$ be the value of the base-ten numeral $n",
+            "ground_truth": "279",
+            "pred_answer": "279",
+            "correct": true,
+            "n_tokens_generated": 12859,
+            "wall_time_s": 533.92,
+            "peak_gpu_mb": 30316.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 13012,
+              "mean_all": 3535.2,
+              "peak_all": 4223,
+              "after_prefill": 153
+            }
+          },
+          {
+            "problem": "An urn contains $n$ marbles. Each marble is either red or blue, and there are at",
+            "ground_truth": "190",
+            "pred_answer": "190",
+            "correct": true,
+            "n_tokens_generated": 6845,
+            "wall_time_s": 280.37,
+            "peak_gpu_mb": 30307.5,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 6961,
+              "mean_all": 2964.9,
+              "peak_all": 4223,
+              "after_prefill": 116
+            }
+          }
+        ]
+      }
+    }
+  }
+}

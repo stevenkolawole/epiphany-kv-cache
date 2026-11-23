@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "aime2024",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "thinkv_faithful"
+    ],
+    "attn_impl": "eager"
+  },
+  "results": {
+    "thinkv_faithful": {
+      "4096": {
+        "accuracy": 0.0,
+        "n_correct": 0,
+        "n_total": 1,
+        "mean_wall_time_s": 698.44,
+        "mean_peak_gpu_mb": 16458.7,
+        "per_problem": [
+          {
+            "problem": "Let $N$ be the greatest four-digit positive integer with the property that whene",
+            "ground_truth": "699",
+            "pred_answer": "9996",
+            "correct": false,
+            "n_tokens_generated": 10490,
+            "wall_time_s": 698.44,
+            "peak_gpu_mb": 16458.7,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

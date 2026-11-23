@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "aime2026",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "lag_kv"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "lag_kv": {
+      "8192": {
+        "accuracy": 1.0,
+        "n_correct": 1,
+        "n_total": 1,
+        "mean_wall_time_s": 236.45,
+        "mean_peak_gpu_mb": 30110.9,
+        "per_problem": [
+          {
+            "problem": "Let $\\triangle ABC$ be a triangle with $D$ on $\\overline{BC}$ such that $\\overli",
+            "ground_truth": "850",
+            "pred_answer": "850",
+            "correct": true,
+            "n_tokens_generated": 5489,
+            "wall_time_s": 236.45,
+            "peak_gpu_mb": 30110.9,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}

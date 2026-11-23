@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-14B",
+    "dataset": "aime2026",
+    "n_samples": 5,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "rkv_official"
+    ],
+    "attn_impl": "flash_attention_2"
+  },
+  "results": {
+    "rkv_official": {
+      "8192": {
+        "accuracy": 0.8,
+        "n_correct": 4,
+        "n_total": 5,
+        "mean_wall_time_s": 676.41,
+        "mean_peak_gpu_mb": 35545.3,
+        "per_problem": [
+          {
+            "problem": "Find the sum of all real numbers $r$ such that there is at least one point where",
+            "ground_truth": "50",
+            "pred_answer": "50",
+            "correct": true,
+            "n_tokens_generated": 7774,
+            "wall_time_s": 334.08,
+            "peak_gpu_mb": 29475.8,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 7862,
+              "mean_all": 3974.5,
+              "peak_all": 7861,
+              "after_prefill": 88
+            }
+          },
+          {
+            "problem": "A standard fair six-sided die is rolled repeatedly. Each time the die reads 1 or",
+            "ground_truth": "754",
+            "pred_answer": "754",
+            "correct": true,
+            "n_tokens_generated": 15616,
+            "wall_time_s": 810.08,
+            "peak_gpu_mb": 39625.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 15753,
+              "mean_all": 6145.0,
+              "peak_all": 8319,
+              "after_prefill": 137
+            }
+          },
+          {
+            "problem": "Isosceles triangle $\\triangle ABC$ has $AB = BC.$ Let $I$ be the incenter of $\\t",
+            "ground_truth": "245",
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 32768,
+            "wall_time_s": 1562.45,
+            "peak_gpu_mb": 39627.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 32869,
+              "mean_all": 7240.8,
+              "peak_all": 8319,
+              "after_prefill": 101
+            }
+          },
+          {
+            "problem": "Let $S$ denote the value of the infinite sum\n\\[\n\\frac{1}{9} + \\frac{1}{99} + \\fr",
+            "ground_truth": "669",
+            "pred_answer": "669",
+            "correct": true,
+            "n_tokens_generated": 8441,
+            "wall_time_s": 363.45,
+            "peak_gpu_mb": 39625.7,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 8559,
+              "mean_all": 4332.7,
+              "peak_all": 8319,
+              "after_prefill": 118
+            }
+          },
+          {
+            "problem": "Let $\\triangle ABC$ be a triangle with $D$ on $\\overline{BC}$ such that $\\overli",
+            "ground_truth": "850",
+            "pred_answer": "850",
+            "correct": true,
+            "n_tokens_generated": 7201,
+            "wall_time_s": 311.97,
+            "peak_gpu_mb": 29371.6,
+            "error": null,
+            "kv_live": {
+              "total_tokens": 7379,
+              "mean_all": 3778.0,
+              "peak_all": 7378,
+              "after_prefill": 178
+            }
+          }
+        ]
+      }
+    }
+  }
+}

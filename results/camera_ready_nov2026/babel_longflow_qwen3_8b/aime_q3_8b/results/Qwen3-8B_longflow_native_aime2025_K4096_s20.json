@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "model": "Qwen/Qwen3-8B",
+    "dataset": "aime2025",
+    "n_samples": 5,
+    "start_idx": 20,
+    "max_new_tokens": 32768,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "longflow_native"
+    ],
+    "attn_impl": "eager",
+    "dtype": "float16",
+    "shims": [],
+    "versions": {
+      "torch": "2.4.0+cu121",
+      "transformers": "4.51.3"
+    },
+    "gpu": "NVIDIA L40S"
+  },
+  "results": {
+    "longflow_native": {
+      "4096": {
+        "accuracy": 0.6,
+        "n_correct": 3,
+        "n_total": 5,
+        "mean_wall_time_s": 1258.9,
+        "per_problem": [
+          {
+            "problem": "Circle $\\omega_1$ with radius $6$ centered at point $A$ is internally tangent at",
+            "ground_truth": "293",
+            "problem_idx": 20,
+            "pred_answer": "\\dfrac{288}{5}",
+            "correct": false,
+            "n_tokens_generated": 12948,
+            "wall_time_s": 1003.03,
+            "peak_gpu_mb": 16392.8,
+            "prompt_len": 796,
+            "hit_eos": true
+          },
+          {
+            "problem": "Let $A$ be the set of positive integer divisors of $2025$. Let $B$ be a randomly",
+            "ground_truth": "237",
+            "problem_idx": 21,
+            "pred_answer": "237",
+            "correct": true,
+            "n_tokens_generated": 13533,
+            "wall_time_s": 1027.81,
+            "peak_gpu_mb": 16222.7,
+            "prompt_len": 118,
+            "hit_eos": true
+          },
+          {
+            "problem": "From an unlimited supply of $1$-cent coins, $10$-cent coins, and $25$-cent coins",
+            "ground_truth": "610",
+            "problem_idx": 22,
+            "pred_answer": "610",
+            "correct": true,
+            "n_tokens_generated": 16873,
+            "wall_time_s": 1302.19,
+            "peak_gpu_mb": 16241.8,
+            "prompt_len": 320,
+            "hit_eos": true
+          },
+          {
+            "problem": "There are $n$ values of $x$ in the interval $0 < x < 2\\pi$ where $f(x) = \\sin\\le",
+            "ground_truth": "149",
+            "problem_idx": 23,
+            "pred_answer": "149",
+            "correct": true,
+            "n_tokens_generated": 12104,
+            "wall_time_s": 932.82,
+            "peak_gpu_mb": 16222.7,
+            "prompt_len": 118,
+            "hit_eos": true
+          },
+          {
+            "problem": "Sixteen chairs are arranged in a row. Eight people each select a chair in which ",
+            "ground_truth": "907",
+            "problem_idx": 24,
+            "pred_answer": "4753",
+            "correct": false,
+            "n_tokens_generated": 26268,
+            "wall_time_s": 2028.65,
+            "peak_gpu_mb": 16221.4,
+            "prompt_len": 94,
+            "hit_eos": true
+          }
+        ]
+      }
+    }
+  }
+}

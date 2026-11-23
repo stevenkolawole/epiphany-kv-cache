@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "model": "nvidia/Llama-3.1-Nemotron-Nano-8B-v1",
+    "dataset": "aime2026",
+    "n_samples": 1,
+    "max_new_tokens": 32768,
+    "keep_recent_k": 128,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "thinkv_faithful"
+    ],
+    "attn_impl": "eager"
+  },
+  "results": {
+    "thinkv_faithful": {
+      "4096": {
+        "accuracy": 0.0,
+        "n_correct": 0,
+        "n_total": 1,
+        "mean_wall_time_s": 191.72,
+        "mean_peak_gpu_mb": 16269.2,
+        "per_problem": [
+          {
+            "problem": "Find the number of functions $\\pi$ mapping the set $A =\\{1,2,3,4,5,6\\}$ onto $A$",
+            "ground_truth": "396",
+            "pred_answer": "145",
+            "correct": false,
+            "n_tokens_generated": 3265,
+            "wall_time_s": 191.72,
+            "peak_gpu_mb": 16269.2,
+            "error": null
+          }
+        ]
+      }
+    }
+  }
+}
