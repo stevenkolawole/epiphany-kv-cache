@@ -1,0 +1,158 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "dataset": "aime2024",
+    "n_samples": 10,
+    "start_idx": 0,
+    "max_new_tokens": 16384,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "longflow_native"
+    ],
+    "attn_impl": "eager",
+    "dtype": "float16",
+    "shims": [
+      "q_norm/k_norm = nn.Identity (absent in Qwen2Attention)",
+      "sliding_window = None"
+    ],
+    "versions": {
+      "torch": "2.4.0+cu121",
+      "transformers": "4.51.3"
+    },
+    "gpu": "NVIDIA L40S"
+  },
+  "results": {
+    "longflow_native": {
+      "8192": {
+        "accuracy": 0.7,
+        "n_correct": 7,
+        "n_total": 10,
+        "mean_wall_time_s": 656.4,
+        "per_problem": [
+          {
+            "problem": "Let $x,y$ and $z$ be positive real numbers that satisfy the following system of ",
+            "ground_truth": "33",
+            "problem_idx": 0,
+            "pred_answer": "33",
+            "correct": true,
+            "n_tokens_generated": 3267,
+            "wall_time_s": 234.25,
+            "peak_gpu_mb": 15049.2,
+            "prompt_len": 167,
+            "hit_eos": true
+          },
+          {
+            "problem": "Let $O(0,0), A(\\tfrac{1}{2}, 0),$ and $B(0, \\tfrac{\\sqrt{3}}{2})$ be points in t",
+            "ground_truth": "23",
+            "problem_idx": 1,
+            "pred_answer": "23",
+            "correct": true,
+            "n_tokens_generated": 11760,
+            "wall_time_s": 840.51,
+            "peak_gpu_mb": 15052.8,
+            "prompt_len": 199,
+            "hit_eos": true
+          },
+          {
+            "problem": "Jen enters a lottery by picking $4$ distinct numbers from $S=\\{1,2,3,\\cdots,9,10",
+            "ground_truth": "116",
+            "problem_idx": 2,
+            "pred_answer": "116",
+            "correct": true,
+            "n_tokens_generated": 2687,
+            "wall_time_s": 190.97,
+            "peak_gpu_mb": 15044.8,
+            "prompt_len": 145,
+            "hit_eos": true
+          },
+          {
+            "problem": "Alice and Bob play the following game. A stack of $n$ tokens lies before them. T",
+            "ground_truth": "809",
+            "problem_idx": 3,
+            "pred_answer": "809",
+            "correct": true,
+            "n_tokens_generated": 2780,
+            "wall_time_s": 197.38,
+            "peak_gpu_mb": 15041.2,
+            "prompt_len": 119,
+            "hit_eos": true
+          },
+          {
+            "problem": "Eight circles of radius $34$ are sequentially tangent, and two of the circles ar",
+            "ground_truth": "197",
+            "problem_idx": 4,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1168.88,
+            "peak_gpu_mb": 15040.7,
+            "prompt_len": 114,
+            "hit_eos": false
+          },
+          {
+            "problem": "Define $f(x)=|| x|-\\tfrac{1}{2}|$ and $g(x)=|| x|-\\tfrac{1}{4}|$. Find the numbe",
+            "ground_truth": "385",
+            "problem_idx": 5,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1169.1,
+            "peak_gpu_mb": 15039.9,
+            "prompt_len": 102,
+            "hit_eos": false
+          },
+          {
+            "problem": "Each vertex of a regular octagon is independently colored either red or blue wit",
+            "ground_truth": "371",
+            "problem_idx": 6,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1265.53,
+            "peak_gpu_mb": 15039.7,
+            "prompt_len": 97,
+            "hit_eos": false
+          },
+          {
+            "problem": "Find the number of triples of nonnegative integers $(a,b,c)$ satisfying $a + b +",
+            "ground_truth": "601",
+            "problem_idx": 7,
+            "pred_answer": "601",
+            "correct": true,
+            "n_tokens_generated": 9836,
+            "wall_time_s": 767.67,
+            "peak_gpu_mb": 15039.6,
+            "prompt_len": 93,
+            "hit_eos": true
+          },
+          {
+            "problem": "There exist real numbers $x$ and $y$, both greater than 1, such that $\\log_x\\lef",
+            "ground_truth": "25",
+            "problem_idx": 8,
+            "pred_answer": "25",
+            "correct": true,
+            "n_tokens_generated": 5610,
+            "wall_time_s": 438.91,
+            "peak_gpu_mb": 15036.2,
+            "prompt_len": 70,
+            "hit_eos": true
+          },
+          {
+            "problem": "Alice chooses a set $A$ of positive integers. Then Bob lists all finite nonempty",
+            "ground_truth": "55",
+            "problem_idx": 9,
+            "pred_answer": "55",
+            "correct": true,
+            "n_tokens_generated": 3716,
+            "wall_time_s": 290.79,
+            "peak_gpu_mb": 15036.7,
+            "prompt_len": 82,
+            "hit_eos": true
+          }
+        ]
+      }
+    }
+  }
+}

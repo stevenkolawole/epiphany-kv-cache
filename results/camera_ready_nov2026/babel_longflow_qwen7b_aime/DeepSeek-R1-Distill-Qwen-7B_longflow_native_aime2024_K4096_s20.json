@@ -1,0 +1,158 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "dataset": "aime2024",
+    "n_samples": 10,
+    "start_idx": 20,
+    "max_new_tokens": 16384,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "longflow_native"
+    ],
+    "attn_impl": "eager",
+    "dtype": "float16",
+    "shims": [
+      "q_norm/k_norm = nn.Identity (absent in Qwen2Attention)",
+      "sliding_window = None"
+    ],
+    "versions": {
+      "torch": "2.4.0+cu121",
+      "transformers": "4.51.3"
+    },
+    "gpu": "NVIDIA L40S"
+  },
+  "results": {
+    "longflow_native": {
+      "4096": {
+        "accuracy": 0.3,
+        "n_correct": 3,
+        "n_total": 10,
+        "mean_wall_time_s": 884.9,
+        "per_problem": [
+          {
+            "problem": "Let $b \\geq 2$ be an integer. Call a positive integer $n$ $b$\\textit{-eautiful} ",
+            "ground_truth": "211",
+            "problem_idx": 20,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 978.19,
+            "peak_gpu_mb": 14821.1,
+            "prompt_len": 144,
+            "hit_eos": false
+          },
+          {
+            "problem": "Let ABCDEF be a convex equilateral hexagon in which all pairs of opposite sides ",
+            "ground_truth": "80",
+            "problem_idx": 21,
+            "pred_answer": "80",
+            "correct": true,
+            "n_tokens_generated": 9490,
+            "wall_time_s": 566.57,
+            "peak_gpu_mb": 14813.6,
+            "prompt_len": 83,
+            "hit_eos": true
+          },
+          {
+            "problem": "Let $A$, $B$, $C$, and $D$ be points on the hyperbola $\\frac{x^2}{20}- \\frac{y^2",
+            "ground_truth": "480",
+            "problem_idx": 22,
+            "pred_answer": "480",
+            "correct": true,
+            "n_tokens_generated": 6291,
+            "wall_time_s": 374.12,
+            "peak_gpu_mb": 14815.8,
+            "prompt_len": 105,
+            "hit_eos": true
+          },
+          {
+            "problem": "A list of positive integers has the following properties:\n\n\\bullet The sum of th",
+            "ground_truth": "236",
+            "problem_idx": 23,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 971.46,
+            "peak_gpu_mb": 14814.5,
+            "prompt_len": 92,
+            "hit_eos": false
+          },
+          {
+            "problem": "Among the 900 residents of Aimeville, there are 195 who own a diamond ring, 367 ",
+            "ground_truth": "73",
+            "problem_idx": 24,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 955.8,
+            "peak_gpu_mb": 14819.6,
+            "prompt_len": 133,
+            "hit_eos": false
+          },
+          {
+            "problem": "Let $ABC$ be a triangle inscribed in circle $\\omega$. Let the tangents to $\\omeg",
+            "ground_truth": "113",
+            "problem_idx": 25,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1043.64,
+            "peak_gpu_mb": 14856.2,
+            "prompt_len": 376,
+            "hit_eos": false
+          },
+          {
+            "problem": "Torus $T$ is the surface produced by revolving a circle with radius $3$ around a",
+            "ground_truth": "127",
+            "problem_idx": 26,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1168.83,
+            "peak_gpu_mb": 14827.6,
+            "prompt_len": 181,
+            "hit_eos": false
+          },
+          {
+            "problem": "Let $ABCD$ be a tetrahedron such that $AB=CD= \\sqrt{41}$, $AC=BD= \\sqrt{80}$, an",
+            "ground_truth": "104",
+            "problem_idx": 27,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1167.6,
+            "peak_gpu_mb": 14826.2,
+            "prompt_len": 172,
+            "hit_eos": false
+          },
+          {
+            "problem": "Rectangles $ABCD$ and $EFGH$ are drawn such that $D,E,C,F$ are collinear. Also, ",
+            "ground_truth": "104",
+            "problem_idx": 28,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1172.63,
+            "peak_gpu_mb": 14815.1,
+            "prompt_len": 98,
+            "hit_eos": false
+          },
+          {
+            "problem": "Let $\\omega \\neq 1$ be a 13th root of unity. Find the remainder when \n\\[ \\prod_{",
+            "ground_truth": "321",
+            "problem_idx": 29,
+            "pred_answer": "321",
+            "correct": true,
+            "n_tokens_generated": 6310,
+            "wall_time_s": 450.12,
+            "peak_gpu_mb": 14813.6,
+            "prompt_len": 83,
+            "hit_eos": true
+          }
+        ]
+      }
+    }
+  }
+}

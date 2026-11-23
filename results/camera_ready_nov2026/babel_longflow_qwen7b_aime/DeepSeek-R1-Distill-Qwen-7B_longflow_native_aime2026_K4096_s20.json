@@ -1,0 +1,158 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "dataset": "aime2026",
+    "n_samples": 10,
+    "start_idx": 20,
+    "max_new_tokens": 16384,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "longflow_native"
+    ],
+    "attn_impl": "eager",
+    "dtype": "float16",
+    "shims": [
+      "q_norm/k_norm = nn.Identity (absent in Qwen2Attention)",
+      "sliding_window = None"
+    ],
+    "versions": {
+      "torch": "2.4.0+cu121",
+      "transformers": "4.51.3"
+    },
+    "gpu": "NVIDIA L40S"
+  },
+  "results": {
+    "longflow_native": {
+      "4096": {
+        "accuracy": 0.0,
+        "n_correct": 0,
+        "n_total": 10,
+        "mean_wall_time_s": 541.22,
+        "per_problem": [
+          {
+            "problem": "Find the sum of all real numbers $r$ such that there is at least one point where",
+            "ground_truth": "50",
+            "problem_idx": 20,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 548.7,
+            "peak_gpu_mb": 14813.4,
+            "prompt_len": 81,
+            "hit_eos": false
+          },
+          {
+            "problem": "A standard fair six-sided die is rolled repeatedly. Each time the die reads 1 or",
+            "ground_truth": "754",
+            "problem_idx": 21,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 541.6,
+            "peak_gpu_mb": 14819.1,
+            "prompt_len": 130,
+            "hit_eos": false
+          },
+          {
+            "problem": "Isosceles triangle $\\triangle ABC$ has $AB = BC.$ Let $I$ be the incenter of $\\t",
+            "ground_truth": "245",
+            "problem_idx": 22,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 541.37,
+            "peak_gpu_mb": 14814.7,
+            "prompt_len": 94,
+            "hit_eos": false
+          },
+          {
+            "problem": "Let $S$ denote the value of the infinite sum\n\\[\n\\frac{1}{9} + \\frac{1}{99} + \\fr",
+            "ground_truth": "669",
+            "problem_idx": 23,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 540.27,
+            "peak_gpu_mb": 14816.5,
+            "prompt_len": 111,
+            "hit_eos": false
+          },
+          {
+            "problem": "Let $\\triangle ABC$ be a triangle with $D$ on $\\overline{BC}$ such that $\\overli",
+            "ground_truth": "850",
+            "problem_idx": 24,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 540.65,
+            "peak_gpu_mb": 14826.1,
+            "prompt_len": 171,
+            "hit_eos": false
+          },
+          {
+            "problem": "Find the greatest integer $n$ such that the cubic polynomial\n\\[\nx^{3} - \\display",
+            "ground_truth": "132",
+            "problem_idx": 25,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 540.0,
+            "peak_gpu_mb": 14818.3,
+            "prompt_len": 124,
+            "hit_eos": false
+          },
+          {
+            "problem": "Consider a tetrahedron with two isosceles triangle faces with side lengths $5\\sq",
+            "ground_truth": "223",
+            "problem_idx": 26,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 540.36,
+            "peak_gpu_mb": 14825.9,
+            "prompt_len": 169,
+            "hit_eos": false
+          },
+          {
+            "problem": "Call finite sets of integers $S$ and $T$ cousins if\n- $S$ and $T$ have the same ",
+            "ground_truth": "107",
+            "problem_idx": 27,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 540.39,
+            "peak_gpu_mb": 14823.9,
+            "prompt_len": 151,
+            "hit_eos": false
+          },
+          {
+            "problem": "For integers $a$ and $b,$ let $a \\circ b = a - b$ if $a$ is odd and $b$ is even,",
+            "ground_truth": "157",
+            "problem_idx": 28,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 539.63,
+            "peak_gpu_mb": 14829.1,
+            "prompt_len": 198,
+            "hit_eos": false
+          },
+          {
+            "problem": "Find the number of ordered 7-tuples $(a_1, a_2, a_3, \\ldots, a_7)$ having the fo",
+            "ground_truth": "393",
+            "problem_idx": 29,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 539.19,
+            "peak_gpu_mb": 14828.0,
+            "prompt_len": 188,
+            "hit_eos": false
+          }
+        ]
+      }
+    }
+  }
+}

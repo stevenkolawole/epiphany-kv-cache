@@ -14,3 +14,17 @@ Every file checked: no per-problem error, no zero-token problem, every block has
 The added-model "seg" cells in the five-model tables ran with the query read on; p5_epikv_noq holds the same cells without it.
 Babel and p5 run different library versions; compare within a host.
 Line generator: scripts/p5_grid/make_aime_fill_lines.py.
+
+Added Nov 23 (copies of finished runs that were only on the remote boxes):
+
+| Folder | Host | What | Files |
+|---|---|---|---|
+| p5_rkv_aime_paper_models | uk-p5 H200 | released R-KV, AIME, Llama-8B and Qwen-7B, K 4096/8192, cap 16384, all 90 problems | 36 |
+| p5_gpqa_paper_models_baselines | uk-p5 H200 | GPQA-Diamond H2O and ThinKV, Llama-8B and Qwen-7B, K 1024-4096 | 216 |
+| babel_longflow_qwen7b_aime | Babel L40S | LongFlow native, AIME, Qwen-7B, K 8192 | 18 |
+| babel_longflow_qwen3_math_gpqa | Babel L40S | LongFlow native, MATH-500 Qwen3-8B and Qwen3-14B K 512-4096, GPQA K 1024-4096 | 268 |
+
+Queued on p5 behind the other project's jobs (scripts/p5_grid/p5_camera_gate.sh appends scripts/p5_grid/p5_camera_fill.txt
+once the GPUs are idle), output `results_camera_fill/`: GPQA-Diamond K=512 EpiKV^-Q, H2O and ThinKV for Llama-8B and
+Qwen-7B (the existing K=512 "seg" lines for these two carry the query flags), RaaS K=512 piece s121 for both (5 OOM problems
+each), and AIME 2024 Qwen-7B EpiKV K=8192 (10 of 30 problems were OOM on p4d A100-40GB).

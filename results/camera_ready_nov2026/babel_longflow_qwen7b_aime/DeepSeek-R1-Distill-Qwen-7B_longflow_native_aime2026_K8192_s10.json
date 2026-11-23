@@ -1,0 +1,158 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "dataset": "aime2026",
+    "n_samples": 10,
+    "start_idx": 10,
+    "max_new_tokens": 16384,
+    "cache_sizes": [
+      8192
+    ],
+    "methods": [
+      "longflow_native"
+    ],
+    "attn_impl": "eager",
+    "dtype": "float16",
+    "shims": [
+      "q_norm/k_norm = nn.Identity (absent in Qwen2Attention)",
+      "sliding_window = None"
+    ],
+    "versions": {
+      "torch": "2.4.0+cu121",
+      "transformers": "4.51.3"
+    },
+    "gpu": "NVIDIA L40S"
+  },
+  "results": {
+    "longflow_native": {
+      "8192": {
+        "accuracy": 0.4,
+        "n_correct": 4,
+        "n_total": 10,
+        "mean_wall_time_s": 783.33,
+        "per_problem": [
+          {
+            "problem": "The integers from $1$ to $64$ are placed in some order into an $8 \\times 8$ grid",
+            "ground_truth": "896",
+            "problem_idx": 10,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1284.0,
+            "peak_gpu_mb": 15050.1,
+            "prompt_len": 175,
+            "hit_eos": false
+          },
+          {
+            "problem": "Triangle $\\triangle ABC$ lies in plane $\\mathcal P$ with $AB = 6, AC = 4,$ and $",
+            "ground_truth": "161",
+            "problem_idx": 11,
+            "pred_answer": "161",
+            "correct": true,
+            "n_tokens_generated": 5781,
+            "wall_time_s": 450.7,
+            "peak_gpu_mb": 15052.8,
+            "prompt_len": 199,
+            "hit_eos": true
+          },
+          {
+            "problem": "For each positive integer $r$ less than $502,$ define\n\\[\nS_r=\\sum_{m\\ge 0}\\dbino",
+            "ground_truth": "39",
+            "problem_idx": 12,
+            "pred_answer": "39",
+            "correct": true,
+            "n_tokens_generated": 9499,
+            "wall_time_s": 742.45,
+            "peak_gpu_mb": 15052.1,
+            "prompt_len": 193,
+            "hit_eos": true
+          },
+          {
+            "problem": "In an equiangular pentagon, the sum of the squares of the side lengths equals $3",
+            "ground_truth": "681",
+            "problem_idx": 13,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1285.81,
+            "peak_gpu_mb": 15040.1,
+            "prompt_len": 110,
+            "hit_eos": false
+          },
+          {
+            "problem": "Let $a, b,$ and $n$ be positive integers with both $a$ and $b$ greater than or e",
+            "ground_truth": "83",
+            "problem_idx": 14,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1144.84,
+            "peak_gpu_mb": 15065.4,
+            "prompt_len": 269,
+            "hit_eos": false
+          },
+          {
+            "problem": "Find the sum of the $10$th terms of all arithmetic sequences of integers that ha",
+            "ground_truth": "178",
+            "problem_idx": 15,
+            "pred_answer": "178",
+            "correct": true,
+            "n_tokens_generated": 2698,
+            "wall_time_s": 170.25,
+            "peak_gpu_mb": 15035.8,
+            "prompt_len": 62,
+            "hit_eos": true
+          },
+          {
+            "problem": "The figure below shows a grid of $10$ squares in a row. Each square has a diagon",
+            "ground_truth": "243",
+            "problem_idx": 16,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1039.88,
+            "peak_gpu_mb": 15078.4,
+            "prompt_len": 373,
+            "hit_eos": false
+          },
+          {
+            "problem": "Let $ABCDE$ be a nonconvex pentagon with internal angles $\\angle A = \\angle E = ",
+            "ground_truth": "503",
+            "problem_idx": 17,
+            "pred_answer": "501",
+            "correct": false,
+            "n_tokens_generated": 6485,
+            "wall_time_s": 410.32,
+            "peak_gpu_mb": 15047.7,
+            "prompt_len": 153,
+            "hit_eos": true
+          },
+          {
+            "problem": "For each positive integer $n$ let $f(n)$ be the value of the base-ten numeral $n",
+            "ground_truth": "279",
+            "problem_idx": 18,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1039.01,
+            "peak_gpu_mb": 15044.9,
+            "prompt_len": 146,
+            "hit_eos": false
+          },
+          {
+            "problem": "An urn contains $n$ marbles. Each marble is either red or blue, and there are at",
+            "ground_truth": "190",
+            "problem_idx": 19,
+            "pred_answer": "190",
+            "correct": true,
+            "n_tokens_generated": 4209,
+            "wall_time_s": 266.02,
+            "peak_gpu_mb": 15040.1,
+            "prompt_len": 109,
+            "hit_eos": true
+          }
+        ]
+      }
+    }
+  }
+}

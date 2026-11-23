@@ -1,0 +1,158 @@
+{
+  "meta": {
+    "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "dataset": "aime2026",
+    "n_samples": 10,
+    "start_idx": 0,
+    "max_new_tokens": 16384,
+    "cache_sizes": [
+      4096
+    ],
+    "methods": [
+      "longflow_native"
+    ],
+    "attn_impl": "eager",
+    "dtype": "float16",
+    "shims": [
+      "q_norm/k_norm = nn.Identity (absent in Qwen2Attention)",
+      "sliding_window = None"
+    ],
+    "versions": {
+      "torch": "2.4.0+cu121",
+      "transformers": "4.51.3"
+    },
+    "gpu": "NVIDIA L40S"
+  },
+  "results": {
+    "longflow_native": {
+      "4096": {
+        "accuracy": 0.6,
+        "n_correct": 6,
+        "n_total": 10,
+        "mean_wall_time_s": 458.66,
+        "per_problem": [
+          {
+            "problem": "Patrick started walking at a constant rate along a straight road from school to ",
+            "ground_truth": "277",
+            "problem_idx": 0,
+            "pred_answer": "277",
+            "correct": true,
+            "n_tokens_generated": 2738,
+            "wall_time_s": 195.86,
+            "peak_gpu_mb": 14825.9,
+            "prompt_len": 169,
+            "hit_eos": true
+          },
+          {
+            "problem": "Find the number of positive integer palindromes written in base $10$ with no zer",
+            "ground_truth": "62",
+            "problem_idx": 1,
+            "pred_answer": "62",
+            "correct": true,
+            "n_tokens_generated": 6892,
+            "wall_time_s": 445.92,
+            "peak_gpu_mb": 14814.2,
+            "prompt_len": 89,
+            "hit_eos": true
+          },
+          {
+            "problem": "A hemisphere with radius $200$ sits on top of a horizontal circular disk with ra",
+            "ground_truth": "79",
+            "problem_idx": 2,
+            "pred_answer": "79",
+            "correct": true,
+            "n_tokens_generated": 4068,
+            "wall_time_s": 261.55,
+            "peak_gpu_mb": 14820.5,
+            "prompt_len": 140,
+            "hit_eos": true
+          },
+          {
+            "problem": "Find the number of integers less than or equal to 100 that are equal to $a+b+ab$",
+            "ground_truth": "70",
+            "problem_idx": 3,
+            "pred_answer": "69",
+            "correct": false,
+            "n_tokens_generated": 5515,
+            "wall_time_s": 354.32,
+            "peak_gpu_mb": 14810.4,
+            "prompt_len": 56,
+            "hit_eos": true
+          },
+          {
+            "problem": "A plane contains points $A$ and $B$ with $AB = 1$. Point $A$ is rotated in the p",
+            "ground_truth": "65",
+            "problem_idx": 4,
+            "pred_answer": "65",
+            "correct": true,
+            "n_tokens_generated": 2829,
+            "wall_time_s": 181.01,
+            "peak_gpu_mb": 14824.3,
+            "prompt_len": 155,
+            "hit_eos": true
+          },
+          {
+            "problem": "A real number $x$ satisfies $\\sqrt[20]{x^{\\log_{2026}x}}=26x$. What is the numbe",
+            "ground_truth": "441",
+            "problem_idx": 5,
+            "pred_answer": "441",
+            "correct": true,
+            "n_tokens_generated": 6410,
+            "wall_time_s": 411.95,
+            "peak_gpu_mb": 14811.2,
+            "prompt_len": 72,
+            "hit_eos": true
+          },
+          {
+            "problem": "Find the number of functions $\\pi$ mapping the set $A =\\{1,2,3,4,5,6\\}$ onto $A$",
+            "ground_truth": "396",
+            "problem_idx": 6,
+            "pred_answer": "351",
+            "correct": false,
+            "n_tokens_generated": 3242,
+            "wall_time_s": 209.47,
+            "peak_gpu_mb": 14814.0,
+            "prompt_len": 87,
+            "hit_eos": true
+          },
+          {
+            "problem": "Let $N$ be the number of positive integer divisors of $17017^{17}$ that leave a ",
+            "ground_truth": "244",
+            "problem_idx": 7,
+            "pred_answer": "244",
+            "correct": true,
+            "n_tokens_generated": 4186,
+            "wall_time_s": 270.55,
+            "peak_gpu_mb": 14811.6,
+            "prompt_len": 75,
+            "hit_eos": true
+          },
+          {
+            "problem": "Joanne has a blank fair six-sided die and six stickers each displaying a differe",
+            "ground_truth": "29",
+            "problem_idx": 8,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1090.21,
+            "peak_gpu_mb": 14828.8,
+            "prompt_len": 195,
+            "hit_eos": false
+          },
+          {
+            "problem": "Let $\\triangle ABC$ have side lengths $AB = 13, BC = 14,$ and $CA = 15.$ Triangl",
+            "ground_truth": "156",
+            "problem_idx": 9,
+            "pred_answer": null,
+            "correct": false,
+            "n_tokens_generated": 16384,
+            "wall_time_s": 1165.71,
+            "peak_gpu_mb": 14818.3,
+            "prompt_len": 124,
+            "hit_eos": false
+          }
+        ]
+      }
+    }
+  }
+}
