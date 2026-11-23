@@ -15,7 +15,7 @@ The added-model "seg" cells in the five-model tables ran with the query read on;
 Babel and p5 run different library versions; compare within a host.
 Line generator: scripts/p5_grid/make_aime_fill_lines.py.
 
-Added Nov 23 (copies of finished runs that were only on the remote boxes):
+Copies of finished runs that were only on the remote boxes:
 
 | Folder | Host | What | Files |
 |---|---|---|---|
