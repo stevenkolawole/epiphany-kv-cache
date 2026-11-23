@@ -11,6 +11,6 @@ Every file checked: no per-problem error, no zero-token problem, every block has
 | babel_aime_qwen3_8b_fill | Babel L40S | AIME Qwen3-8B, the remaining methods (same host as that column's EpiKV/RaaS/no-eviction cells) | 1260 |
 | babel_longflow_qwen3_8b | Babel L40S | LongFlow native, Qwen3-8B, GPQA K 512-4096 and AIME K 4096/8192 | 108 |
 
-The EpiKV^-Q files replace the added-model "seg" cells in the five-model tables, which ran with the query read on.
+The added-model "seg" cells in the five-model tables ran with the query read on; p5_epikv_noq holds the same cells without it.
 Babel and p5 run different library versions; compare within a host.
 Line generator: scripts/p5_grid/make_aime_fill_lines.py.
