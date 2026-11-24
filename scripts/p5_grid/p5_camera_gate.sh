@@ -1,6 +1,6 @@
 #!/bin/bash
-# Appends p5_camera_fill.txt to queue3.txt once no GPU process has run for two checks 5 minutes apart.
-K=/opt/dlami/nvme/kvcache; F=$K/p5_camera_fill.txt; quiet=0
+# Appends the line file given as $1 (default p5_camera_fill.txt) to queue3.txt once no GPU process has run for two checks 5 minutes apart.
+K=/opt/dlami/nvme/kvcache; F=${1:-$K/p5_camera_fill.txt}; quiet=0
 while [ $quiet -lt 2 ]; do
   if [ "$(nvidia-smi --query-compute-apps=pid --format=csv,noheader | wc -l)" -eq 0 ]; then quiet=$((quiet+1)); else quiet=0; fi
   sleep 300
