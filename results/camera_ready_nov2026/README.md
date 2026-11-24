@@ -30,5 +30,5 @@ Qwen-7B (the existing K=512 "seg" lines for these two carry the query flags), Ra
 each), and AIME 2024 Qwen-7B EpiKV K=8192 (10 of 30 problems were OOM on p4d A100-40GB).
 
 `p5_camera_fill/` (uk-p5 H200, 113 files, all complete): GPQA-Diamond K=512 for Llama-8B and Qwen-7B (EpiKV^-Q without query
-flags, H2O, ThinKV, and RaaS piece s121, which replaces the piece with 5 OOM problems), and AIME 2024 Qwen-7B EpiKV K=8192
-(replaces the p4d piece with 10 OOM problems; AIME 2025 and 2026 for that cell remain the p4d A100-40GB files).
+flags, H2O, ThinKV, and a rerun of RaaS piece s121, which had 5 OOM problems), and AIME 2024 Qwen-7B EpiKV K=8192
+(a rerun of the p4d piece, which had 10 OOM problems; AIME 2025 and 2026 for that cell remain the p4d A100-40GB files).
