@@ -28,3 +28,7 @@ Queued on p5 behind the other project's jobs (scripts/p5_grid/p5_camera_gate.sh 
 once the GPUs are idle), output `results_camera_fill/`: GPQA-Diamond K=512 EpiKV^-Q, H2O and ThinKV for Llama-8B and
 Qwen-7B (the existing K=512 "seg" lines for these two carry the query flags), RaaS K=512 piece s121 for both (5 OOM problems
 each), and AIME 2024 Qwen-7B EpiKV K=8192 (10 of 30 problems were OOM on p4d A100-40GB).
+
+`p5_camera_fill/` (uk-p5 H200, 113 files, all complete): GPQA-Diamond K=512 for Llama-8B and Qwen-7B (EpiKV^-Q without query
+flags, H2O, ThinKV, and RaaS piece s121, which replaces the piece with 5 OOM problems), and AIME 2024 Qwen-7B EpiKV K=8192
+(replaces the p4d piece with 10 OOM problems; AIME 2025 and 2026 for that cell remain the p4d A100-40GB files).
