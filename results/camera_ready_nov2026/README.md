@@ -32,3 +32,7 @@ each), and AIME 2024 Qwen-7B EpiKV K=8192 (10 of 30 problems were OOM on p4d A10
 `p5_camera_fill/` (uk-p5 H200, 113 files, all complete): GPQA-Diamond K=512 for Llama-8B and Qwen-7B (EpiKV^-Q without query
 flags, H2O, ThinKV, and a rerun of RaaS piece s121, which had 5 OOM problems), and AIME 2024 Qwen-7B EpiKV K=8192
 (a rerun of the p4d piece, which had 10 OOM problems; AIME 2025 and 2026 for that cell remain the p4d A100-40GB files).
+
+`p5_qwen7b_relative_depth_bands/` (uk-p5 H200, 72 files, all complete): Qwen-7B GPQA-Diamond EpiKV with bands at Llama-8B's
+relative depth (--band_a_layer 9 --band_b_layer 18, so the query read moves to layer 10), K 512-4096; every other flag as EpiKV.
+The 20/24 cells it pairs with are p5 H200 at K 1024-4096 (gpqa_p5/) and p4d A100-40GB at K=512 (aws_grid_oct2026/p4d_epikv/).
